@@ -1,1 +1,2886 @@
-[]
+[
+  {
+    "id": 1,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 121,
+    "question": "What is the output of the following C statements? int x = 5; printf(\"%d \", x); printf(\"%d \", x++); printf(\"%d\", ++x);",
+    "options": [
+      "5 5 7",
+      "5 6 7",
+      "5 6 8",
+      "5 5 6"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 2,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 122,
+    "question": "If int *p and sizeof(int) = 4 bytes, p + 3 moves the pointer by",
+    "options": [
+      "3 bytes",
+      "4 bytes",
+      "12 bytes",
+      "16 bytes"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 3,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 123,
+    "question": "The time complexity of the following nested loops is: for(i=1;i<=n;i++) for(j=1;j<=i;j++) count++;",
+    "options": [
+      "O(n(n+1)/2)",
+      "O(n log n)",
+      "O(n^2)",
+      "O(log n)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 4,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 124,
+    "question": "The qualifier used exclusively with pointers is",
+    "options": [
+      "static",
+      "const",
+      "volatile",
+      "restrict"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 5,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 125,
+    "question": "The data structure used to manage function calls in a program by the compiler is",
+    "options": [
+      "Tree",
+      "Stack",
+      "Queue",
+      "Graph"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 6,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 126,
+    "question": "A binary tree with n internal nodes has ______ external nodes",
+    "options": [
+      "n",
+      "n+1",
+      "n-1",
+      "2n"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 7,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 127,
+    "question": "Worst-case time for inserting at the beginning of a singly linked list on n elements is",
+    "options": [
+      "O(n)",
+      "O(1)",
+      "O(log n)",
+      "O(n log n)"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 8,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 128,
+    "question": "The worst-case time complexity of which sorting algorithm is highest for a large number of elements?",
+    "options": [
+      "Merge sort",
+      "Heap sort",
+      "Radix sort",
+      "Quick sort"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 9,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 129,
+    "question": "What is the output of int arr[5]={1,2,3,4,5}; sizeof(arr)/sizeof(arr[0])?",
+    "options": [
+      "4",
+      "5",
+      "20",
+      "10"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 10,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 130,
+    "question": "What is the output of the following program using a static local variable? void f(int *p){ static int x=0; x++; *p=x; } int main(){int a=0; f(&a); f(&a); printf(\"%d\",a); }",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "Undefined"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 11,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "If a recursive function has recurrence T(n)=T(n-1)+T(n-2)+O(1), its complexity is",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(2^n)",
+      "O(n^2)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 12,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "If a stack is implemented using a linked list, overflow occurs when",
+    "options": [
+      "Stack is full",
+      "Memory is exhausted",
+      "Top = NULL",
+      "Queue is empty"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 13,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 121,
+    "question": "Which searching technique requires the data to be sorted before searching?",
+    "options": [
+      "Linear Search",
+      "Hashing",
+      "Binary Search",
+      "Sequential Search"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 14,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 122,
+    "question": "Which operation removes an element from the top of a stack?",
+    "options": [
+      "Push",
+      "Pop",
+      "Remove",
+      "Delete"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 15,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 123,
+    "question": "Queue follows the principle of",
+    "options": [
+      "FIFO",
+      "FILO",
+      "LIFO",
+      "Random"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 16,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 124,
+    "question": "A tree data structure is best described as",
+    "options": [
+      "Linear Structure",
+      "Sequential Structure",
+      "Non-linear Structure",
+      "Circular Structure"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 17,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 125,
+    "question": "The best-case time complexity of Bubble Sort is",
+    "options": [
+      "O(n)",
+      "O(n log n)",
+      "O(n^2)",
+      "O(log n)"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 18,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 126,
+    "question": "Which data structure is best suited for implementing recursion?",
+    "options": [
+      "Array",
+      "Stack",
+      "Linked List",
+      "Queue"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 19,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 127,
+    "question": "Which sorting algorithm follows the divide-and-conquer strategy?",
+    "options": [
+      "Merge sort",
+      "Bubble sort",
+      "Selection sort",
+      "Insertion sort"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 20,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 128,
+    "question": "The time complexity of linear search in the worst case is",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 21,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 129,
+    "question": "Which data structure is best suited to represent hierarchical data?",
+    "options": [
+      "Array",
+      "Stack",
+      "Queue",
+      "Tree"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 22,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 130,
+    "question": "Which queue variation allows insertion and deletion at both ends?",
+    "options": [
+      "Circular queue",
+      "Priority queue",
+      "Deque",
+      "Simple queue"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 23,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 121,
+    "question": "Which of the following is NOT a valid preprocessor directive?",
+    "options": [
+      "#include <stdio.h>",
+      "#define MAX 100",
+      "#macro SUM(a,b) (a+b)",
+      "#ifdef DEBUG"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 24,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 122,
+    "question": "What is the output of the following C program? void func(int *p){*p=*p+5;} int main(){int a=10; func(&a); printf(\"%d\",a); }",
+    "options": [
+      "10",
+      "15",
+      "Compilation Error",
+      "Undefined Behaviour"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 25,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 123,
+    "question": "What happens in the following C program when func(int *x) is called as func(a) for int a=5?",
+    "options": [
+      "5",
+      "10",
+      "15",
+      "Compilation Error"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 26,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 124,
+    "question": "Which of the following is TRUE about unions in C?",
+    "options": [
+      "All members share the same memory location",
+      "Union members can store values simultaneously",
+      "Unions take more memory than structures",
+      "No option is correct"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 27,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 125,
+    "question": "What is the output of the following C program? int arr[2][2] = {1,2,3,4}; printf(\"%d\", *(*(arr+1)+1));",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "Compilation Error"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 28,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 126,
+    "question": "What is the time complexity to insert a node somewhere in the middle of a linked list?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 29,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 127,
+    "question": "What happens when malloc is used to allocate memory for a structure but the memory is never freed?",
+    "options": [
+      "The structure is automatically freed",
+      "Causes a segmentation fault",
+      "Causes a memory leak",
+      "The structure becomes inaccessible"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 30,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 128,
+    "question": "In a doubly linked list, the most expensive operation is",
+    "options": [
+      "Insertion at the beginning",
+      "Creation of list",
+      "Traversing the list",
+      "Deleting a node with a given value"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 31,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 129,
+    "question": "Which data structure is best suited for implementing a priority queue?",
+    "options": [
+      "Stack",
+      "Binary Heap",
+      "Circular Queue",
+      "Doubly Linked List"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 32,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 130,
+    "question": "How many comparisons are required to search for an element in a sorted array of size 1024 using binary search in the worst case?",
+    "options": [
+      "10",
+      "1024",
+      "512",
+      "20"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 33,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "Given two singly linked lists, the most efficient way to find their intersection node is",
+    "options": [
+      "Traverse both lists and compare each node (O(n^2))",
+      "Use hashing (O(n) space, O(n) time)",
+      "Find the difference in lengths and traverse accordingly (O(n) time, O(1) space)",
+      "Sort both lists and compare (O(n log n))"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 34,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "Which of the following is an application of the stack data structure?",
+    "options": [
+      "Function Call Recursion",
+      "Level Order Tree Traversal",
+      "Scheduling in Operating Systems",
+      "Binary Search"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 35,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 129,
+    "question": "Which data structure uses the FIFO (First In, First Out) principle?",
+    "options": [
+      "Stack",
+      "Queue",
+      "Linked List",
+      "Tree"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 36,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 130,
+    "question": "What is the time complexity of Binary Search on a sorted array?",
+    "options": [
+      "O(1)",
+      "O(n log n)",
+      "O(log n)",
+      "O(n)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 37,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 131,
+    "question": "Which operation in a queue removes an element?",
+    "options": [
+      "Push",
+      "Pop",
+      "Enqueue",
+      "Dequeue"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 38,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 132,
+    "question": "Which one of the following is NOT a linear data structure?",
+    "options": [
+      "Array",
+      "Stack",
+      "Queue",
+      "Tree"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 39,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 133,
+    "question": "In Selection Sort, which element is selected at each step while sorting in ascending order?",
+    "options": [
+      "The largest element",
+      "The smallest element",
+      "The middle element",
+      "Any random element"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 40,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 134,
+    "question": "What type of data structure is used in recursion?",
+    "options": [
+      "Stack",
+      "Queue",
+      "Tree",
+      "Linked List"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 41,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 135,
+    "question": "Which sorting algorithm is based on the divide-and-conquer principle?",
+    "options": [
+      "Bubble Sort",
+      "Selection Sort",
+      "Merge Sort",
+      "Insertion Sort"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 42,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 136,
+    "question": "Which one is not a dynamic data structure?",
+    "options": [
+      "Array",
+      "Stack",
+      "Queue",
+      "Linked List"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 43,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 137,
+    "question": "What is the time complexity of deleting an element from the beginning of a linked list?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 44,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 138,
+    "question": "Which sorting algorithm is the most efficient in the average case?",
+    "options": [
+      "Bubble Sort",
+      "Selection Sort",
+      "Quick Sort",
+      "Insertion Sort"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 45,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 121,
+    "question": "Which of the following is NOT a unary operator in C language?",
+    "options": [
+      "++",
+      "--",
+      "sizeof",
+      "/"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 46,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 122,
+    "question": "The result of the expression (10/3) * 3 + 5 % 3 is",
+    "options": [
+      "11",
+      "10",
+      "8",
+      "1"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 47,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 123,
+    "question": "The union holds",
+    "options": [
+      "One object at a time",
+      "Multiple objects at a time",
+      "Static values",
+      "Similar to Structure"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 48,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 124,
+    "question": "This program prints 31. What statement should be written at the MISSING PART? int a=15,b=16,c; int *p1,*p2,*p3,**p4; p1=&a; p2=&b; p3=&c; printf(\"%d\",c);",
+    "options": [
+      "*p3=p1+p2;",
+      "*p3=*p1+*p2;",
+      "p3=*p1+*p2;",
+      "p3=p1+p2;"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 49,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 125,
+    "question": "What is the output of the following program when a=100 and the two if conditions are a>10 and a>20?",
+    "options": [
+      "NIT Delhi NIT Trichy",
+      "IIT Hyderabad",
+      "NIT Delhi",
+      "NIT Trichy IIT Hyderabad"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 50,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 126,
+    "question": "Which of the following is known as an exit-controlled loop?",
+    "options": [
+      "for",
+      "while",
+      "do-while",
+      "if"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 51,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 127,
+    "question": "If 200 is provided as input to Display(n), where Display(1) prints Data Structures three times and Display(n) otherwise prints it once then calls Display(n-1), Data Structures is printed how many times?",
+    "options": [
+      "199",
+      "200",
+      "201",
+      "202"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 52,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 128,
+    "question": "How many of the following statements are correct? I. Stack is used to perform recursion. II. If insertion and deletion are performed at the front of a linked list, it acts as a stack. III. If a rooted binary tree has only a left subtree, its preorder traversal is the same as its inorder traversal.",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 53,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 129,
+    "question": "Which one of the following sorted pairs can be efficiently merged using merge sort?",
+    "options": [
+      "(10,20,30,40,50,60,70,80) and (16,26,36,46,56,66,76,86)",
+      "(10,30,36,40,46,50,56,60) and (16,20,26,66,70,76,80,86)",
+      "(10,16,20,26,30,36,40,60) and (46,50,56,66,70,76,80,86)",
+      "(10,16,20,26,30,36,40,46) and (50,56,60,66,70,76,80,86)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 54,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 130,
+    "question": "Let A be an array with n distinct elements arranged in decreasing order. Which statement is FALSE?",
+    "options": [
+      "Merge sort sorts A in ascending order more efficiently than insertion sort",
+      "Merge sort sorts A in ascending order more efficiently than selection sort",
+      "Insertion sort sorts A in ascending order more efficiently than selection sort",
+      "Merge sort sorts A in ascending order more efficiently than quick sort"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 55,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "Let S be an empty stack. PUSH(S,10); PUSH(S,20); PUSH(S,30); POP(S); PUSH(S,15); PUSH(S,25); POP(S). The sum of the top two elements of S is",
+    "options": [
+      "50",
+      "35",
+      "45",
+      "40"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 56,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "For A[1..15]=(10,15,20,25,30,35,40,45,50,55,60,65,70,75,80), which statement is FALSE about searching in A?",
+    "options": [
+      "Linear search requires three comparisons to find 20",
+      "Binary search requires fewer comparisons than linear search to find 45",
+      "Binary search requires two comparisons to find 15",
+      "Binary search requires fewer comparisons than linear search to find 80"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 57,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 129,
+    "question": "Which of the following is not a derived data type in C?",
+    "options": [
+      "Structure",
+      "Pointer",
+      "Enumeration",
+      "Array"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 58,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 130,
+    "question": "The declaration struct list { int info; struct list *prev, *next; } refers to a",
+    "options": [
+      "Doubly linked list",
+      "Circular linked list with head",
+      "Singly linked list",
+      "Circular queue"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 59,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 131,
+    "question": "The total number of elements in the array A[3][4][2] is",
+    "options": [
+      "12",
+      "24",
+      "9",
+      "18"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 60,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 132,
+    "question": "To construct a unique binary search tree, which tree traversals are required?",
+    "options": [
+      "Only postorder",
+      "Postorder and Inorder",
+      "Preorder and Postorder",
+      "Only preorder"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 61,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 133,
+    "question": "What is the infix expression for the prefix expression -^AB+CD?",
+    "options": [
+      "(A^B)-(C+D)",
+      "(A^B)+(C-D)",
+      "A^(B-C)+D",
+      "(A-B)^(C+D)"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 62,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 134,
+    "question": "The number of swaps needed to sort (7,20,6,9,30,18,4,12) in ascending order using Bubble Sort is",
+    "options": [
+      "14",
+      "18",
+      "16",
+      "12"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 63,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 135,
+    "question": "To implement recursive Quick Sort, which basic data structure is required?",
+    "options": [
+      "Queue",
+      "Array",
+      "Stack",
+      "Linked List"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 64,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 136,
+    "question": "What will be the output of the following C code containing int register a; scanf(\"%d\", &a);?",
+    "options": [
+      "Address of a",
+      "0",
+      "Undefined value",
+      "Compilation error"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 65,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 137,
+    "question": "Which of the following sorting techniques is slowest?",
+    "options": [
+      "Heap sort",
+      "Merge sort",
+      "Bubble Sort",
+      "Shell Sort"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 66,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 138,
+    "question": "Which sorting algorithm is best if the list is already sorted?",
+    "options": [
+      "Heap sort",
+      "Insertion sort",
+      "Quick sort",
+      "Selection sort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 67,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "What is the relationship among the data types of C language with respect to memory requirement?",
+    "options": [
+      "char ≤ int ≤ float ≤ double",
+      "char ≥ int ≥ float ≥ double",
+      "int ≥ char ≥ float ≥ double",
+      "int ≤ char ≤ float ≤ double"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 68,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "Which of the following is a ternary operator in C language?",
+    "options": [
+      "++",
+      "--",
+      "?:",
+      "::"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 69,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 133,
+    "question": "Which operator has Right to Left associativity in C?",
+    "options": [
+      "+=",
+      ">=",
+      "<=",
+      "%"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 70,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 134,
+    "question": "This program prints 45. Which statement should be written at MISSINGPART? int a=45; int *p1,**p2,***p3,****p4; p1=&a; p2=&p1; p3=&p2; printf(\"%d\", MISSINGPART);",
+    "options": [
+      "***p3",
+      "**p3",
+      "*p3",
+      "p3"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 71,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "What is the output of the following code? int a=100; if(a>10) printf(\"Delhi \"); if(a>20) printf(\"Mumbai \"); else printf(\"Hyderabad \");",
+    "options": [
+      "Delhi",
+      "Delhi Hyderabad",
+      "Delhi Mumbai",
+      "Hyderabad"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 72,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "This program prints the character C. Which statement should be written at MISSING STATEMENT for char a[4]={A,B,C,D}; char *p1; printf(\"%c\",p1[2]);",
+    "options": [
+      "p1=a;",
+      "a=p1;",
+      "&p1=&a[1];",
+      "*p1=*a[1]"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 73,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "For int a[2][3], if int occupies 2 bytes, column-major indexing is used, and starting address is 1000, what is the address of a[1][1]?",
+    "options": [
+      "1002",
+      "1004",
+      "1006",
+      "1008"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 74,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "The member variable of a structure is accessed by using",
+    "options": [
+      "dot (.) operator",
+      "arrow (→) operator",
+      "asterisk (*) operator",
+      "ampersand (&) operator"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 75,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 139,
+    "question": "Which one of the following is NOT an application of a stack?",
+    "options": [
+      "Balancing symbols",
+      "Evaluation of a postfix expression",
+      "Recursion",
+      "Job scheduling"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 76,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 140,
+    "question": "The time complexity of for(i=1; i<n; i=i*2) is",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 77,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 141,
+    "question": "Which one of the following is not true?",
+    "options": [
+      "A tree is a connected graph without cycles",
+      "Every binary tree with 6 nodes contains at least two leaf nodes",
+      "A tree with 200 nodes contains 199 edges",
+      "Every node in a rooted binary tree has a parent"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 78,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 142,
+    "question": "Which sorting algorithm has the highest average-case time complexity?",
+    "options": [
+      "Merge Sort",
+      "Quick Sort",
+      "Bubble Sort",
+      "Heap Sort"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 79,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 143,
+    "question": "Which sorting algorithm efficiently sorts array A[1...n] in ascending order?",
+    "options": [
+      "Insertion sort",
+      "Merge sort",
+      "Selection sort",
+      "Bubble sort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 80,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 144,
+    "question": "Which one of the following is true about sequential search in an array of n elements?",
+    "options": [
+      "Best-case running time is O(1)",
+      "Best-case running time is O(n)",
+      "Worst-case running time is O(n^2)",
+      "Worst-case running time is O(log n)"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 81,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 145,
+    "question": "Which recurrence represents the worst-case running time of binary search?",
+    "options": [
+      "T(n)=T(n-1)+1",
+      "T(n)=T(log n)+c",
+      "T(n)=T(n/2)+c",
+      "T(n)=T(n/4)+c"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 82,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 131,
+    "question": "Evaluating expressions consisting of operands and operators is an application of data structure",
+    "options": [
+      "Stack",
+      "Queue",
+      "Tree",
+      "Graph"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 83,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 132,
+    "question": "Example of a non-linear data structure is",
+    "options": [
+      "Stack",
+      "Trees",
+      "Queue",
+      "Linked List"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 84,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 133,
+    "question": "The best-case time complexity of Quick Sort is",
+    "options": [
+      "O(log n)",
+      "O(n log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 85,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 134,
+    "question": "In which queue can elements be inserted or removed from both ends?",
+    "options": [
+      "Deque",
+      "Priority Queue",
+      "Circular Queue",
+      "Linear Queue"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 86,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 135,
+    "question": "Implementation of Depth First Search is done using",
+    "options": [
+      "Circular queue",
+      "Linear queue",
+      "Stack",
+      "Double ended queue"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 87,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 136,
+    "question": "Which tree traversal prints the elements of a binary search tree in ascending order?",
+    "options": [
+      "Pre order",
+      "Post order",
+      "Inverse order",
+      "In order"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 88,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 137,
+    "question": "One of the applications of Queue is",
+    "options": [
+      "Evaluation of postfix expression",
+      "Recursion",
+      "Postorder implementation",
+      "Memory management"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 89,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 138,
+    "question": "Which sorting technique gives best performance irrespective of data distribution?",
+    "options": [
+      "Merge sort",
+      "Quick sort",
+      "Insertion sort",
+      "Bubble sort"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 90,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 139,
+    "question": "Polynomial manipulations are one of the applications of which data structure?",
+    "options": [
+      "Stack",
+      "Tree",
+      "Linked list",
+      "Graph"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 91,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 140,
+    "question": "A data structure that requires multiple means of traversals is",
+    "options": [
+      "Linear",
+      "Array",
+      "Non Linear",
+      "Differential"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 92,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "What will be the data type returned for the following C function? int f(){ return (double)(char)5.03; }",
+    "options": [
+      "char",
+      "int",
+      "double",
+      "Multiple type-casting in return is illegal"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 93,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "What will be the output of the following C code? void main(){ 1<2 ? return 1 : return 2; }",
+    "options": [
+      "returns 1",
+      "returns 2",
+      "Varies",
+      "Compile time error"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 94,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 133,
+    "question": "In C language, FILE is of which data type?",
+    "options": [
+      "int",
+      "char *",
+      "struct",
+      "float"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 95,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 134,
+    "question": "What is the problem in the declarations int fun(int); double fun(int); int fun(float);?",
+    "options": [
+      "A function with same name cannot have different signatures",
+      "A function with same name can have different return types",
+      "A function with same name can have different number of parameters",
+      "A function with same name can have different number of parameters and different return types"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 96,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "The default parameter passing mechanism is called as",
+    "options": [
+      "Call by Value",
+      "Call by Reference",
+      "Call by Address",
+      "Call by Name"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 97,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "The memory allocation function that modifies the previously allocated space is",
+    "options": [
+      "calloc",
+      "realloc",
+      "malloc",
+      "free"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 98,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "What will be the output of char x[]=\"hello hi\"; printf(\"%d%d\", sizeof(*x), sizeof(x));",
+    "options": [
+      "88",
+      "18",
+      "29",
+      "19"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 99,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "A complete binary tree with n leaf nodes has",
+    "options": [
+      "n+1 nodes",
+      "2n-1 nodes",
+      "2n+1 nodes",
+      "n(n-1)/2 nodes"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 100,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 139,
+    "question": "Overflow condition in a linked list may occur when attempting to",
+    "options": [
+      "Create a node when free space pool is empty",
+      "Traverse the nodes when free space pool is empty",
+      "Create a node when linked list is empty",
+      "May not occur overflow condition"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 101,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 140,
+    "question": "Which of the sorting techniques has the highest best-case runtime complexity?",
+    "options": [
+      "Quick sort",
+      "Selection sort",
+      "Insertion sort",
+      "Bubble sort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 102,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 129,
+    "question": "What is the output of the C program? int main(){ printf(\"main\"); main(); return 0; }",
+    "options": [
+      "Compiler error",
+      "main",
+      "mainmainmainmainmainmain... (prints until stack overflow)",
+      "Runtime error"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 103,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 130,
+    "question": "What is the output of the C program? int v=5; v = !v > 6; printf(\"%d\",v);",
+    "options": [
+      "0",
+      "1",
+      "5",
+      "6"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 104,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 131,
+    "question": "Linked lists are not suitable for the implementation of",
+    "options": [
+      "Insertion sort",
+      "Radix sort",
+      "Binary search",
+      "Polynomial manipulation"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 105,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 132,
+    "question": "Let A be an array. How do you access the 3rd element using pointers?",
+    "options": [
+      "*A+2",
+      "*(*A+2)",
+      "&(A+2)",
+      "*(A+2)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 106,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 133,
+    "question": "What is the disadvantage of array data structure?",
+    "options": [
+      "Static memory allocation",
+      "Dynamic memory allocation",
+      "Accessing elements in constant time",
+      "Index starting at 0"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 107,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 134,
+    "question": "When a pop() operation is called on an empty queue, what is the condition called?",
+    "options": [
+      "Overflow",
+      "Underflow",
+      "Syntax Error",
+      "Garbage value"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 108,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 135,
+    "question": "What is a complete binary tree?",
+    "options": [
+      "Each node has exactly zero or two children",
+      "A tree in which all nodes have degree 2",
+      "A binary tree completely filled, with the possible exception of the bottom level, which is filled from left to right",
+      "A binary tree completely filled, with the possible exception of the bottom level, which is filled from right to left"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 109,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 136,
+    "question": "If the height of a tree with single node is considered as 1, what is the maximum number of nodes in a binary tree of height 5?",
+    "options": [
+      "31",
+      "7",
+      "13",
+      "15"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 110,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 137,
+    "question": "What is the drawback of a Linked List?",
+    "options": [
+      "Random access is not possible in a linked list",
+      "Memory is not wasted as no pre-allocation is done",
+      "Insertion operation complexity",
+      "Deletion operation complexity"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 111,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 138,
+    "question": "Which sorting algorithm has the worst-case time complexity of O(n^2) while its other cases have much better complexities?",
+    "options": [
+      "Quick sort",
+      "Merge sort",
+      "Insertion sort",
+      "Selection sort"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 112,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 129,
+    "question": "An organization of data in a computer's memory is called",
+    "options": [
+      "an algorithm",
+      "a computer program",
+      "a data structure",
+      "a data type"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 113,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 130,
+    "question": "The data structure used to evaluate a postfix expression is",
+    "options": [
+      "Tree",
+      "Linked list",
+      "Stack",
+      "Queue"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 114,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "What is the final output of the following series of queue operations on an empty queue? enqueue(3), enqueue(7), dequeue(), enqueue(5), enqueue(6), dequeue(), dequeue(), enqueue(4), enqueue(9), dequeue(), enqueue(7), dequeue(), dequeue(), enqueue(1), dequeue()",
+    "options": [
+      "1",
+      "4",
+      "7",
+      "9"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 115,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "Which sorting algorithm has the lowest worst-case execution time?",
+    "options": [
+      "Insertion sort",
+      "Selection sort",
+      "Merge sort",
+      "Quick sort"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 116,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 133,
+    "question": "Which sorting method is best suited for an almost sorted list?",
+    "options": [
+      "Selection sort",
+      "Insertion sort",
+      "Merge sort",
+      "Quick sort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 117,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 134,
+    "question": "The worst-case execution time of Bubble Sort for an array of n distinct elements is",
+    "options": [
+      "Θ(n)",
+      "Θ(n log_2 n)",
+      "Θ(n^1.5)",
+      "Θ(n^2)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 118,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "Which of the following sorted pairs is efficiently merged?",
+    "options": [
+      "(10,20,30,40) and (15,25,35,45)",
+      "(10,15,20,25) and (30,35,40,45)",
+      "(10,20,30,35) and (15,25,40,45)",
+      "(10,15,20,45) and (25,30,35,40)"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 119,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "After the 2nd pass of Bubble Sort on [14,33,27,35,10], what is the array?",
+    "options": [
+      "14,27,33,10,35",
+      "14,27,10,33,35",
+      "10,14,27,33,35",
+      "14,10,27,33,35"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 120,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "Which describes the best-case execution time of binary search?",
+    "options": [
+      "Θ(n)",
+      "Θ(n log_2 n)",
+      "Θ(1)",
+      "Θ(n^2)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 121,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "Binary search is more efficient than sequential search because it takes advantage of data that has been",
+    "options": [
+      "random",
+      "sorted",
+      "unsorted",
+      "indexed"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 122,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 129,
+    "question": "What is the following program doing? do printf(\"%d\",d++); while(d<=9);",
+    "options": [
+      "Adding 9 integers",
+      "Adding integers from 1 to 9",
+      "Displaying integers from 1 to 9",
+      "Adding integers from 1 to 10"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 123,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 130,
+    "question": "What is the output of char ch[6]={'E','n','d','\\0','p'}; printf(\"%s\",ch);",
+    "options": [
+      "Endp",
+      "Endo",
+      "End",
+      "Error"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 124,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 131,
+    "question": "What is the output of the following program? int i=4,z=12; if(i=5 || z>50) printf(\"Hello\"); else printf(\"Hi\");",
+    "options": [
+      "Hello",
+      "Hi",
+      "syntax error",
+      "HelloHi"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 125,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 132,
+    "question": "An infix expression can be converted to a postfix expression using a",
+    "options": [
+      "Stack",
+      "Queue",
+      "Deque",
+      "Tree"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 126,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 133,
+    "question": "A sorted file contains 16 items. Using binary search, the maximum number of comparisons to search for an item is",
+    "options": [
+      "15",
+      "4",
+      "8",
+      "1"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 127,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 134,
+    "question": "If the In-order and Pre-order traversals of a binary tree are D,B,F,E,G,H,A,C and A,B,D,E,F,G,H,C respectively, the Post-order traversal is",
+    "options": [
+      "D,F,G,A,B,C,H,E",
+      "F,H,D,G,E,B,C,A",
+      "C,G,H,F,E,D,B,A",
+      "D,F,H,G,E,B,C,A"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 128,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 135,
+    "question": "How many distinct binary search trees can be formed containing the integers 1, 2, 3?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 129,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 136,
+    "question": "The number of comparisons required to sort 5 numbers in ascending order using Bubble Sort is",
+    "options": [
+      "5",
+      "10",
+      "6",
+      "7"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 130,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 137,
+    "question": "Which sorting algorithm is best if the list is already in order?",
+    "options": [
+      "Quicksort",
+      "Insertion sort",
+      "Merge sort",
+      "Heapsort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 131,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 138,
+    "question": "How many times does the following code print \"hello\"? for(i=1;i<=1000;i++); printf(\"hello\");",
+    "options": [
+      "1",
+      "1000",
+      "0",
+      "Syntax Error"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 132,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "The unsigned long requires how many bytes of storage?",
+    "options": [
+      "32 bytes",
+      "16 bytes",
+      "8 bytes",
+      "4 bytes"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 133,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "Assume A=(60)10. Calculate (~A) in 8-bit representation.",
+    "options": [
+      "0000 1100",
+      "0011 0001",
+      "1100 0011",
+      "1100 1101"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 134,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 133,
+    "question": "What operation is performed by strcpy(s1,s2)?",
+    "options": [
+      "Copies string s2 into string s1",
+      "Copies string s1 into string s2",
+      "Concatenates string s2 onto the end of string s1",
+      "Concatenates string s1 onto the end of string s2"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 135,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 134,
+    "question": "For accessing a member of a structure, which operator is used?",
+    "options": [
+      "::",
+      "*",
+      ".",
+      "@"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 136,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "DATE macro is used to print the current date in which format?",
+    "options": [
+      "HH:MM:SS",
+      "MMM DD YYYY",
+      "DD MMM YYYY",
+      "YYYY DD MM"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 137,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "Linked list elements are not stored at ______ locations.",
+    "options": [
+      "non-contiguous",
+      "contiguous",
+      "segmented",
+      "variable"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 138,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "The best time complexity of Insertion Sort is",
+    "options": [
+      "O(n^2)",
+      "O(n)^2",
+      "O(n log n)",
+      "O(n)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 139,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "For the array {4,5,9,10}, Bubble Sort is used to sort the elements. How many iterations will be done?",
+    "options": [
+      "4",
+      "3",
+      "2",
+      "1"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 140,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 139,
+    "question": "What is the worst-case time complexity for linear search?",
+    "options": [
+      "O(n log n)",
+      "O(n)",
+      "O(log n)",
+      "O(1)"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 141,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 140,
+    "question": "Which data structure is required for Breadth First Traversal?",
+    "options": [
+      "Stack",
+      "Array",
+      "Queue",
+      "Tree"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 142,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 129,
+    "question": "A ______ is a collection of one or more variables, possibly of different types, grouped together under a single name.",
+    "options": [
+      "structure",
+      "class",
+      "object",
+      "Pointer"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 143,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 130,
+    "question": "The number of values returned by a function is",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "-1"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 144,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "What is the output of the following program using jumble(int x,int y){x=2*x+y; return x;} with x=2,y=5; x=jumble(y,x); y=jumble(y,x);?",
+    "options": [
+      "5",
+      "12",
+      "22",
+      "26"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 145,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "What is the output of int i=0; int j=sizeof(i++); printf(\"%d %d\",i,j);?",
+    "options": [
+      "0 4",
+      "1 1",
+      "0 1",
+      "4 0"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 146,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 133,
+    "question": "Which of the following is not used as a keyword for storage classes?",
+    "options": [
+      "auto",
+      "static",
+      "dynamic",
+      "extern"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 147,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "Consider int a=25; b=a<<1>>2<<2>>3; What is the output?",
+    "options": [
+      "25",
+      "6",
+      "24",
+      "7"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 148,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "The result of evaluating postfix expression 5 4 + 6 * 8 - 6 + 7 * is",
+    "options": [
+      "280",
+      "364",
+      "481",
+      "502"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 149,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "What is the time complexity of the nested loops for i=1;i<n;i=i+4 and j=1;j<n;j=j*2?",
+    "options": [
+      "Θ(n^2)",
+      "O(n^1.5)",
+      "Θ(n log n)",
+      "Θ((log n)^2)"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 150,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "The best-case, average-case and worst-case running times of binary search are respectively",
+    "options": [
+      "O(1), O(log n), O(n)",
+      "O(log n), O(log n), O(log n)",
+      "O(1), O(1), O(log n)",
+      "O(1), O(log n), O(log n)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 151,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 139,
+    "question": "Which recurrence describes the worst-case running time of Quicksort?",
+    "options": [
+      "T(n)=T(n-1)+O(n), T(1)=O(1)",
+      "T(n)=2T(n/2)+O(n), T(1)=O(1)",
+      "T(n)=2T(n-1)+O(n), T(1)=O(1)",
+      "T(n)=T(n/2)+O(n), T(1)=O(1)"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 152,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 140,
+    "question": "If each element of A is at most four positions away from its original sorted position, which sorting algorithm sorts A efficiently?",
+    "options": [
+      "Merge sort",
+      "Insertion sort",
+      "Selection sort",
+      "Bubble sort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 153,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 129,
+    "question": "What is the output of main(){ char *p; p=\"$#%\\n\"; p=p+3; printf(\"%c\",*(p-3)); }",
+    "options": [
+      "%",
+      "\\",
+      "$",
+      "Error"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 154,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 130,
+    "question": "What is the output of main(){ int num=0; while((num--)!=0) num++; printf(\"%d\",num); }",
+    "options": [
+      "0",
+      "1",
+      "-1",
+      "Error"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 155,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 131,
+    "question": "Statement 1: We can define a function within another function. Statement 2: By default, the return value of any function is float.",
+    "options": [
+      "Both statements are true",
+      "Statement 1 is true and statement 2 is false",
+      "Statement 1 is false and statement 2 is true",
+      "Both statements are false"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 156,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 132,
+    "question": "What is the output of the program that prints *num while pnum is incremented through the array {1,2,3,4,5}?",
+    "options": [
+      "1 2 3 4 5",
+      "1 1 1 1 1",
+      "0 1 2 3 4",
+      "Error"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 157,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 133,
+    "question": "Which handles the logic behind all the #directives in C?",
+    "options": [
+      "Loader",
+      "Preprocessor",
+      "Compiler",
+      "Linker"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 158,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 134,
+    "question": "Sorting techniques applied to data items available in secondary memory are referred to as ______ sorting techniques.",
+    "options": [
+      "External",
+      "Internal",
+      "Secondary",
+      "Auxiliary"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 159,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 135,
+    "question": "Which characteristic of data is not required for linear search but is essential for binary search?",
+    "options": [
+      "Length of the list",
+      "Maximum value in the list",
+      "Type of elements of the list",
+      "Order of the elements of the list"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 160,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 136,
+    "question": "In a queue, we remove the item that is ______ added.",
+    "options": [
+      "Least recently",
+      "Most recently",
+      "Both least recently and most recently",
+      "Either least recently or most recently"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 161,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 137,
+    "question": "Match the following for binary tree traversal: (1) Pre Order, (2) In Order, (3) Post Order with (A) Root Left Right, (B) Left Right Root, (C) Left Root Right.",
+    "options": [
+      "1→A, 2→B, 3→C",
+      "1→A, 2→C, 3→B",
+      "1→B, 2→A, 3→C",
+      "1→C, 2→B, 3→A"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 162,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 138,
+    "question": "Sorting of playing cards in our hands is an example of ______ sort.",
+    "options": [
+      "Selection",
+      "Insertion",
+      "Bubble",
+      "Merge"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 163,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 129,
+    "question": "Which of the following array initializations in C is correct?",
+    "options": [
+      "int arr[3] = (1,2,3);",
+      "int arr(3) = {1,2,3};",
+      "int arr[3] = {1,2,3};",
+      "int arr(3) = (1,2,3);"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 164,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 130,
+    "question": "Which C code is used to create a new node?",
+    "options": [
+      "ptr=(NODE*)malloc(sizeof(NODE));",
+      "ptr=(NODE*)malloc(NODE);",
+      "ptr=(NODE*)malloc(sizeof(NODE*));",
+      "ptr=(NODE)malloc(sizeof(NODE));"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 165,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 131,
+    "question": "What does stack underflow refer to?",
+    "options": [
+      "Accessing an item from an undefined stack",
+      "Adding items to a full stack",
+      "Removing items from an empty stack",
+      "Index out of bounds exception"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 166,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 132,
+    "question": "Which of the following array elements will return the top-of-the-stack element for a stack S of size N elements?",
+    "options": [
+      "S[N-1]",
+      "S[N]",
+      "S[N-2]",
+      "S[N+1]"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 167,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 133,
+    "question": "Which preprocessor command is used for macro definition in C?",
+    "options": [
+      "#include",
+      "#file",
+      "#define",
+      "macro"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 168,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 134,
+    "question": "A terminal node in a binary tree is called a",
+    "options": [
+      "edge",
+      "nonleaf node",
+      "branch node",
+      "leaf node"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 169,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "Advantages of linked-list representation of binary trees over arrays include",
+    "options": [
+      "dynamic size only",
+      "ease of insertion and deletion only",
+      "ease in randomly accessing nodes",
+      "both dynamic size and ease in insertion and deletion"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 170,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "Level order traversal of a tree is formed with the help of",
+    "options": [
+      "Breadth First Search",
+      "Depth First Search",
+      "Dijkstra's algorithm",
+      "Prim's algorithm"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 171,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "What is the maximum number of elements in a complete binary tree with height h?",
+    "options": [
+      "2^(h+1)-1",
+      "2^h-1",
+      "2h",
+      "h+1"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 172,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "Which data structure is used to implement a recursive function?",
+    "options": [
+      "Queue",
+      "Stack",
+      "Array",
+      "Linked list"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 173,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 139,
+    "question": "Relational operators cannot be used on variables of type",
+    "options": [
+      "structure",
+      "long int",
+      "string",
+      "float"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 174,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 140,
+    "question": "Which is not a valid identifier?",
+    "options": [
+      "ECET",
+      "ECET2018",
+      "2018 ecet",
+      "ecet_2018"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 175,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 141,
+    "question": "The value obtained in a function is given back to the main function by using keyword",
+    "options": [
+      "return",
+      "static",
+      "new",
+      "volatile"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 176,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 142,
+    "question": "Which function must all C programs contain?",
+    "options": [
+      "printf()",
+      "fetch()",
+      "main()",
+      "scanf()"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 177,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 143,
+    "question": "The time complexity of merge sort algorithm is",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n^2)",
+      "O(n log n)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 178,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 144,
+    "question": "What is the output of the C code char ch; int i; ch='G'; i=ch-'A'; printf(\"%d\",i);",
+    "options": [
+      "6",
+      "3",
+      "20",
+      "7"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 179,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 135,
+    "question": "What will be the output of the following C code? #define x 5+2; int i; i=x*x*x;",
+    "options": [
+      "343",
+      "27",
+      "132",
+      "160"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 180,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 136,
+    "question": "What does the following function print when called as shown? int func(int i){ if(i%2) return 0; else return 1; } int main(){int i=3; i=func(i); i=func(i); printf(\"%d\",i); }",
+    "options": [
+      "3",
+      "1",
+      "0",
+      "2"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 181,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 137,
+    "question": "What will be the value returned by recur(11) where recur(num) recursively forms the decimal representation from binary digits?",
+    "options": [
+      "Function does not return any value because it goes into an infinite loop",
+      "11",
+      "1011",
+      "1110"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 182,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 138,
+    "question": "Which statements about an array name not yielding its base address are true? i. with sizeof; ii. with &; iii. when passed to scanf(); iv. when passed to printf().",
+    "options": [
+      "i",
+      "i and ii",
+      "ii",
+      "ii and iv"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 183,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 139,
+    "question": "What is the output of the structure program with p=v; p->a=3; p->b=p->a; printf(v[0].a,v[0].b)?",
+    "options": [
+      "3 4",
+      "4 3",
+      "Garbage Value",
+      "3 3"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 184,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 140,
+    "question": "What is the missing statement in a strcpy-like function which copies string x into y?",
+    "options": [
+      "x = y",
+      "*x++ = *y++",
+      "(*x)++ = (*y)++",
+      "Error"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 185,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 141,
+    "question": "What is the output of the recursive main with static int num=8, printing num=num-2 until zero?",
+    "options": [
+      "8642",
+      "Infinite Loop",
+      "6420",
+      "Invalid because main cannot call itself"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 186,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 142,
+    "question": "Which expression can replace ???? to determine whether end of file has been reached?",
+    "options": [
+      "f = EOF",
+      "feof(f)",
+      "eof(f)",
+      "f = NULL"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 187,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 143,
+    "question": "A BFS tree from source W in an unweighted connected graph is a data structure for computing",
+    "options": [
+      "the shortest path between every pair of vertices",
+      "the shortest path from W to every vertex in the graph",
+      "the shortest paths from W only to leaves of T",
+      "the longest path in the graph"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 188,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 144,
+    "question": "The worst-case time required by merge sort on n elements is",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 189,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 145,
+    "question": "For a circular queue, which condition specifies that the queue is full?",
+    "options": [
+      "front = rear = -1",
+      "front = (rear+1) % MAX_SIZE",
+      "rear = front + 1",
+      "rear = (front+1) % MAX_SIZE"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 190,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 146,
+    "question": "For the sequence push(1), push(2), pop, push(1), push(2), pop, pop, pop, push(2), pop, the popped values are",
+    "options": [
+      "2 2 1 1 2",
+      "2 2 1 2 2",
+      "2 1 2 2 1",
+      "2 1 2 2 2"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 191,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 53,
+    "question": "The complexity of binary search algorithm in a tree data structure is",
+    "options": [
+      "O(h) where h is height of tree",
+      "O(n log h) where h is height of tree",
+      "O(h*h) where h is height of tree",
+      "O(n*h) where h is height of tree"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 192,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 54,
+    "question": "The maximum number of comparisons required to search an element using linear search in an array of size 11 is",
+    "options": [
+      "11",
+      "10",
+      "1",
+      "12"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 193,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 55,
+    "question": "In which data structure can insertion be performed at one end and deletion at the other end?",
+    "options": [
+      "Stack",
+      "Queue",
+      "Stack and queue",
+      "Singly linked list"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 194,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 56,
+    "question": "The inorder and postorder traversal of a tree are 825163 and 852631. What is the preorder traversal?",
+    "options": [
+      "835361",
+      "128536",
+      "852361",
+      "215863"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 195,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 57,
+    "question": "A tree T with only one vertex is termed as",
+    "options": [
+      "directed graph",
+      "undirected graph",
+      "vertex tree",
+      "trivial tree"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 196,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 58,
+    "question": "Which operation is performed efficiently by a doubly linked list when compared to a singly linked list?",
+    "options": [
+      "Deleting a node whose location is given",
+      "Searching an unsorted list for a given element",
+      "Inserting a node after the node with a given location",
+      "Traversing the list to process each node"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 197,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 59,
+    "question": "What is the best and average time complexity of Quick Sort?",
+    "options": [
+      "O(log n)",
+      "O(n log n)",
+      "O(n)",
+      "O(n*n log n)"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 198,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 60,
+    "question": "Five elements A,B,C,D,E are pushed in a stack. The stack is popped four times and each element is inserted in a queue. Then two elements are deleted from the queue and pushed back on the stack. Next one item is popped from the stack. The popped item is",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 199,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 61,
+    "question": "What is the equivalent postfix notation for the infix expression A + (B - C) * D?",
+    "options": [
+      "A+B-C*D",
+      "A*BCD",
+      "ABC-D*+",
+      "A+BC-D*"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 200,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 62,
+    "question": "A directed acyclic graph is termed as",
+    "options": [
+      "tree",
+      "list",
+      "directed graph",
+      "circular list"
+    ],
+    "answer": 2
+  },
+  {
+    "id": 201,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 63,
+    "question": "Which sorting algorithm does not have a worst-case running time of O(n^2)?",
+    "options": [
+      "Insertion sort",
+      "Merge sort",
+      "Quick sort",
+      "Bubble sort"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 202,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 64,
+    "question": "What is the output of int a=4; printf(\"%d\",a); printf(\"%d\",a++); printf(\"%d\",a);?",
+    "options": [
+      "4 4 5",
+      "5 5 5",
+      "5 5 6",
+      "4 5 5"
+    ],
+    "answer": 0
+  },
+  {
+    "id": 203,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 65,
+    "question": "Which statement about function declaration and definition is true?",
+    "options": [
+      "The function call is found in the called function",
+      "The function declaration requires that the parameter be named",
+      "The definition header concludes with a semicolon",
+      "The function definition contains the executable statements that perform the function’s task"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 204,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 66,
+    "question": "Which statement generates a random number in the range 30 to 50?",
+    "options": [
+      "rand()",
+      "rand()%20+1",
+      "rand()%21+20",
+      "rand()%21+30"
+    ],
+    "answer": 3
+  },
+  {
+    "id": 205,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 67,
+    "question": "Which of the following is not a standard file stream?",
+    "options": [
+      "stdin",
+      "stdfile",
+      "stderr",
+      "stdout"
+    ],
+    "answer": 1
+  },
+  {
+    "id": 206,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 68,
+    "question": "Which statement will not add 1 to a variable?",
+    "options": [
+      "a++;",
+      "a += 1;",
+      "*p = *p + 1;",
+      "*p++;"
+    ],
+    "answer": 3
+  }
+]

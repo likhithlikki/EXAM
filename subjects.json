@@ -25,7 +25,7 @@
     "name": "Data Structures through C",
     "file": "data-structures-c.json",
     "password": "21",
-    "available": false
+    "available": true
   },
   {
     "id": "computer-networks-cyber-security",
