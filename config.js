@@ -13,5 +13,5 @@
   ---------------------------------------------------------------
 */
 window.APP_CONFIG = {
-  APPS_SCRIPT_URL: ""
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwgEX3fyl9IO-HT8FOmFL8exT8LnSaIGfnFl7Lmm31zPqhl7LdzYIfnXedzAmpo2NiCfQ/exec"
 };
