@@ -1,14 +1,8 @@
-GITHUB ROOT-ONLY VERSION
+ECET Digital Electronics source-backed question bank.
 
-All files are in this single folder. There is NO data/ subfolder.
-
-Files:
-- index.html
-- app.js
-- style.css
-- subjects.json
-- digital-electronics.json
-
-The engine uses ALL questions in digital-electronics.json. Timer = 1 minute per question + 20 minutes.
-
-IMPORTANT: The supplied OCR PDF contains 146 extracted question blocks. OCR did not cleanly recover four options for every block. Questions with missing/garbled options are marked in the app and should be verified before using them as scored questions. No answer key was invented.
+- 177 question entries from the available TS/AP Digital Electronics source pages.
+- Original scanned page image is retained for every question, so OCR errors do not remove the actual options or symbols.
+- Website uses ALL questions.
+- Timer = 1 minute per question + 20 minutes.
+- No data subfolder: all JSON/HTML/CSS/JS files are in the repository root; only scanned page images are in images/.
+- Answer keys are intentionally not guessed. Add verified answer values 0=A, 1=B, 2=C, 3=D when ready.

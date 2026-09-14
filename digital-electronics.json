@@ -1,1386 +1,2698 @@
 [
   {
     "id": 1,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 101,
-    "question": "If F=(A+B)(A +B), then F simplifies to:",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 36,
+    "question": "What is the additional logic required to convert D flip-flop into T flip-flop 1",
+    "options": [
+      "D=T.Q, (2)D=T (3) D=T+Q, (4)D=T®@Q, |"
+    ],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 2,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 102,
-    "question": "Consider © defined as KOY = X.Y + X.Y, then © is:",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 37,
+    "question": "Which segment register is referred by DI register during string manipulations instructions : in 8086 processor architecture ‘",
+    "options": [
+      "extrasegment (2) code segment (3) stack segment (4) data segment"
+    ],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 3,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 103,
-    "question": "If F = Xm(0.1.2.5.6.7), minimal SOP is:",
+    "pyqQuestion": 38,
+    "question": "Which flag acts as borrow flag for SBB instruction in 8086 architecture",
     "options": [
-      "A'B'+AC",
-      "A'B'+AB+AC",
-      "%",
-      "v ABYBC'+AC AB't+AC' 4, %"
+      "auxillary flag (2) carry flag (3) parity flag (4) trap flag"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 4,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 104,
-    "question": "For 4-variable K-map. largest group size possible is:",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 39,
+    "question": "How many number of the times the instruction sequence given below will loop before coming out of loop MOVAL,.00h Al : INCAL JZNAI",
+    "options": [
+      "00 (2/01. (3) 255 (4) 256 a"
+    ],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 5,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 105,
-    "question": "A 5-bit ripple counter uses J-K Flipflop with J=1, K=1 and the propagation delay is 30ns. What is time required for stable output from this ripple counter",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 40,
+    "question": "Which microprocessor pins are used to request and acknowledge a DMA transfer",
+    "options": [
+      "reset and ready (2) ready and wait",
+      "HOLD and HLDA (4) BSR and BSRA :"
+    ],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 6,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 106,
-    "question": "Select the statement that contrasts Johnson’s counter with ripple counter correctly",
+    "pyqQuestion": 41,
+    "question": "How many number of address lines are required to address a memory of size 32K",
     "options": [
-      "Both have the same number of states",
-      "% Johnson’s counter has twice the states of ripple counter",
-      "% Y Ripple counter has twice the states of Johnson’s counter",
-      "« Both are asynchronous"
+      "15 lines {2) 16 lines (3) 18 lines (4) 14 lines"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 7,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 107,
-    "question": "A full adder can be implemented using",
-    "options": [
-      "Two half-adders only",
-      "% x Two AND gates, Two XOR gates and Two OR gates",
-      "Two AND gates, Two XOR gates and One OR gate",
-      "7 , x Two half-adders and one AND gate"
-    ],
-    "answer": null
+    "pyqQuestion": 42,
+    "question": "What is the size of each segment in 8086 : (1) 64 KB (2) 24 KB. (3) 50 KB (4) 16 KB i",
+    "options": [],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 8,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 108,
-    "question": "The difference between latch and flip-flop:",
+    "pyqQuestion": 43,
+    "question": ". A computer. system stores integers in N-bit one's complement representation. What is : the range of Integral values, n, that can be stored (Ql) “282 <n <2 (2) -2%? <n < 2h3-1 ; j 3) -2!<=n <= gut (4) -2%'<n<= _2N1",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 9,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 109,
-    "question": "A decoder with n inputs can generate:",
+    "pyqQuestion": 44,
+    "question": "Inacache memory syste. cache access time Is 10 ns and miss rate is 50% and the main memory access time is 100 ns. What is the average access time ‘ (1) 35 ns (2) 60 ns ; (3) 45 ns (4) 110 ns ;",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 10,
-    "year": 2026,
+    "year": 2016,
     "state": "TS",
-    "questionNumber": 110,
-    "question": "Minimum number of flipflops required for a mod-12 counter is",
+    "pyqQuestion": 45,
+    "question": "A computer system stores floating-point numbers with a 16-bit mantissa and an 8-bit 5 ‘exponent, each in two's complement form. What is the smallest and largest positive : values that can be stored in this system - , i () 1x 10-8 and 2x 10% 5 (2) 1 x 10-%® and 2'5 x 10 : (3) 1 x 10-8 and 2% x 10\"? (4) 1% 10°!8 and ( 2-1) x 1017”",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 11,
-    "year": 2026,
-    "state": "AP",
-    "questionNumber": 101,
-    "question": "Which logic gate produces an output of 0 only when all inputs are 1?",
-    "options": [],
-    "answer": null
+    "year": 2016,
+    "state": "TS",
+    "pyqQuestion": 46,
+    "question": "Inwhich memory write through technique is used for updating data",
+    "options": [
+      "cache memory {2) auxillary memory {3} virtual memory (4) secondary memory"
+    ],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 12,
-    "year": 2026,
-    "state": "AP",
-    "questionNumber": 102,
-    "question": "The Boolean expression A + AB simplifies to",
-    "options": [],
-    "answer": null
+    "year": 2016,
+    "state": "TS",
+    "pyqQuestion": 47,
+    "question": "The program counter register contains 85 AC and the address part of the instruction contains 125. If the relative addressing mode is applied, What is the effective address",
+    "options": [
+      "85 AC (2)85A1 (3) 86 CF (4) 86 DI ee"
+    ],
+    "answer": null,
+    "source": "2016_TS",
+    "sourcePage": 5,
+    "image": "images/2016_TS_p5.jpg"
   },
   {
     "id": 13,
-    "year": 2026,
-    "state": "AP",
-    "questionNumber": 103,
-    "question": "Which flip-flop has an invalid state?",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical How many select lines are required for a 1-to-8 demultiplexer?",
+    "options": [
+      "1,% 2",
+      "2v3",
+      "www.android.universityupdates.in | wwipginpensbogedate www.ios.universityupdates.in",
+      "5% ="
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 41,
+    "image": "images/2018_TS_p41.jpg"
   },
   {
     "id": 14,
-    "year": 2026,
-    "state": "AP",
-    "questionNumber": 104,
-    "question": "Convert the binary number 101101 into its decimal equivalent.",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 102,
+    "question": ". Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The code where all successive numbers differ from their preceding number by single bit is",
+    "options": [
+      "% Excess-3 av Gray"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 42,
+    "image": "images/2018_TS_p42.jpg"
   },
   {
     "id": 15,
-    "year": 2026,
-    "state": "AP",
-    "questionNumber": 105,
-    "question": "The number of outputs of a 4-bit decoder is",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which of the following is a universal logic gate?",
+    "options": [
+      "OR > » AND 5 » XOR",
+      "v NAND"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 42,
+    "image": "images/2018_TS_p42.jpg"
   },
   {
     "id": 16,
-    "year": 2026,
-    "state": "AP",
-    "questionNumber": 106,
-    "question": "Which flip-flop toggles its output on every clock pulse when input is HIGH?",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical How many two input AND gates and two input OR gates are required to realize Y=BD+CE+ AB?",
+    "options": [
+      "que del",
+      "www.android.universityupdates.in | wwipginpensbogedate www.ios.universityupdates.in",
+      "sire",
+      "="
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 42,
+    "image": "images/2018_TS_p42.jpg"
   },
   {
     "id": 17,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 101,
-    "question": "The decimal equivalent of the octal number (645) is",
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which of the following is the fastest logic family?",
     "options": [
-      "(450)10",
-      "% (451)10",
-      "% (421)10",
-      "87 (501 )10"
+      "a D",
+      "7. ECL",
+      "je DIE",
+      "4.» CMOS"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 43,
+    "image": "images/2018_TS_p43.jpg"
   },
   {
     "id": 18,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 102,
-    "question": "The characteristic equation of JK flip flop is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical A simplified Sum of Products expression for the following Boolean function F (W.X.Y.Z) = (0.2.4,8.9,10,11,12.13) is",
+    "options": [
+      "#® XY +YZ+ZX +WX 3% - WXY + XYZ + WYZ",
+      ""
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 43,
+    "image": "images/2018_TS_p43.jpg"
   },
   {
     "id": 19,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 103,
-    "question": "Multiplication result of (10.10): and (01.01) is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical TS ECET 2018 www.android.universityupdates.in | wwipginpensbogedate w »s.universityupdates.in How many entries are there in the truth table of 4 input NAND gate?",
+    "options": [
+      "1% 8",
+      "ae 16",
+      "aie 12",
+      "4% 4"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 43,
+    "image": "images/2018_TS_p43.jpg"
   },
   {
     "id": 20,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 104,
-    "question": "For the logic circuit shown in the figure the required input (A, B, C) condition to make the output (X) = 1 is A B X c",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which of the following inputs is not accepted by SR flip-flop?",
+    "options": [
+      "# Ris1,SisO"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 44,
+    "image": "images/2018_TS_p44.jpg"
   },
   {
     "id": 21,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 105,
-    "question": "A three variable truth table has a High output for the inputs (A, B, C): 010, 011 and 110. The Boolean expression for Sum Of Product (SOP) can be written as",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical How many flip-flops are required to construct a decade counter?",
+    "options": [
+      "v4",
+      "ae 8",
+      "3% 5",
+      "jiu fi0"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 44,
+    "image": "images/2018_TS_p44.jpg"
   },
   {
     "id": 22,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 106,
-    "question": "The logic function implemented by the circuit shown below is (ground implies a logic “0”) 4x1 MUX 2 I f; 5 5p PQ",
+    "pyqQuestion": 110,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical TS ECET 2018 www.android.universityupdates.in | wwipgizeensiovgdates.in | www.ios.universityupdates.in Which technique is used by EPROM for erasing purpose?",
     "options": [
-      "F = AND (P. Q)",
-      "% F =OR(P. Q)",
-      "*% F = XNOR (P. Q)",
-      "% F = XOR (P. Q)"
+      "» Photo-conduction",
+      "* electromagnetic waves"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 44,
+    "image": "images/2018_TS_p44.jpg"
   },
   {
     "id": 23,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 107,
-    "question": "| | Among the digital IC families ECL, TTL and CMOS, which one of the following 1s correct?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 111,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which of the following is the major functioning responsibility of the multiplexer?",
+    "options": [
+      "4% generation of selected path between single source and multiple destinations"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 45,
+    "image": "images/2018_TS_p45.jpg"
   },
   {
     "id": 24,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 108,
-    "question": "The outputs of the two flip-flops Q:, Q» in the figure shown are initialized to 0, 0. The sequence generated at Q: upon application of clock signal is J Qt ml K1Q1",
+    "pyqQuestion": 112,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The sum output bit for a full adder with inputs X.Y. Cris",
     "options": [
-      "1110...",
-      "% 01010...",
-      "00110...",
-      "% | | 01100..."
+      "1s XYC, + XYCr RVC, + XYQ, + X¥CQ, + XY; XY + 38 XYCi+ XY + YC; RY+ YC, 4%"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 45,
+    "image": "images/2018_TS_p45.jpg"
   },
   {
     "id": 25,
-    "year": 2025,
+    "year": 2018,
     "state": "TS",
-    "questionNumber": 109,
-    "question": "The output frequency of a mod-12 counter is 6 KHz, then the input frequency is",
+    "pyqQuestion": 113,
+    "question": "Question Id :; 5105295925 Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The 80286 is able to address the physical memory of",
     "options": [
-      "KHz",
-      "% 500 Hz",
-      "24 KHz",
-      "% 72 KHz"
+      "x 24MB 4% 64 MB"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 46,
+    "image": "images/2018_TS_p46.jpg"
   },
   {
     "id": 26,
-    "year": 2025,
-    "state": "AP",
-    "questionNumber": 101,
-    "question": "Which of the following is a universal gate?",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 114,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The memory management and protection mechanisms are enabled with advanced instruction set when 80286 is operated in",
+    "options": [
+      "® abstract mode"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 46,
+    "image": "images/2018_TS_p46.jpg"
   },
   {
     "id": 27,
-    "year": 2025,
-    "state": "AP",
-    "questionNumber": 102,
-    "question": "Which of the following is NOT a combinational circuit?",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 115,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical For a single task in protected mode. the 80386 can address the virtual memory of",
+    "options": [
+      "x 32GB > ® 64 MB 9) 3% 327B"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 46,
+    "image": "images/2018_TS_p46.jpg"
   },
   {
     "id": 28,
-    "year": 2025,
-    "state": "AP",
-    "questionNumber": 103,
-    "question": "A demultiplexer is a device that :",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 116,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The 80386 input/output system supports different bytes of I/O space available, if isolated I/O is implemented.",
+    "options": [
+      "* aa8",
+      "8 4 GB av 64K"
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 47,
+    "image": "images/2018_TS_p47.jpg"
   },
   {
     "id": 29,
-    "year": 2025,
-    "state": "AP",
-    "questionNumber": 104,
-    "question": "Convert the binary number 110011 into its decimal equivalent.",
-    "options": [],
-    "answer": null
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 117,
+    "question": "Question Id ; 5105295929 Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The bit that indicates whether the segment is page addressable is",
+    "options": [
+      "* attribute bit 2% resent bit",
+      "% P granularity bit 470° ."
+    ],
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 47,
+    "image": "images/2018_TS_p47.jpg"
   },
   {
     "id": 30,
-    "year": 2025,
-    "state": "AP",
-    "questionNumber": 105,
-    "question": "The number of select lines required for an 8-to-1 multiplexer is?",
+    "year": 2018,
+    "state": "TS",
+    "pyqQuestion": 118,
+    "question": "Question Id ; 5105295930 Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical If the Default operation size bit. D=1, the code segment operation size selected is",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2018_TS",
+    "sourcePage": 47,
+    "image": "images/2018_TS_p47.jpg"
   },
   {
     "id": 31,
-    "year": 2025,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 106,
-    "question": "_A Sequential logic circuit that toggles its output state on each clock pulse is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 101,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which among the following was the first version in the TTL family?",
+    "options": [
+      "Standard >, Low-power",
+      "Schottky",
+      "Fast"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 36,
+    "image": "images/2019_AP_p36.jpg"
   },
   {
     "id": 32,
-    "year": 2025,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 107,
-    "question": "Convert the decimal number 108 into its octal equivalent.",
+    "pyqQuestion": 102,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The logical sum of all the minterms of a Boolean function of n variables is",
     "options": [
-      "?",
-      "124",
-      "*% 134 144",
-      "% 5"
+      "",
+      "n(n+1)/2"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 36,
+    "image": "images/2019_AP_p36.jpg"
   },
   {
     "id": 33,
-    "year": 2025,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 108,
-    "question": "What is the simplified form of the Boolean expression (A+ B)(A+C)?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 103,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Circuits that generate the parity bit in the receiver and transmitter are called _____ and __ respectively.",
+    "options": [
+      "Parity checker, Parity Generator , Parity Generator, Parity checker",
+      "Parity Generator, Parity encoder",
+      "Parity encoder, parity decoder"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 36,
+    "image": "images/2019_AP_p36.jpg"
   },
   {
     "id": 34,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 101,
-    "question": "The decimal equivalent of octal number (128.24)s is",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 104,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The characteristic equation for the complement output of a JK flip flop is",
+    "options": [
+      "A(t+1) = J'Q+KQ > Qi(t+1) = J'Q'+KQ’",
+      "Att) = 'Q+#KQ’",
+      "Q(t+1) = JQHK'Q’"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 36,
+    "image": "images/2019_AP_p36.jpg"
   },
   {
     "id": 35,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 102,
-    "question": "The binary equivalent of a BCD number 00101001.01110101 is",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 105,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical If the register has both shifts and parallel load capabilities that is referred to as",
+    "options": [
+      "Bidirectional shift register",
+      "Parallel shift register"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 37,
+    "image": "images/2019_AP_p37.jpg"
   },
   {
     "id": 36,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 103,
-    "question": "The logical gate that gives an output of logic level “1” whenever two inputs are equal is",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 106,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The capacity of a memory unit is usually stated as the total number of that it can store.",
+    "options": [
+      "Addresses",
+      "Bits"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 37,
+    "image": "images/2019_AP_p37.jpg"
   },
   {
     "id": 37,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 104,
-    "question": "Convert",
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 107,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which among the following offers shorter read and write cycles?",
     "options": [
-      "B +",
-      "B into equivalent Product of Sums expression",
-      "7614465213, « (ATB). (A+",
-      "A+B).(A4 7614465214, * (APR). (ASB) reraaeszis, 7 (A+B) (A+B) 7eraaesar6, « (A*B). (A+B)"
+      "Fast RAM >, Commercial RAM Static RAM",
+      "",
+      "Dynamic RAM"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 37,
+    "image": "images/2019_AP_p37.jpg"
   },
   {
     "id": 38,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 105,
-    "question": "A digital circuit whose output depends not only on the present input but also on sequence of past inputs is a",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 108,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical 4-to-16 line decoder can be constructed with 2-to-4 line decoders withenable.",
+    "options": [
+      "5 48"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 38,
+    "image": "images/2019_AP_p38.jpg"
   },
   {
     "id": 39,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 106,
-    "question": "The number of distinct Boolean expressions for 4 variables is",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 109,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which of the following registers of 8086 can also be used for memory addressing when data is transferred between I/O port and memory using certain I/O instructions.",
+    "options": [
+      "AX > BX",
+      "&X",
+      "Bx"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 38,
+    "image": "images/2019_AP_p38.jpg"
   },
   {
     "id": 40,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 107,
-    "question": "‘Aw SRC (lop eoneled top flop by imeting an inl etinenn SAR by aasating sity pat",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 110,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical In addressing mode the operand is specified in the instruction itself.",
+    "options": [
+      "Implicit , Immediate",
+      "Direct memory",
+      "Displacement"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 38,
+    "image": "images/2019_AP_p38.jpg"
   },
   {
     "id": 41,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 108,
-    "question": "‘AcComabinstional civeut’thal converts the Bisary thfonmution hein 2 inpild ta a capi a",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 111,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical pin of 8086 is for data enable.",
+    "options": [
+      "DTR é Lock"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 39,
+    "image": "images/2019_AP_p39.jpg"
   },
   {
     "id": 42,
-    "year": 2024,
-    "state": "TS",
-    "questionNumber": 110,
-    "question": "IFA, B,C, D, E,F represents variables of a Boolean expression and my isthe i’ min term, then the value of mi is",
+    "year": 2019,
+    "state": "AP",
+    "pyqQuestion": 112,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical The intervals of no bus activity that occur between bus cycles are known as state.",
     "options": [
-      "7614465237. 7 4-",
-      "",
-      "",
-      "E.F 7614465238, ® A+B+C+D+E+F qeiaaesaay, « A-8-6.D.EF 7614465240. ® A+B+C+D+E+F"
+      "Wait",
+      "Ready"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 39,
+    "image": "images/2019_AP_p39.jpg"
   },
   {
     "id": 43,
-    "year": 2024,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 101,
-    "question": "Question Number : 101 Mandatory : No Time: 0 The table containing present state of output . next state of the output and the inputs is called",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 113,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical In minimum mode interface, the memory segment status code s4s3 = 00 identifies a register known as segment register as the source of the segment address.",
+    "options": [
+      "Extra",
+      "Stack",
+      "Code/None",
+      "Data"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 39,
+    "image": "images/2019_AP_p39.jpg"
   },
   {
     "id": 44,
-    "year": 2024,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 102,
-    "question": "Question Number : 102 Mandatory : No Time : 0 A sequential circuit with 10 states will have",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 114,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical register of 8086 can be used for I/O operations and string manipulation.",
+    "options": [
+      "Count >, Data",
+      "Accumulator",
+      "Base"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 40,
+    "image": "images/2019_AP_p40.jpg"
   },
   {
     "id": 45,
-    "year": 2024,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 103,
-    "question": "Question Number : 103 Mandatory : No Time: 0 AP collegedunia A binary number can be multiplied by 2 or divided by 2 with help of",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 115,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Which among the following processor has a built in math co-processor in a single chip.",
+    "options": [
+      "80386 , 80486"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 40,
+    "image": "images/2019_AP_p40.jpg"
   },
   {
     "id": 46,
-    "year": 2024,
+    "year": 2019,
     "state": "AP",
-    "questionNumber": 104,
-    "question": "Question Number : 104 Mandatory : No Time :0 A five bit binary counter uses flip flops with propagation delay time of 10 ns each. The maximum possible time required for change of state will be",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 116,
+    "question": "Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical instruction copies the contents of AH to lower byte of flag register of g086.",
+    "options": [
+      "PUSHF",
+      "POPF"
+    ],
+    "answer": null,
+    "source": "2019_AP",
+    "sourcePage": 40,
+    "image": "images/2019_AP_p40.jpg"
   },
   {
     "id": 47,
-    "year": 2024,
-    "state": "AP",
-    "questionNumber": 105,
-    "question": "Question Number : 105 Mandatory : No Time:0 The Boolean expression (A+C) (AB'+AC) (A'C'+B) can be simplified to",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "TS",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Match the following: List I List II (a) 8251A (i) Programmable Peripheral Interface (b) 82554 (ii) Programmable Interface Controller (c) 8259A (iii) Programmable Communication Interface",
+    "options": [
+      "@ ai, Deli, c-iii",
+      "v aii, d-i, c-ii"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 43,
+    "image": "images/2019_TS_p43.jpg"
   },
   {
     "id": 48,
-    "year": 2024,
-    "state": "AP",
-    "questionNumber": 106,
-    "question": "Question Number : 106 Mandatory : No Time:0 The 2’s compliment representation of the decimal value -15 is",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "TS",
+    "pyqQuestion": 102,
+    "question": ". Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Choose the correct pair of instructions designed to aid the sign-extension process",
+    "options": [
+      "Lv CBW and CWD",
+      "> » INC and DEC",
+      ">; » NEGand POS",
+      "4a CMP and XGHS"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 44,
+    "image": "images/2019_TS_p44.jpg"
   },
   {
     "id": 49,
-    "year": 2024,
-    "state": "AP",
-    "questionNumber": 107,
-    "question": "Question Number : 107 Mandatory : No Time:0 Let * be defined as x*y=x'+y, let z=x*y Then the value of z*x is",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "TS",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 When J = K = 1. then JK flip-flop functions like a/an é",
+    "options": [
+      "SR flip-flop",
+      "x NAND gate your T flip-flop"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 44,
+    "image": "images/2019_TS_p44.jpg"
   },
   {
     "id": 50,
-    "year": 2024,
-    "state": "AP",
-    "questionNumber": 108,
-    "question": "Question Number : 108 Mandatory : No Time:0 SR latch is made by cross coupling tiwo NAND gates. if S=-R=0, then it will result in",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "TS",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Two numbers with digits X and Y and radix 3 and 4 have following relationship: (XY)s3 = (YX), . then what are the values of X and Y?",
+    "options": [
+      "= ie",
+      ".y X=3andY=2",
+      "X=S5and Y=4",
+      "2%"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 44,
+    "image": "images/2019_TS_p44.jpg"
   },
   {
     "id": 51,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 101,
-    "question": "Which statement best describes a Karnaugh map",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Which of the following are employed in digital computers for generating binary control decisions?",
+    "options": [
+      "ia combinational circuits",
+      "ae sequential circuits",
+      "38 binary counters",
+      "4% segment registers"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 45,
+    "image": "images/2019_TS_p45.jpg"
   },
   {
     "id": 52,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 102,
-    "question": "The number of distinct Boolean expressions for 4 variables is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Which of the following is the maximum number of prime implicants possible for an n-variable Boolean function?",
+    "options": [
+      "atl ad 2a 4% 7"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 45,
+    "image": "images/2019_TS_p45.jpg"
   },
   {
     "id": 53,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 103,
-    "question": "‘An SR flip flop is converted to flip flop by inserting an inverter between S&R and assigning a single input",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 ww.android.previousquestionpapers.com | www.previousquestionpapers.cc www.ios.previousquestionpapers.com A simplified form of the Boolean function F(A. B, C) = £(0, 2. 4. 5, 6) is ,",
+    "options": [
+      "1» F=BC+AC’",
+      "a F=C'+ AB",
+      "F=BC+ AC",
+      "3.8"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 45,
+    "image": "images/2019_TS_p45.jpg"
   },
   {
     "id": 54,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 104,
-    "question": "A Combinational circuit that converts the binary information from 2\" inputs to n outputs is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Which digital logic family is suitable for circuits that need high component density?",
+    "options": [
+      "1% is",
+      "5» ECL",
+      "av MOS",
+      "4.2 CMOS"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 46,
+    "image": "images/2019_TS_p46.jpg"
   },
   {
     "id": 55,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 105,
-    "question": "Convert the decimal number 41.6875 into binary",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 According to Flynn’s classification, MISD stands for é",
+    "options": [
+      "pe Multiple Input Sequential Data",
+      "ie Multiple Instruction stream Single data stream",
+      "38 Multiple Input Single Data output",
+      "my Multiple Input Single Data stream"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 46,
+    "image": "images/2019_TS_p46.jpg"
   },
   {
     "id": 56,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 106,
-    "question": "Find the 4’s complement of a number 12302 (base 4)",
+    "pyqQuestion": 110,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 A three-input decoder has outputs.",
     "options": [
-      "002",
-      "8 32003",
-      "",
-      "v 21032 21031"
+      "i* 4",
+      "aw §",
+      "12",
+      "3.8"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 47,
+    "image": "images/2019_TS_p47.jpg"
   },
   {
     "id": 57,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 107,
-    "question": "How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + Y(X+Z}",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 111,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 What is the maximum possible range of sequence for Mod-16 binary up-counter?",
+    "options": [
+      "x 01016"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 47,
+    "image": "images/2019_TS_p47.jpg"
   },
   {
     "id": 58,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 108,
-    "question": "[Question text not reliably recovered by OCR.]",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 112,
+    "question": ". Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Which is an implementation technique where the phases of a computer instruction cycle overlap in execution?",
+    "options": [
+      "vector processing 2% 5 » aay processing av Pipelining"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 47,
+    "image": "images/2019_TS_p47.jpg"
   },
   {
     "id": 59,
-    "year": 2023,
+    "year": 2019,
     "state": "TS",
-    "questionNumber": 109,
-    "question": "[Question text not reliably recovered by OCR.]",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 113,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 The Intel 8086 processor has bit address space.",
+    "options": [
+      "4.8 5",
+      "yaa 18",
+      ">",
+      "3.0 20"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 48,
+    "image": "images/2019_TS_p48.jpg"
   },
   {
     "id": 60,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 101,
-    "question": "Question Number : 101 Mandatory : No Time :0 Assume that all the numbers are represented in 2’s complement. then which of the following is divisible by 11111011?",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "TS",
+    "pyqQuestion": 114,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 The Intel 8086 processor has segment registers to point to segments of memory.",
+    "options": [
+      "* 7 2¢0 - 38 6 *5 4%"
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 48,
+    "image": "images/2019_TS_p48.jpg"
   },
   {
     "id": 61,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 102,
-    "question": "Question Number : 102 Mandatory : No Time:0 Tf (73)x = (54)y in a number system then the possible values of x and y are",
-    "options": [],
-    "answer": null
+    "year": 2019,
+    "state": "TS",
+    "pyqQuestion": 115,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Which of the following is correct during mode-2 operation of 8255?",
+    "options": [
+      ""
+    ],
+    "answer": null,
+    "source": "2019_TS",
+    "sourcePage": 48,
+    "image": "images/2019_TS_p48.jpg"
   },
   {
     "id": 62,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 103,
-    "question": "Question Number : 103 Mandatory : No Time:0 Number of states ring counter with 5 flipflops will have?",
+    "year": 2020,
+    "state": "TS",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 The output of NOR gate is",
     "options": [
-      "",
-      "15",
-      "5",
-      "8 32"
+      "76439046801, # High. if all of its inputs are high",
+      "76439046802. ¥ High. of all of its inputs are low",
+      "Low, if all of its inputs are low",
+      "76439046803. *"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 43,
+    "image": "images/2020_TS_p43.jpg"
   },
   {
     "id": 63,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 104,
-    "question": "Question Number : 104 Mandatory : No Time :0 n-bit 2°s complement number system range for integers is",
-    "options": [],
-    "answer": null
+    "year": 2020,
+    "state": "TS",
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 The operation that is not performed by the CPU is .",
+    "options": [
+      "Logic operation",
+      "76439046805. *",
+      "Arithmetic operation",
+      "76439046806. *"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 43,
+    "image": "images/2020_TS_p43.jpg"
   },
   {
     "id": 64,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 105,
-    "question": "Question Number : 105 Mandatory : No Time :0 Which of the following are Universal Gates",
-    "options": [],
-    "answer": null
+    "year": 2020,
+    "state": "TS",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Handshaking functions are performed in PPI 8255 by using port.",
+    "options": [
+      "Port A",
+      "76439046809. *",
+      "Port B",
+      "76439046810. *"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 44,
+    "image": "images/2020_TS_p44.jpg"
   },
   {
     "id": 65,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 106,
-    "question": "Question Number : 106 Mandatory : No Time:0 The Fastest Logic Family Gate is",
-    "options": [],
-    "answer": null
+    "year": 2020,
+    "state": "TS",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 8086 isa bit microprocessor.",
+    "options": [
+      "4-bit",
+      "76439046813. *",
+      "8-bit",
+      "76439046814. *"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 44,
+    "image": "images/2020_TS_p44.jpg"
   },
   {
     "id": 66,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 107,
-    "question": "Question Number : 107 Mandatory : No Time :0 How many 4 x | multiplexers are required to design $ x 1 multiplexer?",
-    "options": [],
-    "answer": null
+    "year": 2020,
+    "state": "TS",
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 8086 microprocessor can operate in mode(s).",
+    "options": [
+      "single",
+      "76439046817. # * ©",
+      "dual",
+      "76439046818, 7"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 44,
+    "image": "images/2020_TS_p44.jpg"
   },
   {
     "id": 67,
-    "year": 2023,
-    "state": "AP",
-    "questionNumber": 108,
-    "question": "Question Number : 108 Mandatory : No Time :0 Which Flip Flop is free from race around problem",
-    "options": [],
-    "answer": null
+    "year": 2020,
+    "state": "TS",
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 BIU uses a mechanism as instruction stream that is used to implement architecture.",
+    "options": [
+      "Pipeline",
+      "76439046821. 7",
+      "RISC",
+      "76439046822. #"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 45,
+    "image": "images/2020_TS_p45.jpg"
   },
   {
     "id": 68,
-    "year": 2022,
+    "year": 2020,
     "state": "TS",
-    "questionNumber": 101,
-    "question": "How many NOR gates are needed to construct AND gate",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 block doesn’t come under the architecture of 80286.",
+    "options": [
+      "control unit",
+      "76439046825. 7",
+      "address unit",
+      "76439046826, *"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 45,
+    "image": "images/2020_TS_p45.jpg"
   },
   {
     "id": 69,
-    "year": 2022,
+    "year": 2020,
     "state": "TS",
-    "questionNumber": 102,
-    "question": "A serial in/parallel out, 4-bit shift register initially contains all 1s. The data nibble 0111 is waiting to enter. After four clock pulses, the register contains . Derive the Boolean expression for the logic circuit shown below: A PTD c D E",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 A 4-variable Kaurmaugh map will contain cells.",
+    "options": [
+      "76439046829, ®",
+      "76439046830. * 8 76439046831. * 16 76439046832, 7"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 46,
+    "image": "images/2020_TS_p46.jpg"
   },
   {
     "id": 70,
-    "year": 2022,
+    "year": 2020,
     "state": "TS",
-    "questionNumber": 103,
-    "question": "The toggle condition ina master-slave J-K flip-flop means that Q and Q will switch to their ------------ state(s) at the ---------------.",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 & (xyz +x’yzt+ xy'Zt .....) is called as",
+    "options": [
+      "sum of the squares",
+      "76439046833. ®",
+      "product of the sums",
+      "76439046834, *"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 46,
+    "image": "images/2020_TS_p46.jpg"
   },
   {
     "id": 71,
-    "year": 2022,
+    "year": 2020,
     "state": "TS",
-    "questionNumber": 104,
-    "question": "Which of the following is a type of shift register counter?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 110,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Single Line Question Option : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 Karnaugh map is a tool for representing Boolean functions of up to variables.",
+    "options": [
+      "5",
+      "76439046837, # =",
+      "reaso040ea8, * 4",
+      "5"
+    ],
+    "answer": null,
+    "source": "2020_TS",
+    "sourcePage": 46,
+    "image": "images/2020_TS_p46.jpg"
   },
   {
     "id": 72,
-    "year": 2022,
-    "state": "TS",
-    "questionNumber": 105,
-    "question": "Select the statement that best describes Read-Only Memory (ROM).",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "AP",
+    "pyqQuestion": 101,
+    "question": "Display Question Number : Yes Is Question Mandatory : No How many flip flops are required for the mod-16 counter?",
+    "options": [
+      "% 5 2v 4 3,% 6",
+      "* 3"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 55,
+    "image": "images/2021_AP_p55.jpg"
   },
   {
     "id": 73,
-    "year": 2022,
-    "state": "TS",
-    "questionNumber": 106,
-    "question": "The following is one of the applications of a digital multiplexer:",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "AP",
+    "pyqQuestion": 102,
+    "question": "Display Question Number : Yes Is Question Mandatory : No EPROM contents can be erased by exposing them to",
+    "options": [
+      ",, x Burst of microwaves",
+      "2% Intense heat radiations",
+      "38 Infrared rays",
+      "av Ultraviolet rays"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 55,
+    "image": "images/2021_AP_p55.jpg"
   },
   {
     "id": 74,
-    "year": 2022,
-    "state": "TS",
-    "questionNumber": 107,
-    "question": "A circuit that responds to a specific set of signals to produce a related digital signal output is called a(n):",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "AP",
+    "pyqQuestion": 103,
+    "question": "Display Question Number : Yes Is Question Mandatory : No The digital logic family which has minimum power dissipation is",
+    "options": [
+      "Te, 2,« DIL",
+      "¥ CMOS 4,* RTL"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 56,
+    "image": "images/2021_AP_p56.jpg"
   },
   {
     "id": 75,
-    "year": 2022,
-    "state": "TS",
-    "questionNumber": 108,
-    "question": "Which of the following is the output of (AB (A+ C))+AB(A+B4+C)?",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "AP",
+    "pyqQuestion": 104,
+    "question": "Display Question Number : Yes Is Question Mandatory : No If the input to T-flipflop is 100 Hz signal. the final output of the two T- flipflops in cascade is",
+    "options": [
+      "x 1000 Hz 2x 50Hz 3.yv 25 Hz 4* 200 Hz"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 56,
+    "image": "images/2021_AP_p56.jpg"
   },
   {
     "id": 76,
-    "year": 2022,
-    "state": "TS",
-    "questionNumber": 109,
-    "question": "While forming groups in K-mapping the Don't care states are combined along with terms of",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "AP",
+    "pyqQuestion": 105,
+    "question": "Display Question Number : Yes Is Question Mandatory : No The device which changes from serial data to parallel data is",
+    "options": [
+      "MULTIPLEXER",
+      "» COUNTER",
+      "« FLIP-FLOP"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 57,
+    "image": "images/2021_AP_p57.jpg"
   },
   {
     "id": 77,
-    "year": 2022,
-    "state": "TS",
-    "questionNumber": 110,
-    "question": "What is the disadvantage of an S-R Flip-Flop",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "AP",
+    "pyqQuestion": 106,
+    "question": "Display Question Number : Yes Is Question Mandatory : No When simplified with Boolean Algebra, (x + y)(x + z) simplifies to",
+    "options": [
+      "® x+x(y+z) 4% xX"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 57,
+    "image": "images/2021_AP_p57.jpg"
   },
   {
     "id": 78,
-    "year": 2022,
+    "year": 2021,
     "state": "AP",
-    "questionNumber": 101,
-    "question": "Question Number : 101 (1B. 42)16 = ()e",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Display Question Number : Yes Is Question Mandatory : No The 2°s complement of the number 1101101 is",
+    "options": [
+      "% 0110010",
+      "® 0111110",
+      "x 0101110"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 58,
+    "image": "images/2021_AP_p58.jpg"
   },
   {
     "id": 79,
-    "year": 2022,
+    "year": 2021,
     "state": "AP",
-    "questionNumber": 102,
-    "question": "Question Number : 102 onit22 72272, 4:00 PM Which logic gates among the below options can be used to create any Boolean function economically?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Display Question Number : Yes Is Question Mandatory : No The decimal equivalent of hex number 1A53 is",
+    "options": [
+      "% 6793 3% 6973 4,% 6379"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 58,
+    "image": "images/2021_AP_p58.jpg"
   },
   {
     "id": 80,
-    "year": 2022,
+    "year": 2021,
     "state": "AP",
-    "questionNumber": 103,
-    "question": "Question Number : 103 101001 - 010110 =?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 109,
+    "question": "Display Question Number : Yes Is Question Mandatory : No What is the order decided by a processor or the CPU of a controller to execute an instruction?",
+    "options": [
+      "y_ fetch. decode, execute fetch, execute, decode",
+      "®"
+    ],
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 58,
+    "image": "images/2021_AP_p58.jpg"
   },
   {
     "id": 81,
-    "year": 2022,
+    "year": 2021,
     "state": "AP",
-    "questionNumber": 104,
-    "question": "Question Number : 104 DeMorgan's theorem states that",
+    "pyqQuestion": 110,
+    "question": "Display Question Number : Yes Is Question Mandatory : No The 8086 fetches instruction one after another from of memory",
     "options": [
-      ", AFB)=",
-      "B and (",
-      "",
-      "= A.B 1 ga (A+B) =A+B and (A.B) =A.B ae (A+B) =A.B and (A.B) =A+B (A+B) =A+Band(A.B)=A+B"
+      "yv CODE SEGMENT"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 59,
+    "image": "images/2021_AP_p59.jpg"
   },
   {
     "id": 82,
-    "year": 2022,
+    "year": 2021,
     "state": "AP",
-    "questionNumber": 105,
-    "question": "Question Number : 105 When will JK flip flop toggle the input?",
+    "pyqQuestion": 111,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Which instruction is used to load the address of operand into the provided register?",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2021_AP",
+    "sourcePage": 59,
+    "image": "images/2021_AP_p59.jpg"
   },
   {
     "id": 83,
-    "year": 2022,
-    "state": "AP",
-    "questionNumber": 106,
-    "question": "Question Number : 106 If the total number of transistors fabricated on a single chip is in the range of 300 to 3000. which integrated circuit do you prefer?",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "TS",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks: 0 Which Multiplexer IC is used for implementing a full adder or a full subtractor? i) SN74151 ii) SN74153 iii) 74LS151 iv) 74LS153",
+    "options": [
+      "% 2* (i) &(iii) 5 (ii) only Le (ii) & (iv)"
+    ],
+    "answer": null,
+    "source": "2021_TS",
+    "sourcePage": 59,
+    "image": "images/2021_TS_p59.jpg"
   },
   {
     "id": 84,
-    "year": 2022,
-    "state": "AP",
-    "questionNumber": 107,
-    "question": "Question Number : 107 The binary equivalent of 0.6875 is --------",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "TS",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 The simplified form of the following Boolean function F(wW.X.y.Z)=>(0,1.2.4.5.6.8.9,12,13.14) is 5",
+    "options": [
+      "% Design circuits",
+      "* 4% Register"
+    ],
+    "answer": null,
+    "source": "2021_TS",
+    "sourcePage": 59,
+    "image": "images/2021_TS_p59.jpg"
   },
   {
     "id": 85,
-    "year": 2022,
-    "state": "AP",
-    "questionNumber": 108,
-    "question": "Question Number : 108 Which is the DeMorgan’s gate equivalent to OR?",
-    "options": [],
-    "answer": null
+    "year": 2021,
+    "state": "TS",
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 In which circuit, chain of flipflops is connected in cascade to receive a common clock pulse?",
+    "options": [
+      "» Tegister 3,8 counter a0 shift register"
+    ],
+    "answer": null,
+    "source": "2021_TS",
+    "sourcePage": 61,
+    "image": "images/2021_TS_p61.jpg"
   },
   {
     "id": 86,
     "year": 2021,
     "state": "TS",
-    "questionNumber": 101,
-    "question": "Which gate’s output is equal to 1 if the input variables have an odd number of 1’s?",
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Option Orientation : Vertical Correct Marks : 1 Wrong Marks : 0 How many address lines does 80386 processor have?",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2021_TS",
+    "sourcePage": 61,
+    "image": "images/2021_TS_p61.jpg"
   },
   {
     "id": 87,
-    "year": 2021,
-    "state": "TS",
-    "questionNumber": 102,
-    "question": "Which of the following gate acts as a controlled inverter?",
+    "year": 2022,
+    "state": "AP",
+    "pyqQuestion": 101,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 (1E.42)16 = ()s",
     "options": [
-      "NAND",
-      "EX-OR",
-      "NOR",
-      "8"
+      "362",
+      "Lv 36.204",
+      "36.202",
+      "78"
     ],
-    "answer": null
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 61,
+    "image": "images/2022_AP_p61.jpg"
   },
   {
     "id": 88,
-    "year": 2021,
-    "state": "TS",
-    "questionNumber": 103,
-    "question": "Which Multiplexer IC is used for implementing a full adder or a full subtractor? i) SN74151 ii) SN74153 iif) iv) T4LS153",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "AP",
+    "pyqQuestion": 102,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 61122 7122/22, 4:00 PM Which logic gates among the below",
+    "options": [
+      "can be used to create any",
+      "Boolean function economically?",
+      "Options :",
+      "|.» XOR, NAND, OR"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 61,
+    "image": "images/2022_AP_p61.jpg"
   },
   {
     "id": 89,
-    "year": 2021,
-    "state": "TS",
-    "questionNumber": 104,
-    "question": "The simplified form of the following Boolean function F(wW.X.y.2)=L(0,1.2.4.5,6,8.9,12.13.14) is",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "AP",
+    "pyqQuestion": 103,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 101001 - 010110 =?",
+    "options": [
+      "| « 100110",
+      "> yv 010011",
+      "010010",
+      "3.8"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 62,
+    "image": "images/2022_AP_p62.jpg"
   },
   {
     "id": 90,
-    "year": 2021,
-    "state": "TS",
-    "questionNumber": 105,
-    "question": "Race around problem in a JK Flip flop is",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "AP",
+    "pyqQuestion": 104,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 DeMorgan's theorem states that",
+    "options": [
+      "*",
+      "GB) =A+Band (A.B) =A.B Bs y AtB) = A.B and (A.B) =A+B",
+      "(A+B) =A+B and (A.B) =A+B 4%"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 63,
+    "image": "images/2022_AP_p63.jpg"
   },
   {
     "id": 91,
-    "year": 2021,
-    "state": "TS",
-    "questionNumber": 106,
-    "question": "Logic gates with a set of inputs and outputs is arrangement of",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "AP",
+    "pyqQuestion": 105,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 When will JK flip flop toggle the input?",
+    "options": [
+      "ps J2QK=0",
+      "yo OE]",
+      ",.« J=LK=0",
+      "63/122"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 63,
+    "image": "images/2022_AP_p63.jpg"
   },
   {
     "id": 92,
-    "year": 2021,
-    "state": "TS",
-    "questionNumber": 107,
-    "question": "In which circuit, chain of flipflops is connected in cascade to receive a common clock pulse?",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "AP",
+    "pyqQuestion": 106,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 If the total number of transistors fabricated on a single chip is in the range of 300 to 3000. which integrated circuit do you prefer?",
+    "options": [
+      "% | i Ist MSI 4%"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 64,
+    "image": "images/2022_AP_p64.jpg"
   },
   {
     "id": 93,
-    "year": 2021,
+    "year": 2022,
     "state": "AP",
-    "questionNumber": 101,
-    "question": "Question Number : 101 Mandatory : No How many flip flops are required for the mod-16 counter?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 The binary equivalent of 0.6875 is --------",
+    "options": [
+      "iy 01011",
+      "64/122",
+      "7/22/22, 4:00 PM.",
+      "0.0101"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 64,
+    "image": "images/2022_AP_p64.jpg"
   },
   {
     "id": 94,
-    "year": 2021,
+    "year": 2022,
     "state": "AP",
-    "questionNumber": 102,
-    "question": "Question Number : 102 Mandatory : No EPROM contents can be erased by exposing them to",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Which is the DeMorgan’s gate equivalent to OR?",
+    "options": [
+      "%"
+    ],
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 65,
+    "image": "images/2022_AP_p65.jpg"
   },
   {
     "id": 95,
-    "year": 2021,
+    "year": 2022,
     "state": "AP",
-    "questionNumber": 103,
-    "question": "Question Number : 103 Mandatory : No The digital logic family which has minimum power dissipation is",
+    "pyqQuestion": 109,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 What are the data width and address widths of 8086 microprocessor?",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2022_AP",
+    "sourcePage": 65,
+    "image": "images/2022_AP_p65.jpg"
   },
   {
     "id": 96,
-    "year": 2021,
-    "state": "AP",
-    "questionNumber": 104,
-    "question": "Question Number : 104 Mandatory : No If the input to T-flipflop is 100 Hz signal, the final output of the two T- flipflops in cascade is",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "TS",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 How many NOR gates are needed to construct AND gate",
+    "options": [
+      "i\" 4",
+      "20 3",
+      "Ps",
+      "ez"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 50,
+    "image": "images/2022_TS_p50.jpg"
   },
   {
     "id": 97,
-    "year": 2021,
-    "state": "AP",
-    "questionNumber": 105,
-    "question": "Question Number : 105 Mandatory : No The device which changes from serial data to parallel data is",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "TS",
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 A serial in/parallel out, 4-bit shift register initially contains all 1s. The data nibble 0111 is waiting to enter. After four clock pulses. the register contains ‘ Derive the Boolean expression for the logic circuit shown below: A B c D E",
+    "options": [
+      "v C(AtB)DE +B)D + E >,» (C(A+B)D +E] [[C(A+B)DIE]",
+      "8 4.» ABCDE"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 50,
+    "image": "images/2022_TS_p50.jpg"
   },
   {
     "id": 98,
-    "year": 2021,
-    "state": "AP",
-    "questionNumber": 106,
-    "question": "Question Number : 106 Mandatory : No When simplified with Boolean Algebra, (x + y)(x + z) simplifies to",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "TS",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 The toggle condition in a master-slave J-K flip-flop means that Q and Q will switch to their ------------ state(s) at the ---------------.",
+    "options": [
+      "inverted, positive clock edge 58 quiescent. negative clock edge jie reset. synchronous clock edge"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 51,
+    "image": "images/2022_TS_p51.jpg"
   },
   {
     "id": 99,
-    "year": 2021,
-    "state": "AP",
-    "questionNumber": 107,
-    "question": "Question Number : 107 Mandatory : No The 2°s complement of the number 1101101 is",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "TS",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 Which of the following is a type of shift register counter?",
+    "options": [
+      "x Decade >, x Binary sca Ring 4.» BCD"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 51,
+    "image": "images/2022_TS_p51.jpg"
   },
   {
     "id": 100,
-    "year": 2021,
-    "state": "AP",
-    "questionNumber": 108,
-    "question": "Question Number : 108 Mandatory : No The decimal equivalent of hex number 1A53 is",
-    "options": [],
-    "answer": null
+    "year": 2022,
+    "state": "TS",
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 Select the statement that best describes Read-Only Memory (ROM).",
+    "options": [
+      "Ls nonvolatile. used to store information that changes during system operation",
+      "nonvolatile, used to store information that does not change during system",
+      ">. v Operation",
+      "38 volatile, used to store information that changes during system operation"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 52,
+    "image": "images/2022_TS_p52.jpg"
   },
   {
     "id": 101,
-    "year": 2020,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 101,
-    "question": "The output of NOR gate is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 The following is one of the applications of a digital multiplexer",
+    "options": [
+      "«Parity checking av data selector"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 52,
+    "image": "images/2022_TS_p52.jpg"
   },
   {
     "id": 102,
-    "year": 2020,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 108,
-    "question": "A 4-variable Kaumaugh map will contain cells.",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 A circuit that responds to a specific set of signals to produce a related digital signal output is called a(n)",
+    "options": [
+      "v encoder",
+      "decoder"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 53,
+    "image": "images/2022_TS_p53.jpg"
   },
   {
     "id": 103,
-    "year": 2020,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 109,
-    "question": "f (xyz tx yz+ xy zt .....) is called as",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 Which of the following is the output of (AB (A + C))+AB(A+B+C)?",
+    "options": [
+      "_« A+BO+4C)",
+      "aw AtB",
+      "30 BPA",
+      "42 AtB"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 53,
+    "image": "images/2022_TS_p53.jpg"
   },
   {
     "id": 104,
-    "year": 2020,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 110,
-    "question": "Karnangh map is a tool for representing Boolean functions of up to variables.",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 While forming groups in K-mapping the Don’t care states are combined along with terms of",
+    "options": [
+      "yv Minterms — Maxterms",
+      "SOP 4.2 POS"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 53,
+    "image": "images/2022_TS_p53.jpg"
   },
   {
     "id": 105,
-    "year": 2019,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 103,
-    "question": "When J = K = 1. then JK flip-flop functions like a/an ‘i",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 110,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 What is the disadvantage of an S-R Flip-Flop",
+    "options": [
+      "v Invalid State"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 54,
+    "image": "images/2022_TS_p54.jpg"
   },
   {
     "id": 106,
-    "year": 2019,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 104,
-    "question": "Two numbers with digits X and Y and radix 3 and 4 have following relationship: (XY)s = (YX)4. then what are the values of X and Y?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 111,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 The number of address and data lines of 8086, s",
+    "options": [
+      "16 and 16 3,v 20 and 16 TT 16 and 20"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 54,
+    "image": "images/2022_TS_p54.jpg"
   },
   {
     "id": 107,
-    "year": 2019,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 105,
-    "question": "Which of the following are employed in digital computers for generating binary control decisions?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 112,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 register is used as a default counter in case of string and loop instructions.",
+    "options": [
+      "# AX",
+      "# BE ga’ x gia) DE"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 54,
+    "image": "images/2022_TS_p54.jpg"
   },
   {
     "id": 108,
-    "year": 2019,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 106,
-    "question": "Which of the following is the maximum number of prime implicants possible for an n-variable Boolean function?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 113,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 Base Pointer (BP) contains offset address of 7",
+    "options": [
+      "|, v Data segment",
+      "ae Code segment",
+      "48 Stack segment",
+      "as Extra segment"
+    ],
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 55,
+    "image": "images/2022_TS_p55.jpg"
   },
   {
     "id": 109,
-    "year": 2019,
+    "year": 2022,
     "state": "TS",
-    "questionNumber": 107,
-    "question": "[Question text not reliably recovered by OCR.]",
+    "pyqQuestion": 114,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 Which of the following is not a machine control flag?",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2022_TS",
+    "sourcePage": 55,
+    "image": "images/2022_TS_p55.jpg"
   },
   {
     "id": 110,
-    "year": 2019,
-    "state": "TS",
-    "questionNumber": 108,
-    "question": "Which digital logic family is suitable for circuits that need high component density?",
-    "options": [],
-    "answer": null
+    "year": 2023,
+    "state": "AP",
+    "pyqQuestion": 101,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 Assume that all the numbers are represented in 2’s complement, then which of the following is divisible by 11111011?",
+    "options": [
+      "#% 11100111 27° 11010111",
+      "% 11011011",
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 66,
+    "image": "images/2023_AP_p66.jpg"
   },
   {
     "id": 111,
-    "year": 2019,
-    "state": "TS",
-    "questionNumber": 110,
-    "question": "A three-input decoder has outputs.",
-    "options": [],
-    "answer": null
+    "year": 2023,
+    "state": "AP",
+    "pyqQuestion": 102,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 Tf (73)x = (54)y in a number system then the possible values of x and y are",
+    "options": [
+      "% 10.12",
+      "% 915",
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 67,
+    "image": "images/2023_AP_p67.jpg"
   },
   {
     "id": 112,
-    "year": 2019,
+    "year": 2023,
     "state": "AP",
-    "questionNumber": 101,
-    "question": "Question Number : 101 Orientation : Vertical Which among the following was the first version in the TTL family?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 103,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 Number of states ring counter with 5 flipflops will have?",
+    "options": [
+      "% 15",
+      "% 5 3a 32 4%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 68,
+    "image": "images/2023_AP_p68.jpg"
   },
   {
     "id": 113,
-    "year": 2019,
+    "year": 2023,
     "state": "AP",
-    "questionNumber": 102,
-    "question": "Question Number : 102 Orientation : Vertical The logical sum of all the minterms of a Boolean function of n variables is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 104,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 n-bit 2°s complement number system range for integers is",
+    "options": [
+      "% -(2™)) to (24)",
+      "% -(2°141) to 21-1)",
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 68,
+    "image": "images/2023_AP_p68.jpg"
   },
   {
     "id": 114,
-    "year": 2019,
+    "year": 2023,
     "state": "AP",
-    "questionNumber": 103,
-    "question": "Question Number : 103 Orientation : Vertical Circuits that generate the parity bit in the receiver and transmitter are called _____ and ____ respectively.",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 105,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 Which of the following are Universal Gates",
+    "options": [
+      "% NAND. X-OR",
+      "% AND. OR",
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 69,
+    "image": "images/2023_AP_p69.jpg"
   },
   {
     "id": 115,
-    "year": 2019,
+    "year": 2023,
     "state": "AP",
-    "questionNumber": 104,
-    "question": "Question Number : 104 Orientation : Vertical The characteristic equation for the complement output of a JK flip flop is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 106,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 The Fastest Logic Family Gate is",
+    "options": [
+      "% TIL",
+      "% ETL",
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 70,
+    "image": "images/2023_AP_p70.jpg"
   },
   {
     "id": 116,
-    "year": 2019,
+    "year": 2023,
     "state": "AP",
-    "questionNumber": 105,
-    "question": "Question Number : 105 Orientation : Vertical If the register has both shifts and parallel load capabilities that is referred to as",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 How many 4x | multiplexers are required to design 8 x 1 multiplexer?",
+    "options": [
+      "bond",
+      "",
+      "% 5",
+      "% 8"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 70,
+    "image": "images/2023_AP_p70.jpg"
   },
   {
     "id": 117,
-    "year": 2019,
+    "year": 2023,
     "state": "AP",
-    "questionNumber": 108,
-    "question": "Question Number : 108 Orientation : Vertical 4-to-16 line decoder can be constructed with 2-to-4 line decoders with enable.",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 Which Flip Flop is free from race around problem",
+    "options": [
+      "% SR Flip Flop",
+      "% JK Flip Flop",
+      "% Master Slave JK Flip Flop 47"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 71,
+    "image": "images/2023_AP_p71.jpg"
   },
   {
     "id": 118,
-    "year": 2018,
-    "state": "TS",
-    "questionNumber": 101,
-    "question": "[Question text not reliably recovered by OCR.]",
-    "options": [],
-    "answer": null
+    "year": 2023,
+    "state": "AP",
+    "pyqQuestion": 109,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 Ih subnet each packet is routed independently to reach the destination address.",
+    "options": [
+      "# Datagram a Virtual Circuit",
+      "% Static 4%"
+    ],
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 72,
+    "image": "images/2023_AP_p72.jpg"
   },
   {
     "id": 119,
-    "year": 2018,
-    "state": "TS",
-    "questionNumber": 102,
-    "question": "Question Number : 102 Single Line Question Option : No Option Orientation : Vertical The code where all successive numbers differ from their preceding number by single bit is",
+    "year": 2023,
+    "state": "AP",
+    "pyqQuestion": 110,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time: 0",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2023_AP",
+    "sourcePage": 72,
+    "image": "images/2023_AP_p72.jpg"
   },
   {
     "id": 120,
-    "year": 2018,
+    "year": 2023,
     "state": "TS",
-    "questionNumber": 103,
-    "question": "Question Number : 103 Single Line Question Option : No Option Orientation : Vertical Which of the following is a universal logic gate?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 Which statement best describes a Karnaugh map",
+    "options": [
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_TS",
+    "sourcePage": 69,
+    "image": "images/2023_TS_p69.jpg"
   },
   {
     "id": 121,
-    "year": 2018,
+    "year": 2023,
     "state": "TS",
-    "questionNumber": 104,
-    "question": "Question Number : 104 Single Line Question Option : No Option Orientation : Vertical How many two input AND gates and two input OR gates are required to realize Y=BD+CE+ AB?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 The number of distinct Boolean expressions for 4 variables is",
+    "options": [
+      "¥ 65536 4.7 Find the 4’s complement of a number 12302 (base 4) Options: 32002 1.8% 32003 2.8 3.v 21032 21031",
+      "%"
+    ],
+    "answer": null,
+    "source": "2023_TS",
+    "sourcePage": 70,
+    "image": "images/2023_TS_p70.jpg"
   },
   {
     "id": 122,
-    "year": 2018,
+    "year": 2023,
     "state": "TS",
-    "questionNumber": 105,
-    "question": "Question Number : 105 Single Line Question Option : No Option Orientation : Vertical Which of the following is the fastest logic family?",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + ¥(X#Z)",
+    "options": [
+      "1%",
+      "2a 3.%",
+      "8 4%"
+    ],
+    "answer": null,
+    "source": "2023_TS",
+    "sourcePage": 73,
+    "image": "images/2023_TS_p73.jpg"
   },
   {
     "id": 123,
-    "year": 2018,
+    "year": 2023,
     "state": "TS",
-    "questionNumber": 106,
-    "question": "Question Number : 106 Single Line Question Option : No Option Orientation : Vertical A simplified Sum of Products expression for the following Boolean function F (W.X.Y.Z) = (0.2.4.8.9.10.11.12.13) is",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 The logical expression Y = A+ AB is equivalent to",
+    "options": [
+      "1% Y=AB",
+      "2% Y=A+B",
+      "38 Y= AB",
+      "=A +"
+    ],
+    "answer": null,
+    "source": "2023_TS",
+    "sourcePage": 74,
+    "image": "images/2023_TS_p74.jpg"
   },
   {
     "id": 124,
-    "year": 2018,
+    "year": 2023,
     "state": "TS",
-    "questionNumber": 107,
-    "question": "Question Number : 107 Single Line Question Option : No Option Orientation : Vertical TS ECET 2018 How many entries are there in the truth table of 4 input NAND gate?",
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time = N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 The number of selection inputs required for a 64 x 1 Multiplexer (Mux) are",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2023_TS",
+    "sourcePage": 74,
+    "image": "images/2023_TS_p74.jpg"
   },
   {
     "id": 125,
-    "year": 2018,
-    "state": "TS",
-    "questionNumber": 108,
-    "question": "Question Number : 108 Single Line Question Option : No Option Orientation : Vertical Which of the following inputs is not accepted by SR flip-flop?",
-    "options": [],
-    "answer": null
+    "year": 2024,
+    "state": "AP",
+    "pyqQuestion": 101,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 The table containing present state of output , next state of the output and the inputs is called",
+    "options": [
+      "MP collegedunia Truth table % State table",
+      "* a Excitation table 4% Transition table"
+    ],
+    "answer": null,
+    "source": "2024_AP",
+    "sourcePage": 65,
+    "image": "images/2024_AP_p65.jpg"
   },
   {
     "id": 126,
-    "year": 2018,
-    "state": "TS",
-    "questionNumber": 109,
-    "question": "Question Number : 109 Single Line Question Option : No Option Orientation : Vertical How many flip-flops are required to construct a decade counter?",
-    "options": [],
-    "answer": null
+    "year": 2024,
+    "state": "AP",
+    "pyqQuestion": 102,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 A sequential circuit with 10 states will have",
+    "options": [
+      "0 Flip-flops TT 10 Flip-flops",
+      "Flip-flops ave coe 5 Flip-flops",
+      "%"
+    ],
+    "answer": null,
+    "source": "2024_AP",
+    "sourcePage": 66,
+    "image": "images/2024_AP_p66.jpg"
   },
   {
     "id": 127,
-    "year": 2018,
-    "state": "TS",
-    "questionNumber": 111,
-    "question": "Question Number : 111 Single Line Question Option : No Option Orientation : Vertical Which of the following is the major functioning responsibility of the multiplexer?",
-    "options": [],
-    "answer": null
+    "year": 2024,
+    "state": "AP",
+    "pyqQuestion": 103,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 MP collegedunia A binary number can be multiplied by 2 or divided by 2 with help of",
+    "options": [
+      "% ‘ 7 * sequential circuit shift register 3.¢8 any combinational circuit",
+      "%"
+    ],
+    "answer": null,
+    "source": "2024_AP",
+    "sourcePage": 66,
+    "image": "images/2024_AP_p66.jpg"
   },
   {
     "id": 128,
-    "year": 2018,
-    "state": "TS",
-    "questionNumber": 112,
-    "question": "Question Number : 112 Single Line Question Option : No Option Orientation : Vertical The sum output bit for a full adder with inputs X.Y. Cy is",
-    "options": [],
-    "answer": null
+    "year": 2024,
+    "state": "AP",
+    "pyqQuestion": 104,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 A five bit binary counter uses flip flops with propagation delay time of 10 ns each. The maximum possible time required for change of state will be",
+    "options": [
+      "1% 10 ns",
+      "5",
+      "7 0.5ns",
+      "3% 2 ns"
+    ],
+    "answer": null,
+    "source": "2024_AP",
+    "sourcePage": 67,
+    "image": "images/2024_AP_p67.jpg"
   },
   {
     "id": 129,
-    "year": 2017,
-    "state": "TS",
-    "questionNumber": 8,
-    "question": "[Question ID = 10903] 1. B 2. A 3. 0 4. 1",
-    "options": [],
-    "answer": null
+    "year": 2024,
+    "state": "AP",
+    "pyqQuestion": 105,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 The Boolean expression (A+C) (AB'+AC) (A'C'tB') can be simplified to",
+    "options": [
+      "* A'B+BC",
+      "* 4% AB+BC"
+    ],
+    "answer": null,
+    "source": "2024_AP",
+    "sourcePage": 68,
+    "image": "images/2024_AP_p68.jpg"
   },
   {
     "id": 130,
-    "year": 2017,
-    "state": "TS",
-    "questionNumber": 9,
-    "question": "When grouping cells within a Kmap, the cells must be combined in groups of [Question ID = 10904] 1. 2 2. 4 3. 8 4. 1,2,4,8 etc",
-    "options": [],
-    "answer": null
+    "year": 2024,
+    "state": "AP",
+    "pyqQuestion": 106,
+    "question": "Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time :0 The 2’s compliment representation of the decimal value -15 is",
+    "options": [
+      "% 2% 11111 3.x 11110 MP collegedunia"
+    ],
+    "answer": null,
+    "source": "2024_AP",
+    "sourcePage": 68,
+    "image": "images/2024_AP_p68.jpg"
   },
   {
     "id": 131,
-    "year": 2017,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 10,
-    "question": "The simultaneous equations of boolean variables x, y, z and w are: x + y + z = 1, xy = 0, xz + w = 1 and xy + (zw)’ = 0 have the following solutions for x, y, z and w respectively. [Question ID = 10905] 1. 0100 2. 1101 3. 1011 4. 1000",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time :N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 The decimal equivalent of octal number (128.24)g is",
+    "options": [
+      "25",
+      "7614465201. * SASS",
+      "7614465202, ¥ 88.3125",
+      "7614465203, # 40-15625"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 63,
+    "image": "images/2024_TS_p63.jpg"
   },
   {
     "id": 132,
-    "year": 2017,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 11,
-    "question": "The widely adapted combination circuit implementation method with maximum output functions and minimum requirement of ICs is [Question ID = 10907] 1. Multiplexer 2. Decoder 3. Encoder 4. Parity Generator",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time > N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 The binary equivalent of a BCD number 00101001.01110101 is",
+    "options": [
+      "7614465205. ¥ ames",
+      "7614465206. * BeOaESA",
+      "7614465207. ® 11101.10100",
+      "7614465208, * 11010.10100"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 63,
+    "image": "images/2024_TS_p63.jpg"
   },
   {
     "id": 133,
-    "year": 2017,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 12,
-    "question": "[Question ID = 10908] 1. 1 2. 10 3. 100 4. 778",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 The logical gate that gives an output of logic level “1” whenever two inputs are equal is",
+    "options": [
+      "7614465209, * sae",
+      "7614465210, * OR",
+      "7614465211, # EX-OR",
+      "Ex-NOR"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 64,
+    "image": "images/2024_TS_p64.jpg"
   },
   {
     "id": 134,
-    "year": 2017,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 13,
-    "question": "[Question ID = 10909] 1. Mod 3 counter 2. Mod4 counter 3. Mod 5 counter 4. Mod – 7 counter",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 Convert A.B + A.B into equivalent Product of Sums expression",
+    "options": [
+      "7614465213, * (AtB)-( A+B)",
+      "A+B A+",
+      "7614465214. * ate). CAB)",
+      "+ D : A+"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 65,
+    "image": "images/2024_TS_p65.jpg"
   },
   {
     "id": 135,
-    "year": 2017,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 14,
-    "question": "[Question ID = 10910] 1. 0000 2. 1010 3. 0101 4. 1111",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 A digital circuit whose output depends not only on the present input but also on sequence of past inputs is a",
+    "options": [
+      "7614465217, x» Decoder",
+      "7614465218. ® Multiplexer",
+      "a AaRAe: me Sequential Circuit",
+      "Combinational Circuit"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 65,
+    "image": "images/2024_TS_p65.jpg"
   },
   {
     "id": 136,
-    "year": 2017,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 15,
-    "question": "A 4 bit shift register in which the outputs of 3rd and 4th flipflops are connected parallel through an ex- or gate back to the first flipflop input. If initially all flipflop outputs set to 1’s , the circuit produces output sequence: [Question ID = 10911] 1. 1111 1111 0000 0000 2. 1111 0000 1111 0000 3. 1111 0001 0011 0101 4. 1010 1010 1010 1010",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 The number of distinct Boolean expressions for 4 variables is",
+    "options": [
+      "7614465221. * 16",
+      ">",
+      "7614465222. * mas",
+      "1024"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 66,
+    "image": "images/2024_TS_p66.jpg"
   },
   {
     "id": 137,
-    "year": 2016,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 27,
-    "question": "Q.27 Whal i5 tbe simplified .xpresion with minimum numbs of tiierals lor th€ siven fucrioh ' F lx,9,zl = x'v' z + xv' z ++ \\Yz , (1) xy' + p l2l Y'2 + x'9'2 + xYz ' (3) xyz + x'y' (4) xsz + \\' e z Q.2E Whi.h of the fouowins is I dempotence law (1) x+xy=x (2) x(x+r=x (3) x+x=x 14) 1+x=l",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 An SR flip flop is converted to flip flop by inserting an inverter between S&R by assigning a single input",
+    "options": [
+      "7614465225, « Master Slave",
+      "7614465226. *",
+      "7614465227, * JK",
+      "7614465228. ¥ D"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 66,
+    "image": "images/2024_TS_p66.jpg"
   },
   {
     "id": 138,
-    "year": 2016,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 28,
-    "question": "[Question text not reliably recoverable from supplied scan.]",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 A Combinational circuit that converts the binary information from 2\" inputs to n outputs is",
+    "options": [
+      "7614465229, x Decoder",
+      "7614465230, «Multiplexer",
+      "7614465231, » Half Adder",
+      "7614465232, 7 Encoder"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 67,
+    "image": "images/2024_TS_p67.jpg"
   },
   {
     "id": 139,
-    "year": 2016,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 29,
-    "question": "Q.29 To design 8x l multipl€x€r using 2xl multiplexer only, h@ manv 2x l muhiDi€rer are !equied l1) 7 t2t6 (3) 5 (4) 4 Q.3O How many number of boolean lonction can be romed with 3_vanables (l) 8 l2tt6 13) 256 14) 32 Q.3r Todesigna@unterlorlhe*quenc€1.2,3,4,5.6,7,",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks: 0 The address lines required 16 kilobyte memory chip is",
+    "options": [
+      "7614465233. * 7614465234, * id 7614465235, ¥ ‘4 7614465236. * 3"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 68,
+    "image": "images/2024_TS_p68.jpg"
   },
   {
     "id": 140,
-    "year": 2016,
+    "year": 2024,
     "state": "TS",
-    "questionNumber": 30,
-    "question": "[Question text not reliably recoverable from supplied scan.]",
-    "options": [],
-    "answer": null
+    "pyqQuestion": 110,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Is Question Mandatory : No Calculator : None Response Time : N.A Think Time : N.A Minimum Instruction Time : 0 Correct Marks : 1 Wrong Marks : 0 If A, B, C, D, E, F represents variables of a Boolean expression and m; is the iD min term, then the value of my; is",
+    "options": [
+      "7614465237. ¥ ett",
+      "A+B+C+D+E+F",
+      "7614465238. *",
+      "7614465239. * alt ei dae"
+    ],
+    "answer": null,
+    "source": "2024_TS",
+    "sourcePage": 68,
+    "image": "images/2024_TS_p68.jpg"
   },
   {
     "id": 141,
-    "year": 2016,
-    "state": "TS",
-    "questionNumber": 31,
-    "question": "[Question text not reliably recoverable from supplied scan.]",
-    "options": [],
-    "answer": null
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 Which of the following is a universal gate?",
+    "options": [
+      "1% AND",
+      "2% OR",
+      "NAN",
+      "ac ae"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 48,
+    "image": "images/2025_AP_p48.jpg"
   },
   {
     "id": 142,
-    "year": 2016,
-    "state": "TS",
-    "questionNumber": 32,
-    "question": "Q.32 How dany numbers oI bits are requir€d to code lhe 26 alPhabeis' 10 digils and 10 special chaccierr U) 6 l2l5 13) 4 {4r Ib",
-    "options": [],
-    "answer": null
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 Which of the following is NOT a combinational circuit?",
+    "options": [
+      "Multiplexer 4% Adder"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 48,
+    "image": "images/2025_AP_p48.jpg"
   },
   {
     "id": 143,
-    "year": 2016,
-    "state": "TS",
-    "questionNumber": 33,
-    "question": "Q.33 The systematic rsduction of logic .ircuits is aEoplish€d bv (1) using boolean alsebra (2) srmboliireduction (3) TTL losic (4) using a iruih table",
-    "options": [],
-    "answer": null
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 A demultiplexer is a device that",
+    "options": [
+      "% . new Route a single input to multiple outputs"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 49,
+    "image": "images/2025_AP_p49.jpg"
   },
   {
     "id": 144,
-    "year": 2016,
-    "state": "TS",
-    "questionNumber": 34,
-    "question": "Q.34 Howmanr numb\"A I i arc presnl 'n the binarv repte*ntation ol . 15 ' 2 'o ' 5 tb +3 lL) 2 (2)5 B) 10 (41 8",
-    "options": [],
-    "answer": null
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 Convert the binary number 110011 into its decimal equivalent.",
+    "options": [
+      "g",
+      "1% 49",
+      "2v51",
+      "3% 53"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 49,
+    "image": "images/2025_AP_p49.jpg"
   },
   {
     "id": 145,
-    "year": 2016,
-    "state": "TS",
-    "questionNumber": 35,
-    "question": "Q.35 Whicn o.e ofihe following booleaD €xpre$ions is mt logiGllv equivalenr (o alloth€r expressions (1)sxy' + wz' + @xyz + wy'. l2l wx + wv' + u'!.Iz, (3)wx+*y +wz 14) w+x+9'+.2' rs6 -:E1---:-.. ECET lcompuier Science tnd Enginaeringl into T flip-flop",
-    "options": [],
-    "answer": null
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 The number of select lines required for an 8-to-1 multiplexer is?",
+    "options": [
+      "ry",
+      "i",
+      "27° 3",
+      "3.8 5"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 49,
+    "image": "images/2025_AP_p49.jpg"
   },
   {
     "id": 146,
-    "year": 2016,
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 _A Sequential logic circuit that toggles its output state on each clock pulse is",
+    "options": [
+      "SR flip-flop 7 D flip-flop 38 JK flip-flop ne T flip-flop"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 50,
+    "image": "images/2025_AP_p50.jpg"
+  },
+  {
+    "id": 147,
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 Convert the decimal number 108 into its octal equivalent.",
+    "options": [
+      "% 134 144",
+      "* 5 4.7 154"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 50,
+    "image": "images/2025_AP_p50.jpg"
+  },
+  {
+    "id": 148,
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 What is the simplified form of the Boolean expression (A+ B)(A+C)?",
+    "options": [
+      "% a % AC+BC 4,7 BEBE"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 51,
+    "image": "images/2025_AP_p51.jpg"
+  },
+  {
+    "id": 149,
+    "year": 2025,
+    "state": "AP",
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : No Display Question Number : Yes Correct Marks : 1 Wrong Marks: 0 What is the primary purpose of a Software Requirements Specification (SRS) document?",
+    "options": [
+      "To define the coding standards",
+      "1%",
+      "= To outline the software design",
+      "av To describe the functional and non-functional requirements"
+    ],
+    "answer": null,
+    "source": "2025_AP",
+    "sourcePage": 51,
+    "image": "images/2025_AP_p51.jpg"
+  },
+  {
+    "id": 150,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks: 0 Which logic gate produces an output of 0 only when all inputs are 1?",
+    "options": [
+      "1% AND",
+      "2% OR",
+      "NAND",
+      "ae"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 47,
+    "image": "images/2026_AP_p47.jpg"
+  },
+  {
+    "id": 151,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks: 0 The Boolean expression A + AB simplifies to",
+    "options": [
+      "% B Wass",
+      "%"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 47,
+    "image": "images/2026_AP_p47.jpg"
+  },
+  {
+    "id": 152,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks: 0 Which flip-flop has an invalid state?",
+    "options": [
+      "= JK 2.%",
+      "% T 4.7 ae"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 48,
+    "image": "images/2026_AP_p48.jpg"
+  },
+  {
+    "id": 153,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks: 0 Convert the binary number 101101 into its decimal equivalent.",
+    "options": [
+      "% - 2S 45 3% 44 46",
+      "®"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 48,
+    "image": "images/2026_AP_p48.jpg"
+  },
+  {
+    "id": 154,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks: 0 The number of outputs of a 4-bit decoder is",
+    "options": [
+      "% 8 3,7 16",
+      "32"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 48,
+    "image": "images/2026_AP_p48.jpg"
+  },
+  {
+    "id": 155,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks : 0 Which flip-flop toggles its output on every clock pulse when input is HIGH?",
+    "options": [
+      "JK flip-flop D flip-flop",
+      "% T flip-flo 4.7 ama:"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 49,
+    "image": "images/2026_AP_p49.jpg"
+  },
+  {
+    "id": 156,
+    "year": 2026,
+    "state": "AP",
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Correct Marks : 1 Wrong Marks: 0 model follows the approach where partial functionality is delivered early and enhanced in successive versions.",
+    "options": [
+      "1% Waterfall",
+      "Incremental",
+      "LS",
+      "a8 V-Model"
+    ],
+    "answer": null,
+    "source": "2026_AP",
+    "sourcePage": 49,
+    "image": "images/2026_AP_p49.jpg"
+  },
+  {
+    "id": 157,
+    "year": 2026,
     "state": "TS",
-    "questionNumber": 36,
-    "question": "Q.36 What is the additional losic r€quned io convelr D flipjlop (1) D: r-Q. (2)D=T (3) D=T+Q, (4)D=raQ\" ituttuctioa",
+    "pyqQuestion": 101,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 If F=(A+B)(A +B), then F simplifies to",
+    "options": [
+      "% B 9 ee",
+      "% o"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 38,
+    "image": "images/2026_TS_p38.jpg"
+  },
+  {
+    "id": 158,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 102,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 Consider © defined as KOY = X.Y + X.Y, then © is",
+    "options": [
+      "_» XOR",
+      "7",
+      ">v XNOR",
+      "https://g21 .digialm.com/CAE/viewHtmIPDFAction.action 38/81"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 38,
+    "image": "images/2026_TS_p38.jpg"
+  },
+  {
+    "id": 159,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 103,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 If F = Xm(0.1.2.5,6.7), minimal SOP is",
+    "options": [
+      "A'B'+AB+AC",
+      "% ' 0 ,v ABYBC'+AC AB't+AC'",
+      "%"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 39,
+    "image": "images/2026_TS_p39.jpg"
+  },
+  {
+    "id": 160,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 104,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 For 4-variable K-map. largest group size possible is",
+    "options": [
+      "* 12",
+      "% aug 16 4,% 4"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 39,
+    "image": "images/2026_TS_p39.jpg"
+  },
+  {
+    "id": 161,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 105,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 A 5-bit ripple counter uses J-K Flipflop with J=1, K=1 and the propagation delay is 30ns. What is time required for stable output from this ripple counter",
+    "options": [
+      "% 3.v 150ns 120ns",
+      "%"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 39,
+    "image": "images/2026_TS_p39.jpg"
+  },
+  {
+    "id": 162,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 106,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 Select the statement that contrasts Johnson’s counter with ripple counter correctly",
+    "options": [
+      "% = Ripple counter has twice the states of Johnson’s counter",
+      ", « Both are asynchronous"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 40,
+    "image": "images/2026_TS_p40.jpg"
+  },
+  {
+    "id": 163,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 107,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 A full adder can be implemented using",
+    "options": [
+      "Two AND gates, Two XOR gates and One OR gate 37° ,.» wo half-adders and one AND gate"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 40,
+    "image": "images/2026_TS_p40.jpg"
+  },
+  {
+    "id": 164,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 108,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 The difference between latch and flip-flop",
+    "options": [
+      "* * Flip-flop is level-triggered and Latch is not",
+      "eas Latch is level-triggered and flip-flop is edge-triggered Latch and flip-flop are equivalent",
+      "%"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 40,
+    "image": "images/2026_TS_p40.jpg"
+  },
+  {
+    "id": 165,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 109,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 A decoder with n inputs can generate",
+    "options": [
+      ":",
+      "* n* outputs 4% 3n outputs"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 41,
+    "image": "images/2026_TS_p41.jpg"
+  },
+  {
+    "id": 166,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 110,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 Minimum number of flipflops required for a mod-12 counter is",
+    "options": [
+      "",
+      "",
+      "%",
+      "270 5 3,% 6"
+    ],
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 41,
+    "image": "images/2026_TS_p41.jpg"
+  },
+  {
+    "id": 167,
+    "year": 2026,
+    "state": "TS",
+    "pyqQuestion": 111,
+    "question": "Question Type : MCQ Option Shuffling : Yes Display Question Number : Yes Correct Marks : 1 Wrong Marks : 0 https://g21 .digialm.com/CAE/viewHtmIPDFAction.action 41/81",
     "options": [],
-    "answer": null
+    "answer": null,
+    "source": "2026_TS",
+    "sourcePage": 41,
+    "image": "images/2026_TS_p41.jpg"
+  },
+  {
+    "id": 168,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 8,
+    "question": "",
+    "options": [],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 41,
+    "image": "images/2017_TS_p41.jpg"
+  },
+  {
+    "id": 169,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 9,
+    "question": "",
+    "options": [],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 41,
+    "image": "images/2017_TS_p41.jpg"
+  },
+  {
+    "id": 170,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 10,
+    "question": "",
+    "options": [
+      "0100",
+      "1101",
+      "1011"
+    ],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 41,
+    "image": "images/2017_TS_p41.jpg"
+  },
+  {
+    "id": 171,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 11,
+    "question": "uit implementation method with maximum output functions and minimum requirement of ICs is [Question ID = 10907]",
+    "options": [
+      "Multiplexer",
+      "Decoder",
+      "Encoder",
+      "Parity Generator"
+    ],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 42,
+    "image": "images/2017_TS_p42.jpg"
+  },
+  {
+    "id": 172,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 12,
+    "question": "",
+    "options": [],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 42,
+    "image": "images/2017_TS_p42.jpg"
+  },
+  {
+    "id": 173,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 13,
+    "question": "",
+    "options": [
+      "Mod- 3 counter",
+      "Mod-4 counter",
+      "Mod -5 counter",
+      "Mod — 7 counter"
+    ],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 42,
+    "image": "images/2017_TS_p42.jpg"
+  },
+  {
+    "id": 174,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 14,
+    "question": "",
+    "options": [],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 42,
+    "image": "images/2017_TS_p42.jpg"
+  },
+  {
+    "id": 175,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 15,
+    "question": "",
+    "options": [
+      "1111 1111 0000 0000",
+      "1111 0000 1111 0000",
+      "1111 0001 0011 0101",
+      "1010 1010 1010 1010"
+    ],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 43,
+    "image": "images/2017_TS_p43.jpg"
+  },
+  {
+    "id": 176,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 16,
+    "question": "",
+    "options": [],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 43,
+    "image": "images/2017_TS_p43.jpg"
+  },
+  {
+    "id": 177,
+    "year": 2017,
+    "state": "TS",
+    "pyqQuestion": 17,
+    "question": "",
+    "options": [
+      "internal address buffer",
+      "internal address decoder",
+      "volatility",
+      "internal address decoder and volatility"
+    ],
+    "answer": null,
+    "source": "2017_TS",
+    "sourcePage": 43,
+    "image": "images/2017_TS_p43.jpg"
   }
 ]
