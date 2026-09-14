@@ -1,0 +1,154 @@
+ID,Year,State,Question Number,Question,Option A,Option B,Option C,Option D,Correct Answer,Status
+1,2026,TS,101,"If F=(A+B)(A +B), then F simplifies to:",A,B,AB,0,A,re-OCR/manual-cleanup
+2,2026,TS,102,"Consider ⊙ defined as X⊙Y = X·Y + X̅·Y̅, then ⊙ is:",XOR,XNOR,NAND,NOR,B,re-OCR/manual-cleanup
+3,2026,TS,103,"If F = Σm(0,1,2,5,6,7), minimal SOP is:",AB'+AC,A'B‘+ABt+AC,.v AB+BC+AC,AB'+AC’,A,re-OCR/manual-cleanup
+4,2026,TS,104,"For 4-variable K-map, largest group size possible is:",8,2,16,4,C,re-OCR/manual-cleanup
+5,2026,TS,105,"A 5-bit ripple counter uses J-K flip-flops with J=1, K=1 and the propagation delay is 30 ns. What is the time required for stable output from this ripple counter?",30 ns,100 ns,150 ns,120 ns,C,re-OCR/manual-cleanup
+6,2026,TS,106,Select the statement that contrasts Johnson’s counter with ripple counter correctly.,Both have the same number of states,Johnson’s counter has twice the states of a ripple counter,Ripple counter has twice the states of a Johnson counter,Both are asynchronous,C,re-OCR/manual-cleanup
+7,2026,TS,107,A full adder can be implemented using,Two half-adders only,"Two AND gates, two XOR gates and two OR gates","Two AND gates, two XOR gates and one OR gate",Two half-adders and one AND gate,D,re-OCR/manual-cleanup
+8,2026,TS,108,The difference between latch and flip-flop:,Latch is edge-triggered and flip-flop is not,Flip-flop is level-triggered and latch is not,Latch is level-triggered and flip-flop is edge-triggered,Latch and flip-flop are equivalent,C,re-OCR/manual-cleanup
+9,2026,TS,109,A decoder with n inputs can generate:,2^n outputs,2n outputs,n^2 outputs,3n outputs,A,re-OCR/manual-cleanup
+10,2026,TS,110,Minimum number of flip-flops required for a mod-12 counter is:,4,5,8,6,A,re-OCR/manual-cleanup
+11,2026,AP,101,Which logic gate produces an output of 0 only when all inputs are 1?,AND,OR,NAND w,NOR,C,re-OCR/manual-cleanup
+12,2026,AP,102,The Boolean expression A + AB simplifies to,A,AB,B,1,A,re-OCR/manual-cleanup
+13,2026,AP,103,Which flip-flop has an invalid state?,D flip-flop,JK flip-flop,T flip-flop,SR flip-flop,D,re-OCR/manual-cleanup
+14,2026,AP,104,Convert the binary number 101101 into its decimal equivalent.,43,27,45,44,C,re-OCR/manual-cleanup
+15,2026,AP,105,The number of outputs of a 4-bit decoder is,4,8,16,32,C,re-OCR/manual-cleanup
+16,2026,AP,106,Which flip-flop toggles its output on every clock pulse when input is HIGH?,SR flip-flop,JK flip-flop,D flip-flop,T flip-flop,D,re-OCR/manual-cleanup
+17,2025,TS,101,The decimal equivalent of the octal number (645) is,(450)10,(451)10,(421)10,(501)10,C,re-OCR/manual-cleanup
+18,2025,TS,102,The characteristic equation of JK flip flop is,Q(n+1) = JQ(n) + KQ(n),Q(n+1) = JQ̅(n) + K̅Q(n),Q(n+1) = JQ̅(n) + KQ̅(n),Q(n+1) = J̅Q(n) + K̅Q(n),B,re-OCR/manual-cleanup
+19,2025,TS,103,Multiplication result of (10.10): and (01.01) is,101.0010,0010.101,011.0010,110.0011,C,re-OCR/manual-cleanup
+20,2025,TS,104,"For the logic circuit shown in the figure the required input (A, B, C) condition to make the output (X) = 1 is A B X c","(1,0,1)","(0,0,1)","(1,1,1)","(0,1,1)",D,re-OCR/manual-cleanup
+21,2025,TS,105,"A three variable truth table has a High output for the inputs (A, B, C): 010, 011 and 110. The Boolean expression for Sum Of Product (SOP) can be written as",A̅B + BC̅,AB̅ + B̅C,A̅B̅ + BC,AB̅ + B̅C̅,A,re-OCR/manual-cleanup
+22,2025,TS,106,The logic function implemented by the circuit shown below is (ground implies a logic “0”) 4x1 MUX 2 I f; 5 5p PQ,F =AND (P. Q),F=OR(P. Q),"F = XNOR (P, Q)",F = XOR (P. Q),D,re-OCR/manual-cleanup
+23,2025,TS,107,"Among the digital IC families ECL, TTL and CMOS, which one of the following is correct?",124,134,144,154,D,re-OCR/manual-cleanup
+24,2025,TS,108,"The outputs of the two flip-flops Q1, Q2 in the figure shown are initialized to 0, 0. The sequence generated at Q1 upon application of clock signal is:",01110...,01010...,00110...,01100...,D,re-OCR/manual-cleanup
+25,2025,TS,109,"The output frequency of a mod-12 counter is 6 KHz, then the input frequency is",6 KHz,500 Hz,24 KHz,72 KHz,D,re-OCR/manual-cleanup
+26,2025,TS,110,Which of the following is correct for DRAM?,Periodic refreshing is not required,Data is stored in a capacitor,Data stored in a latch,Read and write operations performed simultaneously,B,re-OCR/manual-cleanup
+27,2025,AP,101,Which of the following is a universal gate?,AND,OR,NAND,XOR,C,re-OCR/manual-cleanup
+28,2025,AP,102,Which of the following is NOT a combinational circuit?,Flip-flop,Decoder,Multiplexer,Adder,A,re-OCR/manual-cleanup
+29,2025,AP,103,A demultiplexer is a device that :,Encode multiple inputs into one output,Decode binary to decimal,Store binary information,Route a single input to multiple outputs,D,re-OCR/manual-cleanup
+30,2025,AP,104,Convert the binary number 110011 into its decimal equivalent.,51,49,53,55,A,re-OCR/manual-cleanup
+31,2025,AP,105,The number of select lines required for an 8-to-1 multiplexer is?,3,7,9,8,A,re-OCR/manual-cleanup
+32,2025,AP,106,_A Sequential logic circuit that toggles its output state on each clock pulse is,SR flip-flop,D flip-flop,JK flip-flop,T flip-flop,D,re-OCR/manual-cleanup
+33,2025,AP,107,Convert the decimal number 108 into its octal equivalent.,124,134,144,154,D,re-OCR/manual-cleanup
+34,2025,AP,108,What is the simplified form of the Boolean expression (A+ B)(A+C)?,A+B+C,AB+C,AC+BC,A+BC,D,re-OCR/manual-cleanup
+35,2024,TS,101,The decimal equivalent of octal number (128.24)s is,5,7614465201. * Bo;3125,7614465202. ¥ 88.3125,"7614465203, * 40-15625",B,re-OCR/manual-cleanup
+36,2024,TS,102,The binary equivalent of a BCD number 00101001.01110101 is,7614465205. ¥ ——,7614465206. * 11010.11,7614465207. * 11101.10100,"7614465208, # 11010.10100",A,re-OCR/manual-cleanup
+37,2024,TS,103,The logical gate that gives an output of logic level “1” whenever two inputs are equal is,"7614465209, * ANID","7614465210, * OR","7614465211, # =x-OR",Ex-NOR,D,re-OCR/manual-cleanup
+38,2024,TS,104,Convert,7614465213. * (A+B). (A+B),B).( At,"7614465214, * CAR) CA)",B) (A+,C,re-OCR/manual-cleanup
+39,2024,TS,105,A digital circuit whose output depends not only on the present input but also on sequence of past inputs is a,"7614465217, x Decoder","7e1aaes2ie, « Multiplexer",Sequential Circuit,7614465219. *,D,re-OCR/manual-cleanup
+40,2024,TS,106,The number of distinct Boolean expressions for 4 variables is,7614465221. * 16,~,7614465222. * 258,024,D,re-OCR/manual-cleanup
+41,2024,TS,107,An SR flip-flop is converted to a D flip-flop by inserting an inverter between S & R and assigning a single input.,Master Slave,T,JK,D,D,re-OCR/manual-cleanup
+42,2024,TS,108,A combinational circuit that converts the binary information from 2^n inputs to n outputs is,Decoder,Multiplexer,Half Adder,Encoder,D,re-OCR/manual-cleanup
+43,2024,TS,109,The address lines required for a 16 kilobyte memory chip is,7614465233. *,"7614465234, * 18",7614465235. v |4,"7614465236, » !3",C,re-OCR/manual-cleanup
+44,2024,TS,110,"IFA, B,C, D, E,F represents variables of a Boolean expression and my isthe i’ min term, then the value of mi is",7614465237. Y AC D.BE,B +D+E+,7614465238. * si acnianiimiaael,"7614465239, * at EES",A,re-OCR/manual-cleanup
+45,2024,AP,101,"The table containing present state of output, next state of the output and the inputs is called",Truth table,State table,Excitation table,Transition table,C,re-OCR/manual-cleanup
+46,2024,AP,102,A sequential circuit with 10 states will have,3 flip-flops,4 flip-flops,5 flip-flops,10 flip-flops,B,re-OCR/manual-cleanup
+47,2024,AP,103,A binary number can be multiplied by 2 or divided by 2 with help of,AND gate,Sequential circuit,Shift register,Any combinational circuit,C,re-OCR/manual-cleanup
+48,2024,AP,104,A five-bit binary counter uses flip-flops with propagation delay time of 10 ns each. The maximum possible time required for change of state will be,10 ns,0.5 ns,2 ns,50 ns,D,re-OCR/manual-cleanup
+49,2024,AP,105,The Boolean expression (A+C)(AB′+AC)(A′C′+B) can be simplified to,AB′,AB+A′C,A′B+BC,AB+BC,A,re-OCR/manual-cleanup
+50,2024,AP,106,The 2’s complement representation of the decimal value -15 is,01111,11111,11110,10001,D,re-OCR/manual-cleanup
+51,2024,AP,107,"Let * be defined as x*y=x′+y, let z=x*y. Then the value of z*x is",x′+y,x,0,1,D,re-OCR/manual-cleanup
+52,2024,AP,108,"SR latch is made by cross coupling two NAND gates. If S=R=0, then it will result in","Q=0, Q′=1","Q=1, Q′=0","Q=1, Q′=1",indeterminate state,C,re-OCR/manual-cleanup
+53,2023,TS,101,Which statement best describes a Karnaugh map,It is simply a rearranged truth table,The Karnaugh map eliminates the need of using NAND and NOR gates,Variable complement can be eliminated using Karnaugh maps,A Karnaugh map can be used to replace Boolean rules,A,re-OCR/manual-cleanup
+54,2023,TS,102,The number of distinct Boolean expressions for 4 variables is,16,256,1024,65536,D,re-OCR/manual-cleanup
+55,2023,TS,103,‘An SR flip flop is converted to flip flop by inserting an inverter between S&R and assigning a single input,Master-slave,T,JK,D,D,re-OCR/manual-cleanup
+56,2023,TS,104,"A Combinational circuit that converts the binary information from 2"" inputs to n outputs is",Decoder,Multiplexer,Encoder,Half adder,C,re-OCR/manual-cleanup
+57,2023,TS,105,Convert the decimal number 41.6875 into binary,101001.0111000111101,101001.111000111101,101001.1101,101001.1011,D,re-OCR/manual-cleanup
+58,2023,TS,106,Find the 4’s complement of a number 12302 (base 4),32002,32003,21032,21031,C,re-OCR/manual-cleanup
+59,2023,TS,107,How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + Y(X+Z},2,8,4,1,A,re-OCR/manual-cleanup
+60,2023,TS,108,The logical expression Y = A + A̅B is equivalent to,Y=AB,Y=A̅+B,Y=A̅B,Y=A+B,D,re-OCR/manual-cleanup
+61,2023,TS,109,The number of selection inputs required for a 64 × 1 Multiplexer (MUX) are,5,6,8,4,B,re-OCR/manual-cleanup
+62,2023,AP,101,Assume that all the numbers are represented in 2’s complement. then which of the following is divisible by 11111011?,1100100,1100111,70,1010111,C,re-OCR/manual-cleanup
+63,2023,AP,102,Tf (73)x = (54)y in a number system then the possible values of x and y are,"8,11","8,16","10,12","9,14",A,re-OCR/manual-cleanup
+64,2023,AP,103,Number of states ring counter with 5 flipflops will have?,10,15,5,32,C,re-OCR/manual-cleanup
+65,2023,AP,104,n-bit 2°s complement number system range for integers is,−2^(n−1) to 2^(n−1),−2^n to 2^n,−2^(n−1) to 2^(n−1)−1,−(2^n−1) to 2^n−1,C,re-OCR/manual-cleanup
+66,2023,AP,105,Which of the following are Universal Gates,"NAND, NOR","OR, XNOR","NAND, XOR","AND, OR",A,re-OCR/manual-cleanup
+67,2023,AP,106,The Fastest Logic Family Gate is,ECL,CMOS,TTL,ETL,A,re-OCR/manual-cleanup
+68,2023,AP,107,How many 4 x | multiplexers are required to design $ x 1 multiplexer?,4,2,3,5,B,re-OCR/manual-cleanup
+69,2023,AP,108,Which Flip Flop is free from race around problem,RS flip-flop,SR flip-flop,JK flip-flop,Master-slave JK flip-flop,D,re-OCR/manual-cleanup
+70,2022,TS,101,How many NOR gates are needed to construct AND gate,2,3,4,8,A,re-OCR/manual-cleanup
+71,2022,TS,102,"A serial in/parallel out, 4-bit shift register initially contains all 1s. The data nibble 0111 is waiting to enter. After four clock pulses, the register contains:",0000,1111,0111,1000,C,re-OCR/manual-cleanup
+72,2022,TS,103,The toggle condition ina master-slave J-K flip-flop means that Q and Q will switch to their ------------ state(s) at the ---------------.,"opposite, active clock edge","inverted, positive clock edge","quiescent, negative clock edge","reset, synchronous clock edge",A,re-OCR/manual-cleanup
+73,2022,TS,104,Which of the following is a type of shift register counter?,Decade,Binary,Ring,BCD,C,re-OCR/manual-cleanup
+74,2022,TS,105,Select the statement that best describes Read-Only Memory (ROM).,"Nonvolatile, used to store information that changes during system operation","Nonvolatile, used to store information that does not change during system operation","Volatile, used to store information that changes during system operation","Volatile, used to store information that does not change during system operation",B,re-OCR/manual-cleanup
+75,2022,TS,106,The following is one of the applications of a digital multiplexer:,Data generation,Serial-to-parallel conversion,Parity checking,Data selector,D,re-OCR/manual-cleanup
+76,2022,TS,107,A circuit that responds to a specific set of signals to produce a related digital signal output is called a(n):,BCD matrix,Display driver,Encoder,Decoder,D,re-OCR/manual-cleanup
+77,2022,TS,108,Which of the following is the output of (AB (A+ C))+AB(A+B4+C)?,|» A+BU+AC),A+B,BA,A+B,B,re-OCR/manual-cleanup
+78,2022,TS,109,While forming groups in K-mapping the Don't care states are combined along with terms of,yv Minterms,Maxterms,De,SOP,A,re-OCR/manual-cleanup
+79,2022,TS,110,What is the disadvantage of an S-R Flip-Flop,It has no enable input,It has a race condition,It has no clock input,Invalid state,D,re-OCR/manual-cleanup
+80,2022,AP,101,(1B. 42)16 = ()e,36.204,36.202,74.204,74.202,A,re-OCR/manual-cleanup
+81,2022,AP,102,"onit22 72272, 4:00 PM Which logic gates among the below options can be used to create any Boolean function economically?","XOR, NAND, OR","OR, NOT, XOR","NOR, NAND, XOR","NOR, NAND",D,re-OCR/manual-cleanup
+82,2022,AP,103,101001 - 010110 =?,100110,010011,010010,011001,B,re-OCR/manual-cleanup
+83,2022,AP,104,DeMorgan's theorem states that,(A+B)'=A'B' and (AB)'=A'+B',(A+B)'=A'+B' and (AB)'=AB,(A+B)'=A+B and (AB)'=A+B,(A+B)'=AB and (AB)'=A+B,A,re-OCR/manual-cleanup
+84,2022,AP,105,When will JK flip flop toggle the input?,"J=0,K=0","J=0,K=1","J=1,K=0","J=1,K=1",D,re-OCR/manual-cleanup
+85,2022,AP,106,If the total number of transistors fabricated on a single chip is in the range of 300 to 3000. which integrated circuit do you prefer?,VLSI,SSI,LSI,MSI,D,re-OCR/manual-cleanup
+86,2022,AP,107,The binary equivalent of 0.6875 is --------,0.1011,0.0101,0.1001,0.0011,A,re-OCR/manual-cleanup
+87,2022,AP,108,Which is the DeMorgan’s gate equivalent to OR?,Negative NOR,Negative NAND,Negative AND,Negative OR,C,re-OCR/manual-cleanup
+88,2021,TS,101,Which gate’s output is equal to 1 if the input variables have an odd number of 1’s?,NOR,NAND,XOR,XNOR,C,re-OCR/manual-cleanup
+89,2021,TS,102,Which of the following gate acts as a controlled inverter?,NAND,EX-OR,NOR,EX-NOR,B,re-OCR/manual-cleanup
+90,2021,TS,103,Which Multiplexer IC is used for implementing a full adder or a full subtractor? i) SN74151 ii) SN74153 iif) iv) T4LS153,(i) only,(i) & (iii),(ii) only,(ii) & (iv),B,re-OCR/manual-cleanup
+91,2021,TS,104,"The simplified form of the Boolean function F(w,x,y,z)=Σ(0,1,2,4,5,6,8,9,12,13,14) is:",w′x′z′ + xz′,w′x′ + yz′,y′ + xz′ + w′z′,w′yz + x′z,C,re-OCR/manual-cleanup
+92,2021,TS,105,Race around problem in a JK Flip flop is,Q=1 & Q̅=1,Q=0 & Q̅=0,Toggling more than once during a clock cycle,Q is neither 0 nor 1,C,re-OCR/manual-cleanup
+93,2021,TS,106,Logic gates with a set of inputs and outputs is arrangement of,Combinational circuit,Logic circuit,Design circuits,Register,B,re-OCR/manual-cleanup
+94,2021,TS,107,"In which circuit, chain of flipflops is connected in cascade to receive a common clock pulse?",Demultiplexer,Register,Counter,Shift register,D,re-OCR/manual-cleanup
+95,2021,AP,101,How many flip flops are required for the mod-16 counter?,2,4,6,3,B,re-OCR/manual-cleanup
+96,2021,AP,102,EPROM contents can be erased by exposing them to,Burst of microwaves,Intense heat radiation,Infrared rays,Ultraviolet rays,D,re-OCR/manual-cleanup
+97,2021,AP,103,The digital logic family which has minimum power dissipation is,ECL,DTL,CMOS,RTL,C,re-OCR/manual-cleanup
+98,2021,AP,104,"If the input to T-flipflop is 100 Hz signal, the final output of the two T- flipflops in cascade is",1000 Hz,50 Hz,25 Hz,200 Hz,C,re-OCR/manual-cleanup
+99,2021,AP,105,The device which changes from serial data to parallel data is,Demultiplexer,Multiplexer,Counter,Flip-flop,A,re-OCR/manual-cleanup
+100,2021,AP,106,"When simplified with Boolean Algebra, (x + y)(x + z) simplifies to",x(1+yz),x+y,x(y+z),x,A,re-OCR/manual-cleanup
+101,2021,AP,107,The 2°s complement of the number 1101101 is,0010011,0110010,0111110,0101110,A,re-OCR/manual-cleanup
+102,2021,AP,108,The decimal equivalent of hex number 1A53 is,6739,6793,6973,6379,A,re-OCR/manual-cleanup
+103,2020,TS,101,The output of NOR gate is,High if all inputs are high,High if all inputs are low,Low if all inputs are low,Low if all inputs are high,D,re-OCR/manual-cleanup
+104,2020,TS,108,A 4-variable Karnaugh map will contain ____ cells.,2,4,8,16,D,re-OCR/manual-cleanup
+105,2020,TS,109,f = (xyz + x′yz + xyz′ + …) is called as,sum of the squares,product of the sums,sum of products,products of the squares,C,re-OCR/manual-cleanup
+106,2020,TS,110,Karnaugh map is a tool for representing Boolean functions of up to ____ variables.,2,4,5,6,B,re-OCR/manual-cleanup
+107,2019,TS,103,"When J = K = 1, then JK flip-flop functions like a/an",D flip-flop,S-R flip-flop,NAND gate,T flip-flop,D,re-OCR/manual-cleanup
+108,2019,TS,105,Which of the following are employed in digital computers for generating binary control decisions?,Combinational circuits,Sequential circuits,Binary counters,Segment registers,A,re-OCR/manual-cleanup
+109,2019,TS,106,Which of the following is the maximum number of prime implicants possible for an n-variable Boolean function?,2^(n−1),2n,2^(n+1),2^n,A,re-OCR/manual-cleanup
+110,2019,TS,107,"A simplified form of the Boolean function F(A,B,C) = Σ(0,2,4,5,6) is",F = BC + AC′,F = C′ + AB′,F = BC + AC,F = A′ + BC,B,re-OCR/manual-cleanup
+111,2019,TS,108,Which digital logic family is suitable for circuits that need high component density?,TTL,ECL,MOS,CMOS,C,re-OCR/manual-cleanup
+112,2019,TS,110,A three-input decoder has ______ outputs.,4,8,12,6,B,re-OCR/manual-cleanup
+113,2019,TS,111,What is the maximum possible range of sequence for Mod-16 binary up-counter?,0 to 256,0 to 255,0 to 15,0 to 16,C,re-OCR/manual-cleanup
+114,2019,AP,101,Which among the following was the first version in the TTL family?,Standard,Low-power,Schottky,Fast,A,re-OCR/manual-cleanup
+115,2019,AP,102,The logical sum of all the minterms of a Boolean function of n variables is,0,1,n,n(n+1)/2,B,re-OCR/manual-cleanup
+116,2019,AP,103,Circuits that generate the parity bit in the receiver and transmitter are called _____ and _____ respectively.,"Parity checker, Parity Generator","Parity Generator, Parity checker","Parity Generator, Parity encoder","Parity encoder, parity decoder",A,re-OCR/manual-cleanup
+117,2019,AP,104,The characteristic equation for the complement output of a JK flip-flop is,Q′(t+1) = J′Q′ + KQ,Q′(t+1) = J′Q′ + KQ′,Q′(t+1) = J′Q + KQ′,Q′(t+1) = J′Q + K′Q′,A,re-OCR/manual-cleanup
+118,2019,AP,105,If the register has both shifts and parallel load capabilities that is referred to as,Universal shift register,Unidirectional shift register,Bidirectional shift register,Parallel shift register,A,re-OCR/manual-cleanup
+119,2019,AP,106,The capacity of a memory unit is usually stated as the total number of ______ that it can store.,Words,Bytes,Addresses,Bits,D,re-OCR/manual-cleanup
+120,2019,AP,107,Which among the following offers shorter read and write cycles?,Fast RAM,Commercial RAM,Static RAM,Dynamic RAM,C,re-OCR/manual-cleanup
+121,2019,AP,108,4-to-16 line decoder can be constructed with ____ 2-to-4 line decoders with enable.,4,2,5,8,D,re-OCR/manual-cleanup
+122,2018,TS,101,How many select lines are required for a 1-to-8 demultiplexer?,2,3,4,5,B,re-OCR/manual-cleanup
+123,2018,TS,102,The code where all successive numbers differ from their preceding number by a single bit is,Binary code,BCD,Excess-3,Gray,D,re-OCR/manual-cleanup
+124,2018,TS,103,Which of the following is a universal logic gate?,OR,AND,XOR,NAND,D,re-OCR/manual-cleanup
+125,2018,TS,104,How many two-input AND gates and two-input OR gates are required to realize Y = BD + CE + AB?,"1,1","4,2","3,2","2,3",C,re-OCR/manual-cleanup
+126,2018,TS,105,Which of the following is the fastest logic family?,TTL,ECL,DTL,CMOS,B,re-OCR/manual-cleanup
+127,2018,TS,106,"A simplified Sum of Products expression for F(W,X,Y,Z)=Σ(0,2,4,8,9,10,11,12,13) is",X̅Z̅ + YZ̅ + WX̅ + WY̅,XZ + YZ + WX + WY,X̅Y + YZ̅ + ZX + WX̅,WXY + XYZ + WYZ,A,re-OCR/manual-cleanup
+128,2018,TS,107,How many entries are there in the truth table of a 4-input NAND gate?,8,16,12,4,B,re-OCR/manual-cleanup
+129,2018,TS,108,Which of the following inputs is not accepted by SR flip-flop?,"R=1, S=1","R=0, S=0","R=0, S=1","R=1, S=0",A,re-OCR/manual-cleanup
+130,2018,TS,109,How many flip-flops are required to construct a decade counter?,4,8,5,10,A,re-OCR/manual-cleanup
+131,2018,TS,110,Which technique is used by EPROM for erasing purpose?,Force convection,Ultraviolet radiation,Photo-conduction,Electromagnetic waves,B,re-OCR/manual-cleanup
+132,2018,TS,111,Which of the following is the major functioning responsibility of the multiplexer?,Decoding the binary information,Generation of all minterms in an output function,Generation of selected path between multiple sources and a single destination,Generation of selected path between single source and multiple destinations,C,re-OCR/manual-cleanup
+133,2018,TS,112,"The sum output bit for a full adder with inputs X, Y, Cᵢ is",X̅YC̅ᵢ + XYCᵢ,X̅YCᵢ + X̅Y̅C̅ᵢ + XY̅C̅ᵢ + XYCᵢ,XYCᵢ + XY + YCᵢ,X̅Y̅ + Y̅Cᵢ,B,re-OCR/manual-cleanup
+134,2017,TS,8,[(A + A′B)(A + A′B′)][(CD + C′D′) + (C′D + CD′)] can be minimized as,B,A,0,1,B,re-OCR/manual-cleanup
+135,2017,TS,9,"When grouping cells within a K-map, the cells must be combined in groups of",2,4,8,"1, 2, 4, 8, etc.",D,re-OCR/manual-cleanup
+136,2017,TS,10,"The simultaneous equations of Boolean variables x, y, z and w are: x+y+z=1, xy=0, xz+w=1 and xy+(zw)′=0. The solution for x,y,z,w respectively is",0100,1101,1011,1000,C,re-OCR/manual-cleanup
+137,2017,TS,11,The widely adapted combination circuit implementation method with maximum output functions and minimum requirement of ICs is,Multiplexer,Decoder,Encoder,Parity Generator,B,re-OCR/manual-cleanup
+138,2017,TS,12,"A synchronous sequential circuit consists of two cascaded D flip-flops with D0=Q1′, D1=Q0. The logic states of Q0 and Q1 immediately after the 777th clock pulse will be",1,10,100,778,A,re-OCR/manual-cleanup
+139,2017,TS,13,"A synchronous counter consists of two cascaded JK flip-flops with J0=Q1′, J1=Q0, K0=K1=1. The circuit represents",Mod-3 counter,Mod-4 counter,Mod-5 counter,Mod-7 counter,A,re-OCR/manual-cleanup
+140,2017,TS,14,"The initial contents of the 4-bit serial-in-parallel-out right shift register are 0110. After three clock cycles, the contents are",0000,1010,0101,1111,B,re-OCR/manual-cleanup
+141,2017,TS,15,"A 4-bit shift register in which the outputs of 3rd and 4th flip-flops are connected parallel through an EX-OR gate back to the first flip-flop input. If initially all flip-flop outputs are 1s, the circuit produces output sequence",1111 1111 0000 0000,1111 0000 1111 0000,1111 0001 0011 0101,1010 1010 1010 1010,C,re-OCR/manual-cleanup
+142,2016,TS,25,Which of the following is functionally complete set?,"{AND, OR}","{NAND, NOR}",{NAND},"{NOR, NOT}",C,re-OCR/manual-cleanup
+143,2016,TS,26,Which property holds true for NAND and NOR operations?,Both associative and commutative,Commutative only,Associative only,Transitive only,B,re-OCR/manual-cleanup
+144,2016,TS,27,"What is the simplified expression with minimum number of literals for F(x,y,z)=x′y′z + xy′z + xyz?",y′z + xz,y′z + x′y′z + xyz,yz + x′y′,yz + x′y′z,A,re-OCR/manual-cleanup
+145,2016,TS,28,Which of the following is an idempotence law?,x+xy=x,x(x+y)=x,x+x=x,1+x=1,C,re-OCR/manual-cleanup
+146,2016,TS,29,"To design an 8×1 multiplexer using 2×1 multiplexers only, how many 2×1 multiplexers are required?",7,6,5,4,A,re-OCR/manual-cleanup
+147,2016,TS,30,How many Boolean functions can be formed with 3 variables?,8,16,256,32,C,re-OCR/manual-cleanup
+148,2016,TS,31,"To design a counter for the sequence 1,2,3,4,5,6,7,8,1,2,3,... how many flip-flops are required?",3,4,5,2,B,re-OCR/manual-cleanup
+149,2016,TS,32,"How many bits are required to code the 26 alphabets, 10 digits and 10 special characters?",6,5,4,16,A,re-OCR/manual-cleanup
+150,2016,TS,33,The systematic reduction of logic circuits is accomplished by,Using Boolean algebra,Symbolic reduction,TTL logic,Using a truth table,A,re-OCR/manual-cleanup
+151,2016,TS,34,How many 1s are present in the binary representation of 15×256 + 5×16 + 3?,2,5,10,8,B,re-OCR/manual-cleanup
+152,2016,TS,35,Which one of the following Boolean expressions is not logically equivalent to all other expressions?,wxy′ + wz′ + wxyz + wy′z,wx + wy′ + wyz′,wx + wy′ + wz,w′ + x + y′ + z′,D,re-OCR/manual-cleanup
+153,2016,TS,36,What is the additional logic required to convert D flip-flop into T flip-flop?,D = TQ,D = T,D = T + Q,D = T ⊕ Q,D,re-OCR/manual-cleanup

@@ -5,13 +5,14 @@
     "questionNumber": 101,
     "question": "If F=(A+B)(A +B), then F simplifies to:",
     "options": [
-      "A La",
-      "B ,« AB",
-      "7",
-      ""
+      "A",
+      "B",
+      "AB",
+      "0"
     ],
-    "answer": 3,
-    "id": 1
+    "answer": 0,
+    "id": 1,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -25,13 +26,14 @@
       "NOR"
     ],
     "answer": 1,
-    "id": 2
+    "id": 2,
+    "verified_options": true
   },
   {
     "year": 2026,
     "state": "TS",
     "questionNumber": 103,
-    "question": "If F = Xm(0.1.2.5.6.7), minimal SOP is:",
+    "question": "If F = Σm(0,1,2,5,6,7), minimal SOP is:",
     "options": [
       "AB'+AC",
       "A'B‘+ABt+AC",
@@ -39,21 +41,23 @@
       "AB'+AC’"
     ],
     "answer": 0,
-    "id": 3
+    "id": 3,
+    "verified_options": true
   },
   {
     "year": 2026,
     "state": "TS",
     "questionNumber": 104,
-    "question": "For 4-variable K-map. largest group size possible is:",
+    "question": "For 4-variable K-map, largest group size possible is:",
     "options": [
       "8",
-      "2 oF",
-      "7 16",
+      "2",
+      "16",
       "4"
     ],
-    "answer": 1,
-    "id": 4
+    "answer": 2,
+    "id": 4,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -67,21 +71,23 @@
       "120 ns"
     ],
     "answer": 2,
-    "id": 5
+    "id": 5,
+    "verified_options": true
   },
   {
     "year": 2026,
     "state": "TS",
     "questionNumber": 106,
-    "question": "Select the statement that contrasts Johnson’s counter with ripple counter correctly",
+    "question": "Select the statement that contrasts Johnson’s counter with ripple counter correctly.",
     "options": [
       "Both have the same number of states",
-      "Johnson’s counter has twice the states of ripple counter",
-      "Y Ripple counter has twice the states of Johnson’s counter",
-      "EM"
+      "Johnson’s counter has twice the states of a ripple counter",
+      "Ripple counter has twice the states of a Johnson counter",
+      "Both are asynchronous"
     ],
-    "answer": 1,
-    "id": 6
+    "answer": 2,
+    "id": 6,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -90,12 +96,13 @@
     "question": "A full adder can be implemented using",
     "options": [
       "Two half-adders only",
-      "Two AND gates. Two XOR gates and Two OR gates",
-      "Two AND gates, Two XOR gates and One OR gate",
-      "78"
+      "Two AND gates, two XOR gates and two OR gates",
+      "Two AND gates, two XOR gates and one OR gate",
+      "Two half-adders and one AND gate"
     ],
-    "answer": 1,
-    "id": 7
+    "answer": 3,
+    "id": 7,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -109,7 +116,8 @@
       "Latch and flip-flop are equivalent"
     ],
     "answer": 2,
-    "id": 8
+    "id": 8,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -117,27 +125,29 @@
     "questionNumber": 109,
     "question": "A decoder with n inputs can generate:",
     "options": [
-      "DB}",
-      "2n outputs n ~",
-      "y 2° Outputs",
-      "3"
+      "2^n outputs",
+      "2n outputs",
+      "n^2 outputs",
+      "3n outputs"
     ],
-    "answer": 1,
-    "id": 9
+    "answer": 0,
+    "id": 9,
+    "verified_options": true
   },
   {
     "year": 2026,
     "state": "TS",
     "questionNumber": 110,
-    "question": "Minimum number of flipflops required for a mod-12 counter is",
+    "question": "Minimum number of flip-flops required for a mod-12 counter is:",
     "options": [
-      "Ia.",
+      "4",
       "5",
-      "Bead",
+      "8",
       "6"
     ],
     "answer": 0,
-    "id": 10
+    "id": 10,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -147,11 +157,12 @@
     "options": [
       "AND",
       "OR",
-      "NAND w",
+      "NAND",
       "NOR"
     ],
     "answer": 2,
-    "id": 11
+    "id": 11,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -159,13 +170,14 @@
     "questionNumber": 102,
     "question": "The Boolean expression A + AB simplifies to",
     "options": [
-      "wA",
+      "A",
       "AB",
       "B",
-      "B"
+      "1"
     ],
     "answer": 0,
-    "id": 12
+    "id": 12,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -173,13 +185,14 @@
     "questionNumber": 103,
     "question": "Which flip-flop has an invalid state?",
     "options": [
-      "Pied =",
-      "JK",
-      "T",
-      "Av SR"
+      "D flip-flop",
+      "JK flip-flop",
+      "T flip-flop",
+      "SR flip-flop"
     ],
     "answer": 3,
-    "id": 13
+    "id": 13,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -187,13 +200,14 @@
     "questionNumber": 104,
     "question": "Convert the binary number 101101 into its decimal equivalent.",
     "options": [
-      "‘ise 43",
-      "5",
-      "av 45",
-      "8 44"
+      "43",
+      "27",
+      "45",
+      "44"
     ],
-    "answer": 1,
-    "id": 14
+    "answer": 2,
+    "id": 14,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -201,13 +215,14 @@
     "questionNumber": 105,
     "question": "The number of outputs of a 4-bit decoder is",
     "options": [
-      "‘lai ‘",
+      "4",
       "8",
       "16",
       "32"
     ],
     "answer": 2,
-    "id": 15
+    "id": 15,
+    "verified_options": true
   },
   {
     "year": 2026,
@@ -215,13 +230,14 @@
     "questionNumber": 106,
     "question": "Which flip-flop toggles its output on every clock pulse when input is HIGH?",
     "options": [
-      "7 SR flip-flop 2 JK flip-flop D flip-flop",
-      "T flip-flo 400 ee Page 3",
-      "",
-      ""
+      "SR flip-flop",
+      "JK flip-flop",
+      "D flip-flop",
+      "T flip-flop"
     ],
     "answer": 3,
-    "id": 16
+    "id": 16,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -231,11 +247,12 @@
     "options": [
       "(450)10",
       "(451)10",
-      "(421)10 a",
+      "(421)10",
       "(501)10"
     ],
     "answer": 2,
-    "id": 17
+    "id": 17,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -243,13 +260,14 @@
     "questionNumber": 102,
     "question": "The characteristic equation of JK flip flop is",
     "options": [
-      "O(n +1) = JO(n) + KO(n)",
-      "8",
-      "O(n +1) =JO(n) + KO(n)",
-      "70"
+      "Q(n+1) = JQ(n) + KQ(n)",
+      "Q(n+1) = JQ̅(n) + K̅Q(n)",
+      "Q(n+1) = JQ̅(n) + KQ̅(n)",
+      "Q(n+1) = J̅Q(n) + K̅Q(n)"
     ],
     "answer": 1,
-    "id": 18
+    "id": 18,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -259,11 +277,12 @@
     "options": [
       "101.0010",
       "0010.101",
-      "daw 011.0010",
-      "10.0011"
+      "011.0010",
+      "110.0011"
     ],
     "answer": 2,
-    "id": 19
+    "id": 19,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -271,13 +290,14 @@
     "questionNumber": 104,
     "question": "For the logic circuit shown in the figure the required input (A, B, C) condition to make the output (X) = 1 is A B X c",
     "options": [
-      "(1.0.1) ne (0.0.1)",
-      "(LD)",
-      "(0.1.1)",
-      "7"
+      "(1,0,1)",
+      "(0,0,1)",
+      "(1,1,1)",
+      "(0,1,1)"
     ],
     "answer": 3,
-    "id": 20
+    "id": 20,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -285,13 +305,14 @@
     "questionNumber": 105,
     "question": "A three variable truth table has a High output for the inputs (A, B, C): 010, 011 and 110. The Boolean expression for Sum Of Product (SOP) can be written as",
     "options": [
-      "AB+ BC",
-      "AB+BC",
-      "~a",
-      "AB+BC"
+      "A̅B + BC̅",
+      "AB̅ + B̅C",
+      "A̅B̅ + BC",
+      "AB̅ + B̅C̅"
     ],
-    "answer": 1,
-    "id": 21
+    "answer": 0,
+    "id": 21,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -305,35 +326,38 @@
       "F = XOR (P. Q)"
     ],
     "answer": 3,
-    "id": 22
+    "id": 22,
+    "verified_options": true
   },
   {
     "year": 2025,
     "state": "TS",
     "questionNumber": 107,
-    "question": "| | Among the digital IC families ECL, TTL and CMOS, which one of the following 1s correct?",
+    "question": "Among the digital IC families ECL, TTL and CMOS, which one of the following is correct?",
     "options": [
-      "ECL has more propagation delay",
-      "TTL has the largest Fan-out",
-      "ie CMOS has the lowest power consumption",
-      "TTL has the highest noise margin"
+      "124",
+      "134",
+      "144",
+      "154"
     ],
-    "answer": 2,
-    "id": 23
+    "answer": 3,
+    "id": 23,
+    "verified_options": true
   },
   {
     "year": 2025,
     "state": "TS",
     "questionNumber": 108,
-    "question": "The outputs of the two flip-flops Q:, Q» in the figure shown are initialized to 0, 0. The sequence generated at Q: upon application of clock signal is J Qt ml K1Q1",
+    "question": "The outputs of the two flip-flops Q1, Q2 in the figure shown are initialized to 0, 0. The sequence generated at Q1 upon application of clock signal is:",
     "options": [
-      "OLIGO...",
+      "01110...",
       "01010...",
       "00110...",
       "01100..."
     ],
     "answer": 3,
-    "id": 24
+    "id": 24,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -343,11 +367,12 @@
     "options": [
       "6 KHz",
       "500 Hz",
-      "4 KHz",
+      "24 KHz",
       "72 KHz"
     ],
     "answer": 3,
-    "id": 25
+    "id": 25,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -356,12 +381,13 @@
     "question": "Which of the following is correct for DRAM?",
     "options": [
       "Periodic refreshing is not required",
-      "y Data is stored in Capacitor",
-      "Data stored in Latch",
-      "” Read and write operations performed simultaneously"
+      "Data is stored in a capacitor",
+      "Data stored in a latch",
+      "Read and write operations performed simultaneously"
     ],
     "answer": 1,
-    "id": 26
+    "id": 26,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -371,11 +397,12 @@
     "options": [
       "AND",
       "OR",
-      "NAN",
-      "V AND a* XOR"
+      "NAND",
+      "XOR"
     ],
     "answer": 2,
-    "id": 27
+    "id": 27,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -383,13 +410,14 @@
     "questionNumber": 102,
     "question": "Which of the following is NOT a combinational circuit?",
     "options": [
-      "Flip-Flo",
-      "Lv iP P",
+      "Flip-flop",
       "Decoder",
-      "“ee Multiplexer"
+      "Multiplexer",
+      "Adder"
     ],
     "answer": 0,
-    "id": 28
+    "id": 28,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -398,12 +426,13 @@
     "question": "A demultiplexer is a device that :",
     "options": [
       "Encode multiple inputs into one output",
-      "a Decode binary to decimal 38 Store binary information av Route a single input to multiple outputs",
-      "",
-      ""
+      "Decode binary to decimal",
+      "Store binary information",
+      "Route a single input to multiple outputs"
     ],
     "answer": 3,
-    "id": 29
+    "id": 29,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -411,13 +440,14 @@
     "questionNumber": 104,
     "question": "Convert the binary number 110011 into its decimal equivalent.",
     "options": [
-      "9",
-      "49 i",
+      "51",
+      "49",
       "53",
       "55"
     ],
-    "answer": 1,
-    "id": 30
+    "answer": 0,
+    "id": 30,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -425,13 +455,14 @@
     "questionNumber": 105,
     "question": "The number of select lines required for an 8-to-1 multiplexer is?",
     "options": [
-      "38",
-      "0°",
-      "5",
+      "3",
+      "7",
+      "9",
       "8"
     ],
-    "answer": 1,
-    "id": 31
+    "answer": 0,
+    "id": 31,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -439,13 +470,14 @@
     "questionNumber": 106,
     "question": "_A Sequential logic circuit that toggles its output state on each clock pulse is",
     "options": [
-      "a SR flip-flop a D flip-flop 38 JK flip-flop av T flip-flop",
-      "",
-      "",
-      ""
+      "SR flip-flop",
+      "D flip-flop",
+      "JK flip-flop",
+      "T flip-flop"
     ],
     "answer": 3,
-    "id": 32
+    "id": 32,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -453,13 +485,14 @@
     "questionNumber": 107,
     "question": "Convert the decimal number 108 into its octal equivalent.",
     "options": [
-      "9",
       "124",
-      "34",
-      "44"
+      "134",
+      "144",
+      "154"
     ],
     "answer": 3,
-    "id": 33
+    "id": 33,
+    "verified_options": true
   },
   {
     "year": 2025,
@@ -469,11 +502,12 @@
     "options": [
       "A+B+C",
       "AB+C",
-      "38 AC+BC",
-      "07 SF BE Page 5"
+      "AC+BC",
+      "A+BC"
     ],
     "answer": 3,
-    "id": 34
+    "id": 34,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -481,13 +515,14 @@
     "questionNumber": 101,
     "question": "The decimal equivalent of octal number (128.24)s is",
     "options": [
-      "5",
-      "7614465201. * Bo;3125",
-      "7614465202. ¥ 88.3125",
-      "7614465203, * 40-15625"
+      "80.3125",
+      "88.3125",
+      "40.15625",
+      "88.20"
     ],
     "answer": 1,
-    "id": 35
+    "id": 35,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -495,13 +530,14 @@
     "questionNumber": 102,
     "question": "The binary equivalent of a BCD number 00101001.01110101 is",
     "options": [
-      "7614465205. ¥ ——",
-      "7614465206. * 11010.11",
-      "7614465207. * 11101.10100",
-      "7614465208, # 11010.10100"
+      "11101.11",
+      "11010.11",
+      "11101.10100",
+      "11010.10100"
     ],
     "answer": 0,
-    "id": 36
+    "id": 36,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -509,13 +545,14 @@
     "questionNumber": 103,
     "question": "The logical gate that gives an output of logic level “1” whenever two inputs are equal is",
     "options": [
-      "7614465209, * ANID",
-      "7614465210, * OR",
-      "7614465211, # =x-OR",
-      "Ex-NOR"
+      "AND",
+      "OR",
+      "EX-OR",
+      "EX-NOR"
     ],
     "answer": 3,
-    "id": 37
+    "id": 37,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -523,13 +560,14 @@
     "questionNumber": 104,
     "question": "Convert",
     "options": [
-      "7614465213. * (A+B). (A+B)",
-      "B).( At",
-      "7614465214, * CAR) CA)",
-      "B) (A+"
+      "(A+B)(A̅+B̅)",
+      "(A̅+B̅)(A̅+B)",
+      "(A+B̅)(A̅+B)",
+      "(A+B)(A+B̅)"
     ],
     "answer": 2,
-    "id": 38
+    "id": 38,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -537,13 +575,14 @@
     "questionNumber": 105,
     "question": "A digital circuit whose output depends not only on the present input but also on sequence of past inputs is a",
     "options": [
-      "7614465217, x Decoder",
-      "7e1aaes2ie, « Multiplexer",
+      "Decoder",
+      "Multiplexer",
       "Sequential Circuit",
-      "7614465219. *"
+      "Combinational Circuit"
     ],
     "answer": 3,
-    "id": 39
+    "id": 39,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -551,13 +590,14 @@
     "questionNumber": 106,
     "question": "The number of distinct Boolean expressions for 4 variables is",
     "options": [
-      "7614465221. * 16",
-      "~",
-      "7614465222. * 258",
-      "024"
+      "16",
+      "256",
+      "1024",
+      "65536"
     ],
     "answer": 3,
-    "id": 40
+    "id": 40,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -571,7 +611,8 @@
       "D"
     ],
     "answer": 3,
-    "id": 41
+    "id": 41,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -585,7 +626,8 @@
       "Encoder"
     ],
     "answer": 3,
-    "id": 42
+    "id": 42,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -593,13 +635,14 @@
     "questionNumber": 109,
     "question": "The address lines required for a 16 kilobyte memory chip is",
     "options": [
-      "7614465233. *",
-      "7614465234, * 18",
-      "7614465235. v |4",
-      "7614465236, » !3"
+      "4",
+      "16",
+      "14",
+      "13"
     ],
     "answer": 2,
-    "id": 43
+    "id": 43,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -607,13 +650,14 @@
     "questionNumber": 110,
     "question": "IFA, B,C, D, E,F represents variables of a Boolean expression and my isthe i’ min term, then the value of mi is",
     "options": [
-      "7614465237. Y AC D.BE",
-      "B +D+E+",
-      "7614465238. * si acnianiimiaael",
-      "7614465239, * at EES"
+      "A·B̅·C·D·E·F",
+      "A+B̅+C+D+E+F",
+      "A̅·B·C̅·D̅·E̅·F̅",
+      "A̅+B+C̅+D̅+E̅+F̅"
     ],
     "answer": 0,
-    "id": 44
+    "id": 44,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -627,7 +671,8 @@
       "Transition table"
     ],
     "answer": 2,
-    "id": 45
+    "id": 45,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -635,13 +680,14 @@
     "questionNumber": 102,
     "question": "A sequential circuit with 10 states will have",
     "options": [
-      "ip-flops",
-      "‘ie 0 Flip-flop",
-      "0 Flip-flops",
-      "Flip-flops av p-Hop"
+      "3 flip-flops",
+      "4 flip-flops",
+      "5 flip-flops",
+      "10 flip-flops"
     ],
-    "answer": 0,
-    "id": 46
+    "answer": 1,
+    "id": 46,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -655,7 +701,8 @@
       "Any combinational circuit"
     ],
     "answer": 2,
-    "id": 47
+    "id": 47,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -669,7 +716,8 @@
       "50 ns"
     ],
     "answer": 3,
-    "id": 48
+    "id": 48,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -683,7 +731,8 @@
       "AB+BC"
     ],
     "answer": 0,
-    "id": 49
+    "id": 49,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -697,7 +746,8 @@
       "10001"
     ],
     "answer": 3,
-    "id": 50
+    "id": 50,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -710,8 +760,9 @@
       "0",
       "1"
     ],
-    "answer": 1,
-    "id": 51
+    "answer": 3,
+    "id": 51,
+    "verified_options": true
   },
   {
     "year": 2024,
@@ -725,7 +776,8 @@
       "indeterminate state"
     ],
     "answer": 2,
-    "id": 52
+    "id": 52,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -733,13 +785,14 @@
     "questionNumber": 101,
     "question": "Which statement best describes a Karnaugh map",
     "options": [
-      "iw It is simply a rearranged truth table",
-      "_ The Karnaugh map eliminates the need of using NAND and NOR gates",
-      "7 Variable complement can be eliminated using Karnaugh maps",
+      "It is simply a rearranged truth table",
+      "The Karnaugh map eliminates the need of using NAND and NOR gates",
+      "Variable complement can be eliminated using Karnaugh maps",
       "A Karnaugh map can be used to replace Boolean rules"
     ],
-    "answer": 1,
-    "id": 53
+    "answer": 0,
+    "id": 53,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -753,7 +806,8 @@
       "65536"
     ],
     "answer": 3,
-    "id": 54
+    "id": 54,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -761,13 +815,14 @@
     "questionNumber": 103,
     "question": "‘An SR flip flop is converted to flip flop by inserting an inverter between S&R and assigning a single input",
     "options": [
-      "5 Master Slave",
+      "Master-slave",
       "T",
       "JK",
       "D"
     ],
-    "answer": 0,
-    "id": 55
+    "answer": 3,
+    "id": 55,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -777,11 +832,12 @@
     "options": [
       "Decoder",
       "Multiplexer",
-      "ae",
+      "Encoder",
       "Half adder"
     ],
-    "answer": 0,
-    "id": 56
+    "answer": 2,
+    "id": 56,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -789,13 +845,14 @@
     "questionNumber": 105,
     "question": "Convert the decimal number 41.6875 into binary",
     "options": [
-      "01001.0111000111101",
-      "7 101001.111000111101",
-      "01001.1101",
-      "01001.1011"
+      "101001.0111000111101",
+      "101001.111000111101",
+      "101001.1101",
+      "101001.1011"
     ],
-    "answer": 0,
-    "id": 57
+    "answer": 3,
+    "id": 57,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -809,7 +866,8 @@
       "21031"
     ],
     "answer": 2,
-    "id": 58
+    "id": 58,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -817,13 +875,14 @@
     "questionNumber": 107,
     "question": "How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + Y(X+Z}",
     "options": [
-      "1% 2 2",
+      "2",
       "8",
-      "",
-      ""
+      "4",
+      "1"
     ],
-    "answer": 2,
-    "id": 59
+    "answer": 0,
+    "id": 59,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -837,7 +896,8 @@
       "Y=A+B"
     ],
     "answer": 3,
-    "id": 60
+    "id": 60,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -851,7 +911,8 @@
       "4"
     ],
     "answer": 1,
-    "id": 61
+    "id": 61,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -865,7 +926,8 @@
       "1010111"
     ],
     "answer": 2,
-    "id": 62
+    "id": 62,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -873,13 +935,14 @@
     "questionNumber": 102,
     "question": "Tf (73)x = (54)y in a number system then the possible values of x and y are",
     "options": [
-      "8.11 i",
-      "8.16",
-      "0,12",
-      "Sut"
+      "8,11",
+      "8,16",
+      "10,12",
+      "9,14"
     ],
-    "answer": 1,
-    "id": 63
+    "answer": 0,
+    "id": 63,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -887,13 +950,14 @@
     "questionNumber": 103,
     "question": "Number of states ring counter with 5 flipflops will have?",
     "options": [
-      "0",
+      "10",
+      "15",
       "5",
-      "5 a",
-      "2"
+      "32"
     ],
-    "answer": 0,
-    "id": 64
+    "answer": 2,
+    "id": 64,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -901,13 +965,14 @@
     "questionNumber": 104,
     "question": "n-bit 2°s complement number system range for integers is",
     "options": [
-      "\"1 to (21-1)",
-      "7°",
-      "(281-1) to (21-1)",
-      "(2™1) to (2™1)"
+      "−2^(n−1) to 2^(n−1)",
+      "−2^n to 2^n",
+      "−2^(n−1) to 2^(n−1)−1",
+      "−(2^n−1) to 2^n−1"
     ],
     "answer": 2,
-    "id": 65
+    "id": 65,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -915,13 +980,14 @@
     "questionNumber": 105,
     "question": "Which of the following are Universal Gates",
     "options": [
-      "NAND. NOR ao",
-      "OR. X-NOR",
-      "NAND. X-OR",
+      "NAND, NOR",
+      "OR, XNOR",
+      "NAND, XOR",
       "AND, OR"
     ],
     "answer": 0,
-    "id": 66
+    "id": 66,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -929,13 +995,14 @@
     "questionNumber": 106,
     "question": "The Fastest Logic Family Gate is",
     "options": [
-      "Lv EEL",
+      "ECL",
       "CMOS",
-      "TIL",
+      "TTL",
       "ETL"
     ],
     "answer": 0,
-    "id": 67
+    "id": 67,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -943,13 +1010,14 @@
     "questionNumber": 107,
     "question": "How many 4 x | multiplexers are required to design $ x 1 multiplexer?",
     "options": [
-      "4 3 2% 5",
-      "8 8",
-      "",
-      ""
+      "4",
+      "2",
+      "3",
+      "5"
     ],
-    "answer": 0,
-    "id": 68
+    "answer": 1,
+    "id": 68,
+    "verified_options": true
   },
   {
     "year": 2023,
@@ -957,13 +1025,14 @@
     "questionNumber": 108,
     "question": "Which Flip Flop is free from race around problem",
     "options": [
-      "RS Flip Flop",
-      "#%",
-      "SR Flip Flop",
-      "JK Flip Flop"
+      "RS flip-flop",
+      "SR flip-flop",
+      "JK flip-flop",
+      "Master-slave JK flip-flop"
     ],
-    "answer": 0,
-    "id": 69
+    "answer": 3,
+    "id": 69,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -971,27 +1040,29 @@
     "questionNumber": 101,
     "question": "How many NOR gates are needed to construct AND gate",
     "options": [
+      "2",
+      "3",
       "4",
-      "6",
-      "=",
       "8"
     ],
-    "answer": 1,
-    "id": 70
+    "answer": 0,
+    "id": 70,
+    "verified_options": true
   },
   {
     "year": 2022,
     "state": "TS",
     "questionNumber": 102,
-    "question": "A serial in/parallel out, 4-bit shift register initially contains all 1s. The data nibble 0111 is waiting to enter. After four clock pulses, the register contains . Derive the Boolean expression for the logic circuit shown below: A PTD c D E",
+    "question": "A serial in/parallel out, 4-bit shift register initially contains all 1s. The data nibble 0111 is waiting to enter. After four clock pulses, the register contains:",
     "options": [
-      "wv C(AtB)DE",
-      "[C(A+B)D + E]",
-      "[[C(A+B)D]E]",
-      "5,.%"
+      "0000",
+      "1111",
+      "0111",
+      "1000"
     ],
-    "answer": 0,
-    "id": 71
+    "answer": 2,
+    "id": 71,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -999,13 +1070,14 @@
     "questionNumber": 103,
     "question": "The toggle condition ina master-slave J-K flip-flop means that Q and Q will switch to their ------------ state(s) at the ---------------.",
     "options": [
-      "y opposite, active clock edge 5 » inverted, positive clock edge 4» Wiescent. negative clock edge 4 @ Teset, synchronous clock edge",
-      "",
-      "",
-      ""
+      "opposite, active clock edge",
+      "inverted, positive clock edge",
+      "quiescent, negative clock edge",
+      "reset, synchronous clock edge"
     ],
     "answer": 0,
-    "id": 72
+    "id": 72,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1013,13 +1085,14 @@
     "questionNumber": 104,
     "question": "Which of the following is a type of shift register counter?",
     "options": [
-      "|» Decade 5 » Binary iat Ring ae BCD",
-      "",
-      "",
-      ""
+      "Decade",
+      "Binary",
+      "Ring",
+      "BCD"
     ],
     "answer": 2,
-    "id": 73
+    "id": 73,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1027,13 +1100,14 @@
     "questionNumber": 105,
     "question": "Select the statement that best describes Read-Only Memory (ROM).",
     "options": [
-      "nonvolatile, used to store information that changes during system operation",
-      "nonvolatile, used to store information that does not change during system",
-      "¥ Operation",
-      "8 volatile, used to store information that changes during system operation volatile, used to store information that does not change during system operation"
+      "Nonvolatile, used to store information that changes during system operation",
+      "Nonvolatile, used to store information that does not change during system operation",
+      "Volatile, used to store information that changes during system operation",
+      "Volatile, used to store information that does not change during system operation"
     ],
     "answer": 1,
-    "id": 74
+    "id": 74,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1041,13 +1115,14 @@
     "questionNumber": 106,
     "question": "The following is one of the applications of a digital multiplexer:",
     "options": [
-      "|, « data generation",
-      ". « Serial-to-parallel conversion",
-      "8 parity checking",
-      "hg data selector"
+      "Data generation",
+      "Serial-to-parallel conversion",
+      "Parity checking",
+      "Data selector"
     ],
     "answer": 3,
-    "id": 75
+    "id": 75,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1055,13 +1130,14 @@
     "questionNumber": 107,
     "question": "A circuit that responds to a specific set of signals to produce a related digital signal output is called a(n):",
     "options": [
-      ") » BCD matrix >, « display driver 3 y encoder",
-      "decoder",
-      "",
-      ""
+      "BCD matrix",
+      "Display driver",
+      "Encoder",
+      "Decoder"
     ],
-    "answer": 2,
-    "id": 76
+    "answer": 3,
+    "id": 76,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1075,7 +1151,8 @@
       "A+B"
     ],
     "answer": 1,
-    "id": 77
+    "id": 77,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1089,7 +1166,8 @@
       "SOP"
     ],
     "answer": 0,
-    "id": 78
+    "id": 78,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1097,13 +1175,14 @@
     "questionNumber": 110,
     "question": "What is the disadvantage of an S-R Flip-Flop",
     "options": [
-      "Le It has no Enable input",
-      "# It has a RACE condition",
-      "Ithas no clock input",
-      "Invalid State"
+      "It has no enable input",
+      "It has a race condition",
+      "It has no clock input",
+      "Invalid state"
     ],
     "answer": 3,
-    "id": 79
+    "id": 79,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1111,13 +1190,14 @@
     "questionNumber": 101,
     "question": "(1B. 42)16 = ()e",
     "options": [
-      "69",
-      "6.204",
-      "6.202",
-      "Dye"
+      "36.204",
+      "36.202",
+      "74.204",
+      "74.202"
     ],
     "answer": 0,
-    "id": 80
+    "id": 80,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1125,13 +1205,14 @@
     "questionNumber": 102,
     "question": "onit22 72272, 4:00 PM Which logic gates among the below options can be used to create any Boolean function economically?",
     "options": [
-      ",.» XOR. NAND, OR",
-      "OR. NOT, XOR",
-      "NOR. NAND, XOR",
+      "XOR, NAND, OR",
+      "OR, NOT, XOR",
+      "NOR, NAND, XOR",
       "NOR, NAND"
     ],
     "answer": 3,
-    "id": 81
+    "id": 81,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1139,13 +1220,14 @@
     "questionNumber": 103,
     "question": "101001 - 010110 =?",
     "options": [
-      ", » 100110",
+      "100110",
       "010011",
       "010010",
-      ",» 011001"
+      "011001"
     ],
     "answer": 1,
-    "id": 82
+    "id": 82,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1153,13 +1235,14 @@
     "questionNumber": 104,
     "question": "DeMorgan's theorem states that",
     "options": [
-      ", AtB)= A.B and (A.B) = A.B",
-      "G",
-      ", (A+B) =A+B and (A.B) = A.B",
-      "oe (A+B) =A.B and (A.B) =A+B"
+      "(A+B)'=A'B' and (AB)'=A'+B'",
+      "(A+B)'=A'+B' and (AB)'=AB",
+      "(A+B)'=A+B and (AB)'=A+B",
+      "(A+B)'=AB and (AB)'=A+B"
     ],
-    "answer": 2,
-    "id": 83
+    "answer": 0,
+    "id": 83,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1168,12 +1251,13 @@
     "question": "When will JK flip flop toggle the input?",
     "options": [
       "J=0,K=0",
-      ",« 3=0,ER1",
+      "J=0,K=1",
       "J=1,K=0",
-      "63/122"
+      "J=1,K=1"
     ],
     "answer": 3,
-    "id": 84
+    "id": 84,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1182,12 +1266,13 @@
     "question": "If the total number of transistors fabricated on a single chip is in the range of 300 to 3000. which integrated circuit do you prefer?",
     "options": [
       "VLSI",
-      "ox Oa",
-      "4a",
+      "SSI",
+      "LSI",
       "MSI"
     ],
-    "answer": 2,
-    "id": 85
+    "answer": 3,
+    "id": 85,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1195,13 +1280,14 @@
     "questionNumber": 107,
     "question": "The binary equivalent of 0.6875 is --------",
     "options": [
-      "iy 01011",
-      "64/122",
-      "7/2122, 4:00 PM",
-      "0.0101"
+      "0.1011",
+      "0.0101",
+      "0.1001",
+      "0.0011"
     ],
     "answer": 0,
-    "id": 86
+    "id": 86,
+    "verified_options": true
   },
   {
     "year": 2022,
@@ -1209,13 +1295,14 @@
     "questionNumber": 108,
     "question": "Which is the DeMorgan’s gate equivalent to OR?",
     "options": [
-      "de Negative NOR cativ f",
-      ", Negative NAND",
+      "Negative NOR",
+      "Negative NAND",
       "Negative AND",
-      "Negative OR ="
+      "Negative OR"
     ],
-    "answer": 1,
-    "id": 87
+    "answer": 2,
+    "id": 87,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1223,13 +1310,14 @@
     "questionNumber": 101,
     "question": "Which gate’s output is equal to 1 if the input variables have an odd number of 1’s?",
     "options": [
-      "NOR >» NAND",
-      "OR a.» XNOR",
-      "",
-      ""
+      "NOR",
+      "NAND",
+      "XOR",
+      "XNOR"
     ],
     "answer": 2,
-    "id": 88
+    "id": 88,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1238,12 +1326,13 @@
     "question": "Which of the following gate acts as a controlled inverter?",
     "options": [
       "NAND",
-      "3%",
       "EX-OR",
-      "7°"
+      "NOR",
+      "EX-NOR"
     ],
     "answer": 1,
-    "id": 89
+    "id": 89,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1252,26 +1341,28 @@
     "question": "Which Multiplexer IC is used for implementing a full adder or a full subtractor? i) SN74151 ii) SN74153 iif) iv) T4LS153",
     "options": [
       "(i) only",
-      "a (i) &(iii)",
+      "(i) & (iii)",
       "(ii) only",
-      "Lv (ii) & (iv)"
+      "(ii) & (iv)"
     ],
-    "answer": 3,
-    "id": 90
+    "answer": 1,
+    "id": 90,
+    "verified_options": true
   },
   {
     "year": 2021,
     "state": "TS",
     "questionNumber": 104,
-    "question": "The simplified form of the following Boolean function F(wW.X.y.2)=L(0,1.2.4.5,6,8.9,12.13.14) is",
+    "question": "The simplified form of the Boolean function F(w,x,y,z)=Σ(0,1,2,4,5,6,8,9,12,13,14) is:",
     "options": [
-      "yrw'z'+xz\" 17a",
-      "3 WHW'x'tyz! xt+w'z'tyz",
-      "8 -",
-      "” YTW ZX'Z"
+      "w′x′z′ + xz′",
+      "w′x′ + yz′",
+      "y′ + xz′ + w′z′",
+      "w′yz + x′z"
     ],
-    "answer": 0,
-    "id": 91
+    "answer": 2,
+    "id": 91,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1279,13 +1370,14 @@
     "questionNumber": 105,
     "question": "Race around problem in a JK Flip flop is",
     "options": [
-      "Q=1 &Q=1 ies",
-      "Q=0 &Q=0",
-      "7, Toggling more than once during a clock cycle",
-      "Q is neither a 0 nor"
+      "Q=1 & Q̅=1",
+      "Q=0 & Q̅=0",
+      "Toggling more than once during a clock cycle",
+      "Q is neither 0 nor 1"
     ],
     "answer": 2,
-    "id": 92
+    "id": 92,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1293,13 +1385,14 @@
     "questionNumber": 106,
     "question": "Logic gates with a set of inputs and outputs is arrangement of",
     "options": [
-      "Vv Combinational circuit",
+      "Combinational circuit",
       "Logic circuit",
-      "7",
-      "Design circuits"
+      "Design circuits",
+      "Register"
     ],
-    "answer": 0,
-    "id": 93
+    "answer": 1,
+    "id": 93,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1307,13 +1400,14 @@
     "questionNumber": 107,
     "question": "In which circuit, chain of flipflops is connected in cascade to receive a common clock pulse?",
     "options": [
-      "i) demultiplexer",
-      "« Tegister",
-      "# counter ie. shift register Page 12",
-      ""
+      "Demultiplexer",
+      "Register",
+      "Counter",
+      "Shift register"
     ],
     "answer": 3,
-    "id": 94
+    "id": 94,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1321,13 +1415,14 @@
     "questionNumber": 101,
     "question": "How many flip flops are required for the mod-16 counter?",
     "options": [
-      "2 5 2w 4 3\" 6 ae 3",
-      "",
-      "",
-      ""
+      "2",
+      "4",
+      "6",
+      "3"
     ],
     "answer": 1,
-    "id": 95
+    "id": 95,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1336,12 +1431,13 @@
     "question": "EPROM contents can be erased by exposing them to",
     "options": [
       "Burst of microwaves",
-      "Intense heat radiations 38 Infrared rays",
-      "Ultraviolet rays",
-      ""
+      "Intense heat radiation",
+      "Infrared rays",
+      "Ultraviolet rays"
     ],
     "answer": 3,
-    "id": 96
+    "id": 96,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1349,13 +1445,14 @@
     "questionNumber": 103,
     "question": "The digital logic family which has minimum power dissipation is",
     "options": [
-      "MiB",
-      ". % DIL",
-      "7 CMOS",
+      "ECL",
+      "DTL",
+      "CMOS",
       "RTL"
     ],
     "answer": 2,
-    "id": 97
+    "id": 97,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1364,12 +1461,13 @@
     "question": "If the input to T-flipflop is 100 Hz signal, the final output of the two T- flipflops in cascade is",
     "options": [
       "1000 Hz",
-      "50Hz",
+      "50 Hz",
       "25 Hz",
       "200 Hz"
     ],
     "answer": 2,
-    "id": 98
+    "id": 98,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1377,13 +1475,14 @@
     "questionNumber": 105,
     "question": "The device which changes from serial data to parallel data is",
     "options": [
-      "Lv DEMULTIPLEXER",
-      "MULTIPLEXER",
-      "COUNTER",
-      "FLIP-FLOP"
+      "Demultiplexer",
+      "Multiplexer",
+      "Counter",
+      "Flip-flop"
     ],
     "answer": 0,
-    "id": 99
+    "id": 99,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1391,13 +1490,14 @@
     "questionNumber": 106,
     "question": "When simplified with Boolean Algebra, (x + y)(x + z) simplifies to",
     "options": [
-      "y,% ¥(1+yz) aw Sie",
-      "8 X FRY",
-      "4% Xx",
-      ""
+      "x(1+yz)",
+      "x+y",
+      "x(y+z)",
+      "x"
     ],
-    "answer": 1,
-    "id": 100
+    "answer": 0,
+    "id": 100,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1405,13 +1505,14 @@
     "questionNumber": 107,
     "question": "The 2°s complement of the number 1101101 is",
     "options": [
-      "9010011",
+      "0010011",
       "0110010",
       "0111110",
       "0101110"
     ],
     "answer": 0,
-    "id": 101
+    "id": 101,
+    "verified_options": true
   },
   {
     "year": 2021,
@@ -1419,13 +1520,14 @@
     "questionNumber": 108,
     "question": "The decimal equivalent of hex number 1A53 is",
     "options": [
-      "Vv 6739",
+      "6739",
       "6793",
-      "8 6973",
+      "6973",
       "6379"
     ],
     "answer": 0,
-    "id": 102
+    "id": 102,
+    "verified_options": true
   },
   {
     "year": 2020,
@@ -1433,13 +1535,14 @@
     "questionNumber": 101,
     "question": "The output of NOR gate is",
     "options": [
-      "7ea390a6g01, # High. if all of its inputs are high",
-      "76439046802, ¥ High, of all of its inputs are low",
-      "Low. if all of its inputs are low",
-      "76439046803. *"
+      "High if all inputs are high",
+      "High if all inputs are low",
+      "Low if all inputs are low",
+      "Low if all inputs are high"
     ],
-    "answer": 0,
-    "id": 103
+    "answer": 3,
+    "id": 103,
+    "verified_options": true
   },
   {
     "year": 2020,
@@ -1453,7 +1556,8 @@
       "16"
     ],
     "answer": 3,
-    "id": 104
+    "id": 104,
+    "verified_options": true
   },
   {
     "year": 2020,
@@ -1467,7 +1571,8 @@
       "products of the squares"
     ],
     "answer": 2,
-    "id": 105
+    "id": 105,
+    "verified_options": true
   },
   {
     "year": 2020,
@@ -1481,7 +1586,8 @@
       "6"
     ],
     "answer": 1,
-    "id": 106
+    "id": 106,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1495,7 +1601,8 @@
       "T flip-flop"
     ],
     "answer": 3,
-    "id": 107
+    "id": 107,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1509,7 +1616,8 @@
       "Segment registers"
     ],
     "answer": 0,
-    "id": 108
+    "id": 108,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1523,7 +1631,8 @@
       "2^n"
     ],
     "answer": 0,
-    "id": 109
+    "id": 109,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1537,7 +1646,8 @@
       "F = A′ + BC"
     ],
     "answer": 1,
-    "id": 110
+    "id": 110,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1551,7 +1661,8 @@
       "CMOS"
     ],
     "answer": 2,
-    "id": 111
+    "id": 111,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1565,7 +1676,8 @@
       "6"
     ],
     "answer": 1,
-    "id": 112
+    "id": 112,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1579,7 +1691,8 @@
       "0 to 16"
     ],
     "answer": 2,
-    "id": 113
+    "id": 113,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1593,7 +1706,8 @@
       "Fast"
     ],
     "answer": 0,
-    "id": 114
+    "id": 114,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1607,7 +1721,8 @@
       "n(n+1)/2"
     ],
     "answer": 1,
-    "id": 115
+    "id": 115,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1621,7 +1736,8 @@
       "Parity encoder, parity decoder"
     ],
     "answer": 0,
-    "id": 116
+    "id": 116,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1635,7 +1751,8 @@
       "Q′(t+1) = J′Q + K′Q′"
     ],
     "answer": 0,
-    "id": 117
+    "id": 117,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1649,7 +1766,8 @@
       "Parallel shift register"
     ],
     "answer": 0,
-    "id": 118
+    "id": 118,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1663,7 +1781,8 @@
       "Bits"
     ],
     "answer": 3,
-    "id": 119
+    "id": 119,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1677,7 +1796,8 @@
       "Dynamic RAM"
     ],
     "answer": 2,
-    "id": 120
+    "id": 120,
+    "verified_options": true
   },
   {
     "year": 2019,
@@ -1690,8 +1810,9 @@
       "5",
       "8"
     ],
-    "answer": 2,
-    "id": 121
+    "answer": 3,
+    "id": 121,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1705,7 +1826,8 @@
       "5"
     ],
     "answer": 1,
-    "id": 122
+    "id": 122,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1719,7 +1841,8 @@
       "Gray"
     ],
     "answer": 3,
-    "id": 123
+    "id": 123,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1733,7 +1856,8 @@
       "NAND"
     ],
     "answer": 3,
-    "id": 124
+    "id": 124,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1747,7 +1871,8 @@
       "2,3"
     ],
     "answer": 2,
-    "id": 125
+    "id": 125,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1761,7 +1886,8 @@
       "CMOS"
     ],
     "answer": 1,
-    "id": 126
+    "id": 126,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1775,7 +1901,8 @@
       "WXY + XYZ + WYZ"
     ],
     "answer": 0,
-    "id": 127
+    "id": 127,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1789,7 +1916,8 @@
       "4"
     ],
     "answer": 1,
-    "id": 128
+    "id": 128,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1803,7 +1931,8 @@
       "R=1, S=0"
     ],
     "answer": 0,
-    "id": 129
+    "id": 129,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1817,7 +1946,8 @@
       "10"
     ],
     "answer": 0,
-    "id": 130
+    "id": 130,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1831,7 +1961,8 @@
       "Electromagnetic waves"
     ],
     "answer": 1,
-    "id": 131
+    "id": 131,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1845,7 +1976,8 @@
       "Generation of selected path between single source and multiple destinations"
     ],
     "answer": 2,
-    "id": 132
+    "id": 132,
+    "verified_options": true
   },
   {
     "year": 2018,
@@ -1859,7 +1991,8 @@
       "X̅Y̅ + Y̅Cᵢ"
     ],
     "answer": 1,
-    "id": 133
+    "id": 133,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1873,7 +2006,8 @@
       "1"
     ],
     "answer": 1,
-    "id": 134
+    "id": 134,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1884,10 +2018,11 @@
       "2",
       "4",
       "8",
-      "1,2,4,8 etc"
+      "1, 2, 4, 8, etc."
     ],
     "answer": 3,
-    "id": 135
+    "id": 135,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1901,7 +2036,8 @@
       "1000"
     ],
     "answer": 2,
-    "id": 136
+    "id": 136,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1915,7 +2051,8 @@
       "Parity Generator"
     ],
     "answer": 1,
-    "id": 137
+    "id": 137,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1928,8 +2065,9 @@
       "100",
       "778"
     ],
-    "answer": 1,
-    "id": 138
+    "answer": 0,
+    "id": 138,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1943,7 +2081,8 @@
       "Mod-7 counter"
     ],
     "answer": 0,
-    "id": 139
+    "id": 139,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1957,7 +2096,8 @@
       "1111"
     ],
     "answer": 1,
-    "id": 140
+    "id": 140,
+    "verified_options": true
   },
   {
     "year": 2017,
@@ -1971,7 +2111,8 @@
       "1010 1010 1010 1010"
     ],
     "answer": 2,
-    "id": 141
+    "id": 141,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -1985,7 +2126,8 @@
       "{NOR, NOT}"
     ],
     "answer": 2,
-    "id": 142
+    "id": 142,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -1999,7 +2141,8 @@
       "Transitive only"
     ],
     "answer": 1,
-    "id": 143
+    "id": 143,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2013,7 +2156,8 @@
       "yz + x′y′z"
     ],
     "answer": 0,
-    "id": 144
+    "id": 144,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2027,7 +2171,8 @@
       "1+x=1"
     ],
     "answer": 2,
-    "id": 145
+    "id": 145,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2041,7 +2186,8 @@
       "4"
     ],
     "answer": 0,
-    "id": 146
+    "id": 146,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2055,7 +2201,8 @@
       "32"
     ],
     "answer": 2,
-    "id": 147
+    "id": 147,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2069,7 +2216,8 @@
       "2"
     ],
     "answer": 1,
-    "id": 148
+    "id": 148,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2083,7 +2231,8 @@
       "16"
     ],
     "answer": 0,
-    "id": 149
+    "id": 149,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2097,7 +2246,8 @@
       "Using a truth table"
     ],
     "answer": 0,
-    "id": 150
+    "id": 150,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2110,8 +2260,9 @@
       "10",
       "8"
     ],
-    "answer": 3,
-    "id": 151
+    "answer": 1,
+    "id": 151,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2125,7 +2276,8 @@
       "w′ + x + y′ + z′"
     ],
     "answer": 3,
-    "id": 152
+    "id": 152,
+    "verified_options": true
   },
   {
     "year": 2016,
@@ -2139,6 +2291,7 @@
       "D = T ⊕ Q"
     ],
     "answer": 3,
-    "id": 153
+    "id": 153,
+    "verified_options": true
   }
 ]
