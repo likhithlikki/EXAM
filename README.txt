@@ -1,18 +1,14 @@
-ECET reusable quiz engine — updated.
+GITHUB ROOT-ONLY VERSION
 
-Behavior:
-- Uses ALL questions in the selected subject file. No random 50-question limit.
-- Timer = 1 minute per question + 20 minutes.
-  Example: 50 questions = 70 minutes.
-  Example: 146 questions = 166 minutes.
-- Previous / Next and question palette.
-- Auto-submit at 00:00.
-- Result and review page.
-- Add subjects by adding a JSON file and one entry to subjects.json.
+All files are in this single folder. There is NO data/ subfolder.
 
-Question JSON:
-{
-  "question": "Question text",
-  "options": ["A","B","C","D"],
-  "answer": 0
-}
+Files:
+- index.html
+- app.js
+- style.css
+- subjects.json
+- digital-electronics.json
+
+The engine uses ALL questions in digital-electronics.json. Timer = 1 minute per question + 20 minutes.
+
+IMPORTANT: The supplied OCR PDF contains 146 extracted question blocks. OCR did not cleanly recover four options for every block. Questions with missing/garbled options are marked in the app and should be verified before using them as scored questions. No answer key was invented.

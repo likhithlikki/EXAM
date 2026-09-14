@@ -1,0 +1,1386 @@
+[
+  {
+    "id": 1,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "If F=(A+B)(A +B), then F simplifies to:",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 2,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "Consider © defined as KOY = X.Y + X.Y, then © is:",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 3,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "If F = Xm(0.1.2.5.6.7), minimal SOP is:",
+    "options": [
+      "A'B'+AC",
+      "A'B'+AB+AC",
+      "%",
+      "v ABYBC'+AC AB't+AC' 4, %"
+    ],
+    "answer": null
+  },
+  {
+    "id": 4,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "For 4-variable K-map. largest group size possible is:",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 5,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "A 5-bit ripple counter uses J-K Flipflop with J=1, K=1 and the propagation delay is 30ns. What is time required for stable output from this ripple counter",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 6,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "Select the statement that contrasts Johnson’s counter with ripple counter correctly",
+    "options": [
+      "Both have the same number of states",
+      "% Johnson’s counter has twice the states of ripple counter",
+      "% Y Ripple counter has twice the states of Johnson’s counter",
+      "« Both are asynchronous"
+    ],
+    "answer": null
+  },
+  {
+    "id": 7,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "A full adder can be implemented using",
+    "options": [
+      "Two half-adders only",
+      "% x Two AND gates, Two XOR gates and Two OR gates",
+      "Two AND gates, Two XOR gates and One OR gate",
+      "7 , x Two half-adders and one AND gate"
+    ],
+    "answer": null
+  },
+  {
+    "id": 8,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "The difference between latch and flip-flop:",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 9,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 109,
+    "question": "A decoder with n inputs can generate:",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 10,
+    "year": 2026,
+    "state": "TS",
+    "questionNumber": 110,
+    "question": "Minimum number of flipflops required for a mod-12 counter is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 11,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Which logic gate produces an output of 0 only when all inputs are 1?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 12,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "The Boolean expression A + AB simplifies to",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 13,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "Which flip-flop has an invalid state?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 14,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Convert the binary number 101101 into its decimal equivalent.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 15,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "The number of outputs of a 4-bit decoder is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 16,
+    "year": 2026,
+    "state": "AP",
+    "questionNumber": 106,
+    "question": "Which flip-flop toggles its output on every clock pulse when input is HIGH?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 17,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "The decimal equivalent of the octal number (645) is",
+    "options": [
+      "(450)10",
+      "% (451)10",
+      "% (421)10",
+      "87 (501 )10"
+    ],
+    "answer": null
+  },
+  {
+    "id": 18,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "The characteristic equation of JK flip flop is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 19,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "Multiplication result of (10.10): and (01.01) is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 20,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "For the logic circuit shown in the figure the required input (A, B, C) condition to make the output (X) = 1 is A B X c",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 21,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "A three variable truth table has a High output for the inputs (A, B, C): 010, 011 and 110. The Boolean expression for Sum Of Product (SOP) can be written as",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 22,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "The logic function implemented by the circuit shown below is (ground implies a logic “0”) 4x1 MUX 2 I f; 5 5p PQ",
+    "options": [
+      "F = AND (P. Q)",
+      "% F =OR(P. Q)",
+      "*% F = XNOR (P. Q)",
+      "% F = XOR (P. Q)"
+    ],
+    "answer": null
+  },
+  {
+    "id": 23,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "| | Among the digital IC families ECL, TTL and CMOS, which one of the following 1s correct?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 24,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "The outputs of the two flip-flops Q:, Q» in the figure shown are initialized to 0, 0. The sequence generated at Q: upon application of clock signal is J Qt ml K1Q1",
+    "options": [
+      "1110...",
+      "% 01010...",
+      "00110...",
+      "% | | 01100..."
+    ],
+    "answer": null
+  },
+  {
+    "id": 25,
+    "year": 2025,
+    "state": "TS",
+    "questionNumber": 109,
+    "question": "The output frequency of a mod-12 counter is 6 KHz, then the input frequency is",
+    "options": [
+      "KHz",
+      "% 500 Hz",
+      "24 KHz",
+      "% 72 KHz"
+    ],
+    "answer": null
+  },
+  {
+    "id": 26,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Which of the following is a universal gate?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 27,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "Which of the following is NOT a combinational circuit?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 28,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "A demultiplexer is a device that :",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 29,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Convert the binary number 110011 into its decimal equivalent.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 30,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "The number of select lines required for an 8-to-1 multiplexer is?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 31,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 106,
+    "question": "_A Sequential logic circuit that toggles its output state on each clock pulse is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 32,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 107,
+    "question": "Convert the decimal number 108 into its octal equivalent.",
+    "options": [
+      "?",
+      "124",
+      "*% 134 144",
+      "% 5"
+    ],
+    "answer": null
+  },
+  {
+    "id": 33,
+    "year": 2025,
+    "state": "AP",
+    "questionNumber": 108,
+    "question": "What is the simplified form of the Boolean expression (A+ B)(A+C)?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 34,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "The decimal equivalent of octal number (128.24)s is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 35,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "The binary equivalent of a BCD number 00101001.01110101 is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 36,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "The logical gate that gives an output of logic level “1” whenever two inputs are equal is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 37,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "Convert",
+    "options": [
+      "B +",
+      "B into equivalent Product of Sums expression",
+      "7614465213, « (ATB). (A+",
+      "A+B).(A4 7614465214, * (APR). (ASB) reraaeszis, 7 (A+B) (A+B) 7eraaesar6, « (A*B). (A+B)"
+    ],
+    "answer": null
+  },
+  {
+    "id": 38,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "A digital circuit whose output depends not only on the present input but also on sequence of past inputs is a",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 39,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "The number of distinct Boolean expressions for 4 variables is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 40,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "‘Aw SRC (lop eoneled top flop by imeting an inl etinenn SAR by aasating sity pat",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 41,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "‘AcComabinstional civeut’thal converts the Bisary thfonmution hein 2 inpild ta a capi a",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 42,
+    "year": 2024,
+    "state": "TS",
+    "questionNumber": 110,
+    "question": "IFA, B,C, D, E,F represents variables of a Boolean expression and my isthe i’ min term, then the value of mi is",
+    "options": [
+      "7614465237. 7 4-",
+      "",
+      "",
+      "E.F 7614465238, ® A+B+C+D+E+F qeiaaesaay, « A-8-6.D.EF 7614465240. ® A+B+C+D+E+F"
+    ],
+    "answer": null
+  },
+  {
+    "id": 43,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Question Number : 101 Mandatory : No Time: 0 The table containing present state of output . next state of the output and the inputs is called",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 44,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "Question Number : 102 Mandatory : No Time : 0 A sequential circuit with 10 states will have",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 45,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "Question Number : 103 Mandatory : No Time: 0 AP collegedunia A binary number can be multiplied by 2 or divided by 2 with help of",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 46,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Question Number : 104 Mandatory : No Time :0 A five bit binary counter uses flip flops with propagation delay time of 10 ns each. The maximum possible time required for change of state will be",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 47,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "Question Number : 105 Mandatory : No Time:0 The Boolean expression (A+C) (AB'+AC) (A'C'+B) can be simplified to",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 48,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 106,
+    "question": "Question Number : 106 Mandatory : No Time:0 The 2’s compliment representation of the decimal value -15 is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 49,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 107,
+    "question": "Question Number : 107 Mandatory : No Time:0 Let * be defined as x*y=x'+y, let z=x*y Then the value of z*x is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 50,
+    "year": 2024,
+    "state": "AP",
+    "questionNumber": 108,
+    "question": "Question Number : 108 Mandatory : No Time:0 SR latch is made by cross coupling tiwo NAND gates. if S=-R=0, then it will result in",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 51,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "Which statement best describes a Karnaugh map",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 52,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "The number of distinct Boolean expressions for 4 variables is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 53,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "‘An SR flip flop is converted to flip flop by inserting an inverter between S&R and assigning a single input",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 54,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "A Combinational circuit that converts the binary information from 2\" inputs to n outputs is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 55,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "Convert the decimal number 41.6875 into binary",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 56,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "Find the 4’s complement of a number 12302 (base 4)",
+    "options": [
+      "002",
+      "8 32003",
+      "",
+      "v 21032 21031"
+    ],
+    "answer": null
+  },
+  {
+    "id": 57,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + Y(X+Z}",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 58,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "[Question text not reliably recovered by OCR.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 59,
+    "year": 2023,
+    "state": "TS",
+    "questionNumber": 109,
+    "question": "[Question text not reliably recovered by OCR.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 60,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Question Number : 101 Mandatory : No Time :0 Assume that all the numbers are represented in 2’s complement. then which of the following is divisible by 11111011?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 61,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "Question Number : 102 Mandatory : No Time:0 Tf (73)x = (54)y in a number system then the possible values of x and y are",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 62,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "Question Number : 103 Mandatory : No Time:0 Number of states ring counter with 5 flipflops will have?",
+    "options": [
+      "",
+      "15",
+      "5",
+      "8 32"
+    ],
+    "answer": null
+  },
+  {
+    "id": 63,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Question Number : 104 Mandatory : No Time :0 n-bit 2°s complement number system range for integers is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 64,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "Question Number : 105 Mandatory : No Time :0 Which of the following are Universal Gates",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 65,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 106,
+    "question": "Question Number : 106 Mandatory : No Time:0 The Fastest Logic Family Gate is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 66,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 107,
+    "question": "Question Number : 107 Mandatory : No Time :0 How many 4 x | multiplexers are required to design $ x 1 multiplexer?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 67,
+    "year": 2023,
+    "state": "AP",
+    "questionNumber": 108,
+    "question": "Question Number : 108 Mandatory : No Time :0 Which Flip Flop is free from race around problem",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 68,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "How many NOR gates are needed to construct AND gate",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 69,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "A serial in/parallel out, 4-bit shift register initially contains all 1s. The data nibble 0111 is waiting to enter. After four clock pulses, the register contains . Derive the Boolean expression for the logic circuit shown below: A PTD c D E",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 70,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "The toggle condition ina master-slave J-K flip-flop means that Q and Q will switch to their ------------ state(s) at the ---------------.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 71,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "Which of the following is a type of shift register counter?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 72,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "Select the statement that best describes Read-Only Memory (ROM).",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 73,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "The following is one of the applications of a digital multiplexer:",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 74,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "A circuit that responds to a specific set of signals to produce a related digital signal output is called a(n):",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 75,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "Which of the following is the output of (AB (A+ C))+AB(A+B4+C)?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 76,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 109,
+    "question": "While forming groups in K-mapping the Don't care states are combined along with terms of",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 77,
+    "year": 2022,
+    "state": "TS",
+    "questionNumber": 110,
+    "question": "What is the disadvantage of an S-R Flip-Flop",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 78,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Question Number : 101 (1B. 42)16 = ()e",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 79,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "Question Number : 102 onit22 72272, 4:00 PM Which logic gates among the below options can be used to create any Boolean function economically?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 80,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "Question Number : 103 101001 - 010110 =?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 81,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Question Number : 104 DeMorgan's theorem states that",
+    "options": [
+      ", AFB)=",
+      "B and (",
+      "",
+      "= A.B 1 ga (A+B) =A+B and (A.B) =A.B ae (A+B) =A.B and (A.B) =A+B (A+B) =A+Band(A.B)=A+B"
+    ],
+    "answer": null
+  },
+  {
+    "id": 82,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "Question Number : 105 When will JK flip flop toggle the input?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 83,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 106,
+    "question": "Question Number : 106 If the total number of transistors fabricated on a single chip is in the range of 300 to 3000. which integrated circuit do you prefer?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 84,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 107,
+    "question": "Question Number : 107 The binary equivalent of 0.6875 is --------",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 85,
+    "year": 2022,
+    "state": "AP",
+    "questionNumber": 108,
+    "question": "Question Number : 108 Which is the DeMorgan’s gate equivalent to OR?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 86,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "Which gate’s output is equal to 1 if the input variables have an odd number of 1’s?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 87,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "Which of the following gate acts as a controlled inverter?",
+    "options": [
+      "NAND",
+      "EX-OR",
+      "NOR",
+      "8"
+    ],
+    "answer": null
+  },
+  {
+    "id": 88,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "Which Multiplexer IC is used for implementing a full adder or a full subtractor? i) SN74151 ii) SN74153 iif) iv) T4LS153",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 89,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "The simplified form of the following Boolean function F(wW.X.y.2)=L(0,1.2.4.5,6,8.9,12.13.14) is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 90,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "Race around problem in a JK Flip flop is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 91,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "Logic gates with a set of inputs and outputs is arrangement of",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 92,
+    "year": 2021,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "In which circuit, chain of flipflops is connected in cascade to receive a common clock pulse?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 93,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Question Number : 101 Mandatory : No How many flip flops are required for the mod-16 counter?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 94,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "Question Number : 102 Mandatory : No EPROM contents can be erased by exposing them to",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 95,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "Question Number : 103 Mandatory : No The digital logic family which has minimum power dissipation is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 96,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Question Number : 104 Mandatory : No If the input to T-flipflop is 100 Hz signal, the final output of the two T- flipflops in cascade is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 97,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "Question Number : 105 Mandatory : No The device which changes from serial data to parallel data is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 98,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 106,
+    "question": "Question Number : 106 Mandatory : No When simplified with Boolean Algebra, (x + y)(x + z) simplifies to",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 99,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 107,
+    "question": "Question Number : 107 Mandatory : No The 2°s complement of the number 1101101 is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 100,
+    "year": 2021,
+    "state": "AP",
+    "questionNumber": 108,
+    "question": "Question Number : 108 Mandatory : No The decimal equivalent of hex number 1A53 is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 101,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "The output of NOR gate is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 102,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "A 4-variable Kaumaugh map will contain cells.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 103,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 109,
+    "question": "f (xyz tx yz+ xy zt .....) is called as",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 104,
+    "year": 2020,
+    "state": "TS",
+    "questionNumber": 110,
+    "question": "Karnangh map is a tool for representing Boolean functions of up to variables.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 105,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "When J = K = 1. then JK flip-flop functions like a/an ‘i",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 106,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "Two numbers with digits X and Y and radix 3 and 4 have following relationship: (XY)s = (YX)4. then what are the values of X and Y?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 107,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "Which of the following are employed in digital computers for generating binary control decisions?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 108,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "Which of the following is the maximum number of prime implicants possible for an n-variable Boolean function?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 109,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "[Question text not reliably recovered by OCR.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 110,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "Which digital logic family is suitable for circuits that need high component density?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 111,
+    "year": 2019,
+    "state": "TS",
+    "questionNumber": 110,
+    "question": "A three-input decoder has outputs.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 112,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 101,
+    "question": "Question Number : 101 Orientation : Vertical Which among the following was the first version in the TTL family?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 113,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 102,
+    "question": "Question Number : 102 Orientation : Vertical The logical sum of all the minterms of a Boolean function of n variables is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 114,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 103,
+    "question": "Question Number : 103 Orientation : Vertical Circuits that generate the parity bit in the receiver and transmitter are called _____ and ____ respectively.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 115,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 104,
+    "question": "Question Number : 104 Orientation : Vertical The characteristic equation for the complement output of a JK flip flop is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 116,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 105,
+    "question": "Question Number : 105 Orientation : Vertical If the register has both shifts and parallel load capabilities that is referred to as",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 117,
+    "year": 2019,
+    "state": "AP",
+    "questionNumber": 108,
+    "question": "Question Number : 108 Orientation : Vertical 4-to-16 line decoder can be constructed with 2-to-4 line decoders with enable.",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 118,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 101,
+    "question": "[Question text not reliably recovered by OCR.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 119,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 102,
+    "question": "Question Number : 102 Single Line Question Option : No Option Orientation : Vertical The code where all successive numbers differ from their preceding number by single bit is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 120,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 103,
+    "question": "Question Number : 103 Single Line Question Option : No Option Orientation : Vertical Which of the following is a universal logic gate?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 121,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 104,
+    "question": "Question Number : 104 Single Line Question Option : No Option Orientation : Vertical How many two input AND gates and two input OR gates are required to realize Y=BD+CE+ AB?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 122,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 105,
+    "question": "Question Number : 105 Single Line Question Option : No Option Orientation : Vertical Which of the following is the fastest logic family?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 123,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 106,
+    "question": "Question Number : 106 Single Line Question Option : No Option Orientation : Vertical A simplified Sum of Products expression for the following Boolean function F (W.X.Y.Z) = (0.2.4.8.9.10.11.12.13) is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 124,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 107,
+    "question": "Question Number : 107 Single Line Question Option : No Option Orientation : Vertical TS ECET 2018 How many entries are there in the truth table of 4 input NAND gate?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 125,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 108,
+    "question": "Question Number : 108 Single Line Question Option : No Option Orientation : Vertical Which of the following inputs is not accepted by SR flip-flop?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 126,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 109,
+    "question": "Question Number : 109 Single Line Question Option : No Option Orientation : Vertical How many flip-flops are required to construct a decade counter?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 127,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 111,
+    "question": "Question Number : 111 Single Line Question Option : No Option Orientation : Vertical Which of the following is the major functioning responsibility of the multiplexer?",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 128,
+    "year": 2018,
+    "state": "TS",
+    "questionNumber": 112,
+    "question": "Question Number : 112 Single Line Question Option : No Option Orientation : Vertical The sum output bit for a full adder with inputs X.Y. Cy is",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 129,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 8,
+    "question": "[Question ID = 10903] 1. B 2. A 3. 0 4. 1",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 130,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 9,
+    "question": "When grouping cells within a Kmap, the cells must be combined in groups of [Question ID = 10904] 1. 2 2. 4 3. 8 4. 1,2,4,8 etc",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 131,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 10,
+    "question": "The simultaneous equations of boolean variables x, y, z and w are: x + y + z = 1, xy = 0, xz + w = 1 and xy + (zw)’ = 0 have the following solutions for x, y, z and w respectively. [Question ID = 10905] 1. 0100 2. 1101 3. 1011 4. 1000",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 132,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 11,
+    "question": "The widely adapted combination circuit implementation method with maximum output functions and minimum requirement of ICs is [Question ID = 10907] 1. Multiplexer 2. Decoder 3. Encoder 4. Parity Generator",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 133,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 12,
+    "question": "[Question ID = 10908] 1. 1 2. 10 3. 100 4. 778",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 134,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 13,
+    "question": "[Question ID = 10909] 1. Mod 3 counter 2. Mod4 counter 3. Mod 5 counter 4. Mod – 7 counter",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 135,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 14,
+    "question": "[Question ID = 10910] 1. 0000 2. 1010 3. 0101 4. 1111",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 136,
+    "year": 2017,
+    "state": "TS",
+    "questionNumber": 15,
+    "question": "A 4 bit shift register in which the outputs of 3rd and 4th flipflops are connected parallel through an ex- or gate back to the first flipflop input. If initially all flipflop outputs set to 1’s , the circuit produces output sequence: [Question ID = 10911] 1. 1111 1111 0000 0000 2. 1111 0000 1111 0000 3. 1111 0001 0011 0101 4. 1010 1010 1010 1010",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 137,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 27,
+    "question": "Q.27 Whal i5 tbe simplified .xpresion with minimum numbs of tiierals lor th€ siven fucrioh ' F lx,9,zl = x'v' z + xv' z ++ \\Yz , (1) xy' + p l2l Y'2 + x'9'2 + xYz ' (3) xyz + x'y' (4) xsz + \\' e z Q.2E Whi.h of the fouowins is I dempotence law (1) x+xy=x (2) x(x+r=x (3) x+x=x 14) 1+x=l",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 138,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 28,
+    "question": "[Question text not reliably recoverable from supplied scan.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 139,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 29,
+    "question": "Q.29 To design 8x l multipl€x€r using 2xl multiplexer only, h@ manv 2x l muhiDi€rer are !equied l1) 7 t2t6 (3) 5 (4) 4 Q.3O How many number of boolean lonction can be romed with 3_vanables (l) 8 l2tt6 13) 256 14) 32 Q.3r Todesigna@unterlorlhe*quenc€1.2,3,4,5.6,7,",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 140,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 30,
+    "question": "[Question text not reliably recoverable from supplied scan.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 141,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 31,
+    "question": "[Question text not reliably recoverable from supplied scan.]",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 142,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 32,
+    "question": "Q.32 How dany numbers oI bits are requir€d to code lhe 26 alPhabeis' 10 digils and 10 special chaccierr U) 6 l2l5 13) 4 {4r Ib",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 143,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 33,
+    "question": "Q.33 The systematic rsduction of logic .ircuits is aEoplish€d bv (1) using boolean alsebra (2) srmboliireduction (3) TTL losic (4) using a iruih table",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 144,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 34,
+    "question": "Q.34 Howmanr numb\"A I i arc presnl 'n the binarv repte*ntation ol . 15 ' 2 'o ' 5 tb +3 lL) 2 (2)5 B) 10 (41 8",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 145,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 35,
+    "question": "Q.35 Whicn o.e ofihe following booleaD €xpre$ions is mt logiGllv equivalenr (o alloth€r expressions (1)sxy' + wz' + @xyz + wy'. l2l wx + wv' + u'!.Iz, (3)wx+*y +wz 14) w+x+9'+.2' rs6 -:E1---:-.. ECET lcompuier Science tnd Enginaeringl into T flip-flop",
+    "options": [],
+    "answer": null
+  },
+  {
+    "id": 146,
+    "year": 2016,
+    "state": "TS",
+    "questionNumber": 36,
+    "question": "Q.36 What is the additional losic r€quned io convelr D flipjlop (1) D: r-Q. (2)D=T (3) D=T+Q, (4)D=raQ\" ituttuctioa",
+    "options": [],
+    "answer": null
+  }
+]
