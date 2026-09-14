@@ -1,8 +1,16 @@
-ECET Digital Electronics source-backed question bank.
+ECET Digital Electronics — GitHub-ready quiz
 
-- 177 question entries from the available TS/AP Digital Electronics source pages.
-- Original scanned page image is retained for every question, so OCR errors do not remove the actual options or symbols.
-- Website uses ALL questions.
-- Timer = 1 minute per question + 20 minutes.
-- No data subfolder: all JSON/HTML/CSS/JS files are in the repository root; only scanned page images are in images/.
-- Answer keys are intentionally not guessed. Add verified answer values 0=A, 1=B, 2=C, 3=D when ready.
+153 Digital Electronics PYQs from the supplied TS/AP source set, ordered from 2026 backwards.
+Every question has 4 options and a correct-answer index (0=A, 1=B, 2=C, 3=D).
+
+Timer: 1 minute per question + 20 minutes.
+153 questions = 173 minutes.
+
+Upload these files to the ROOT of your GitHub repository:
+- index.html
+- app.js
+- style.css
+- subjects.json
+- digital-electronics.json
+
+Then enable GitHub Pages from the main branch and /(root).
