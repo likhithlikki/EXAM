@@ -7,6 +7,12 @@
    See SETUP-BACKEND.md for the exact deployment steps.
    ===================================================================== */
 
+/* Your Google Sheet (from the URL you shared):
+   https://docs.google.com/spreadsheets/d/1QDu7YTv-MWm9jRuVsmRBGjwuBD6WFtj_4bRqj5B8hds/edit
+   Hardcoded below so this script works whether it's bound to the sheet
+   or deployed as a standalone Apps Script project. */
+const SPREADSHEET_ID = "1QDu7YTv-MWm9jRuVsmRBGjwuBD6WFtj_4bRqj5B8hds";
+
 const SHEETS = {
   Users:          ["Timestamp", "Name", "Email", "LastSubject"],
   Results:        ["ResultId", "Timestamp", "Name", "Email", "Subject", "SubjectId", "Score", "Total", "Percentage", "Correct", "Wrong", "Unanswered", "TotalTimeSec", "Rank", "RankOutOf"],
@@ -16,8 +22,12 @@ const SHEETS = {
   RevisionHistory:["Email", "Subject", "QuestionId", "ActionDate", "Action"]
 };
 
+function getSpreadsheet_() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
 function ensureSheets_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getSpreadsheet_();
   Object.keys(SHEETS).forEach(name => {
     let sh = ss.getSheetByName(name);
     if (!sh) sh = ss.insertSheet(name);
