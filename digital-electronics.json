@@ -3,16 +3,18 @@
     "year": 2026,
     "state": "TS",
     "questionNumber": 101,
-    "question": "If F=(A+B)(A +B), then F simplifies to:",
+    "question": "If F = (A + B)(A + B̅), then F simplifies to:",
     "options": [
       "A",
       "B",
-      "AB",
+      "A+B",
       "0"
     ],
     "answer": 0,
     "id": 1,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -27,7 +29,9 @@
     ],
     "answer": 1,
     "id": 2,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -35,14 +39,16 @@
     "questionNumber": 103,
     "question": "If F = Σm(0,1,2,5,6,7), minimal SOP is:",
     "options": [
-      "AB'+AC",
-      "A'B‘+ABt+AC",
-      ".v AB+BC+AC",
-      "AB'+AC’"
+      "A̅B̅+AC",
+      "A̅B̅+AB+AC",
+      "A̅B̅+BC̅+AC",
+      "A̅B̅+AC̅"
     ],
-    "answer": 0,
+    "answer": 2,
     "id": 3,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -51,13 +57,15 @@
     "question": "For 4-variable K-map, largest group size possible is:",
     "options": [
       "8",
-      "2",
+      "12",
       "16",
       "4"
     ],
     "answer": 2,
     "id": 4,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -72,7 +80,9 @@
     ],
     "answer": 2,
     "id": 5,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -87,7 +97,9 @@
     ],
     "answer": 2,
     "id": 6,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -100,9 +112,11 @@
       "Two AND gates, two XOR gates and one OR gate",
       "Two half-adders and one AND gate"
     ],
-    "answer": 3,
+    "answer": 2,
     "id": 7,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -117,7 +131,9 @@
     ],
     "answer": 2,
     "id": 8,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -125,14 +141,16 @@
     "questionNumber": 109,
     "question": "A decoder with n inputs can generate:",
     "options": [
-      "2^n outputs",
       "2n outputs",
+      "2^n outputs",
       "n^2 outputs",
       "3n outputs"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 9,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -140,14 +158,16 @@
     "questionNumber": 110,
     "question": "Minimum number of flip-flops required for a mod-12 counter is:",
     "options": [
+      "3",
       "4",
       "5",
-      "8",
       "6"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 10,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -162,7 +182,9 @@
     ],
     "answer": 2,
     "id": 11,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -173,11 +195,13 @@
       "A",
       "AB",
       "B",
-      "1"
+      "1+B"
     ],
     "answer": 0,
     "id": 12,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -192,7 +216,9 @@
     ],
     "answer": 3,
     "id": 13,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -201,13 +227,15 @@
     "question": "Convert the binary number 101101 into its decimal equivalent.",
     "options": [
       "43",
-      "27",
       "45",
-      "44"
+      "44",
+      "46"
     ],
-    "answer": 2,
+    "answer": 1,
     "id": 14,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -222,7 +250,9 @@
     ],
     "answer": 2,
     "id": 15,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2026,
@@ -237,7 +267,9 @@
     ],
     "answer": 3,
     "id": 16,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -252,7 +284,9 @@
     ],
     "answer": 2,
     "id": 17,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -267,7 +301,9 @@
     ],
     "answer": 1,
     "id": 18,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -282,13 +318,15 @@
     ],
     "answer": 2,
     "id": 19,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
     "state": "TS",
     "questionNumber": 104,
-    "question": "For the logic circuit shown in the figure the required input (A, B, C) condition to make the output (X) = 1 is A B X c",
+    "question": "For the logic circuit shown in the original paper, the required input (A, B, C) condition to make X = 1 is. The circuit is X = (A XOR B) AND (B XNOR C) AND C.",
     "options": [
       "(1,0,1)",
       "(0,0,1)",
@@ -297,7 +335,9 @@
     ],
     "answer": 3,
     "id": 20,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -305,14 +345,16 @@
     "questionNumber": 105,
     "question": "A three variable truth table has a High output for the inputs (A, B, C): 010, 011 and 110. The Boolean expression for Sum Of Product (SOP) can be written as",
     "options": [
+      "AB + BC",
       "A̅B + BC̅",
-      "AB̅ + B̅C",
-      "A̅B̅ + BC",
-      "AB̅ + B̅C̅"
+      "A̅B + BC",
+      "AB + BC̅"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 21,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -327,7 +369,9 @@
     ],
     "answer": 3,
     "id": 22,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -335,14 +379,16 @@
     "questionNumber": 107,
     "question": "Among the digital IC families ECL, TTL and CMOS, which one of the following is correct?",
     "options": [
-      "124",
-      "134",
-      "144",
-      "154"
+      "ECL has more propagation delay",
+      "TTL has the largest Fan-out",
+      "CMOS has the lowest power consumption",
+      "TTL has the highest noise margin"
     ],
-    "answer": 3,
+    "answer": 2,
     "id": 23,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -357,7 +403,9 @@
     ],
     "answer": 3,
     "id": 24,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -372,7 +420,9 @@
     ],
     "answer": 3,
     "id": 25,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -387,7 +437,9 @@
     ],
     "answer": 1,
     "id": 26,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -402,7 +454,9 @@
     ],
     "answer": 2,
     "id": 27,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -417,7 +471,9 @@
     ],
     "answer": 0,
     "id": 28,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -432,7 +488,9 @@
     ],
     "answer": 3,
     "id": 29,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -447,7 +505,9 @@
     ],
     "answer": 0,
     "id": 30,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -462,7 +522,9 @@
     ],
     "answer": 0,
     "id": 31,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -477,7 +539,9 @@
     ],
     "answer": 3,
     "id": 32,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -492,7 +556,9 @@
     ],
     "answer": 3,
     "id": 33,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2025,
@@ -507,13 +573,15 @@
     ],
     "answer": 3,
     "id": 34,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
     "state": "TS",
     "questionNumber": 101,
-    "question": "The decimal equivalent of octal number (128.24)s is",
+    "question": "The decimal equivalent of octal number (130.24)₈ is:",
     "options": [
       "80.3125",
       "88.3125",
@@ -522,7 +590,9 @@
     ],
     "answer": 1,
     "id": 35,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "Source scan appears to contain a typo: it prints 128.24₈ (invalid octal), while the marked answer 88.3125 corresponds to intended 130.24₈.",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -537,7 +607,9 @@
     ],
     "answer": 0,
     "id": 36,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -552,7 +624,9 @@
     ],
     "answer": 3,
     "id": 37,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -567,7 +641,9 @@
     ],
     "answer": 2,
     "id": 38,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -580,9 +656,11 @@
       "Sequential Circuit",
       "Combinational Circuit"
     ],
-    "answer": 3,
+    "answer": 2,
     "id": 39,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -597,7 +675,9 @@
     ],
     "answer": 3,
     "id": 40,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -612,7 +692,9 @@
     ],
     "answer": 3,
     "id": 41,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -627,7 +709,9 @@
     ],
     "answer": 3,
     "id": 42,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -642,13 +726,15 @@
     ],
     "answer": 2,
     "id": 43,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
     "state": "TS",
     "questionNumber": 110,
-    "question": "IFA, B,C, D, E,F represents variables of a Boolean expression and my isthe i’ min term, then the value of mi is",
+    "question": "If A, B, C, D, E, F represent variables of a Boolean expression and mᵢ is the iᵗʰ minterm, then the value of m₄₇ is:",
     "options": [
       "A·B̅·C·D·E·F",
       "A+B̅+C+D+E+F",
@@ -657,7 +743,9 @@
     ],
     "answer": 0,
     "id": 44,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "Restored missing subscript 47 from source scan.",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -672,7 +760,9 @@
     ],
     "answer": 2,
     "id": 45,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -681,13 +771,15 @@
     "question": "A sequential circuit with 10 states will have",
     "options": [
       "3 flip-flops",
+      "10 flip-flops",
       "4 flip-flops",
-      "5 flip-flops",
-      "10 flip-flops"
+      "5 flip-flops"
     ],
-    "answer": 1,
+    "answer": 2,
     "id": 46,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -702,7 +794,9 @@
     ],
     "answer": 2,
     "id": 47,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -717,13 +811,15 @@
     ],
     "answer": 3,
     "id": 48,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
     "state": "AP",
     "questionNumber": 105,
-    "question": "The Boolean expression (A+C)(AB′+AC)(A′C′+B) can be simplified to",
+    "question": "The Boolean expression (A+C)(AB′+AC)(A′C′+B′) can be simplified to:",
     "options": [
       "AB′",
       "AB+A′C",
@@ -732,7 +828,9 @@
     ],
     "answer": 0,
     "id": 49,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -747,7 +845,9 @@
     ],
     "answer": 3,
     "id": 50,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -760,9 +860,11 @@
       "0",
       "1"
     ],
-    "answer": 3,
+    "answer": 1,
     "id": 51,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2024,
@@ -777,7 +879,9 @@
     ],
     "answer": 2,
     "id": 52,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -792,7 +896,9 @@
     ],
     "answer": 0,
     "id": 53,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -807,13 +913,15 @@
     ],
     "answer": 3,
     "id": 54,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
     "state": "TS",
     "questionNumber": 103,
-    "question": "‘An SR flip flop is converted to flip flop by inserting an inverter between S&R and assigning a single input",
+    "question": "An SR flip-flop is converted to a ___ flip-flop by inserting an inverter between S & R and assigning a single input:",
     "options": [
       "Master-slave",
       "T",
@@ -822,22 +930,26 @@
     ],
     "answer": 3,
     "id": 55,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
     "state": "TS",
     "questionNumber": 104,
-    "question": "A Combinational circuit that converts the binary information from 2\" inputs to n outputs is",
+    "question": "A combinational circuit that converts the binary information from 2ⁿ inputs to n outputs is:",
     "options": [
       "Decoder",
       "Multiplexer",
-      "Encoder",
-      "Half adder"
+      "Half adder",
+      "Encoder"
     ],
-    "answer": 2,
+    "answer": 3,
     "id": 56,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -852,7 +964,9 @@
     ],
     "answer": 3,
     "id": 57,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -867,22 +981,26 @@
     ],
     "answer": 2,
     "id": 58,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
     "state": "TS",
     "questionNumber": 107,
-    "question": "How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + Y(X+Z}",
+    "question": "How many gates would be required to implement the following Boolean expression after simplification? XY + X(X+Z) + Y(X+Z)",
     "options": [
+      "1",
       "2",
       "8",
-      "4",
-      "1"
+      "4"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 59,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -897,7 +1015,9 @@
     ],
     "answer": 3,
     "id": 60,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -912,7 +1032,9 @@
     ],
     "answer": 1,
     "id": 61,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -920,29 +1042,33 @@
     "questionNumber": 101,
     "question": "Assume that all the numbers are represented in 2’s complement. then which of the following is divisible by 11111011?",
     "options": [
-      "1100100",
-      "1100111",
-      "70",
-      "1010111"
+      "11100100",
+      "11100111",
+      "11010111",
+      "11011011"
     ],
-    "answer": 2,
+    "answer": 1,
     "id": 62,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
     "state": "AP",
     "questionNumber": 102,
-    "question": "Tf (73)x = (54)y in a number system then the possible values of x and y are",
+    "question": "If (73)ₓ = (54)ᵧ in a number system, then the possible values of x and y are:",
     "options": [
       "8,11",
       "8,16",
       "10,12",
-      "9,14"
+      "9,13"
     ],
     "answer": 0,
     "id": 63,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "Corrected OCR “Tf” to “If”.",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -957,22 +1083,26 @@
     ],
     "answer": 2,
     "id": 64,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
     "state": "AP",
     "questionNumber": 104,
-    "question": "n-bit 2°s complement number system range for integers is",
+    "question": "n-bit 2’s complement number system range for integers is:",
     "options": [
+      "−2^(n−1) to (2^(n−1)−1)",
+      "−(2^(n−1)−1) to (2^(n−1)−1)",
       "−2^(n−1) to 2^(n−1)",
-      "−2^n to 2^n",
-      "−2^(n−1) to 2^(n−1)−1",
-      "−(2^n−1) to 2^n−1"
+      "−(2^(n−1)+1) to (2^(n−1)−1)"
     ],
-    "answer": 2,
+    "answer": 0,
     "id": 65,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "Restored 2’s-complement notation.",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -987,7 +1117,9 @@
     ],
     "answer": 0,
     "id": 66,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -1002,22 +1134,26 @@
     ],
     "answer": 0,
     "id": 67,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
     "state": "AP",
     "questionNumber": 107,
-    "question": "How many 4 x | multiplexers are required to design $ x 1 multiplexer?",
+    "question": "How many 4 × 1 multiplexers are required to design an 8 × 1 multiplexer?",
     "options": [
-      "4",
       "2",
       "3",
-      "5"
+      "5",
+      "8"
     ],
-    "answer": 1,
+    "answer": 0,
     "id": 68,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2023,
@@ -1032,7 +1168,9 @@
     ],
     "answer": 3,
     "id": 69,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1040,14 +1178,16 @@
     "questionNumber": 101,
     "question": "How many NOR gates are needed to construct AND gate",
     "options": [
-      "2",
-      "3",
       "4",
-      "8"
+      "3",
+      "2",
+      "1"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 70,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1062,7 +1202,9 @@
     ],
     "answer": 2,
     "id": 71,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1077,7 +1219,9 @@
     ],
     "answer": 0,
     "id": 72,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1092,7 +1236,9 @@
     ],
     "answer": 2,
     "id": 73,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1107,7 +1253,9 @@
     ],
     "answer": 1,
     "id": 74,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1122,7 +1270,9 @@
     ],
     "answer": 3,
     "id": 75,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1137,22 +1287,26 @@
     ],
     "answer": 3,
     "id": 76,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
     "state": "TS",
     "questionNumber": 108,
-    "question": "Which of the following is the output of (AB (A+ C))+AB(A+B4+C)?",
+    "question": "Which of the following is the output of (A B̅(A + C̅)) + A̅B(A + B + C)?",
     "options": [
-      "|» A+BU+AC)",
-      "A+B",
-      "BA",
-      "A+B"
+      "A̅ + B(1 + A̅C)",
+      "A̅ + B",
+      "B̅ + A",
+      "A̅ + B̅"
     ],
     "answer": 1,
     "id": 77,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1160,14 +1314,16 @@
     "questionNumber": 109,
     "question": "While forming groups in K-mapping the Don't care states are combined along with terms of",
     "options": [
-      "yv Minterms",
+      "Minterms",
       "Maxterms",
-      "De",
-      "SOP"
+      "Don't-care terms",
+      "SOP/POS"
     ],
     "answer": 0,
     "id": 78,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1182,13 +1338,15 @@
     ],
     "answer": 3,
     "id": 79,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
     "state": "AP",
     "questionNumber": 101,
-    "question": "(1B. 42)16 = ()e",
+    "question": "(1E.42)₁₆ = (?)₈",
     "options": [
       "36.204",
       "36.202",
@@ -1197,13 +1355,15 @@
     ],
     "answer": 0,
     "id": 80,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
     "state": "AP",
     "questionNumber": 102,
-    "question": "onit22 72272, 4:00 PM Which logic gates among the below options can be used to create any Boolean function economically?",
+    "question": "Which logic gates among the following options can be used to create any Boolean function economically?",
     "options": [
       "XOR, NAND, OR",
       "OR, NOT, XOR",
@@ -1212,7 +1372,9 @@
     ],
     "answer": 3,
     "id": 81,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "Removed OCR timestamp/page-header junk.",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1227,7 +1389,9 @@
     ],
     "answer": 1,
     "id": 82,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1242,7 +1406,9 @@
     ],
     "answer": 0,
     "id": 83,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1257,7 +1423,9 @@
     ],
     "answer": 3,
     "id": 84,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1270,9 +1438,11 @@
       "LSI",
       "MSI"
     ],
-    "answer": 3,
+    "answer": 2,
     "id": 85,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1287,7 +1457,9 @@
     ],
     "answer": 0,
     "id": 86,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2022,
@@ -1300,9 +1472,11 @@
       "Negative AND",
       "Negative OR"
     ],
-    "answer": 2,
+    "answer": 1,
     "id": 87,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1317,7 +1491,9 @@
     ],
     "answer": 2,
     "id": 88,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1332,7 +1508,9 @@
     ],
     "answer": 1,
     "id": 89,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1345,9 +1523,11 @@
       "(ii) only",
       "(ii) & (iv)"
     ],
-    "answer": 1,
+    "answer": 3,
     "id": 90,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1355,14 +1535,16 @@
     "questionNumber": 104,
     "question": "The simplified form of the Boolean function F(w,x,y,z)=Σ(0,1,2,4,5,6,8,9,12,13,14) is:",
     "options": [
-      "w′x′z′ + xz′",
-      "w′x′ + yz′",
-      "y′ + xz′ + w′z′",
-      "w′yz + x′z"
+      "y′ + w′z′ + xz′",
+      "w′ + w′x′ + yz′",
+      "x′ + w′z′ + yz",
+      "y + wz + x′z"
     ],
-    "answer": 2,
+    "answer": 0,
     "id": 91,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1377,7 +1559,9 @@
     ],
     "answer": 2,
     "id": 92,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1390,9 +1574,11 @@
       "Design circuits",
       "Register"
     ],
-    "answer": 1,
+    "answer": 0,
     "id": 93,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1407,7 +1593,9 @@
     ],
     "answer": 3,
     "id": 94,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1422,7 +1610,9 @@
     ],
     "answer": 1,
     "id": 95,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1437,7 +1627,9 @@
     ],
     "answer": 3,
     "id": 96,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1452,7 +1644,9 @@
     ],
     "answer": 2,
     "id": 97,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1467,7 +1661,9 @@
     ],
     "answer": 2,
     "id": 98,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1482,7 +1678,9 @@
     ],
     "answer": 0,
     "id": 99,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1491,13 +1689,15 @@
     "question": "When simplified with Boolean Algebra, (x + y)(x + z) simplifies to",
     "options": [
       "x(1+yz)",
-      "x+y",
-      "x(y+z)",
+      "x+y z",
+      "x+x(y+z)",
       "x"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 100,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1512,7 +1712,9 @@
     ],
     "answer": 0,
     "id": 101,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2021,
@@ -1527,7 +1729,9 @@
     ],
     "answer": 0,
     "id": 102,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2020,
@@ -1542,7 +1746,9 @@
     ],
     "answer": 3,
     "id": 103,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2020,
@@ -1557,7 +1763,9 @@
     ],
     "answer": 3,
     "id": 104,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2020,
@@ -1572,7 +1780,9 @@
     ],
     "answer": 2,
     "id": 105,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2020,
@@ -1585,9 +1795,11 @@
       "5",
       "6"
     ],
-    "answer": 1,
+    "answer": 3,
     "id": 106,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1602,7 +1814,9 @@
     ],
     "answer": 3,
     "id": 107,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1617,7 +1831,9 @@
     ],
     "answer": 0,
     "id": 108,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1632,7 +1848,9 @@
     ],
     "answer": 0,
     "id": 109,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1647,7 +1865,9 @@
     ],
     "answer": 1,
     "id": 110,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1662,7 +1882,9 @@
     ],
     "answer": 2,
     "id": 111,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1677,7 +1899,9 @@
     ],
     "answer": 1,
     "id": 112,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1692,7 +1916,9 @@
     ],
     "answer": 2,
     "id": 113,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1707,7 +1933,9 @@
     ],
     "answer": 0,
     "id": 114,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1722,7 +1950,9 @@
     ],
     "answer": 1,
     "id": 115,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1737,7 +1967,9 @@
     ],
     "answer": 0,
     "id": 116,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1750,9 +1982,11 @@
       "Q′(t+1) = J′Q + KQ′",
       "Q′(t+1) = J′Q + K′Q′"
     ],
-    "answer": 0,
+    "answer": 2,
     "id": 117,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1767,7 +2001,9 @@
     ],
     "answer": 0,
     "id": 118,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1782,7 +2018,9 @@
     ],
     "answer": 3,
     "id": 119,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1797,7 +2035,9 @@
     ],
     "answer": 2,
     "id": 120,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2019,
@@ -1810,9 +2050,11 @@
       "5",
       "8"
     ],
-    "answer": 3,
+    "answer": 2,
     "id": 121,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1827,7 +2069,9 @@
     ],
     "answer": 1,
     "id": 122,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1842,7 +2086,9 @@
     ],
     "answer": 3,
     "id": 123,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1857,7 +2103,9 @@
     ],
     "answer": 3,
     "id": 124,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1872,7 +2120,9 @@
     ],
     "answer": 2,
     "id": 125,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1887,7 +2137,9 @@
     ],
     "answer": 1,
     "id": 126,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1895,14 +2147,16 @@
     "questionNumber": 106,
     "question": "A simplified Sum of Products expression for F(W,X,Y,Z)=Σ(0,2,4,8,9,10,11,12,13) is",
     "options": [
-      "X̅Z̅ + YZ̅ + WX̅ + WY̅",
+      "X̅Z̅ + Y̅Z̅ + WX̅ + WY̅",
       "XZ + YZ + WX + WY",
       "X̅Y + YZ̅ + ZX + WX̅",
       "WXY + XYZ + WYZ"
     ],
     "answer": 0,
     "id": 127,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1917,7 +2171,9 @@
     ],
     "answer": 1,
     "id": 128,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1932,7 +2188,9 @@
     ],
     "answer": 0,
     "id": 129,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1947,7 +2205,9 @@
     ],
     "answer": 0,
     "id": 130,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1962,7 +2222,9 @@
     ],
     "answer": 1,
     "id": 131,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1977,7 +2239,9 @@
     ],
     "answer": 2,
     "id": 132,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2018,
@@ -1992,7 +2256,9 @@
     ],
     "answer": 1,
     "id": 133,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2007,7 +2273,9 @@
     ],
     "answer": 1,
     "id": 134,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2022,7 +2290,9 @@
     ],
     "answer": 3,
     "id": 135,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2037,7 +2307,9 @@
     ],
     "answer": 2,
     "id": 136,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2052,7 +2324,9 @@
     ],
     "answer": 1,
     "id": 137,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2065,9 +2339,11 @@
       "100",
       "778"
     ],
-    "answer": 0,
+    "answer": 1,
     "id": 138,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2082,7 +2358,9 @@
     ],
     "answer": 0,
     "id": 139,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2097,7 +2375,9 @@
     ],
     "answer": 1,
     "id": 140,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2017,
@@ -2112,7 +2392,9 @@
     ],
     "answer": 2,
     "id": 141,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2125,9 +2407,11 @@
       "{NAND}",
       "{NOR, NOT}"
     ],
-    "answer": 2,
+    "answer": 1,
     "id": 142,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2142,7 +2426,9 @@
     ],
     "answer": 1,
     "id": 143,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2157,7 +2443,9 @@
     ],
     "answer": 0,
     "id": 144,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2172,7 +2460,9 @@
     ],
     "answer": 2,
     "id": 145,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2187,7 +2477,9 @@
     ],
     "answer": 0,
     "id": 146,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2202,7 +2494,9 @@
     ],
     "answer": 2,
     "id": 147,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2215,9 +2509,11 @@
       "5",
       "2"
     ],
-    "answer": 1,
+    "answer": 0,
     "id": 148,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2232,7 +2528,9 @@
     ],
     "answer": 0,
     "id": 149,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2247,7 +2545,9 @@
     ],
     "answer": 0,
     "id": 150,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2260,9 +2560,11 @@
       "10",
       "8"
     ],
-    "answer": 1,
+    "answer": 3,
     "id": 151,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2277,7 +2579,9 @@
     ],
     "answer": 3,
     "id": 152,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   },
   {
     "year": 2016,
@@ -2292,6 +2596,8 @@
     ],
     "answer": 3,
     "id": 153,
-    "verified_options": true
+    "verified_options": true,
+    "verification": "manual/source-image cross-check",
+    "strictly_verified": true
   }
 ]

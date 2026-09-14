@@ -1,0 +1,7 @@
+ECET DIGITAL ELECTRONICS — STRICT VERIFICATION
+
+Total questions retained: 153
+Verified against available source scans, OCR, marked answers, and independent digital-logic checks.
+
+Source correction: 2024 TS Q101. The scan prints (128.24)₈, which is not a valid octal number. The marked answer 88.3125 corresponds to intended (130.24)₈, so the quiz uses 130.24₈.
+The JSON remains the only question-bank file used by the website.
