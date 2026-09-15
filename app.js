@@ -7,6 +7,7 @@ const isoDate = d => { const x=new Date(d); return x.getFullYear()+"-"+String(x.
 const formatDateTime = v => { const d=new Date(v); return isNaN(d)?String(v||"—"):d.toLocaleString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}); };
 const formatSeconds = s => { s=Math.max(0,Math.round(Number(s)||0)); return s<60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; };
 const addDays = (v,n) => { const d=new Date(v); d.setDate(d.getDate()+n); return d; };
+const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 
 const store = {
   profile:()=>JSON.parse(localStorage.getItem("ecet_profile")||"null"),
@@ -30,7 +31,7 @@ let _afterProfile=null;
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
 function clearExam(){ clearInterval(timer); timer=null; isSubmitting=false; window.removeEventListener("beforeunload",handleBeforeUnload); }
-function persist(){ if(!activeSubject||revisionMode)return; store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId}); }
+function persist(){ if(!activeSubject||revisionMode)return; store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,questionOrder:test.map(q=>q.id)}); }
 function commitTime(){ if(!test.length)return; const spent=(Date.now()-questionStartedAt)/1000; qTime[current]=(qTime[current]||0)+spent; questionStartedAt=Date.now(); }
 
 function submissionPayload(){
@@ -47,7 +48,7 @@ function handleBeforeUnload(e){
   if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
   persist();
   const payload={action:"submitExam",...submissionPayload()};
-  try{ if(API && navigator.sendBeacon){ navigator.sendBeacon(API,new Blob([JSON.stringify(payload)],{type:"text/plain;charset=UTF-8"})); } }catch(err){console.warn(err);}
+  try{ if(API && navigator.sendBeacon){ navigator.sendBeacon(API,new Blob([JSON.stringify(payload)],{type:"text/plain;charset=UTF-8"})); store.clearProgress(activeSubject.id); } }catch(err){console.warn(err);}
   e.preventDefault(); e.returnValue="Your exam is still running. It will be submitted automatically."; return e.returnValue;
 }
 
@@ -75,10 +76,18 @@ async function beginExam(){const p=store.profile();apiPost("register",{name:p.na
 function start(){
   revisionMode=false; clearExam();
   const saved=store.getProgress(activeSubject.id),p=store.profile();
-  if(saved&&saved.email===p.email&&saved.left>0&&saved.answers?.length===bank.length){test=bank;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=saved.current||0;left=saved.left;examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();}
-  else{test=bank;answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();examSessionId=newSessionId();}
-  questionStartedAt=Date.now();isSubmitting=false;window.addEventListener("beforeunload",handleBeforeUnload);persist();render();
+  const bankById=new Map(bank.map(q=>[String(q.id),q]));
+  if(saved&&saved.email===p.email&&saved.left>0&&saved.answers?.length===bank.length&&Array.isArray(saved.questionOrder)&&saved.questionOrder.length===bank.length){
+    const restored=saved.questionOrder.map(id=>bankById.get(String(id))).filter(Boolean);
+    if(restored.length===bank.length){
+      test=restored;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=Math.max(0,Math.min(test.length-1,saved.current||0));left=saved.left;examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();
+    } else { startFreshExam(); }
+  } else { startFreshExam(); }
+  questionStartedAt=Date.now();isSubmitting=false;saveTick=0;window.addEventListener("beforeunload",handleBeforeUnload);persist();render();
   timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el){el.textContent=clock(left);el.classList.toggle("low",left<=60);}if(++saveTick%5===0)persist();if(left<=0){left=0;submit();}},1000);
+}
+function startFreshExam(){
+  test=shuffle(bank);answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();examSessionId=newSessionId();
 }
 function choose(v){answers[current]=v;persist();render();}
 function toggleReview(){marked[current]=!marked[current];persist();render();}
@@ -139,7 +148,7 @@ function renderMistakes(items){
 }
 function formatCountdown(ms){let s=Math.ceil(ms/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60),sec=s%60;return `${d}d ${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(sec).padStart(2,"0")}s`;}
 function mistakeCountdownLoop(){const el=document.querySelector(".countdown");if(!el)return;const items=store.mistakesCache(),next=items.filter(m=>new Date(m.revisionDueDate)>new Date()).sort((a,b)=>new Date(a.revisionDueDate)-new Date(b.revisionDueDate))[0];if(!next){mistakes();return;}el.innerHTML=`<b>Next revision test:</b> ${formatCountdown(new Date(next.revisionDueDate)-new Date())}<br><small>Due: ${formatDateTime(next.revisionDueDate)}</small>`;setTimeout(mistakeCountdownLoop,1000);}
-async function startRevisionTest(){const items=store.mistakesCache().filter(m=>new Date(m.revisionDueDate)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=items;test=items.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);renderRevision();}
+async function startRevisionTest(){const items=store.mistakesCache().filter(m=>new Date(m.revisionDueDate)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items);test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);renderRevision();}
 function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>7-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
 function revisionChoose(v){answers[current]=v;renderRevision();}
 function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}
