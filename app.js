@@ -7,6 +7,7 @@ const isoDate = d => { const x=new Date(d); return x.getFullYear()+"-"+String(x.
 const formatDateTime = v => { const d=new Date(v); return isNaN(d)?String(v||"—"):d.toLocaleString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}); };
 const formatSeconds = s => { s=Math.max(0,Math.round(Number(s)||0)); return s<60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; };
 const addDays = (v,n) => { const d=new Date(v); d.setDate(d.getDate()+n); return d; };
+const dueDate = m => new Date(m.revisionDueIso || m.revisionDueDate);
 const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 
 const store = {
@@ -30,26 +31,73 @@ let revisionMode=false, revisionItems=[];
 let _afterProfile=null;
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
-function clearExam(){ clearInterval(timer); timer=null; isSubmitting=false; window.removeEventListener("beforeunload",handleBeforeUnload); }
-function persist(){ if(!activeSubject||revisionMode)return; store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,questionOrder:test.map(q=>q.id)}); }
+function clearExam(){
+  clearInterval(timer); timer=null; isSubmitting=false;
+  window.removeEventListener("beforeunload",handleBeforeUnload);
+  window.removeEventListener("pagehide",handlePageHide);
+  window.removeEventListener("beforeunload",handleRevisionBeforeUnload);
+  window.removeEventListener("pagehide",handleRevisionPageHide);
+}
+function persist(){
+  if(!activeSubject||revisionMode)return;
+  const p=store.profile();
+  try{
+    store.setProgress(activeSubject.id,{
+      email:p?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,
+      questionOrder:test.map(q=>q.id),
+      optionOrders:test.map(q=>Array.isArray(q.optionOrder)?q.optionOrder:q.options.map((_,i)=>i)),
+      savedAt:Date.now()
+    });
+  }catch(e){console.warn("Autosave failed",e);}
+}
 function commitTime(){ if(!test.length)return; const spent=(Date.now()-questionStartedAt)/1000; qTime[current]=(qTime[current]||0)+spent; questionStartedAt=Date.now(); }
 
-function submissionPayload(){
+function submissionPayload(compact=false){
   commitTime();
   const p=store.profile();
-  const detail=test.map((q,n)=>({id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,question:q.question,options:q.options,correct:q.answer,selected:answers[n],marked:marked[n],time:Math.round(qTime[n]||0)}));
-  const score=detail.filter(d=>d.selected===d.correct).length;
-  const wrong=detail.filter(d=>d.selected!==null&&d.selected!==d.correct).length;
-  const unanswered=detail.filter(d=>d.selected===null).length;
+  const detail=test.map((q,n)=>{
+    const selected=answers[n], isWrong=selected!==null&&selected!==undefined&&Number(selected)!==Number(q.answer);
+    const d={id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,correct:q.answer,selected,marked:marked[n],time:Math.round(qTime[n]||0)};
+    // On normal submit keep everything. On tab-close submit, omit question/options
+    // for correct/unanswered items to keep the Beacon payload small enough for browsers.
+    if(!compact || isWrong){ d.question=q.question; d.options=q.options; }
+    return d;
+  });
+  const score=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)===Number(d.correct)).length;
+  const wrong=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)!==Number(d.correct)).length;
+  const unanswered=detail.filter(d=>d.selected===null||d.selected===undefined).length;
   const percentage=test.length?Math.round(score/test.length*1000)/10:0;
-  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),detail,examSessionId};
+  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),detail,examSessionId,autoSubmitted:!!compact};
+}
+function sendAutoSubmit(){
+  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0||!API)return false;
+  const marker="ecet_auto_submit_"+examSessionId;
+  if(sessionStorage.getItem(marker)==="1")return true;
+  isSubmitting=true;
+  const payload={action:"submitExam",...submissionPayload(true)};
+  const body=JSON.stringify(payload);
+  let accepted=false;
+  try{
+    if(navigator.sendBeacon){ accepted=navigator.sendBeacon(API,new Blob([body],{type:"text/plain;charset=UTF-8"})); }
+  }catch(err){console.warn("Beacon submit failed",err);}
+  if(!accepted){
+    try{ fetch(API,{method:"POST",body,keepalive:true}); accepted=true; }catch(err){console.warn("Keepalive submit failed",err);}
+  }
+  if(accepted){ sessionStorage.setItem(marker,"1"); store.clearProgress(activeSubject.id); }
+  return accepted;
 }
 function handleBeforeUnload(e){
   if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
   persist();
-  const payload={action:"submitExam",...submissionPayload()};
-  try{ if(API && navigator.sendBeacon){ navigator.sendBeacon(API,new Blob([JSON.stringify(payload)],{type:"text/plain;charset=UTF-8"})); store.clearProgress(activeSubject.id); } }catch(err){console.warn(err);}
-  e.preventDefault(); e.returnValue="Your exam is still running. It will be submitted automatically."; return e.returnValue;
+  sendAutoSubmit();
+  e.preventDefault();
+  e.returnValue="Your exam is still running. It will be submitted automatically.";
+  return e.returnValue;
+}
+function handlePageHide(){
+  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
+  persist();
+  sendAutoSubmit();
 }
 
 /* ===================== HOME ===================== */
@@ -78,16 +126,34 @@ function start(){
   const saved=store.getProgress(activeSubject.id),p=store.profile();
   const bankById=new Map(bank.map(q=>[String(q.id),q]));
   if(saved&&saved.email===p.email&&saved.left>0&&saved.answers?.length===bank.length&&Array.isArray(saved.questionOrder)&&saved.questionOrder.length===bank.length){
-    const restored=saved.questionOrder.map(id=>bankById.get(String(id))).filter(Boolean);
+    const restored=saved.questionOrder.map((id,pos)=>{
+      const q=bankById.get(String(id));
+      return q?restoreQuestionOrder(q,saved.optionOrders?.[pos]):null;
+    }).filter(Boolean);
     if(restored.length===bank.length){
       test=restored;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=Math.max(0,Math.min(test.length-1,saved.current||0));left=saved.left;examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();
     } else { startFreshExam(); }
   } else { startFreshExam(); }
-  questionStartedAt=Date.now();isSubmitting=false;saveTick=0;window.addEventListener("beforeunload",handleBeforeUnload);persist();render();
+  questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
+  window.addEventListener("beforeunload",handleBeforeUnload);
+  window.addEventListener("pagehide",handlePageHide);
+  persist();render();
   timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el){el.textContent=clock(left);el.classList.toggle("low",left<=60);}if(++saveTick%5===0)persist();if(left<=0){left=0;submit();}},1000);
 }
+function randomizeQuestionOptions(q){
+  const pairs=(q.options||[]).map((text,index)=>({text,index}));
+  const shuffled=shuffle(pairs);
+  return {...q,options:shuffled.map(x=>x.text),answer:shuffled.findIndex(x=>x.index===Number(q.answer)),optionOrder:shuffled.map(x=>x.index)};
+}
+function restoreQuestionOrder(q,order){
+  if(!Array.isArray(order)||order.length!==(q.options||[]).length)return randomizeQuestionOptions(q);
+  const pairs=order.map(i=>({text:q.options[i],index:i}));
+  if(pairs.some(x=>x.text===undefined))return randomizeQuestionOptions(q);
+  return {...q,options:pairs.map(x=>x.text),answer:pairs.findIndex(x=>x.index===Number(q.answer)),optionOrder:order.slice()};
+}
 function startFreshExam(){
-  test=shuffle(bank);answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();examSessionId=newSessionId();
+  test=shuffle(bank).map(randomizeQuestionOptions);
+  answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();examSessionId=newSessionId();
 }
 function choose(v){answers[current]=v;persist();render();}
 function toggleReview(){marked[current]=!marked[current];persist();render();}
@@ -103,7 +169,13 @@ async function submit(){
   const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
   const resp=await apiPost("submitExam",payload);
-  renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp?.rank,rankOutOf:resp?.rankOutOf,expectedRank:resp?.expectedRank,equivalentMarks:resp?.equivalentMarks});
+  if(!resp?.ok){
+    isSubmitting=false;
+    store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,questionOrder:test.map(q=>q.id),optionOrders:test.map(q=>q.optionOrder)});
+    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    return;
+  }
+  renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 function pieHTML(r){const total=Math.max(1,r.total),c=r.score/total*100,w=r.wrong/total*100,u=r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
 function timeChart(detail){const max=Math.max(60,...detail.map(d=>d.time||0));const ticks=[0,Math.round(max/4),Math.round(max/2),Math.round(max*3/4),max];return `<div class="chart-area"><div class="y-axis">${ticks.slice().reverse().map(v=>`<span>${formatSeconds(v)}</span>`).join("")}</div><div class="chart-main"><div class="gridlines">${ticks.map(()=>`<i></i>`).join("")}</div><div class="bars">${detail.map((d,i)=>{const h=Math.max(3,(d.time/max)*100);return `<button class="bar-col ${d.selected===null?"unansbar":d.selected!==d.correct?"wrongbar":""}" style="height:${h}%" onclick="showQuestionTime(${i})" title="Q${i+1}: ${formatSeconds(d.time)}"><span>${i+1}</span></button>`;}).join("")}</div><div class="x-axis">${detail.map((_,i)=>`<span>${i+1}</span>`).join("")}</div></div></div><div id="timeDetail" class="chart-detail">Click any question bar to see exact time.</div>`;}
@@ -139,19 +211,41 @@ async function mistakes(){
 }
 function renderMistakes(items){
   const now=new Date();
-  const due=items.filter(m=>new Date(m.revisionDueDate)<=now);
-  const next=items.filter(m=>new Date(m.revisionDueDate)>now).sort((a,b)=>new Date(a.revisionDueDate)-new Date(b.revisionDueDate))[0];
+  const due=items.filter(m=>dueDate(m)<=now);
+  const next=items.filter(m=>dueDate(m)>now).sort((a,b)=>dueDate(a)-dueDate(b))[0];
   let countdown="";
-  if(next){const ms=Math.max(0,new Date(next.revisionDueDate)-now);countdown=`<div class="countdown"><b>Next revision test:</b> ${formatCountdown(ms)}<br><small>Due: ${formatDateTime(next.revisionDueDate)}</small></div>`;}
-  app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="meta">Active mistakes: <b>${items.length}</b> • Due now: <b>${due.length}</b>. A mistake stays here until you answer it correctly.</p>${items.length?`${countdown}<div class="buttons"><button ${due.length?"":"disabled"} onclick="startRevisionTest()">Start revision test ${due.length?`(${due.length})`:"(not due yet)"}</button></div>${items.map(m=>{const isDue=new Date(m.revisionDueDate)<=now;return `<div class="mistake-card"><div><span class="mistake-tag">${esc(m.subject)}</span> <span class="mistake-tag ${isDue?"tag-due":"tag-wait"}">${isDue?"Due now":"Due "+formatDateTime(m.revisionDueDate)}</span></div><p><b>${esc(m.question)}</b></p>${m.options.map((o,k)=>`<div>${"ABCD"[k]}. ${esc(o)} ${k===m.correctIndex?"<b class='correct'>(correct)</b>":""} ${k===m.selectedIndex?"<i>(last answer)</i>":""}</div>`).join("")}</div>`;}).join("")}`:'<p class="note">No active mistakes — excellent. 🎉</p>'}<div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
+  if(next){const ms=Math.max(0,dueDate(next)-now);countdown=`<div class="countdown"><b>Next revision test:</b> ${formatCountdown(ms)}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small></div>`;}
+  app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="meta">Active mistakes: <b>${items.length}</b> • Due now: <b>${due.length}</b>. A mistake stays here until you answer it correctly.</p>${items.length?`${countdown}<div class="buttons"><button ${due.length?"":"disabled"} onclick="startRevisionTest()">Start revision test ${due.length?`(${due.length})`:"(not due yet)"}</button></div>${items.map(m=>{const isDue=dueDate(m)<=now;return `<div class="mistake-card"><div><span class="mistake-tag">${esc(m.subject)}</span> <span class="mistake-tag ${isDue?"tag-due":"tag-wait"}">${isDue?"Due now":"Due "+formatDateTime(m.revisionDueIso||m.revisionDueDate)}</span></div><p><b>${esc(m.question)}</b></p>${m.options.map((o,k)=>`<div>${"ABCD"[k]}. ${esc(o)} ${k===m.correctIndex?"<b class='correct'>(correct)</b>":""} ${k===m.selectedIndex?"<i>(last answer)</i>":""}</div>`).join("")}</div>`;}).join("")}`:'<p class="note">No active mistakes — excellent. 🎉</p>'}<div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
   if(next)setTimeout(()=>mistakeCountdownLoop(),1000);
 }
 function formatCountdown(ms){let s=Math.ceil(ms/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60),sec=s%60;return `${d}d ${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(sec).padStart(2,"0")}s`;}
-function mistakeCountdownLoop(){const el=document.querySelector(".countdown");if(!el)return;const items=store.mistakesCache(),next=items.filter(m=>new Date(m.revisionDueDate)>new Date()).sort((a,b)=>new Date(a.revisionDueDate)-new Date(b.revisionDueDate))[0];if(!next){mistakes();return;}el.innerHTML=`<b>Next revision test:</b> ${formatCountdown(new Date(next.revisionDueDate)-new Date())}<br><small>Due: ${formatDateTime(next.revisionDueDate)}</small>`;setTimeout(mistakeCountdownLoop,1000);}
-async function startRevisionTest(){const items=store.mistakesCache().filter(m=>new Date(m.revisionDueDate)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items);test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);renderRevision();}
-function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>7-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
+function mistakeCountdownLoop(){const el=document.querySelector(".countdown");if(!el)return;const items=store.mistakesCache(),next=items.filter(m=>dueDate(m)>new Date()).sort((a,b)=>dueDate(a)-dueDate(b))[0];if(!next){mistakes();return;}el.innerHTML=`<b>Next revision test:</b> ${formatCountdown(dueDate(next)-new Date())}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small>`;setTimeout(mistakeCountdownLoop,1000);}
+async function startRevisionTest(){const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items).map(m=>({...m,options:shuffle((m.options||[]).map((text,index)=>({text,index})))}));revisionItems=revisionItems.map(m=>{const order=m.options.map(x=>x.index),opts=m.options.map(x=>x.text);return {...m,options:opts,correctIndex:order.indexOf(Number(m.correctIndex)),optionOrder:order};});test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60+20*60;examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);window.addEventListener("beforeunload",handleRevisionBeforeUnload);window.addEventListener("pagehide",handleRevisionPageHide);renderRevision();}
+function sendRevisionAutoSubmit(){
+  if(isSubmitting||!revisionMode||!revisionItems.length||!API)return false;
+  const marker="ecet_revision_auto_submit_"+(revisionItems.map(x=>x.wrongId).join("|")||Date.now());
+  if(sessionStorage.getItem(marker)==="1")return true;
+  isSubmitting=true;
+  commitTime();
+  const p=store.profile();
+  const payload={action:"submitRevision",email:p.email,items:revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]})),autoSubmitted:true};
+  const body=JSON.stringify(payload);
+  let accepted=false;
+  try{if(navigator.sendBeacon)accepted=navigator.sendBeacon(API,new Blob([body],{type:"text/plain;charset=UTF-8"}));}catch(e){console.warn("Revision beacon failed",e);}
+  if(!accepted){try{fetch(API,{method:"POST",body,keepalive:true});accepted=true;}catch(e){console.warn("Revision keepalive failed",e);}}
+  if(accepted)sessionStorage.setItem(marker,"1");
+  return accepted;
+}
+function handleRevisionBeforeUnload(e){
+  if(isSubmitting||!revisionMode||!revisionItems.length)return;
+  sendRevisionAutoSubmit();
+  e.preventDefault();e.returnValue="Your revision test is still running. It will be submitted automatically.";return e.returnValue;
+}
+function handleRevisionPageHide(){if(!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
+
+function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
 function revisionChoose(v){answers[current]=v;renderRevision();}
 function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}
-async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);commitTime();const p=store.profile();const items=revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]}));app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 7 days.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
+async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);window.removeEventListener("beforeunload",handleRevisionBeforeUnload);window.removeEventListener("pagehide",handleRevisionPageHide);commitTime();const p=store.profile();const items=revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]}));app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 1 day.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
 
 home();

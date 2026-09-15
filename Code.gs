@@ -8,7 +8,8 @@ const SHEETS = {
   WrongAnswers:["WrongId","ResultId","Email","Subject","QuestionId","Year","State","QuestionNumber","Question","OptionsJSON","CorrectIndex","SelectedIndex","DateAdded","RevisionDueDate","Revised","ReminderSent"],
   Rankings:["Subject","Email","Name","BestPercentage","BestScore","Total","Attempts","LastAttempt"],
   RevisionHistory:["Email","Subject","QuestionId","ActionDate","Action"],
-  EmailQueue:["QueueId","ToEmail","EmailType","Subject","HtmlBody","CreatedAt","SentAt","Status"]
+  EmailQueue:["QueueId","ToEmail","EmailType","Subject","HtmlBody","CreatedAt","SentAt","Status"],
+  SubmittedSessions:["ExamSessionId","ResultId","Email","Subject","SubmittedAt"]
 };
 
 function getSpreadsheet_(){ return SpreadsheetApp.openById(SPREADSHEET_ID); }
@@ -116,6 +117,15 @@ function getPracticeRanking_(subject,email,currentPercentage){
 }
 
 function submitExam_(body){
+  const sessionId=String(body.examSessionId||"").trim();
+  if(sessionId){
+    const ledger=sheet_("SubmittedSessions"), rows=rowsToObjects_(ledger);
+    const existing=rows.find(r=>String(r.ExamSessionId||"")===sessionId);
+    if(existing){
+      const oldResult=rowsToObjects_(sheet_("Results")).find(r=>String(r.ResultId||"")===String(existing.ResultId||""));
+      return {ok:true,duplicate:true,resultId:existing.ResultId,rank:oldResult?oldResult.Rank:null,rankOutOf:oldResult?oldResult.RankOutOf:null,expectedRank:oldResult?expectedRank_(oldResult.Percentage):null,equivalentMarks:oldResult?expectedMarks_(oldResult.Percentage):null,emailStatus:"ALREADY_SENT"};
+    }
+  }
   const resultId=Utilities.getUuid(), now=new Date();
   const pct=Math.max(0,Math.min(100,Number(body.percentage)||0));
   const email=normEmail_(body.email);
@@ -127,7 +137,7 @@ function submitExam_(body){
     TotalTimeSec:body.totalTime,Rank:ranking.rank,RankOutOf:ranking.total
   });
 
-  const due=iso_(new Date(now.getTime()+7*86400000));
+  const due=iso_(new Date(now.getTime()+1*86400000));
   const answerRows=[],wrongRows=[];
   (body.detail||[]).forEach(d=>{
     const isCorrect=d.selected!==null && d.selected!==undefined && Number(d.selected)===Number(d.correct);
@@ -148,15 +158,18 @@ function submitExam_(body){
   /* One Sheets write for all answers + one for all wrong answers. */
   appendRows_(sheet_("Answers"),SHEETS.Answers,answerRows);
   appendRows_(sheet_("WrongAnswers"),SHEETS.WrongAnswers,wrongRows);
+  if(sessionId){
+    appendRow_(sheet_("SubmittedSessions"),SHEETS.SubmittedSessions,{ExamSessionId:sessionId,ResultId:resultId,Email:email,Subject:body.subject,SubmittedAt:now});
+  }
 
   upsertRanking_(sheet_("Rankings"),body);
   const advice=getUserSubjectAdvice_(email);
-  queueResultEmail_(body,ranking.rank,ranking.total,expectedRank_(pct),expectedMarks_(pct),advice);
+  const emailResult=queueResultEmail_(body,ranking.rank,ranking.total,expectedRank_(pct),expectedMarks_(pct),advice);
 
   return {
     ok:true,resultId,rank:ranking.rank,rankOutOf:ranking.total,
     expectedRank:expectedRank_(pct),equivalentMarks:expectedMarks_(pct),
-    strongest:advice.strongest,weakest:advice.weakest
+    strongest:advice.strongest,weakest:advice.weakest,emailStatus:emailResult.status
   };
 }
 
@@ -206,18 +219,31 @@ function buildResultEmail_(body,rank,total,expectedRank,equivalentMarks,advice){
     "<li>Correct: "+body.correct+" • Wrong: "+body.wrong+" • Unanswered: "+body.unanswered+"</li>"+
     "<li>Total time: "+Math.round((Number(body.totalTime)||0)/60)+" minutes</li></ul>"+
     adviceHtml+
-    "<p>Wrong questions are added to My Mistakes. They become eligible for revision after 7 days.</p>";
+    "<p>Wrong questions are added to My Mistakes. They become eligible for revision after 1 day.</p>";
   return {subject,html};
 }
 function queueResultEmail_(body,rank,total,expectedRank,equivalentMarks,advice){
   const x=buildResultEmail_(body,rank,total,expectedRank,equivalentMarks,advice);
-  appendRow_(sheet_("EmailQueue"),SHEETS.EmailQueue,{QueueId:Utilities.getUuid(),ToEmail:normEmail_(body.email),EmailType:"result",Subject:x.subject,HtmlBody:x.html,CreatedAt:new Date(),SentAt:"",Status:"PENDING"});
+  const email=normEmail_(body.email);
+  try{
+    // Send immediately so the result email does not depend on a trigger.
+    MailApp.sendEmail({to:email,subject:x.subject,htmlBody:x.html});
+    return {status:"SENT",error:""};
+  }catch(err){
+    // Keep a retryable copy if immediate sending fails (for example, before
+    // the Apps Script owner has granted MailApp permission or after a quota error).
+    appendRow_(sheet_("EmailQueue"),SHEETS.EmailQueue,{
+      QueueId:Utilities.getUuid(),ToEmail:email,EmailType:"result",Subject:x.subject,
+      HtmlBody:x.html,CreatedAt:new Date(),SentAt:"",Status:"PENDING: "+String(err).slice(0,150)
+    });
+    return {status:"QUEUED",error:String(err)};
+  }
 }
 
 function processEmailQueue(){
   const sh=sheet_("EmailQueue"), values=sh.getDataRange().getValues(); if(values.length<2)return;
   const h=values[0], c=n=>h.indexOf(n), now=new Date();
-  for(let i=1;i<values.length;i++) if(String(values[i][c("Status")])==="PENDING"){
+  for(let i=1;i<values.length;i++) if(String(values[i][c("Status")]).indexOf("PENDING")===0){
     try{
       MailApp.sendEmail({to:values[i][c("ToEmail")],subject:values[i][c("Subject")],htmlBody:values[i][c("HtmlBody")]});
       sh.getRange(i+1,c("SentAt")+1,1,2).setValues([[now,"SENT"]]);
@@ -295,12 +321,12 @@ function markRevised_(body){
 }
 
 /* Correct answers disappear from the active list. Wrong/unanswered answers
-   remain active and receive another 7-day due date. */
+   remain active and receive another 1-day due date. */
 function submitRevision_(body){
   const sh=sheet_("WrongAnswers"), values=sh.getDataRange().getValues();
   if(values.length<2)return {ok:true,correct:0,wrong:0,unanswered:0};
   const h=values[0], idx=n=>h.indexOf(n), id=idx("WrongId"),em=idx("Email"),rv=idx("Revised"),due=idx("RevisionDueDate"),sel=idx("SelectedIndex"),rem=idx("ReminderSent"),subj=idx("Subject"),q=idx("QuestionId"),ci=idx("CorrectIndex");
-  const now=new Date(), nextDue=iso_(new Date(now.getTime()+7*86400000));
+  const now=new Date(), nextDue=iso_(new Date(now.getTime()+1*86400000));
   let correct=0,wrong=0,unanswered=0; const history=[]; const wanted={};
   (body.items||[]).forEach(item=>wanted[String(item.wrongId)] = item.selected);
 
@@ -326,7 +352,29 @@ function submitRevision_(body){
   return {ok:true,correct,wrong,unanswered,nextDue:displayDate_(nextDue),nextDueIso:nextDue};
 }
 
+function migrateLegacyRevisionDueDates_(){
+  const sh=sheet_("WrongAnswers"), values=sh.getDataRange().getValues();
+  if(values.length<2)return;
+  const h=values[0], c=n=>h.indexOf(n);
+  const dateCol=c("DateAdded"), dueCol=c("RevisionDueDate"), revisedCol=c("Revised");
+  let changed=false;
+  for(let i=1;i<values.length;i++){
+    if(parseBool_(values[i][revisedCol]))continue;
+    const added=new Date(values[i][dateCol]), due=new Date(values[i][dueCol]);
+    if(isNaN(added)||isNaN(due))continue;
+    // Rows created by the old 7-day version are migrated to the new 1-day rule.
+    // New rows (and rows rescheduled by a revision attempt) are already ~1 day apart.
+    if((due-added)>=5*86400000){
+      values[i][dueCol]=iso_(new Date(added.getTime()+86400000));
+      values[i][c("ReminderSent")]=false;
+      changed=true;
+    }
+  }
+  if(changed)sh.getRange(1,1,values.length,h.length).setValues(values);
+}
+
 function sendRevisionReminders(){
+  migrateLegacyRevisionDueDates_();
   const sh=sheet_("WrongAnswers"), values=sh.getDataRange().getValues(); if(values.length<2)return;
   const h=values[0], c=n=>h.indexOf(n), now=new Date(), due={};
   for(let i=1;i<values.length;i++){
@@ -339,9 +387,9 @@ function sendRevisionReminders(){
   const users=rowsToObjects_(sheet_("Users"));
   Object.keys(due).forEach(email=>{
     const u=users.slice().reverse().find(x=>normEmail_(x.Email)===email);
-    let html="<p>Hi "+escapeHtml_(u?u.Name:"")+",</p><p>Your 7-day mistake revision is now due.</p><ul>";
+    let html="<p>Hi "+escapeHtml_(u?u.Name:"")+",</p><p>Your 1-day mistake revision is now due.</p><ul>";
     due[email].slice(0,30).forEach(x=>html+="<li><b>"+escapeHtml_(x.subject)+"</b>: "+escapeHtml_(x.question)+"</li>");
-    html+="</ul><p>Open My Mistakes and start the revision test. Correct questions are removed; questions answered incorrectly are scheduled again for 7 days.</p>";
+    html+="</ul><p>Open My Mistakes and start the revision test. Correct questions are removed; questions answered incorrectly are scheduled again for 1 day.</p>";
     try{
       MailApp.sendEmail({to:email,subject:"ECET Quiz — revision test is due",htmlBody:html});
       due[email].forEach(x=>sh.getRange(x.row,c("ReminderSent")+1).setValue(true));
@@ -349,4 +397,17 @@ function sendRevisionReminders(){
   });
 }
 
-function setup(){ ensureSheets_(); }
+function ensureAutomationTriggers_(){
+  const triggers=ScriptApp.getProjectTriggers();
+  const hasQueue=triggers.some(t=>t.getHandlerFunction()==="processEmailQueue");
+  const hasRevision=triggers.some(t=>t.getHandlerFunction()==="sendRevisionReminders");
+  if(!hasQueue) ScriptApp.newTrigger("processEmailQueue").timeBased().everyHours(1).create();
+  if(!hasRevision) ScriptApp.newTrigger("sendRevisionReminders").timeBased().everyHours(1).create();
+}
+
+function setup(){
+  ensureSheets_();
+  migrateLegacyRevisionDueDates_();
+  ensureAutomationTriggers_();
+  return {ok:true,message:"Sheets and hourly email/revision triggers are ready."};
+}
