@@ -29,24 +29,24 @@ Web Technologies=26, Big Data & Cloud Computing=27, Android
 Programming=28, Internet of Things (IoT)=29, Python Programming=30.
 
 ## What's new in this upgrade
-- **Name + email + subject password gate** before every exam.
+- **Name + email + subject password gate** before every exam, with a pre-start summary showing test name, subject, question count, and total time.
 - **Sticky Previous/Next/Submit bar**, **answered/unanswered status**,
   **mark for review**, a full **question palette**, **auto-save**
   (localStorage — refreshing mid-exam resumes exactly where you left
-  off), and the existing per-subject **timer**.
+  off), and the existing per-subject **1-minute-per-question countdown timer**, automatic timeout submission, resume after unexpected browser closure, and active-test navigation protection.
 - **Result screen**: score, percentage, rank (once the backend is
   connected), correct/wrong/unanswered counts, total time, a per-question
   time bar chart, and a filterable review list (all/wrong/unanswered/marked)
   showing the correct answer for every wrong question.
 - **My Mistakes**: every wrong answer, tagged "due for revision" once
-  7 days have passed, with a "mark as revised" action.
+  1 day has passed, with a "mark as revised" action.
 - **Dashboard**: attempts, average/best score, subject-wise performance
   bars, and full test history with rank per attempt.
 - **Backend (Google Sheets + Apps Script)**: users, results, per-question
   answers and time spent, rankings, wrong answers, and revision history
   — all auto-provisioned (tabs + headers created on first run, nothing
   typed by hand). Emails: exam result + rank/percentage on submission,
-  and a daily 7-day revision reminder.
+  and a daily 1-day revision reminder with a direct Take Test button.
 
 ## Honest limitations (please read)
 - **I could not deploy the Apps Script backend for you** — that step
@@ -79,4 +79,4 @@ Programming=28, Internet of Things (IoT)=29, Python Programming=30.
 - Standalone unit tests of `Code.gs` against a mocked Sheets/Mail API:
   sheet auto-creation, ranking math (including a second user overtaking
   the first), wrong-answer capture, dashboard aggregation, mistakes
-  list, mark-as-revised, and the 7-day reminder trigger — all passed.
+  list, mark-as-revised, and the 1-day reminder trigger — all passed.

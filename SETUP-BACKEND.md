@@ -1,7 +1,6 @@
 # Backend setup (Google Sheets + Apps Script)
 
-This gives you rankings, the dashboard, "My Mistakes", and the three
-emails (result, rank/percentage, 7-day revision reminder) — all backed
+This gives you rankings, the dashboard, "My Mistakes", and result and revision reminder emails — all backed
 by a single Google Sheet you own. You never type sheet or column names
 yourself; the script creates every tab and header row automatically.
 
@@ -49,9 +48,9 @@ backend features.
 3. Commit/push. Reload the site — take a test, and you should see a
    real rank on the result screen, plus a result email.
 
-## 6. Turn on the 7-day revision reminder
-This runs once a day and emails anyone with wrong-answer questions
-that became due for revision.
+## 6. Turn on the 1-day revision reminder
+This runs once a day and emails anyone with wrong or unattempted questions
+that became due for revision. The email contains only subject, question count, total time, and a Take Test button.
 1. In Apps Script, click the **clock icon (Triggers)** in the left sidebar.
 2. **Add Trigger**:
    - Function: `sendRevisionReminders`

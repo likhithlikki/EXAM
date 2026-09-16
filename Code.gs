@@ -2,10 +2,10 @@
 const SPREADSHEET_ID = "1QDu7YTv-MWm9jRuVsmRBGjwuBD6WFtj_4bRqj5B8hds";
 
 const SHEETS = {
-  Users:["Timestamp","Name","Email","LastSubject"],
+  Users:["Timestamp","Name","Email","LastSubject","LastTestUrl"],
   Results:["ResultId","Timestamp","Name","Email","Subject","SubjectId","Score","Total","Percentage","Correct","Wrong","Unanswered","TotalTimeSec","Rank","RankOutOf"],
   Answers:["ResultId","Email","Subject","QuestionId","Year","State","QuestionNumber","SelectedIndex","CorrectIndex","IsCorrect","TimeSpentSec","MarkedForReview"],
-  WrongAnswers:["WrongId","ResultId","Email","Subject","QuestionId","Year","State","QuestionNumber","Question","OptionsJSON","CorrectIndex","SelectedIndex","DateAdded","RevisionDueDate","Revised","ReminderSent"],
+  WrongAnswers:["WrongId","ResultId","Email","Subject","QuestionId","Year","State","QuestionNumber","Question","OptionsJSON","CorrectIndex","SelectedIndex","MistakeType","DateAdded","RevisionDueDate","Revised","ReminderSent","TestUrl"],
   Rankings:["Subject","Email","Name","BestPercentage","BestScore","Total","Attempts","LastAttempt"],
   RevisionHistory:["Email","Subject","QuestionId","ActionDate","Action"],
   EmailQueue:["QueueId","ToEmail","EmailType","Subject","HtmlBody","CreatedAt","SentAt","Status"],
@@ -29,6 +29,10 @@ function ensureSheets_(){
     if(sh.getLastRow()===0){
       sh.getRange(1,1,1,SHEETS[name].length).setValues([SHEETS[name]]).setFontWeight("bold");
       sh.setFrozenRows(1);
+    } else {
+      const existing=sh.getRange(1,1,1,Math.max(sh.getLastColumn(),1)).getValues()[0].map(String);
+      const missing=SHEETS[name].filter(h=>existing.indexOf(h)<0);
+      if(missing.length) sh.getRange(1,sh.getLastColumn()+1,1,missing.length).setValues([missing]).setFontWeight("bold");
     }
   });
   const def=ss.getSheetByName("Sheet1");
@@ -77,7 +81,7 @@ function doPost(e){
 }
 
 function registerUser_(body){
-  appendRow_(sheet_("Users"),SHEETS.Users,{Timestamp:new Date(),Name:body.name,Email:normEmail_(body.email),LastSubject:body.subject});
+  appendRow_(sheet_("Users"),SHEETS.Users,{Timestamp:new Date(),Name:body.name,Email:normEmail_(body.email),LastSubject:body.subject,LastTestUrl:body.revisionTestUrl||body.testUrl||""});
   return {ok:true};
 }
 
@@ -146,11 +150,12 @@ function submitExam_(body){
       SelectedIndex:d.selected===null||d.selected===undefined?"":d.selected,CorrectIndex:d.correct,IsCorrect:isCorrect,
       TimeSpentSec:Math.round(Number(d.time)||0),MarkedForReview:!!d.marked
     });
-    if(d.selected!==null && d.selected!==undefined && !isCorrect){
+    if(!isCorrect){
+      const unanswered=d.selected===null || d.selected===undefined || d.selected==="";
       wrongRows.push({
         WrongId:resultId+"-"+d.id,ResultId:resultId,Email:email,Subject:body.subject,QuestionId:d.id,Year:d.year,State:d.state,
-        QuestionNumber:d.questionNumber,Question:d.question,OptionsJSON:JSON.stringify(d.options||[]),CorrectIndex:d.correct,SelectedIndex:d.selected,
-        DateAdded:iso_(now),RevisionDueDate:due,Revised:false,ReminderSent:false
+        QuestionNumber:d.questionNumber,Question:d.question,OptionsJSON:JSON.stringify(d.options||[]),CorrectIndex:d.correct,SelectedIndex:unanswered?"":d.selected,
+        MistakeType:unanswered?"unattempted":"wrong",DateAdded:iso_(now),RevisionDueDate:due,Revised:false,ReminderSent:false,TestUrl:body.revisionTestUrl||body.testUrl||""
       });
     }
   });
@@ -203,24 +208,19 @@ function getUserSubjectAdvice_(email){
 }
 
 function buildResultEmail_(body,rank,total,expectedRank,equivalentMarks,advice){
-  const subject="ECET "+body.subject+" — "+body.percentage+"%";
-  let adviceHtml="";
-  if(advice&&advice.strongest){
-    adviceHtml+="<p><b>Performance advice:</b> You are currently strongest in <b>"+escapeHtml_(advice.strongest.subject)+"</b> ("+advice.strongest.avgPercentage+"% average).";
-    if(advice.weakest && advice.weakest.subject!==advice.strongest.subject) adviceHtml+=" Your weakest subject is <b>"+escapeHtml_(advice.weakest.subject)+"</b> ("+advice.weakest.avgPercentage+"% average). Focus more revision there.";
-    adviceHtml+="</p>";
-  }
-  const html="<p>Hi "+escapeHtml_(body.name)+",</p><p>Your <b>"+escapeHtml_(body.subject)+"</b> result:</p><ul>"+
-    "<li>Score: "+body.score+" / "+body.total+"</li>"+
-    "<li>Percentage: "+body.percentage+"%</li>"+
-    "<li>Equivalent AP ECET score: "+equivalentMarks+" / 200</li>"+
-    "<li>Expected AP ECET rank: "+expectedRank+"</li>"+
-    "<li>Current practice rank: #"+rank+" of "+total+" students</li>"+
-    "<li>Correct: "+body.correct+" • Wrong: "+body.wrong+" • Unanswered: "+body.unanswered+"</li>"+
-    "<li>Total time: "+Math.round((Number(body.totalTime)||0)/60)+" minutes</li></ul>"+
-    adviceHtml+
-    "<p>Wrong questions are added to My Mistakes. They become eligible for revision after 1 day.</p>";
+  const subject="ECET "+body.subject+" — test result";
+  const time=clockMinutes_(body.totalTime);
+  const html="<p>Hi "+escapeHtml_(body.name)+",</p><p>Your test is complete.</p><ul>"+
+    "<li>Subject: "+escapeHtml_(body.subject)+"</li>"+
+    "<li>Number of Questions: "+Number(body.total||0)+"</li>"+
+    "<li>Total Time: "+time+"</li></ul>"+
+    "<p><a href=\""+escapeHtml_(body.testUrl||"")+"\" style=\"display:inline-block;padding:10px 16px;background:#222;color:#fff;text-decoration:none;border-radius:6px\">Take Test</a></p>";
   return {subject,html};
+}
+function clockMinutes_(sec){
+  sec=Math.max(0,Math.round(Number(sec)||0));
+  const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+  return h?(h+"h "+m+"m"):(m+"m "+s+"s");
 }
 function queueResultEmail_(body,rank,total,expectedRank,equivalentMarks,advice){
   const x=buildResultEmail_(body,rank,total,expectedRank,equivalentMarks,advice);
@@ -304,7 +304,7 @@ function getMistakes_(email,subjectFilter){
   return wrongs.sort((a,b)=>new Date(b.DateAdded)-new Date(a.DateAdded)).map(r=>({
     wrongId:r.WrongId,subject:r.Subject,question:r.Question,options:JSON.parse(r.OptionsJSON||"[]"),
     correctIndex:Number(r.CorrectIndex),selectedIndex:r.SelectedIndex===""?null:Number(r.SelectedIndex),
-    revisionDueDate:displayDate_(r.RevisionDueDate),revisionDueIso:iso_(r.RevisionDueDate),revised:parseBool_(r.Revised),
+    mistakeType:String(r.MistakeType||((r.SelectedIndex===""||r.SelectedIndex===null)?"unattempted":"wrong")),testUrl:String(r.TestUrl||""),revisionDueDate:displayDate_(r.RevisionDueDate),revisionDueIso:iso_(r.RevisionDueDate),revised:parseBool_(r.Revised),
     year:r.Year,state:r.State,questionNumber:r.QuestionNumber
   }));
 }
@@ -380,19 +380,24 @@ function sendRevisionReminders(){
   for(let i=1;i<values.length;i++){
     const d=values[i][c("RevisionDueDate")];
     if(d && new Date(d)<=now && !parseBool_(values[i][c("Revised")]) && !parseBool_(values[i][c("ReminderSent")])){
-      const em=normEmail_(values[i][c("Email")]); if(!due[em])due[em]=[];
-      due[em].push({subject:values[i][c("Subject")],question:values[i][c("Question")],row:i+1});
+      const em=normEmail_(values[i][c("Email")]); if(!due[em])due[em]={rows:[],subject:String(values[i][c("Subject")]),url:String(values[i][c("TestUrl")]||"")};
+      due[em].rows.push(i+1);
+      if(!due[em].url)due[em].url=String(values[i][c("TestUrl")]||"");
     }
   }
   const users=rowsToObjects_(sheet_("Users"));
   Object.keys(due).forEach(email=>{
     const u=users.slice().reverse().find(x=>normEmail_(x.Email)===email);
-    let html="<p>Hi "+escapeHtml_(u?u.Name:"")+",</p><p>Your 1-day mistake revision is now due.</p><ul>";
-    due[email].slice(0,30).forEach(x=>html+="<li><b>"+escapeHtml_(x.subject)+"</b>: "+escapeHtml_(x.question)+"</li>");
-    html+="</ul><p>Open My Mistakes and start the revision test. Correct questions are removed; questions answered incorrectly are scheduled again for 1 day.</p>";
+    const x=due[email];
+    const count=x.rows.length;
+    const html="<p>Hi "+escapeHtml_(u?u.Name:"")+",</p><p>Your revision test is ready.</p><ul>"+
+      "<li>Subject: "+escapeHtml_(x.subject)+"</li>"+
+      "<li>Number of Questions: "+count+"</li>"+
+      "<li>Total Time: "+clockMinutes_(count*60)+"</li></ul>"+
+      (x.url?"<p><a href=\""+escapeHtml_(x.url)+"\" style=\"display:inline-block;padding:10px 16px;background:#222;color:#fff;text-decoration:none;border-radius:6px\">Take Test</a></p>":"");
     try{
       MailApp.sendEmail({to:email,subject:"ECET Quiz — revision test is due",htmlBody:html});
-      due[email].forEach(x=>sh.getRange(x.row,c("ReminderSent")+1).setValue(true));
+      x.rows.forEach(row=>sh.getRange(row,c("ReminderSent")+1).setValue(true));
     }catch(err){ console.log("Revision reminder failed: "+err); }
   });
 }

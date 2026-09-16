@@ -12,6 +12,6 @@ Ranking:
 - Old users' current practice ranks can change when new users submit better results.
 
 Revision:
-- Wrong questions become due 7 days after the mistake.
+- Wrong and unattempted questions become due 1 day after the mistake.
 - Correct revision removes the question from active mistakes.
-- Wrong/unanswered revision schedules it again for 7 days.
+- Wrong/unanswered revision schedules it again for 1 day and keeps the mistake type visible.
