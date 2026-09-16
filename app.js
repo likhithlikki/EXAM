@@ -1,110 +1,416 @@
-/* ECET Online Test — resilient SPA */
-const app=document.getElementById('app');
-const API=window.APP_CONFIG?.APPS_SCRIPT_URL||'';
-const SITE_URL=window.APP_CONFIG?.SITE_URL||location.origin+location.pathname;
-const TEST_TIME_PER_QUESTION=60;
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const clock=s=>{s=Math.max(0,Math.floor(Number(s)||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`};
-const fmt=v=>{const d=new Date(v);return isNaN(d)?'—':d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});};
-const fmtDateInput=v=>{const d=new Date(v);return isNaN(d)?'':new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16)};
-const fmtSec=s=>{s=Math.max(0,Math.round(Number(s)||0));return s<60?`${s}s`:`${Math.floor(s/60)}m ${s%60}s`};
-const shuffle=a=>{const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x};
-const testUrl=id=>`${SITE_URL}?subject=${encodeURIComponent(id)}`;
-const revisionUrl=()=>`${SITE_URL}?revision=1`;
-const dueDate=m=>new Date(m.revisionDueIso||m.revisionDueDate);
+/* ===================== ECET Quiz App ===================== */
+const app = document.getElementById("app");
+const API = (window.APP_CONFIG && window.APP_CONFIG.APPS_SCRIPT_URL) || "";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const clock = sec => { sec=Math.max(0,Math.floor(sec||0)); const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60; return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"); };
+const isoDate = d => { const x=new Date(d); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); };
+const formatDateTime = v => { const d=new Date(v); return isNaN(d)?String(v||"—"):d.toLocaleString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}); };
+const formatSeconds = s => { s=Math.max(0,Math.round(Number(s)||0)); return s<60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; };
+const addDays = (v,n) => { const d=new Date(v); d.setDate(d.getDate()+n); return d; };
+const dueDate = m => new Date(m.revisionDueIso || m.revisionDueDate);
+const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
 
-const store={
- profile:()=>JSON.parse(localStorage.getItem('ecet_profile')||'null'),
- setProfile:p=>localStorage.setItem('ecet_profile',JSON.stringify(p)),
- progressKey:id=>`ecet_progress_${id}`,
- getProgress:id=>JSON.parse(localStorage.getItem(`ecet_progress_${id}`)||'null'),
- setProgress:(id,v)=>localStorage.setItem(`ecet_progress_${id}`,JSON.stringify(v)),
- clearProgress:id=>localStorage.removeItem(`ecet_progress_${id}`),
- mistakes:()=>JSON.parse(localStorage.getItem('ecet_mistakes_cache')||'[]'),
- setMistakes:a=>localStorage.setItem('ecet_mistakes_cache',JSON.stringify(a)),
- pendingResult:v=>sessionStorage.setItem('ecet_last_result',JSON.stringify(v)),
- getPendingResult:()=>JSON.parse(sessionStorage.getItem('ecet_last_result')||'null'),
- clearPendingResult:()=>sessionStorage.removeItem('ecet_last_result')
+const store = {
+  profile:()=>JSON.parse(localStorage.getItem("ecet_profile")||"null"),
+  setProfile:p=>localStorage.setItem("ecet_profile",JSON.stringify(p)),
+  progressKey:id=>"ecet_progress_"+id,
+  getProgress:id=>JSON.parse(localStorage.getItem(store.progressKey(id))||"null"),
+  setProgress:(id,data)=>localStorage.setItem(store.progressKey(id),JSON.stringify(data)),
+  clearProgress:id=>localStorage.removeItem(store.progressKey(id)),
+  mistakesCache:()=>JSON.parse(localStorage.getItem("ecet_mistakes_cache")||"[]"),
+  setMistakesCache:a=>localStorage.setItem("ecet_mistakes_cache",JSON.stringify(a))
 };
 
-async function apiGet(action,params={}){if(!API)return {ok:false,error:'Backend is not configured.'};try{const r=await fetch(API+'?'+new URLSearchParams({action,...params}),{cache:'no-store'});if(!r.ok)throw Error(`HTTP ${r.status}`);return await r.json()}catch(e){return {ok:false,error:'Network error. Please check your connection and retry.'}}}
-async function apiPost(action,payload={}){if(!API)return {ok:false,error:'Backend is not configured.'};try{const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify({action,...payload})});if(!r.ok)throw Error(`HTTP ${r.status}`);return await r.json()}catch(e){return {ok:false,error:'Could not reach the server. Your saved progress is still on this device. Please retry.'}}}
-async function checkBackend(showAlert=false){const b=document.getElementById('backendStatusBtn');if(b){b.className='backend-status checking';b.textContent='● Checking…';b.disabled=true}const r=await apiGet('ping');const ok=!!r?.ok;if(b){b.className='backend-status '+(ok?'online':'offline');b.textContent=ok?'● Server Online':'● Server Offline';b.disabled=false}if(showAlert)alert(ok?'Backend is online and responding.':'Backend is not responding. Check the Apps Script deployment URL and network connection.');return ok}
-function loading(title='Loading…'){app.innerHTML=`<div class="card state"><div class="spinner"></div><h2>${esc(title)}</h2><p class="note">Please wait.</p></div>`}
-function errorState(title,msg,retry){app.innerHTML=`<div class="card state"><h2>${esc(title)}</h2><p class="error-text">${esc(msg)}</p><div class="buttons">${retry?'<button onclick="'+retry+'">Retry</button>':''}<button onclick="home()">Home</button></div></div>`}
-function nav(title,back=true){return `<div class="page-nav"><div><h1>${esc(title)}</h1></div><div class="nav-actions">${back?'<button class="secondary" onclick="goBack()">← Back</button>':''}<button class="secondary" onclick="home()">⌂ Home</button><button id="backendStatusBtn" class="backend-status checking" onclick="checkBackend(true)" title="Check backend connection">● Checking…</button></div></div>`}
-function goBack(){if(activeTest())return activeBack();if(history.length>1)history.back();else home()}
-function activeTest(){return !!exam.active}
+async function apiGet(action,params={}){ if(!API)return null; try{const r=await fetch(API+"?"+new URLSearchParams({action,...params}));return await r.json();}catch(e){console.warn(e);return null;} }
+async function apiPost(action,payload={}){ if(!API)return null; try{const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload})});return await r.json();}catch(e){console.warn(e);return null;} }
 
-let subjects=[],bank=[];
-const exam={active:false,revision:false,subject:null,test:[],items:[],answers:[],marked:[],qTime:[],current:0,left:0,startedAt:0,questionStartedAt:0,sessionId:'',timer:null,submitting:false};
-let lastMistakes=[];
+let subjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
+let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
+let examSessionId="";
+let revisionMode=false, revisionItems=[];
+let _afterProfile=null;
 
-function resetExam(){clearInterval(exam.timer);Object.assign(exam,{active:false,revision:false,subject:null,test:[],items:[],answers:[],marked:[],qTime:[],current:0,left:0,startedAt:0,questionStartedAt:0,sessionId:'',timer:null,submitting:false});window.removeEventListener('beforeunload',beforeUnload);window.removeEventListener('pagehide',pageHide);}
-function persistExam(){if(!exam.active)return;const p=store.profile();store.setProgress(exam.revision?'revision':exam.subject.id,{email:p?.email,answers:exam.answers,marked:exam.marked,qTime:exam.qTime,current:exam.current,left:exam.left,startedAt:exam.startedAt,sessionId:exam.sessionId,questionOrder:exam.test.map(q=>q.id),optionOrders:exam.test.map(q=>q.optionOrder||q.options.map((_,i)=>i)),revisionIds:exam.items.map(x=>x.wrongId),savedAt:Date.now()})}
-function commitQuestionTime(){if(!exam.active||!exam.test.length)return;const now=Date.now();exam.qTime[exam.current]=(exam.qTime[exam.current]||0)+Math.max(0,(now-exam.questionStartedAt)/1000);exam.questionStartedAt=now}
-function beforeUnload(e){if(!exam.active||exam.submitting)return;persistExam();e.preventDefault();e.returnValue='Exam is in progress. Do you want to go back? Your test will be submitted automatically.';return e.returnValue}
-function pageHide(){if(exam.active&&!exam.submitting)persistExam()}
-function activeBack(){if(exam.submitting)return;const ok=confirm('Exam is in progress. Do you want to go back? Your test will be submitted automatically.');if(ok)submitExam(true);}
-window.addEventListener('popstate',()=>{if(exam.active){history.pushState({exam:true},'',location.href);activeBack()}else{route()}});
+function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
+function clearExam(){
+  clearInterval(timer); timer=null; isSubmitting=false;
+  window.removeEventListener("beforeunload",handleBeforeUnload);
+  window.removeEventListener("pagehide",handlePageHide);
+  window.removeEventListener("beforeunload",handleRevisionBeforeUnload);
+  window.removeEventListener("pagehide",handleRevisionPageHide);
+  disarmBackGuard();
+}
 
-async function loadSubjects(){if(subjects.length)return;const r=await fetch('subjects.json',{cache:'no-store'});if(!r.ok)throw Error('subjects');subjects=await r.json()}
-function profileRequired(next){const p=store.profile();if(p?.name&&p?.email)return next();renderProfile(next)}
-function renderProfile(next){app.innerHTML=`${nav('Your details',false)}<div class="card form-card"><p>Enter your name and registered email. Your email is used for results and reminders.</p><label>Name<input id="pname" autocomplete="name"></label><label>Email<input id="pemail" type="email" autocomplete="email"></label><div id="formErr" class="error-text"></div><div class="buttons"><button onclick="home()">Cancel</button><button onclick="saveProfile()">Continue</button></div></div>`;window._profileNext=next;}
-function saveProfile(){const n=document.getElementById('pname').value.trim(),e=document.getElementById('pemail').value.trim();const err=document.getElementById('formErr');if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){err.textContent='Please enter a valid name and email.';return}store.setProfile({name:n,email:e});const fn=window._profileNext;window._profileNext=null;fn&&fn()}
-function home(){if(exam.active){return activeBack()}resetExam();if(location.search)history.pushState({},'',SITE_URL);loadSubjects().then(()=>{const p=store.profile();app.innerHTML=`<div class="home"><h1>ECET Online Test</h1><p class="subtitle">1 minute per question. No negative marking.</p><div class="home-nav"><button onclick="profileRequired(dashboard)">Dashboard</button><button onclick="profileRequired(mistakes)">Revision Tests</button><button onclick="profileRequired(historyPage)">Attempt History</button><button onclick="profileRequired(remindersPage)">Request Reminder</button><button onclick="profileRequired(notificationHistoryPage)">Notification History</button>${p?`<button onclick="editProfile()">${esc(p.name)}</button>`:''}</div><div class="subject-grid">${subjects.map((s,i)=>`<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.available?'Questions available':'Question bank coming soon'}</p><button ${s.available?'':'disabled'} onclick="openPassword(${i})">${s.available?'Take Test':'Coming Soon'}</button></div>`).join('')}</div></div>`}).catch(()=>errorState('Could not load tests','Please refresh and retry.','home()'))}
-function editProfile(){const p=store.profile()||{};app.innerHTML=`${nav('Your profile')}<div class="card form-card"><label>Name<input id="pname" value="${esc(p.name)}"></label><label>Email<input id="pemail" type="email" value="${esc(p.email)}"></label><div id="formErr" class="error-text"></div><div class="buttons"><button onclick="home()">Cancel</button><button onclick="saveProfileEdit()">Save</button></div></div>`}
-function saveProfileEdit(){const n=document.getElementById('pname').value.trim(),e=document.getElementById('pemail').value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById('formErr').textContent='Please enter a valid name and email.';return}store.setProfile({name:n,email:e});home()}
+/* ===================== BROWSER BACK GUARD (during an active test) =====================
+   Browsers do not let scripts fully block the back button, but pushState + popstate lets
+   us intercept the very first back action, ask for confirmation, and auto-submit if the
+   person confirms. Refresh/close/tab-close are handled separately by beforeunload/pagehide
+   (see handleBeforeUnload/handlePageHide and their revision equivalents) — those cannot
+   guarantee interception either; browsers only allow a generic "leave site?" prompt there. */
+function armBackGuard(){
+  try{ history.pushState({ecetGuard:true},""); }catch(e){}
+  window.addEventListener("popstate",handleBackGuard);
+}
+function disarmBackGuard(){
+  window.removeEventListener("popstate",handleBackGuard);
+}
+function handleBackGuard(){
+  const inExam=activeSubject&&test.length&&!isSubmitting&&left>0&&!revisionMode;
+  const inRevision=revisionMode&&revisionItems.length&&!isSubmitting;
+  if(!inExam&&!inRevision){ disarmBackGuard(); return; }
+  const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
+  if(leave){
+    disarmBackGuard();
+    if(inRevision)submitRevisionTest();else submit();
+  } else {
+    try{ history.pushState({ecetGuard:true},""); }catch(e){}
+  }
+}
+function persist(){
+  if(!activeSubject||revisionMode)return;
+  const p=store.profile();
+  try{
+    store.setProgress(activeSubject.id,{
+      email:p?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,
+      questionOrder:test.map(q=>q.id),
+      optionOrders:test.map(q=>Array.isArray(q.optionOrder)?q.optionOrder:q.options.map((_,i)=>i)),
+      savedAt:Date.now()
+    });
+  }catch(e){console.warn("Autosave failed",e);}
+}
+function commitTime(){ if(!test.length)return; const spent=(Date.now()-questionStartedAt)/1000; qTime[current]=(qTime[current]||0)+spent; questionStartedAt=Date.now(); }
 
-async function openPassword(i){const s=subjects[i];history.pushState({page:'test',subject:s.id},'',testUrl(s.id));app.innerHTML=`${nav(s.name)}<div class="card form-card"><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password"><div id="passErr" class="error-text"></div><div class="buttons"><button onclick="goBack()">Back</button><button onclick="checkPassword(${i})">Continue</button></div></div>`;document.getElementById('password').focus()}
-async function checkPassword(i){const s=subjects[i],v=document.getElementById('password').value;if(v!==String(s.password)){document.getElementById('passErr').textContent='Incorrect password.';return}loading('Loading question bank…');try{const r=await fetch(s.file,{cache:'no-store'});if(!r.ok)throw Error();bank=await r.json();if(!bank.length)throw Error();exam.subject=s;renderTestSummary()}catch(e){errorState('Question bank unavailable','The test could not be loaded. Please retry.','openPassword('+i+')')}}
-function renderTestSummary(){const s=exam.subject, saved=store.getProgress(s.id),p=store.profile();app.innerHTML=`${nav('Start Test')}<div class="card"><div class="test-summary"><b>Test Name:</b> ${esc(s.name)}<br><b>Subject:</b> ${esc(s.name)}<br><b>Number of Questions:</b> ${bank.length}<br><b>Total Time:</b> ${clock(bank.length*TEST_TIME_PER_QUESTION)}</div>${saved?.email===p?.email&&saved.left>0?'<div class="resume-box"><b>Unfinished test found.</b><p>Your answers and timer were saved. You can resume where you left off.</p></div>':''}<div class="buttons"><button onclick="home()">Back</button><button onclick="beginExam()">${saved?.email===p?.email&&saved.left>0?'Resume Test':'Take Test'}</button></div></div>`}
-async function beginExam(){const p=store.profile();if(!p){return profileRequired(beginExam)};const subject=exam.subject;if(!subject)return errorState('Test unavailable','Please return to Home and select a test again.','home');const reg=await apiPost('register',{name:p.name,email:p.email,subject:subject.name,testUrl:testUrl(subject.id)});if(!reg?.ok){return errorState('Could not connect to server','Your test has not started. Please check Server Online status and retry.','beginExam()')}startMainExam(subject)}
-function randomize(q){const pairs=(q.options||[]).map((text,index)=>({text,index})),sh=shuffle(pairs);return {...q,options:sh.map(x=>x.text),answer:sh.findIndex(x=>x.index===Number(q.answer)),optionOrder:sh.map(x=>x.index)}}
-function restoreQ(q,order){if(!Array.isArray(order)||order.length!==q.options.length)return randomize(q);const o=order.map(i=>q.options[i]);if(o.some(x=>x===undefined))return randomize(q);return {...q,options:o,answer:order.indexOf(Number(q.answer)),optionOrder:[...order]}}
-function startMainExam(subject){const saved=store.getProgress(subject.id),p=store.profile(),by=new Map(bank.map(q=>[String(q.id),q]));resetExam();exam.active=true;exam.revision=false;exam.subject=subjects.find(s=>s.id===subject.id)||subject;let restored=null;if(saved?.email===p?.email&&saved.left>0&&saved.answers?.length===bank.length&&saved.questionOrder?.length===bank.length){restored=saved.questionOrder.map((id,i)=>{const q=by.get(String(id));return q?restoreQ(q,saved.optionOrders?.[i]):null});if(restored.some(x=>!x)||restored.length!==bank.length)restored=null}exam.test=restored||shuffle(bank).map(randomize);exam.answers=restored?saved.answers:Array(exam.test.length).fill(null);exam.marked=restored&&Array.isArray(saved.marked)?saved.marked:Array(exam.test.length).fill(false);exam.qTime=restored&&Array.isArray(saved.qTime)?saved.qTime:Array(exam.test.length).fill(0);exam.current=restored?Math.min(exam.test.length-1,Number(saved.current)||0):0;exam.left=restored?Number(saved.left):exam.test.length*TEST_TIME_PER_QUESTION;exam.startedAt=restored?Number(saved.startedAt):Date.now();exam.sessionId=restored?(saved.sessionId||crypto.randomUUID()):crypto.randomUUID();exam.questionStartedAt=Date.now();persistExam();history.pushState({exam:true},'',location.href);window.addEventListener('beforeunload',beforeUnload);window.addEventListener('pagehide',pageHide);renderExam();exam.timer=setInterval(()=>{exam.left=Math.max(0,exam.left-1);const t=document.querySelector('.timer');if(t){t.textContent=clock(exam.left);t.classList.toggle('low',exam.left<=60)}persistExam();if(exam.left<=0)submitExam(true)},1000)}
-function answer(v){exam.answers[exam.current]=v;persistExam();renderExam()}
-function mark(){exam.marked[exam.current]=!exam.marked[exam.current];persistExam();renderExam()}
-function gotoQ(n){commitQuestionTime();exam.current=Math.max(0,Math.min(exam.test.length-1,n));exam.questionStartedAt=Date.now();persistExam();renderExam()}
-function confirmSubmit(){const a=exam.answers.filter(x=>x!==null&&x!==undefined).length,u=exam.test.length-a;if(confirm(`Before submission: ${a} answered, ${u} unanswered. Do you want to submit your test?`))submitExam(false)}
-function renderExam(){const q=exam.test[exam.current],a=exam.answers.filter(x=>x!==null&&x!==undefined).length,u=exam.test.length-a,m=exam.marked.filter(Boolean).length;app.innerHTML=`<div class="exam-header"><div><h1>${esc(exam.subject.name)}</h1><div class="meta">Question ${exam.current+1} of ${exam.test.length} • Answered <b>${a}</b> • Unanswered <b>${u}</b> • Marked <b>${m}</b></div></div><div class="timer ${exam.left<=60?'low':''}">${clock(exam.left)}</div></div><div class="card exam-card"><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${exam.answers[exam.current]===k?'selected':''}"><input type="radio" name="answer" ${exam.answers[exam.current]===k?'checked':''} onchange="answer(${k})"><b>${'ABCD'[k]}.</b> ${esc(o)}</label>`).join('')}<button class="review-toggle ${exam.marked[exam.current]?'active':''}" onclick="mark()">${exam.marked[exam.current]?'★ Marked for review':'☆ Mark for Review'}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Marked for review</span></div><div class="palette">${exam.test.map((_,i)=>`<button class="num ${exam.answers[i]!==null&&exam.answers[i]!==undefined?'answered':''} ${exam.marked[i]?'review':''} ${i===exam.current?'current':''}" onclick="gotoQ(${i})">${i+1}</button>`).join('')}</div><div class="examfoot"><button onclick="gotoQ(exam.current-1)" ${exam.current===0?'disabled':''}>◀ Previous</button><button onclick="mark()">${exam.marked[exam.current]?'Unmark':'Mark for Review'}</button><button onclick="gotoQ(exam.current+1)" ${exam.current===exam.test.length-1?'disabled':''}>Next ▶</button><button class="submit" onclick="confirmSubmit()" ${exam.submitting?'disabled':''}>${exam.submitting?'Submitting…':'Submit Test'}</button></div></div>`}
-function payload(){commitQuestionTime();const p=store.profile();const detail=exam.test.map((q,i)=>({id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,question:q.question,options:q.options,correct:q.answer,selected:exam.answers[i],marked:exam.marked[i],time:Math.round(exam.qTime[i]||0)}));const correct=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)===Number(d.correct)).length;const wrong=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)!==Number(d.correct)).length;const un=detail.length-correct-wrong;return {name:p.name,email:p.email,subject:exam.subject.name,subjectId:exam.subject.id,score:correct,total:detail.length,percentage:detail.length?Math.round(correct/detail.length*10000)/100:0,correct,wrong,unanswered:un,totalTime:Math.round((Date.now()-exam.startedAt)/1000),startTime:new Date(exam.startedAt).toISOString(),endTime:new Date().toISOString(),detail,examSessionId:exam.sessionId,testUrl:testUrl(exam.subject.id),revisionTestUrl:revisionUrl(),autoSubmitted:arguments[0]===true}}
-async function submitExam(auto=false){if(!exam.active||exam.submitting)return;exam.submitting=true;clearInterval(exam.timer);window.removeEventListener('beforeunload',beforeUnload);window.removeEventListener('pagehide',pageHide);app.innerHTML=`<div class="card state"><div class="spinner"></div><h2>Submitting test…</h2><p class="note">Your result is being saved. Please do not close this page.</p></div>`;const body=payload();body.autoSubmitted=!!auto;let res=await apiPost('submitExam',body);if(!res?.ok){exam.submitting=false;persistExam();errorState('Submission failed',res?.error||'Please retry. Your answers remain saved.',`submitExam(${auto})`);return}store.clearProgress(exam.subject.id);store.pendingResult({...res,...body});resetExam();resultPage(store.getPendingResult())}
+function submissionPayload(compact=false){
+  commitTime();
+  const p=store.profile();
+  const detail=test.map((q,n)=>{
+    const selected=answers[n], isWrong=selected!==null&&selected!==undefined&&Number(selected)!==Number(q.answer);
+    const d={id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,correct:q.answer,selected,marked:marked[n],time:Math.round(qTime[n]||0)};
+    // On normal submit keep everything. On tab-close submit, omit question/options
+    // for correct/unanswered items to keep the Beacon payload small enough for browsers.
+    if(!compact || isWrong){ d.question=q.question; d.options=q.options; }
+    return d;
+  });
+  const score=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)===Number(d.correct)).length;
+  const wrong=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)!==Number(d.correct)).length;
+  const unanswered=detail.filter(d=>d.selected===null||d.selected===undefined).length;
+  const percentage=test.length?Math.round(score/test.length*1000)/10:0;
+  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),detail,examSessionId,autoSubmitted:!!compact};
+}
+function sendAutoSubmit(){
+  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0||!API)return false;
+  const marker="ecet_auto_submit_"+examSessionId;
+  if(sessionStorage.getItem(marker)==="1")return true;
+  isSubmitting=true;
+  const payload={action:"submitExam",...submissionPayload(true)};
+  const body=JSON.stringify(payload);
+  let accepted=false;
+  try{
+    if(navigator.sendBeacon){ accepted=navigator.sendBeacon(API,new Blob([body],{type:"text/plain;charset=UTF-8"})); }
+  }catch(err){console.warn("Beacon submit failed",err);}
+  if(!accepted){
+    try{ fetch(API,{method:"POST",body,keepalive:true}); accepted=true; }catch(err){console.warn("Keepalive submit failed",err);}
+  }
+  if(accepted){ sessionStorage.setItem(marker,"1"); store.clearProgress(activeSubject.id); }
+  return accepted;
+}
+function handleBeforeUnload(e){
+  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
+  persist();
+  sendAutoSubmit();
+  e.preventDefault();
+  e.returnValue="Your exam is still running. It will be submitted automatically.";
+  return e.returnValue;
+}
+function handlePageHide(){
+  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
+  persist();
+  sendAutoSubmit();
+}
 
-async function dashboard(){if(exam.active)return;history.pushState({page:'dashboard'},'',SITE_URL+'?page=dashboard');loading('Loading dashboard…');const p=store.profile(),r=await apiGet('dashboard',{email:p.email});if(!r.ok){errorState('Dashboard unavailable',r.error,'dashboard');return}const d=r.data||{};app.innerHTML=`${nav('My Dashboard',false)}<div class="dash-grid"><div class="dash-tile"><b>${d.attempts||0}</b><span>Attempts</span></div><div class="dash-tile"><b>${d.best||0}%</b><span>Best percentage</span></div><div class="dash-tile"><b>${d.avg||0}%</b><span>Average</span></div><div class="dash-tile"><b>${d.mistakes||0}</b><span>Active mistakes</span></div></div><div class="card"><h2>Quick actions</h2><div class="buttons"><button onclick="home()">Take a Test</button><button onclick="mistakes()">Revision Tests</button><button onclick="historyPage()">Attempt History</button><button onclick="remindersPage()">Request Reminder</button><button onclick="notificationHistoryPage()">Notification History</button></div></div><div class="card"><h2>Subject performance</h2>${(d.subjects||[]).map(x=>`<div class="subjbar-row"><span>${esc(x.subject)}</span><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,Number(x.best)||0)}%"></div></div><b>${Number(x.best)||0}%</b></div>`).join('')||'<p class="note">No completed tests yet.</p>'}</div>`}
+/* ===================== HOME ===================== */
+async function home(){
+  clearExam(); revisionMode=false;
+  if(!subjects.length) subjects=await fetch("subjects.json").then(r=>r.json());
+  const p=store.profile();
+  app.innerHTML=`<div class="home"><h1>ECET Online Test</h1><p class="subtitle">Choose a subject. Each test gets exactly 1 minute per question — no extra time.</p>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Reminders</button>${p?`<button onclick="editProfile()">${esc(p.name)}</button>`:""}</div>
+    <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.available?(unfinished?"Test in progress — resume any time":"Questions available"):"Question bank coming soon"}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
+  </div>`;
+}
+function editProfile(){const p=store.profile()||{name:"",email:""};app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}"><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
+function saveProfileEdit(){const n=document.getElementById("pname").value.trim(),e=document.getElementById("pemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("pErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});home();}
 
-async function mistakes(){if(exam.active)return;history.pushState({page:'revision'},'',SITE_URL+'?page=revision');loading('Loading revision tests…');const p=store.profile(),r=await apiGet('mistakes',{email:p.email});if(!r.ok){errorState('Revision tests unavailable',r.error,'mistakes');return}lastMistakes=r.data||[];store.setMistakes(lastMistakes);renderMistakes()}
-function renderMistakes(){const p=store.profile(),groups={};lastMistakes.forEach(m=>(groups[m.subject]??=[]).push(m));let html=`${nav('Revision Tests',false)}<div class="card"><p>Wrong and unattempted questions are both included. Each mistake records its type.</p>${Object.keys(groups).length?Object.entries(groups).map(([sub,items])=>{const due=items.map(dueDate).sort((a,b)=>a-b)[0],ready=due<=new Date();return `<div class="mistake-card"><h2>${esc(sub)}</h2><p><b>${items.length}</b> active mistakes • ${items.filter(x=>String(x.mistakeType).toLowerCase()==='wrong').length} wrong • ${items.filter(x=>String(x.mistakeType).toLowerCase()==='unattempted').length} unattempted</p>${ready?'<span class="mistake-tag">Unlocked</span>':'<span class="mistake-tag tag-wait">Unlocks '+esc(fmt(due))+'</span>'}<div class="buttons">${ready?`<button onclick="startRevisionTest()">Take Revision Test</button>`:''}<button onclick="remindLaterFor('${esc(sub)}','${encodeURIComponent(revisionUrl())}')">Remind Me Later</button></div></div>`}).join(''):'<div class="empty">No active mistakes. Complete a test to build a revision set.</div>'}</div>`;app.innerHTML=html}
-async function startRevisionTest(){const items=lastMistakes.filter(m=>dueDate(m)<=new Date()&&!m.revised);if(!items.length){renderMistakes();return}resetExam();exam.active=true;exam.revision=true;exam.subject={id:'revision',name:'Revision Test'};exam.items=items;const saved=store.getProgress('revision'),p=store.profile();const by=new Map(items.map(m=>[String(m.wrongId),m]));let selected=items;if(saved?.email===p?.email&&saved.left>0&&saved.revisionIds?.length===items.length&&saved.revisionIds.every(id=>by.has(String(id))))selected=saved.revisionIds.map(id=>by.get(String(id)));exam.items=selected;exam.test=selected.map((m,i)=>{const pairs=(m.options||[]).map((text,index)=>({text,index}));const order=saved?.optionOrders?.[i]||shuffle(pairs).map(x=>x.index);const opts=order.map(x=>m.options[x]);return {id:m.wrongId,question:m.question,options:opts,answer:order.indexOf(Number(m.correctIndex)),optionOrder:order,wrongId:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber}});const resume=saved?.email===p?.email&&saved.left>0&&saved.answers?.length===exam.test.length;exam.answers=resume?saved.answers:Array(exam.test.length).fill(null);exam.marked=resume&&Array.isArray(saved.marked)?saved.marked:Array(exam.test.length).fill(false);exam.qTime=resume&&Array.isArray(saved.qTime)?saved.qTime:Array(exam.test.length).fill(0);exam.current=resume?Math.min(exam.test.length-1,Number(saved.current)||0):0;exam.left=resume?Number(saved.left):exam.test.length*TEST_TIME_PER_QUESTION;exam.startedAt=resume?Number(saved.startedAt):Date.now();exam.sessionId=resume?(saved.sessionId||crypto.randomUUID()):crypto.randomUUID();exam.questionStartedAt=Date.now();persistExam();history.pushState({exam:true},'',location.href);window.addEventListener('beforeunload',beforeUnload);window.addEventListener('pagehide',pageHide);renderRevisionExam();exam.timer=setInterval(()=>{exam.left=Math.max(0,exam.left-1);const t=document.querySelector('.timer');if(t)t.textContent=clock(exam.left);persistExam();if(exam.left<=0)submitRevision(true)},1000)}
-function renderRevisionExam(){const q=exam.test[exam.current],a=exam.answers.filter(x=>x!==null&&x!==undefined).length,u=exam.test.length-a,m=exam.marked.filter(Boolean).length;app.innerHTML=`<div class="exam-header"><div><h1>Revision Test</h1><div class="meta">Question ${exam.current+1} of ${exam.test.length} • Answered <b>${a}</b> • Unanswered <b>${u}</b> • Marked <b>${m}</b></div></div><div class="timer ${exam.left<=60?'low':''}">${clock(exam.left)}</div></div><div class="card exam-card"><div class="mistake-source"><b>Mistake type:</b> ${String(exam.items[exam.current].mistakeType).toLowerCase()==='unattempted'?'Unattempted':'Wrong'}</div><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${exam.answers[exam.current]===k?'selected':''}"><input type="radio" name="answer" ${exam.answers[exam.current]===k?'checked':''} onchange="answerRevision(${k})"><b>${'ABCD'[k]}.</b> ${esc(o)}</label>`).join('')}<button class="review-toggle ${exam.marked[exam.current]?'active':''}" onclick="mark()">${exam.marked[exam.current]?'★ Marked for review':'☆ Mark for Review'}</button><div class="palette">${exam.test.map((_,i)=>`<button class="num ${exam.answers[i]!==null&&exam.answers[i]!==undefined?'answered':''} ${exam.marked[i]?'review':''} ${i===exam.current?'current':''}" onclick="gotoRevision(${i})">${i+1}</button>`).join('')}</div><div class="examfoot"><button onclick="gotoRevision(exam.current-1)" ${exam.current===0?'disabled':''}>◀ Previous</button><button onclick="mark()">${exam.marked[exam.current]?'Unmark':'Mark for Review'}</button><button onclick="gotoRevision(exam.current+1)" ${exam.current===exam.test.length-1?'disabled':''}>Next ▶</button><button class="submit" onclick="confirmRevisionSubmit()" ${exam.submitting?'disabled':''}>Submit Test</button></div></div>`}
-function answerRevision(v){exam.answers[exam.current]=v;persistExam();renderRevisionExam()}
-function gotoRevision(n){commitQuestionTime();exam.current=Math.max(0,Math.min(exam.test.length-1,n));exam.questionStartedAt=Date.now();persistExam();renderRevisionExam()}
-function confirmRevisionSubmit(){const a=exam.answers.filter(x=>x!==null&&x!==undefined).length,u=exam.test.length-a;if(confirm(`Before submission: ${a} answered, ${u} unanswered. Do you want to submit this revision test?`))submitRevision(false)}
-async function submitRevision(auto=false){if(!exam.active||exam.submitting)return;exam.submitting=true;clearInterval(exam.timer);window.removeEventListener('beforeunload',beforeUnload);window.removeEventListener('pagehide',pageHide);commitQuestionTime();const p=store.profile();app.innerHTML=`<div class="card state"><div class="spinner"></div><h2>Submitting revision test…</h2></div>`;const res=await apiPost('submitRevision',{email:p.email,items:exam.items.map((m,i)=>({wrongId:m.wrongId,selected:exam.answers[i],time:Math.round(exam.qTime[i]||0)})),autoSubmitted:auto});if(!res?.ok){exam.submitting=false;persistExam();errorState('Revision submission failed',res?.error||'Please retry.',`submitRevision(${auto})`);return}store.clearProgress('revision');const fresh=await apiGet('mistakes',{email:p.email});if(fresh.ok){lastMistakes=fresh.data||[];store.setMistakes(lastMistakes)}const correct=Number(res.correct)||0,wrong=Number(res.wrong)||0,un=exam.test.length-correct-wrong,totalTime=Math.round((Date.now()-exam.startedAt)/1000),itemsForResult=exam.items.map((m,i)=>({...m,timeSpent:Math.round(exam.qTime[i]||0)}));resetExam();app.innerHTML=`${nav('Revision Test Result',false)}<div class="card"><div class="stats"><div class="stat"><b>${correct}/${correct+wrong+un}</b>Score</div><div class="stat"><b>${correct}</b>Correct</div><div class="stat"><b>${wrong}</b>Wrong</div><div class="stat"><b>${un}</b>Unattempted</div><div class="stat"><b>${clock(totalTime)}</b>Total Time</div></div><h2>Question-wise time analysis</h2>${timeTable(itemsForResult)}<div class="buttons"><button onclick="mistakes()">Revision Tests</button><button onclick="home()">Home</button></div></div>`}
-function timeTable(items){return `<div class="table-scroll"><table class="simple"><thead><tr><th>#</th><th>Mistake Type</th><th>Time Spent</th></tr></thead><tbody>${items.map((m,i)=>`<tr><td>${i+1}</td><td>${m.mistakeType?String(m.mistakeType).toLowerCase()==='unattempted'?'Unattempted':'Wrong':'Question '+(i+1)}</td><td>${fmtSec(m.timeSpent!==undefined?m.timeSpent:(m.time!==undefined?m.time:0))}</td></tr>`).join('')}</tbody></table></div>`}
+/* ===================== PASSWORD ===================== */
+function openPassword(i){const s=subjects[i];app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword(${i})"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword(${i})">Continue</button></div></div>`;document.getElementById("password").focus();}
+async function checkPassword(i){const s=subjects[i],v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}try{bank=await fetch(s.file).then(r=>r.json());}catch(e){bank=[];}if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
+function enroll(){const p=store.profile();if(p){app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Continue as <b>${esc(p.name)}</b> (${esc(p.email)})?</p><div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="beginExam()">Start Exam</button></div></div>`;return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Start Exam</button></div></div>`;}
+function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});beginExam();}
+async function beginExam(){const p=store.profile();apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});start();}
 
-function openRetake(subjectId){loadSubjects().then(()=>{const i=subjects.findIndex(s=>s.id===subjectId);if(i<0){home();return}history.pushState({},'',`?subject=${encodeURIComponent(subjectId)}`);openPassword(i)}).catch(()=>errorState('Test unavailable','Could not load the test.','home()'))}
-function openRevision(){history.pushState({},'',revisionUrl());profileRequired(()=>mistakes().then(startRevisionTest))}
-async function resultPage(r){if(!r){home();return}const unlock=new Date(r.revisionAvailableAt||Date.now());const ready=Date.now()>=unlock.getTime();app.innerHTML=`${nav('Test Result',false)}<div class="card"><h2>${esc(r.subject)}</h2><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Marks</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${r.correct}</b>Correct</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unattempted</div><div class="stat"><b>${clock(r.totalTime)}</b>Total Time</div><div class="stat"><b>${r.rank||'—'}</b>Current Test Rank</div><div class="stat"><b>${esc(r.expectedRank||'—')}</b>ECET Equalized Rank</div></div><p><b>Started:</b> ${fmt(r.startTime)}<br><b>Ended:</b> ${fmt(r.endTime)}</p><h2>Question-wise time analysis</h2>${timeTable(r.detail||[],r)}<div class="buttons"><button onclick="openRetake('${esc(r.subjectId)}')">Retake Test</button>${ready?`<button onclick="openRevision()">Take Revision Test</button>`:`<button disabled>Revision unlocks ${esc(fmt(unlock))}</button>`}<button onclick="historyPage()">Attempt History</button><button onclick="home()">Home</button></div><p class="note">No negative marking. Marks are awarded for correct answers only.</p></div>`;store.clearPendingResult()}
+/* ===================== EXAM ===================== */
+function start(){
+  revisionMode=false; clearExam();
+  const saved=store.getProgress(activeSubject.id),p=store.profile();
+  const bankById=new Map(bank.map(q=>[String(q.id),q]));
+  if(saved&&saved.email===p.email&&saved.left>0&&saved.answers?.length===bank.length&&Array.isArray(saved.questionOrder)&&saved.questionOrder.length===bank.length){
+    const restored=saved.questionOrder.map((id,pos)=>{
+      const q=bankById.get(String(id));
+      return q?restoreQuestionOrder(q,saved.optionOrders?.[pos]):null;
+    }).filter(Boolean);
+    if(restored.length===bank.length){
+      test=restored;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=Math.max(0,Math.min(test.length-1,saved.current||0));left=saved.left;examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();
+    } else { startFreshExam(); }
+  } else { startFreshExam(); }
+  questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
+  window.addEventListener("beforeunload",handleBeforeUnload);
+  window.addEventListener("pagehide",handlePageHide);
+  armBackGuard();
+  persist();render();
+  timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el){el.textContent=clock(left);el.classList.toggle("low",left<=60);}if(++saveTick%5===0)persist();if(left<=0){left=0;submit();}},1000);
+}
+function randomizeQuestionOptions(q){
+  const pairs=(q.options||[]).map((text,index)=>({text,index}));
+  const shuffled=shuffle(pairs);
+  return {...q,options:shuffled.map(x=>x.text),answer:shuffled.findIndex(x=>x.index===Number(q.answer)),optionOrder:shuffled.map(x=>x.index)};
+}
+function restoreQuestionOrder(q,order){
+  if(!Array.isArray(order)||order.length!==(q.options||[]).length)return randomizeQuestionOptions(q);
+  const pairs=order.map(i=>({text:q.options[i],index:i}));
+  if(pairs.some(x=>x.text===undefined))return randomizeQuestionOptions(q);
+  return {...q,options:pairs.map(x=>x.text),answer:pairs.findIndex(x=>x.index===Number(q.answer)),optionOrder:order.slice()};
+}
+function startFreshExam(){
+  test=shuffle(bank).map(randomizeQuestionOptions);
+  // Time rule: exactly 1 minute per question. No extra time is added.
+  answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60;examStartedAt=Date.now();examSessionId=newSessionId();
+}
+function choose(v){answers[current]=v;persist();render();}
+function toggleReview(){marked[current]=!marked[current];persist();render();}
+function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
+function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
+function confirmSubmit(){const u=answers.filter(x=>x===null).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
+function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>ECET ${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
 
-async function historyPage(){if(exam.active)return;history.pushState({page:'history'},'',SITE_URL+'?page=history');loading('Loading attempt history…');const p=store.profile(),r=await apiGet('history',{email:p.email});if(!r.ok){errorState('Attempt history unavailable',r.error,'historyPage');return}const rows=r.data||[];app.innerHTML=`${nav('Test Attempt History',false)}<div class="card"><p>Every completed main test attempt is stored separately. Retakes do not overwrite earlier results.</p>${rows.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Date</th><th>Subject</th><th>Score</th><th>%</th><th>Correct</th><th>Wrong</th><th>Unattempted</th><th>Total Time</th><th>Rank</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${fmt(x.timestamp)}</td><td>${esc(x.subject)}</td><td>${x.score}/${x.total}</td><td>${x.percentage}%</td><td>${x.correct}</td><td>${x.wrong}</td><td>${x.unanswered}</td><td>${fmtSec(x.totalTimeSec)}</td><td>${x.rank||'—'}</td></tr>`).join('')}</tbody></table></div><h2>Improvement over time</h2><div class="history-chart">${rows.slice().reverse().map((x,i)=>`<div class="history-bar"><span>${x.percentage}%</span><i style="height:${Math.max(4,Number(x.percentage)||0)}%"></i><small>${i+1}</small></div>`).join('')}</div><h2>Compare attempts</h2><div class="compare-grid"><label>Attempt A<select id="cmpA">${rows.map((x,i)=>`<option value="${i}">${i+1}. ${esc(x.subject)} — ${x.percentage}% — ${fmt(x.timestamp)}</option>`).join('')}</select></label><label>Attempt B<select id="cmpB">${rows.map((x,i)=>`<option value="${i}" ${i===1?'selected':''}>${i+1}. ${esc(x.subject)} — ${x.percentage}% — ${fmt(x.timestamp)}</option>`).join('')}</select></label></div><div id="compareOut" class="compare-box"></div><script>setTimeout(()=>updateComparison(${JSON.stringify(rows).replace(/<\/script/gi,'<\\/script')}),0)</script>`:'<div class="empty">No completed tests yet.</div>'}</div>`}
+/* ===================== RESULT ===================== */
+async function submit(){
+  if(isSubmitting||!test.length)return; isSubmitting=true;clearExam();
+  const payload=submissionPayload();store.clearProgress(activeSubject.id);
+  const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
+  app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
+  const resp=await apiPost("submitExam",payload);
+  if(!resp?.ok){
+    isSubmitting=false;
+    store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,questionOrder:test.map(q=>q.id),optionOrders:test.map(q=>q.optionOrder)});
+    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    return;
+  }
+  renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
+}
+function pieHTML(r){const total=Math.max(1,r.total),c=r.score/total*100,w=r.wrong/total*100,u=r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
+function timeChart(detail){const max=Math.max(60,...detail.map(d=>d.time||0));const ticks=[0,Math.round(max/4),Math.round(max/2),Math.round(max*3/4),max];return `<div class="chart-area"><div class="y-axis">${ticks.slice().reverse().map(v=>`<span>${formatSeconds(v)}</span>`).join("")}</div><div class="chart-main"><div class="gridlines">${ticks.map(()=>`<i></i>`).join("")}</div><div class="bars">${detail.map((d,i)=>{const h=Math.max(3,(d.time/max)*100);return `<button class="bar-col ${d.selected===null?"unansbar":d.selected!==d.correct?"wrongbar":""}" style="height:${h}%" onclick="showQuestionTime(${i})" title="Q${i+1}: ${formatSeconds(d.time)}"><span>${i+1}</span></button>`;}).join("")}</div><div class="x-axis">${detail.map((_,i)=>`<span>${i+1}</span>`).join("")}</div></div></div><div id="timeDetail" class="chart-detail">Click any question bar to see exact time.</div>`;}
+function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;const el=document.getElementById("timeDetail");if(el)el.innerHTML=`<b>Question ${i+1}</b> — time spent: <b>${formatSeconds(d.time)}</b><br>${esc(d.question)}`;}
+function renderResult(r){
+  window._lastResultDetail=r.detail;
+  const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="start()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+}
+function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
+function reviewListHTML(detail,filter){return detail.map((d,n)=>{const iw=d.selected!==null&&d.selected!==d.correct,iu=d.selected===null;if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${iu?"Unanswered":"ABCD"[d.selected]+". "+esc(d.options[d.selected])}</span></div><div>Correct answer: <span class="correct">${"ABCD"[d.correct]}. ${esc(d.options[d.correct])}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
 
-async function remindersPage(){if(exam.active)return;history.pushState({page:'reminders'},'',SITE_URL+'?page=reminders');loading('Loading reminders…');const p=store.profile(),r=await apiGet('reminders',{email:p.email});if(!r.ok){errorState('Reminders unavailable',r.error,'remindersPage');return}renderReminders(r.data||[])}
-function renderReminders(rows){app.innerHTML=`${nav('Reminders',false)}<div class="card"><p>Use this tool for any work or personal task. Reminders are sent to your registered email. One-time reminders become Completed after sending; recurring reminders continue until paused or deleted.</p><div class="buttons"><button onclick="openReminderForm()">+ Request Reminder</button><button onclick="openRemindLaterForm()">Remind Me Later</button></div></div><div class="card"><h2>Active reminders</h2>${rows.length?rows.map(reminderCard).join(''):'<div class="empty">No reminders yet.</div>'}</div>`}
-function reminderCard(r){const status=r.status||'Active';return `<div class="reminder-card"><div><h3>${esc(r.name||r.relatedTask||'Reminder')}</h3><p>${esc(r.message||'')}</p><p><b>Frequency:</b> ${esc(r.frequency)} • <b>Next:</b> ${esc(fmt(r.nextRunAt))}</p><span class="status ${String(status).toLowerCase()}">${esc(status)}</span></div><div class="buttons"><button onclick='openReminderForm(${JSON.stringify(r).replace(/'/g,'&#39;')})'>Edit</button>${status==='Active'?`<button onclick="toggleReminder('${esc(r.id)}',false)">Pause</button>`:`<button onclick="toggleReminder('${esc(r.id)}',true)">Resume</button>`}<button onclick="deleteReminder('${esc(r.id)}')">Delete</button></div></div>`}
-function openReminderForm(existing=null){const p=store.profile(),r=existing||{};app.innerHTML=`${nav(existing?'Edit Reminder':'Request Reminder')}<div class="card form-card"><p>Your registered email is automatically used: <b>${esc(p.email)}</b></p><label>Reminder name<input id="rname" value="${esc(r.name||r.relatedTask||'')}" placeholder="e.g. Submit assignment"></label><label>Message<textarea id="rmsg" rows="4" placeholder="What should the reminder say?">${esc(r.message||'')}</textarea></label><label>Frequency<select id="rfreq" onchange="toggleReminderDate()"><option value="once" ${r.frequency==='once'?'selected':''}>One-time</option><option value="hourly" ${r.frequency==='hourly'?'selected':''}>Hourly</option><option value="daily" ${r.frequency==='daily'?'selected':''}>Daily</option><option value="weekly" ${r.frequency==='weekly'?'selected':''}>Weekly</option><option value="monthly" ${r.frequency==='monthly'?'selected':''}>Monthly</option></select></label><label>First reminder date & time<input id="rdate" type="datetime-local" value="${r.nextRunAt?fmtDateInput(r.nextRunAt):fmtDateInput(Date.now()+3600000)}"></label><label>Optional link <span class="note">(leave blank for a general reminder)</span><input id="rurl" value="${esc(r.relatedUrl||'')}" placeholder="Optional page or task URL"></label><div id="rErr" class="error-text"></div><div class="buttons"><button onclick="remindersPage()">Cancel</button><button onclick="saveReminder(${r.id?JSON.stringify(r.id):'null'})">Save Reminder</button></div></div>`}
-function toggleReminderDate(){/* date remains the next run anchor for recurring reminders */}
-async function saveReminder(id){const p=store.profile(),name=document.getElementById('rname').value.trim(),message=document.getElementById('rmsg').value.trim(),frequency=document.getElementById('rfreq').value,nextRunAt=document.getElementById('rdate').value,relatedUrl=document.getElementById('rurl').value.trim();if(!name||!message||!nextRunAt){document.getElementById('rErr').textContent='Please complete the reminder name, message and date/time.';return}const btn=document.querySelector('.form-card .buttons button:last-child');btn.disabled=true;btn.textContent='Saving…';const r=await apiPost(id?'updateReminder':'createReminder',{id,email:p.email,userName:p.name,name,message,frequency,nextRunAt:new Date(nextRunAt).toISOString(),relatedUrl});if(!r.ok){btn.disabled=false;btn.textContent='Save Reminder';document.getElementById('rErr').textContent=r.error;return}remindersPage()}
-async function toggleReminder(id,enabled){const r=await apiPost('toggleReminder',{id,email:store.profile().email,enabled});if(!r.ok)alert(r.error);remindersPage()}
-async function deleteReminder(id){if(!confirm('Delete this reminder?'))return;const r=await apiPost('deleteReminder',{id,email:store.profile().email});if(!r.ok)alert(r.error);remindersPage()}
-function openRemindLaterForm(){const p=store.profile();app.innerHTML=`${nav('Remind Me Later')}<div class="card form-card"><p>Quickly schedule a reminder for the current task/test. It will use your registered email <b>${esc(p.email)}</b>.</p><div class="quick-reminders"><button onclick="scheduleQuickReminder(1)">1 hour</button><button onclick="scheduleQuickReminder(3)">3 hours</button><button onclick="scheduleTomorrowReminder()">Tomorrow</button><button onclick="openReminderForm({name:'Unfinished task/test',message:'Reminder for unfinished task/test',frequency:'once',nextRunAt:new Date(Date.now()+3600000),relatedUrl:location.href})">Custom date/time</button></div><div class="buttons"><button onclick="remindersPage()">Cancel</button></div></div>`}
-async function scheduleQuickReminder(hours){const p=store.profile(),d=new Date(Date.now()+hours*3600000),r=await apiPost('createReminder',{email:p.email,userName:p.name,name:'Unfinished task/test',relatedTask:'Unfinished task/test',message:'Reminder for unfinished task/test',frequency:'once',nextRunAt:d.toISOString(),relatedUrl:location.href});if(!r.ok)alert(r.error);else{alert('Reminder scheduled for '+fmt(d));remindersPage()}}
-async function scheduleTomorrowReminder(){const p=store.profile(),d=new Date();d.setDate(d.getDate()+1);d.setHours(9,0,0,0);const r=await apiPost('createReminder',{email:p.email,userName:p.name,name:'Unfinished task/test',relatedTask:'Unfinished task/test',message:'Reminder for unfinished task/test',frequency:'once',nextRunAt:d.toISOString(),relatedUrl:location.href});if(!r.ok)alert(r.error);else{alert('Reminder scheduled for '+fmt(d));remindersPage()}}
-async function remindLaterFor(name,url){const when=prompt('Choose reminder time: 1 hour, 3 hours, tomorrow, or enter a date/time.','1 hour');if(!when)return;let d=new Date();if(when==='1 hour')d=new Date(Date.now()+3600000);else if(when==='3 hours')d=new Date(Date.now()+10800000);else if(when==='tomorrow'){d.setDate(d.getDate()+1);d.setHours(9,0,0,0)}else{d=new Date(when)}if(isNaN(d)){alert('Please enter a valid date/time.');return}const p=store.profile(),r=await apiPost('createReminder',{email:p.email,userName:p.name,name,relatedTask:name,message:'Reminder for '+name,frequency:'once',nextRunAt:d.toISOString(),relatedUrl:decodeURIComponent(url)});if(!r.ok)alert(r.error);else alert('Reminder scheduled for '+fmt(d));}
+/* ===================== PROFILE / DASHBOARD ===================== */
+function goDashboard(){requireProfile(dashboard);} function goMistakes(){requireProfile(mistakes);}
+function requireProfile(next){if(store.profile())return next();_afterProfile=next;app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label>Name</label><input id="ename"><label>Email</label><input id="eemail" type="email"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
+function submitProfileAndContinue(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});const next=_afterProfile;_afterProfile=null;if(next)next();}
+async function dashboard(){
+  clearExam();app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">Loading…</p></div>`;const p=store.profile(),res=API?await apiGet("dashboard",{email:p.email}):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">${API?"Could not load dashboard.":"Connect Apps Script in config.js first."}</p><button onclick="home()">Back</button></div>`;return;}
+  const d=res.data;
+  app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="meta">${esc(p.name)} • ${esc(p.email)}</p><div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Tests taken</span></div><div class="dash-tile"><b>${d.avgPercentage}%</b><span>Average %</span></div><div class="dash-tile"><b>${d.bestPercentage}%</b><span>Best %</span></div><div class="dash-tile"><b>${d.weakCount}</b><span>Active mistakes</span></div></div>
+    ${d.strongest?`<div class="advice good"><b>Strongest subject:</b> ${esc(d.strongest.subject)} — ${d.strongest.avgPercentage}% average.</div>`:""}${d.weakest?`<div class="advice weak"><b>Needs more practice:</b> ${esc(d.weakest.subject)} — ${d.weakest.avgPercentage}% average.</div>`:""}
+    <h2>Subject-wise performance</h2>${d.subjectPerformance.map(s=>`<div class="subjbar-row"><div class="subjbar-label">${esc(s.subject)}</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,s.avgPercentage)}%"></div></div><div>${s.avgPercentage}%</div></div>`).join("")||'<p class="note">No attempts yet.</p>'}
+    <h2>Test history</h2><div class="table-scroll"><table class="simple"><tr><th>Date</th><th>Subject</th><th>Score</th><th>%</th><th>Equivalent /200</th><th>Expected AP Rank</th><th>Current Practice Rank</th></tr>${d.history.map(h=>`<tr><td>${esc(h.date)}</td><td>${esc(h.subject)}</td><td>${h.score}/${h.total}</td><td>${h.percentage}%</td><td>${h.equivalentMarks}</td><td>${esc(h.expectedRank)}</td><td>${h.currentRank?`#${h.currentRank} / ${h.currentRankOutOf}`:"—"}</td></tr>`).join("")||'<tr><td colspan="7">No attempts yet.</td></tr>'}</table></div>
+    <div class="buttons"><button onclick="goMistakes()">My Mistakes</button><button onclick="goAttemptHistory()">Attempt History</button><button onclick="home()">Subjects</button></div></div>`;
+}
 
-async function notificationHistoryPage(){if(exam.active)return;history.pushState({page:'notifications'},'',SITE_URL+'?page=notifications');loading('Loading notification history…');const p=store.profile(),r=await apiGet('notifications',{email:p.email});if(!r.ok){errorState('Notification history unavailable',r.error,'notificationHistoryPage');return}const rows=r.data||[];app.innerHTML=`${nav('Notification History',false)}<div class="card"><p>Reminder notifications are tracked separately from active reminders.</p>${rows.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Reminder</th><th>Date/Time</th><th>Message</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows.map(n=>`<tr><td>${esc(n.name)}</td><td>${fmt(n.sentAt||n.scheduledAt)}</td><td>${esc(n.message)}</td><td><span class="status ${String(n.status).toLowerCase()}">${esc(n.status)}</span></td><td>${n.status==='Failed'?`<button onclick="retryNotification('${esc(n.id)}')">Retry</button>`:'—'}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No notifications yet.</div>'}</div>`}
-async function retryNotification(id){const r=await apiPost('retryNotification',{id,email:store.profile().email});if(!r.ok)alert(r.error);notificationHistoryPage()}
+/* ===================== ATTEMPT HISTORY (full list + compare) ===================== */
+let _historyCache=[],_compareIds=[];
+function goAttemptHistory(){requireProfile(attemptHistory);}
+async function attemptHistory(){
+  clearExam();app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="note">Loading…</p></div>`;
+  const p=store.profile(),res=API?await apiGet("history",{email:p.email}):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="note">${API?"Could not load attempt history.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="attemptHistory()">Retry</button><button onclick="goDashboard()">Back</button></div></div>`;return;}
+  _historyCache=res.data||[];_compareIds=[];
+  renderAttemptHistory();
+}
+function renderAttemptHistory(){
+  const rows=_historyCache;
+  app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="meta">Every attempt is kept — nothing is overwritten. Tick two rows to compare them.</p>
+  <div class="table-scroll"><table class="simple"><tr><th></th><th>Date</th><th>Subject</th><th>Score</th><th>%</th><th>Correct</th><th>Wrong</th><th>Unattempted</th><th>Total time</th><th>Rank</th></tr>
+  ${rows.map(h=>`<tr><td><input type="checkbox" ${_compareIds.includes(h.resultId)?"checked":""} onchange="toggleCompare('${h.resultId}',this.checked)"></td><td>${esc(formatDateTime(h.endTime||h.timestamp))}</td><td>${esc(h.subject)}</td><td>${h.score}/${h.total}</td><td>${h.percentage}%</td><td>${h.correct}</td><td>${h.wrong}</td><td>${h.unanswered}</td><td>${clock(h.totalTimeSec)}</td><td>${h.rank?`#${h.rank}${h.rankOutOf?" / "+h.rankOutOf:""}`:"—"}</td></tr>`).join("")||'<tr><td colspan="10">No attempts yet.</td></tr>'}
+  </table></div>
+  <div id="compareBox">${compareHTML()}</div>
+  <div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
+}
+function toggleCompare(id,checked){
+  if(checked){ if(!_compareIds.includes(id)){ if(_compareIds.length>=2)_compareIds.shift(); _compareIds.push(id); } }
+  else { _compareIds=_compareIds.filter(x=>x!==id); }
+  renderAttemptHistory();
+}
+function compareHTML(){
+  if(_compareIds.length!==2)return'<p class="note">Select exactly two attempts above to compare improvement.</p>';
+  const [a,b]=_compareIds.map(id=>_historyCache.find(h=>h.resultId===id)).sort((x,y)=>new Date(x.endTime||x.timestamp)-new Date(y.endTime||y.timestamp));
+  if(!a||!b)return"";
+  const diff=(x,y)=>{const d=(Number(y)-Number(x));return `${d>0?"+":""}${Math.round(d*100)/100}`;};
+  return `<div class="advice ${b.percentage>=a.percentage?"good":"weak"}"><b>Comparing:</b> ${esc(a.subject)} on ${esc(formatDateTime(a.endTime||a.timestamp))} → ${esc(b.subject)} on ${esc(formatDateTime(b.endTime||b.timestamp))}<br>
+  Score: ${a.score}/${a.total} → ${b.score}/${b.total} (${diff(a.score,b.score)}) • Percentage: ${a.percentage}% → ${b.percentage}% (${diff(a.percentage,b.percentage)}%) • Wrong: ${a.wrong} → ${b.wrong} • Unattempted: ${a.unanswered} → ${b.unanswered}</div>`;
+}
 
-function updateComparison(rows){const a=rows[Number(document.getElementById('cmpA')?.value)||0],b=rows[Number(document.getElementById('cmpB')?.value)||0],el=document.getElementById('compareOut');if(!a||!b||!el)return;el.innerHTML=`<div class="stats"><div class="stat"><b>${a.percentage}%</b>A percentage</div><div class="stat"><b>${b.percentage}%</b>B percentage</div><div class="stat"><b>${(Number(b.percentage)-Number(a.percentage)).toFixed(2)}%</b>Percentage change</div><div class="stat"><b>${Number(b.score)-Number(a.score)}</b>Marks change</div></div>`;document.getElementById('cmpA').onchange=()=>updateComparison(rows);document.getElementById('cmpB').onchange=()=>updateComparison(rows)}
-function route(){const q=new URLSearchParams(location.search);if(q.get('subject')){loadSubjects().then(()=>{const i=subjects.findIndex(s=>s.id===q.get('subject'));if(i<0)return home();profileRequired(()=>openPassword(i))});return}if(q.get('revision')==='1'){profileRequired(()=>mistakes().then(startRevisionTest));return}const page=q.get('page');if(page==='dashboard')return profileRequired(dashboard);if(page==='revision')return profileRequired(mistakes);if(page==='history')return profileRequired(historyPage);if(page==='reminders')return profileRequired(remindersPage);if(page==='notifications')return profileRequired(notificationHistoryPage);home()}
-route();setTimeout(()=>checkBackend(false),300);
+/* ===================== REMINDERS (standalone, not test-dependent) ===================== */
+const REMINDER_FREQUENCIES=[["once","One-time"],["hourly","Hourly"],["daily","Daily"],["weekly","Weekly"],["monthly","Monthly"]];
+let _remindersCache=[];
+function goReminders(){requireProfile(remindersPage);}
+async function remindersPage(){
+  clearExam();app.innerHTML=`<div class="card"><h1>Reminders</h1><p class="note">Loading…</p></div>`;
+  const p=store.profile(),res=API?await apiGet("reminders",{email:p.email}):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Reminders</h1><p class="note">${API?"Could not load reminders.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="remindersPage()">Retry</button><button onclick="home()">Back</button></div></div>`;return;}
+  _remindersCache=res.data||[];renderReminders();
+}
+function renderReminders(saveError){
+  const p=store.profile();
+  const groups={Active:[],Paused:[],Completed:[]};
+  _remindersCache.forEach(r=>{const key=r.status==="Paused"?"Paused":r.status==="Completed"?"Completed":"Active";groups[key].push(r);});
+  const row=r=>`<div class="mistake-card"><div><span class="mistake-tag ${r.status==="Active"?"tag-due":"tag-wait"}">${esc(r.status)}</span> <span class="mistake-tag">${esc(r.frequency)}</span></div>
+    <p><b>${esc(r.name)}</b></p><p>${esc(r.message)}</p>
+    ${r.relatedTask?`<p class="note">Task: ${esc(r.relatedTask)}</p>`:""}${r.relatedUrl?`<p class="note"><a href="${esc(r.relatedUrl)}" target="_blank" rel="noopener">${esc(r.relatedUrl)}</a></p>`:""}
+    <p class="meta">Next: ${r.nextRunAt?esc(formatDateTime(r.nextRunAt)):"—"}${r.lastSentAt?` • Last sent: ${esc(formatDateTime(r.lastSentAt))}`:""}</p>
+    <div class="buttons"><button onclick="openEditReminder('${r.id}')">Edit</button><button onclick="reminderToggle('${r.id}',${!r.enabled})">${r.enabled?"Pause":"Resume"}</button><button onclick="reminderDelete('${r.id}')">Delete</button></div></div>`;
+  app.innerHTML=`<div class="card"><h1>Reminders</h1><p class="meta">Registered email: <b>${esc(p.email)}</b>. Standalone reminders — not tied to any specific test.</p>
+  ${saveError?`<div class="error">${esc(saveError)}</div>`:""}
+  <div class="buttons"><button onclick="openCreateReminder()">+ New reminder</button><button onclick="notificationsPage()">Notification history</button></div>
+  <h2>Active (${groups.Active.length})</h2>${groups.Active.map(row).join("")||'<p class="note">No active reminders.</p>'}
+  <h2>Paused (${groups.Paused.length})</h2>${groups.Paused.map(row).join("")||'<p class="note">None paused.</p>'}
+  <h2>Completed (${groups.Completed.length})</h2>${groups.Completed.map(row).join("")||'<p class="note">None completed yet.</p>'}
+  <div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+}
+function reminderFormHTML(existing){
+  const r=existing||{};
+  const in1h=new Date(Date.now()+3600e3),in3h=new Date(Date.now()+3*3600e3),tomorrow=new Date(Date.now()+24*3600e3);
+  const toLocal=d=>{const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;};
+  return `<div class="card enroll-card"><h1>${existing?"Edit reminder":"New reminder"}</h1>
+  <label>Related task/name</label><input id="rName" value="${esc(r.name||"")}" placeholder="e.g. Revise Digital Electronics">
+  <label>Message</label><input id="rMessage" value="${esc(r.message||"")}" placeholder="What should the reminder say?">
+  <label>Related URL (optional)</label><input id="rUrl" value="${esc(r.relatedUrl||"")}" placeholder="https://…">
+  <label>When</label>
+  <div class="buttons" style="justify-content:flex-start">
+    <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in1h)}'">In 1 hour</button>
+    <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in3h)}'">In 3 hours</button>
+    <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(tomorrow)}'">Tomorrow</button>
+  </div>
+  <input id="rWhen" type="datetime-local" value="${r.nextRunAt?toLocal(new Date(r.nextRunAt)):""}">
+  <label>Repeat</label>
+  <select id="rFreq">${REMINDER_FREQUENCIES.map(([v,l])=>`<option value="${v}" ${((r.frequency||"once")===v)?"selected":""}>${l}</option>`).join("")}</select>
+  <div id="rErr" class="error"></div>
+  <div class="buttons"><button onclick="remindersPage()">Cancel</button><button onclick="saveReminder(${existing?`'${existing.id}'`:"null"})">${existing?"Save changes":"Create reminder"}</button></div></div>`;
+}
+function openCreateReminder(){clearExam();app.innerHTML=reminderFormHTML(null);}
+function quickRemindLater(subjectId,subjectName){requireProfile(()=>{clearExam();app.innerHTML=reminderFormHTML({name:"Finish "+subjectName,message:"You have an unfinished "+subjectName+" test waiting — come back and finish it.",relatedUrl:location.href.split("#")[0]});});}
+function openEditReminder(id){clearExam();app.innerHTML=reminderFormHTML(_remindersCache.find(r=>r.id===id));}
+async function saveReminder(id){
+  const p=store.profile();
+  const name=document.getElementById("rName").value.trim();
+  const message=document.getElementById("rMessage").value.trim();
+  const relatedUrl=document.getElementById("rUrl").value.trim();
+  const whenLocal=document.getElementById("rWhen").value;
+  const frequency=document.getElementById("rFreq").value;
+  const errEl=document.getElementById("rErr");
+  if(!name||!message){errEl.textContent="Name and message are required.";return;}
+  const when=whenLocal?new Date(whenLocal):null;
+  if(!when||isNaN(when)||when<=new Date()){errEl.textContent="Pick a valid future date/time.";return;}
+  const payload={email:p.email,userName:p.name,name,message,relatedTask:name,relatedUrl,frequency,nextRunAt:when.toISOString()};
+  const res=await apiPost(id?"updateReminder":"createReminder",id?{...payload,id}:payload);
+  if(!res?.ok){errEl.textContent=res?.error||"Could not save reminder. Check your connection and try again.";return;}
+  const fresh=API?await apiGet("reminders",{email:p.email}):null;
+  _remindersCache=fresh?.data||_remindersCache;renderReminders();
+}
+async function reminderToggle(id,enabled){
+  const p=store.profile();const res=await apiPost("toggleReminder",{email:p.email,id,enabled});
+  if(res?.ok){const fresh=await apiGet("reminders",{email:p.email});_remindersCache=fresh?.data||_remindersCache;}
+  renderReminders(res?.ok?null:(res?.error||"Could not update reminder."));
+}
+async function reminderDelete(id){
+  if(!confirm("Delete this reminder? This cannot be undone."))return;
+  const p=store.profile();const res=await apiPost("deleteReminder",{email:p.email,id});
+  if(res?.ok)_remindersCache=_remindersCache.filter(r=>r.id!==id);
+  renderReminders(res?.ok?null:(res?.error||"Could not delete reminder."));
+}
+
+/* ===================== NOTIFICATION HISTORY ===================== */
+async function notificationsPage(){
+  clearExam();app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="note">Loading…</p></div>`;
+  const p=store.profile(),res=API?await apiGet("notifications",{email:p.email}):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="note">${API?"Could not load notification history.":"Connect Apps Script first."}</p><div class="buttons"><button onclick="notificationsPage()">Retry</button><button onclick="remindersPage()">Back</button></div></div>`;return;}
+  renderNotifications(res.data||[]);
+}
+function renderNotifications(items){
+  const statusClass=s=>s==="Sent"?"tag-due":s==="Failed"?"tag-wait":"tag-wait";
+  app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="meta">Every reminder send attempt, separate from your active reminders list.</p>
+  ${items.map(n=>`<div class="mistake-card"><div><span class="mistake-tag ${statusClass(n.status)}">${esc(n.status||"Pending")}</span></div>
+    <p><b>${esc(n.name)}</b></p><p>${esc(n.message)}</p>
+    <p class="meta">Scheduled: ${esc(formatDateTime(n.scheduledAt))}${n.sentAt?` • Sent: ${esc(formatDateTime(n.sentAt))}`:""}</p>
+    ${n.status==="Failed"?`<p class="note">Reason: ${esc(n.error||"Unknown error")}</p><div class="buttons"><button onclick="retryNotificationUI('${n.id}')">Retry</button></div>`:""}
+    </div>`).join("")||'<p class="note">No notifications yet.</p>'}
+  <div class="buttons"><button onclick="remindersPage()">Reminders</button><button onclick="home()">Subjects</button></div></div>`;
+}
+async function retryNotificationUI(id){
+  const p=store.profile();const res=await apiPost("retryNotification",{email:p.email,id});
+  const fresh=API?await apiGet("notifications",{email:p.email}):null;
+  renderNotifications(fresh?.data||[]);
+  if(!res?.ok)alert(res?.error||"Retry failed. Check your connection and try again.");
+}
+
+/* ===================== MY MISTAKES + REVISION ===================== */
+async function mistakes(){
+  clearExam();app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="note">Loading…</p></div>`;const p=store.profile(),res=API?await apiGet("mistakes",{email:p.email}):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="note">${API?"Could not load mistakes.":"Connect Apps Script first."}</p><button onclick="home()">Back</button></div>`;return;}
+  store.setMistakesCache(res.data);renderMistakes(res.data);
+}
+function renderMistakes(items){
+  const now=new Date();
+  const due=items.filter(m=>dueDate(m)<=now);
+  const next=items.filter(m=>dueDate(m)>now).sort((a,b)=>dueDate(a)-dueDate(b))[0];
+  let countdown="";
+  if(next){const ms=Math.max(0,dueDate(next)-now);countdown=`<div class="countdown"><b>Next revision test:</b> ${formatCountdown(ms)}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small></div>`;}
+  app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="meta">Active mistakes: <b>${items.length}</b> • Due now: <b>${due.length}</b>. A mistake stays here until you answer it correctly.</p>${items.length?`${countdown}<div class="buttons"><button ${due.length?"":"disabled"} onclick="startRevisionTest()">Start revision test ${due.length?`(${due.length})`:"(not due yet)"}</button></div>${items.map(m=>{const isDue=dueDate(m)<=now;return `<div class="mistake-card"><div><span class="mistake-tag">${esc(m.subject)}</span> <span class="mistake-tag ${isDue?"tag-due":"tag-wait"}">${isDue?"Due now":"Due "+formatDateTime(m.revisionDueIso||m.revisionDueDate)}</span></div><p><b>${esc(m.question)}</b></p>${m.options.map((o,k)=>`<div>${"ABCD"[k]}. ${esc(o)} ${k===m.correctIndex?"<b class='correct'>(correct)</b>":""} ${k===m.selectedIndex?"<i>(last answer)</i>":""}</div>`).join("")}</div>`;}).join("")}`:'<p class="note">No active mistakes — excellent. 🎉</p>'}<div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
+  if(next)setTimeout(()=>mistakeCountdownLoop(),1000);
+}
+function formatCountdown(ms){let s=Math.ceil(ms/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60),sec=s%60;return `${d}d ${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(sec).padStart(2,"0")}s`;}
+function mistakeCountdownLoop(){const el=document.querySelector(".countdown");if(!el)return;const items=store.mistakesCache(),next=items.filter(m=>dueDate(m)>new Date()).sort((a,b)=>dueDate(a)-dueDate(b))[0];if(!next){mistakes();return;}el.innerHTML=`<b>Next revision test:</b> ${formatCountdown(dueDate(next)-new Date())}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small>`;setTimeout(mistakeCountdownLoop,1000);}
+async function startRevisionTest(){const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items).map(m=>({...m,options:shuffle((m.options||[]).map((text,index)=>({text,index})))}));revisionItems=revisionItems.map(m=>{const order=m.options.map(x=>x.index),opts=m.options.map(x=>x.text);return {...m,options:opts,correctIndex:order.indexOf(Number(m.correctIndex)),optionOrder:order};});test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60;/* 1 min/question, no extra time */examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);window.addEventListener("beforeunload",handleRevisionBeforeUnload);window.addEventListener("pagehide",handleRevisionPageHide);armBackGuard();renderRevision();}
+function sendRevisionAutoSubmit(){
+  if(isSubmitting||!revisionMode||!revisionItems.length||!API)return false;
+  const marker="ecet_revision_auto_submit_"+(revisionItems.map(x=>x.wrongId).join("|")||Date.now());
+  if(sessionStorage.getItem(marker)==="1")return true;
+  isSubmitting=true;
+  commitTime();
+  const p=store.profile();
+  const payload={action:"submitRevision",email:p.email,items:revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]})),autoSubmitted:true};
+  const body=JSON.stringify(payload);
+  let accepted=false;
+  try{if(navigator.sendBeacon)accepted=navigator.sendBeacon(API,new Blob([body],{type:"text/plain;charset=UTF-8"}));}catch(e){console.warn("Revision beacon failed",e);}
+  if(!accepted){try{fetch(API,{method:"POST",body,keepalive:true});accepted=true;}catch(e){console.warn("Revision keepalive failed",e);}}
+  if(accepted)sessionStorage.setItem(marker,"1");
+  return accepted;
+}
+function handleRevisionBeforeUnload(e){
+  if(isSubmitting||!revisionMode||!revisionItems.length)return;
+  sendRevisionAutoSubmit();
+  e.preventDefault();e.returnValue="Your revision test is still running. It will be submitted automatically.";return e.returnValue;
+}
+function handleRevisionPageHide(){if(!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
+
+function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
+function revisionChoose(v){answers[current]=v;renderRevision();}
+function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}
+async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);window.removeEventListener("beforeunload",handleRevisionBeforeUnload);window.removeEventListener("pagehide",handleRevisionPageHide);disarmBackGuard();commitTime();const p=store.profile();const items=revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]}));app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 1 day.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
+
+home();
