@@ -42,7 +42,7 @@ const SHEETS = {
     'WrongId', 'ResultId', 'Email', 'Subject', 'QuestionId', 'Year',
     'State', 'QuestionNumber', 'Question', 'OptionsJSON', 'CorrectIndex',
     'SelectedIndex', 'MistakeType', 'DateAdded', 'RevisionDueDate',
-    'Revised', 'ReminderSent', 'TestUrl'
+    'Revised', 'ReminderSent', 'TestUrl', 'ImagesJSON'
   ],
 
   Rankings: [
@@ -72,7 +72,12 @@ const SHEETS = {
   Questions: [
     'QuestionId', 'SubjectId', 'Subject', 'Year', 'State', 'QuestionNumber',
     'Question', 'OptionA', 'OptionB', 'OptionC', 'OptionD', 'CorrectAnswer',
-    'CreatedAt', 'CreatedBy'
+    'CreatedAt', 'CreatedBy', 'QuestionImage', 'OptionAImage', 'OptionBImage',
+    'OptionCImage', 'OptionDImage'
+  ],
+
+  Subjects: [
+    'SubjectId', 'Name', 'Password', 'Description', 'CreatedBy', 'CreatedAt'
   ],
 
   Notifications: [
@@ -347,6 +352,18 @@ function doGet(e) {
           data: dashboard_(e.parameter.email)
         });
 
+      case 'customSubjects':
+        return out_({
+          ok: true,
+          data: customSubjects_()
+        });
+
+      case 'profile':
+        return out_({
+          ok: true,
+          data: profile_(e.parameter.email)
+        });
+
       case 'mistakes':
       case 'revision':
         return out_({
@@ -421,8 +438,14 @@ function doPost(e) {
       case 'register':
         return out_(register_(body));
 
+      case 'deleteAccount':
+        return out_(deleteAccount_(body));
+
       case 'importQuestions':
         return out_(importQuestions_(body));
+
+      case 'createSubject':
+        return out_(createSubject_(body));
 
       case 'submitExam':
         return out_(submitExam_(body));
@@ -528,11 +551,11 @@ function register_(body) {
   for (var i = 1; i < values.length; i++) {
     if (email_(values[i][emailIndex]) === email) {
       var nameIndex = headers.indexOf('Name');
-      var timeIndex = headers.indexOf('Timestamp');
       var subjectIndex = headers.indexOf('LastSubject');
       var urlIndex = headers.indexOf('LastTestUrl');
       if (nameIndex >= 0) values[i][nameIndex] = name;
-      if (timeIndex >= 0) values[i][timeIndex] = new Date();
+      // Timestamp is left untouched here on purpose: it records account
+      // creation date and must not be overwritten on later logins.
       if (subjectIndex >= 0) values[i][subjectIndex] = body.subject || values[i][subjectIndex];
       if (urlIndex >= 0) values[i][urlIndex] = body.testUrl || values[i][urlIndex];
       sheet.getRange(i + 1, 1, 1, headers.length).setValues([values[i]]);
@@ -558,6 +581,47 @@ function register_(body) {
   };
 }
 
+// Deletes every row for an email from a sheet (bottom-up so row indices stay valid).
+function deleteRowsByEmail_(sheetName, email) {
+  var sheet = sh_(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return 0;
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0];
+  var emailIndex = headers.indexOf('Email');
+  if (emailIndex === -1) return 0;
+  var removed = 0;
+  for (var i = values.length - 1; i >= 1; i--) {
+    if (email_(values[i][emailIndex]) === email) {
+      sheet.deleteRow(i + 1);
+      removed++;
+    }
+  }
+  return removed;
+}
+
+// Permanently removes a student's account and every record tied to their
+// email (results, answers, mistakes, reminders, notifications). Requires the
+// email to be confirmed by the caller (the frontend asks for confirmation
+// before sending this request).
+function deleteAccount_(body) {
+  var email = email_(body.email);
+  if (!validEmail_(email)) {
+    return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  var sheetsToClean = [
+    'Users', 'Results', 'Answers', 'WrongAnswers', 'Rankings',
+    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications'
+  ];
+
+  var summary = {};
+  sheetsToClean.forEach(function (name) {
+    summary[name] = deleteRowsByEmail_(name, email);
+  });
+
+  return { ok: true, message: 'Account and related data deleted.', removed: summary };
+}
+
 
 
 
@@ -578,6 +642,84 @@ function isAdmin_(email) {
 
 function questionId_() {
   return 'Q-' + Utilities.getUuid().replace(/-/g, '').slice(0, 20);
+}
+
+function slugify_(text) {
+  return String(text || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40);
+}
+
+// Custom subjects created entirely from the Admin panel and stored in the
+// 'Subjects' sheet. These need no code or GitHub changes: the homepage's
+// "Practice Tests Added by Admin" section and the Add Questions dropdown
+// both read this sheet live.
+function customSubjects_() {
+  return objs_(sh_('Subjects')).map(function (row) {
+    return {
+      id: row.SubjectId,
+      name: row.Name,
+      password: row.Password,
+      description: row.Description || '',
+      createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : ''
+    };
+  });
+}
+
+function createSubject_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+
+  var name = String(body.name || '').trim();
+  var password = String(body.password || '').trim();
+  var description = String(body.description || '').trim();
+
+  if (!name) {
+    return { ok: false, error: 'Subject name is required.' };
+  }
+  if (!password) {
+    return { ok: false, error: 'A password for this subject is required.' };
+  }
+
+  var sheet = sh_('Subjects');
+  var existing = objs_(sheet);
+
+  var nameLower = name.toLowerCase();
+  var duplicate = existing.some(function (row) {
+    return String(row.Name || '').trim().toLowerCase() === nameLower;
+  });
+  if (duplicate) {
+    return { ok: false, error: 'A subject with this name already exists.' };
+  }
+
+  var base = slugify_(name) || 'subject';
+  var id = base;
+  var existingIds = {};
+  existing.forEach(function (row) { existingIds[String(row.SubjectId || '')] = true; });
+  var suffix = 1;
+  while (existingIds[id]) {
+    suffix++;
+    id = base + '-' + suffix;
+  }
+
+  append_(sheet, SHEETS.Subjects, {
+    SubjectId: id,
+    Name: name,
+    Password: password,
+    Description: description,
+    CreatedBy: adminEmail,
+    CreatedAt: new Date()
+  });
+
+  return {
+    ok: true,
+    subject: { id: id, name: name, password: password, description: description }
+  };
 }
 
 function importQuestions_(body) {
@@ -670,7 +812,12 @@ function importQuestions_(body) {
       OptionD: options[3],
       CorrectAnswer: correct,
       CreatedAt: new Date(),
-      CreatedBy: adminEmail
+      CreatedBy: adminEmail,
+      QuestionImage: String(row.questionImage || '').trim(),
+      OptionAImage: String(row.optionAImage || '').trim(),
+      OptionBImage: String(row.optionBImage || '').trim(),
+      OptionCImage: String(row.optionCImage || '').trim(),
+      OptionDImage: String(row.optionDImage || '').trim()
     });
   });
 
@@ -702,7 +849,9 @@ function questions_(subjectId) {
       questionNumber: String(row.QuestionNumber || ''),
       question: String(row.Question || ''),
       options: [row.OptionA, row.OptionB, row.OptionC, row.OptionD].map(String),
-      answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase()))
+      answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase())),
+      image: String(row.QuestionImage || ''),
+      optionImages: [row.OptionAImage, row.OptionBImage, row.OptionCImage, row.OptionDImage].map(function(v){return String(v||'');})
     };
   });
 }
@@ -989,6 +1138,7 @@ function submitExam_(body) {
         QuestionNumber: question.questionNumber,
         Question: question.question || '',
         OptionsJSON: JSON.stringify(question.options || []),
+        ImagesJSON: JSON.stringify({image: question.image || '', optionImages: question.optionImages || []}),
         CorrectIndex: question.correct,
         SelectedIndex: answered ? question.selected : '',
         MistakeType: answered ? 'wrong' : 'unattempted',
@@ -1366,6 +1516,32 @@ function dashboard_(email) {
   };
 }
 
+function profile_(email) {
+  email = email_(email);
+
+  var d = dashboard_(email);
+
+  var userRow = objs_(sh_('Users')).filter(function (row) {
+    return email_(row.Email) === email;
+  })[0];
+
+  var reminderCount = objs_(sh_('Reminders')).filter(function (row) {
+    return email_(row.Email) === email;
+  }).length;
+
+  return {
+    name: userRow ? userRow.Name : '',
+    email: email,
+    createdAt: userRow && userRow.Timestamp ? toDate_(userRow.Timestamp).toISOString() : '',
+    attempts: d.attempts,
+    avg: d.avg,
+    best: d.best,
+    mistakes: d.mistakes,
+    reminders: reminderCount,
+    subjects: d.subjects
+  };
+}
+
 function mistakes_(email) {
   email = email_(email);
 
@@ -1387,6 +1563,13 @@ function mistakes_(email) {
         options = [];
       }
 
+      var images = {};
+      try {
+        images = JSON.parse(row.ImagesJSON || '{}');
+      } catch (ignore) {
+        images = {};
+      }
+
       return {
         wrongId: row.WrongId,
         resultId: row.ResultId,
@@ -1397,6 +1580,8 @@ function mistakes_(email) {
         questionNumber: row.QuestionNumber,
         question: row.Question,
         options: options,
+        image: images.image || '',
+        optionImages: images.optionImages || [],
         correctIndex: row.CorrectIndex,
         selectedIndex: row.SelectedIndex,
         mistakeType:
