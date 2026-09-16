@@ -4,9 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ECET Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="loadBar"><div id="loadBarFill"></div></div>
+<button id="backFab" onclick="goBack()" title="Back" aria-label="Back">←</button>
 <main class="wrap"><div id="app"></div></main>
 <button id="homeFab" onclick="safeGoHome()" title="Home" aria-label="Home">🏠</button>
 <script src="config.js"></script>

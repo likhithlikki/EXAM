@@ -24,30 +24,72 @@ const store = {
   dashboardCache:()=>JSON.parse(localStorage.getItem("ecet_dashboard_cache")||"null"),
   setDashboardCache:d=>localStorage.setItem("ecet_dashboard_cache",JSON.stringify(d)),
   remindersCache:()=>JSON.parse(localStorage.getItem("ecet_reminders_cache")||"[]"),
-  setRemindersCache:a=>localStorage.setItem("ecet_reminders_cache",JSON.stringify(a))
+  setRemindersCache:a=>localStorage.setItem("ecet_reminders_cache",JSON.stringify(a)),
+  customSubjectsCache:()=>JSON.parse(localStorage.getItem("ecet_customsubjects_cache")||"[]"),
+  setCustomSubjectsCache:a=>localStorage.setItem("ecet_customsubjects_cache",JSON.stringify(a)),
+  profileDataCache:()=>JSON.parse(localStorage.getItem("ecet_profiledata_cache")||"null"),
+  setProfileDataCache:d=>localStorage.setItem("ecet_profiledata_cache",JSON.stringify(d))
 };
 
-async function apiGet(action,params={},timeoutMs=12000){
+/* ===================== GLOBAL LOADING INDICATOR ===================== */
+let _loadingCount=0;
+function loadingShow(){
+  _loadingCount++;
+  const bar=document.getElementById("loadBar");
+  if(bar)bar.classList.add("active");
+}
+function loadingHide(){
+  _loadingCount=Math.max(0,_loadingCount-1);
+  if(_loadingCount===0){
+    const bar=document.getElementById("loadBar");
+    if(bar)bar.classList.remove("active");
+  }
+}
+
+async function apiGet(action,params={},timeoutMs=9000){
   if(!API)return null;
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  loadingShow();
   try{
     const r=await fetch(API+"?"+new URLSearchParams({action,...params}),{method:"GET",cache:"no-store",signal:controller.signal});
     if(!r.ok) throw new Error("HTTP "+r.status);
     return await r.json();
   }catch(e){console.warn("GET "+action+" failed:",e);return null;}
-  finally{clearTimeout(timer);}
+  finally{clearTimeout(timer);loadingHide();}
 }
 async function apiPost(action,payload={},timeoutMs=15000){
   if(!API)return null;
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  loadingShow();
   try{
     const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload}),cache:"no-store",signal:controller.signal});
     if(!r.ok) throw new Error("HTTP "+r.status);
     return await r.json();
   }catch(e){console.warn("POST "+action+" failed:",e);return null;}
-  finally{clearTimeout(timer);}
+  finally{clearTimeout(timer);loadingHide();}
+}
+
+/* ===================== BACK NAVIGATION STACK =====================
+   Every top-level "page" function pushes itself here as it renders. The
+   top-left Back button pops the current page, then re-renders whatever
+   came before it (which pushes itself again). During an active exam or
+   revision test it defers to the same leave-confirmation used by Home. */
+let navStack=[];
+function pushNav(fn){
+  if(navStack[navStack.length-1]!==fn)navStack.push(fn);
+  if(navStack.length>40)navStack.shift();
+  const btn=document.getElementById("backFab");
+  if(btn)btn.style.display=navStack.length>1?"flex":"none";
+}
+function goBack(){
+  const inExam=activeSubject&&test.length&&!isSubmitting&&left>0&&!revisionMode;
+  const inRevision=revisionMode&&revisionItems.length&&!isSubmitting;
+  if(inExam||inRevision){safeGoHome();return;}
+  navStack.pop();
+  const prev=navStack.pop();
+  (prev||home)();
 }
 
 let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
@@ -55,6 +97,8 @@ let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubjec
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
 let _afterProfile=null;
+let isAdminUnlocked=false;
+const ADMIN_PANEL_PASSWORD="123";
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
 function clearExam(){
@@ -165,21 +209,41 @@ function handlePageHide(){
 }
 
 /* ===================== HOME ===================== */
+function customSubjectsHTML(){
+  return customSubjects.length?customSubjects.map((s,i)=>{const unfinished=store.getProgress(s.id);return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):(unfinished?"Test in progress — resume any time":"Questions available")}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
+}
 async function home(){
+  pushNav(home);
   clearExam(); revisionMode=false;
-  if(!subjects.length) subjects=await fetch("subjects.json").then(r=>r.json());
-  if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data))customSubjects=cs.data;}catch(e){console.warn("Custom subjects load failed",e);}}
+  // Render instantly from whatever we already know (static subject list + last cached
+  // custom subjects) instead of waiting on the network — the network refresh below then
+  // patches the page in place, so clicking Home never looks stuck or "broken".
+  if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
+  customSubjects=store.customSubjectsCache();
   const p=store.profile();
   app.innerHTML=`<div class="home"><h1>ECET Online Test</h1><p class="subtitle">Choose a subject. Each test gets exactly 1 minute per question — no extra time.</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"></span>${p?`<button onclick="goProfile()">${esc(p.name)}</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">${esc(p.name)}</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
     <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.available?(unfinished?"Test in progress — resume any time":"Questions available"):"Question bank coming soon"}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin</h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
-    <div class="subject-grid">${customSubjects.length?customSubjects.map((s,i)=>{const unfinished=store.getProgress(s.id);return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):(unfinished?"Test in progress — resume any time":"Questions available")}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>'}</div>
+    <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
   </div>`;
   checkServerStatus();
   checkAdminAccess();
   handleRevisionLink();
+  refreshCustomSubjects();
+}
+async function refreshCustomSubjects(){
+  if(!API)return;
+  try{
+    const cs=await apiGet("customSubjects",{},7000);
+    if(cs?.ok&&Array.isArray(cs.data)){
+      customSubjects=cs.data;
+      store.setCustomSubjectsCache(cs.data);
+      const grid=document.getElementById("customSubjectGrid");
+      if(grid)grid.innerHTML=customSubjectsHTML();
+    }
+  }catch(e){console.warn("Custom subjects load failed",e);}
 }
 async function checkServerStatus(){
   const el=document.getElementById('serverStatus');
@@ -208,20 +272,31 @@ async function checkAdminAccess(){
   const res=await apiGet('isAdmin',{email:p.email},5000);
   if(res?.ok&&res.isAdmin) slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
 }
-function editProfile(){const p=store.profile()||{name:"",email:""};app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}"><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
+function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",email:""};app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}"><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
 function saveProfileEdit(){const n=document.getElementById("pname").value.trim(),e=document.getElementById("pemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("pErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});home();}
 function goProfile(){requireProfile(renderProfile);}
-async function renderProfile(){
-  clearExam();app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">Loading…</p></div>`;
-  const p=store.profile(),res=API?await apiGet("profile",{email:p.email}):null;
-  if(!res?.ok){app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">${API?"Could not load profile.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="goProfile()">Retry</button><button onclick="home()">Back</button></div></div>`;return;}
-  const d=res.data;
-  app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="meta">${esc(d.name)} • ${esc(d.email)}</p><p class="note">Member since ${d.createdAt?esc(formatDateTime(d.createdAt)):"—"}</p>
+function renderProfileBody(d,connecting){
+  app.innerHTML=`<div class="card"><h1>My Profile</h1>${connecting?connBannerHTML():""}<p class="meta">${esc(d.name)} • ${esc(d.email)}</p><p class="note">Member since ${d.createdAt?esc(formatDateTime(d.createdAt)):"—"}</p>
     <div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Exams attended</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average marks</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best marks</span></div><div class="dash-tile"><b>${d.attempts}</b><span>Total attempts</span></div></div>
     <div class="dash-grid"><div class="dash-tile"><b>${d.mistakes}</b><span>Mistakes count</span></div><div class="dash-tile"><b>${d.reminders}</b><span>Reminders count</span></div></div>
     <h2>Subject-wise attempts &amp; performance</h2>${d.subjects?.length?d.subjects.map(s=>`<div class="subjbar-row"><div class="subjbar-label">${esc(s.subject)} (${s.attempts})</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,s.avg)}%"></div></div><div>${s.best}%</div></div>`).join(""):'<p class="note">No attempts yet.</p>'}
     <p class="note">See Dashboard for recent activity and test frequency.</p>
     <div class="buttons"><button onclick="editProfile()">Edit Profile</button><button onclick="goDashboard()">Dashboard</button><button onclick="logoutUser()">Logout</button><button onclick="deleteAccountPrompt()">Delete Account</button><button onclick="home()">Home</button></div></div>`;
+}
+async function renderProfile(){
+  pushNav(renderProfile);
+  clearExam();
+  const p=store.profile(),cached=store.profileDataCache();
+  // Paint instantly with the last known profile stats (if any) instead of a bare
+  // "Loading…" card, then quietly refresh from the server.
+  if(cached&&cached.email===p.email){renderProfileBody(cached,true);}else{app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">Loading…</p></div>`;}
+  const res=API?await apiGet("profile",{email:p.email}):null;
+  if(!res?.ok){
+    if(cached&&cached.email===p.email){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="renderProfile()">Retry</button>`;return;}
+    app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">${API?"Could not load profile.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="goProfile()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
+  }
+  const d=res.data;store.setProfileDataCache(d);
+  renderProfileBody(d,false);
 }
 function logoutUser(){
   if(!confirm("Log out? You'll need to re-enter your name and email next time."))return;
@@ -247,14 +322,15 @@ function adminSubjectOptions(){
   return `${staticOpts?`<optgroup label="Existing Subjects">${staticOpts}</optgroup>`:""}${customOpts?`<optgroup label="Custom Subjects">${customOpts}</optgroup>`:'<optgroup label="Custom Subjects"><option disabled>None yet — create one above</option></optgroup>'}`;
 }
 async function adminQuestionsPage(){
+  pushNav(adminQuestionsPage);
   requireProfile(async ()=>{
     const p=store.profile();
     const access=API?await apiGet('isAdmin',{email:p.email},5000):null;
-    if(!access?.ok||!access.isAdmin){
-      app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
+    if(!isAdminUnlocked&&(!access?.ok||!access.isAdmin)){
+      app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Use the Admin button on the homepage and enter the admin password.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
       return;
     }
-    if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data))customSubjects=cs.data;}catch(e){console.warn("Custom subjects load failed",e);}}
+    if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data)){customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);}}catch(e){console.warn("Custom subjects load failed",e);}}
     const curYear=new Date().getFullYear();
     app.innerHTML=`<div class="card"><h1>Admin — Create New Subject</h1>
       <p class="note">Create a brand-new practice test subject with no code or GitHub changes. It appears immediately in "Practice Tests Added by Admin" on the homepage, and below in the Subject dropdown so you can bulk-import its questions.</p>
@@ -265,8 +341,11 @@ async function adminQuestionsPage(){
       <div class="buttons"><button onclick="createNewSubject()">Create Subject</button></div>
     </div>
     <div class="card"><h1>Admin — Add Questions</h1>
-      <p class="note">Select the subject and exam year, upload an Excel file, preview the rows, validate them, then import them into the selected subject.</p>
-      <label>Subject</label><select id="adminSubject">${adminSubjectOptions()}</select>
+      <p class="note">Select an existing subject to add its questions, or pick "Create New Subject" to make a brand-new one above first.</p>
+      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}">
+        ${adminSubjectOptions()}
+        <option value="__new__">➕ Create New Subject…</option>
+      </select>
       <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026">
       <p class="note">Used for any row whose Year column is left blank in the Excel file.</p>
       <label>Excel file</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
@@ -315,13 +394,30 @@ async function importPreviewedQuestions(){
   const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
 }
 
+/* ===================== ADMIN PASSWORD UNLOCK =====================
+   The Admin button is always visible on the homepage. Entering the admin
+   password unlocks the admin panel on this device even if the server-side
+   isAdmin check (which needs a working backend + a registered admin email)
+   is slow or unreachable. */
+function openAdminPassword(){
+  clearExam();pushNav(openAdminPassword);
+  app.innerHTML=`<div class="card password-card"><h1>Admin Access</h1><p>Enter the admin password to manage subjects and questions.</p><input id="adminPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPassword()"><div id="adminPassErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkAdminPassword()">Continue</button></div></div>`;
+  document.getElementById("adminPass").focus();
+}
+function checkAdminPassword(){
+  const v=document.getElementById("adminPass").value;
+  if(v!==ADMIN_PANEL_PASSWORD){document.getElementById("adminPassErr").textContent="Incorrect password.";return;}
+  isAdminUnlocked=true;
+  adminQuestionsPage();
+}
+
 /* ===================== PASSWORD ===================== */
 let _pwSubject=null;
 function openPassword(i){_pwSubject=subjects[i];renderPasswordCard();}
 function openCustomPassword(i){_pwSubject=customSubjects[i];renderPasswordCard();}
-function renderPasswordCard(){const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
+function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
 async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}bank=[];if(s.file){try{bank=await fetch(s.file).then(r=>r.json());}catch(e){bank=[];}}try{const imported=API?await apiGet('questions',{subjectId:s.id}):null;if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);}catch(e){console.warn('Imported question load failed',e);}if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
-function enroll(){const p=store.profile();if(p){app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Continue as <b>${esc(p.name)}</b> (${esc(p.email)})?</p><div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="beginExam()">Start Exam</button></div></div>`;return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Start Exam</button></div></div>`;}
+function enroll(){pushNav(enroll);const p=store.profile();if(p){app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Continue as <b>${esc(p.name)}</b> (${esc(p.email)})?</p><div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="beginExam()">Start Exam</button></div></div>`;return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Start Exam</button></div></div>`;}
 function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});beginExam();}
 async function beginExam(){const p=store.profile();apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});start();}
 
@@ -397,7 +493,7 @@ function reviewListHTML(detail,filter){return detail.map((d,n)=>{const iw=d.sele
 
 /* ===================== PROFILE / DASHBOARD ===================== */
 function goDashboard(){requireProfile(dashboard);} function goMistakes(){requireProfile(mistakes);}
-function requireProfile(next){if(store.profile())return next();_afterProfile=next;app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label>Name</label><input id="ename"><label>Email</label><input id="eemail" type="email"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
+function requireProfile(next){if(store.profile())return next();_afterProfile=next;pushNav(()=>requireProfile(next));app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label>Name</label><input id="ename"><label>Email</label><input id="eemail" type="email"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
 function submitProfileAndContinue(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});const next=_afterProfile;_afterProfile=null;if(next)next();}
 function renderDashboardBody(d,p,connecting){
   app.innerHTML=`<div class="card"><h1>My Dashboard</h1>${connecting?connBannerHTML():""}<p class="meta">${esc(p.name)} • ${esc(p.email)}</p><div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Tests taken</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average %</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best %</span></div><div class="dash-tile"><b>${d.mistakes}</b><span>Active mistakes</span></div></div>
@@ -408,6 +504,7 @@ function renderDashboardBody(d,p,connecting){
     <div class="buttons"><button onclick="goMistakes()">My Mistakes</button><button onclick="goAttemptHistory()">Attempt History</button><button onclick="home()">Subjects</button></div></div>`;
 }
 async function dashboard(){
+  pushNav(dashboard);
   clearExam();const p=store.profile(),cached=store.dashboardCache();
   if(cached){renderDashboardBody(cached,p,true);}else{app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">Loading…</p></div>`;}
   const res=API?await apiGet("dashboard",{email:p.email}):null;
@@ -438,6 +535,7 @@ async function dashboard(){
 let _historyCache=[],_compareIds=[];
 function goAttemptHistory(){requireProfile(attemptHistory);}
 async function attemptHistory(){
+  pushNav(attemptHistory);
   clearExam();app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="note">Loading…</p></div>`;
   const p=store.profile(),res=API?await apiGet("history",{email:p.email}):null;
   if(!res?.ok){app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="note">${API?"Could not load attempt history.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="attemptHistory()">Retry</button><button onclick="goDashboard()">Back</button></div></div>`;return;}
@@ -472,6 +570,7 @@ const REMINDER_FREQUENCIES=[["once","One-time"],["hourly","Hourly"],["daily","Da
 let _remindersCache=[];
 function goReminders(){requireProfile(remindersPage);}
 async function remindersPage(){
+  pushNav(remindersPage);
   clearExam();const cached=store.remindersCache();
   if(cached&&cached.length){_remindersCache=cached;renderReminders(null,true);}else{app.innerHTML=`<div class="card"><h1>Reminders</h1><p class="note">Loading…</p></div>`;}
   const p=store.profile(),res=API?await apiGet("reminders",{email:p.email}):null;
@@ -518,9 +617,9 @@ function reminderFormHTML(existing){
   <div id="rErr" class="error"></div>
   <div class="buttons"><button onclick="remindersPage()">Cancel</button><button onclick="saveReminder(${existing?`'${existing.id}'`:"null"})">${existing?"Save changes":"Create reminder"}</button></div></div>`;
 }
-function openCreateReminder(){clearExam();app.innerHTML=reminderFormHTML(null);}
+function openCreateReminder(){pushNav(openCreateReminder);clearExam();app.innerHTML=reminderFormHTML(null);}
 function quickRemindLater(subjectId,subjectName){requireProfile(()=>{clearExam();app.innerHTML=reminderFormHTML({name:"Finish "+subjectName,message:"You have an unfinished "+subjectName+" test waiting — come back and finish it.",relatedUrl:location.href.split("#")[0]});});}
-function openEditReminder(id){clearExam();app.innerHTML=reminderFormHTML(_remindersCache.find(r=>r.id===id));}
+function openEditReminder(id){pushNav(()=>openEditReminder(id));clearExam();app.innerHTML=reminderFormHTML(_remindersCache.find(r=>r.id===id));}
 async function saveReminder(id){
   const p=store.profile();
   const name=document.getElementById("rName").value.trim();
@@ -552,6 +651,7 @@ async function reminderDelete(id){
 
 /* ===================== NOTIFICATION HISTORY ===================== */
 async function notificationsPage(){
+  pushNav(notificationsPage);
   clearExam();app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="note">Loading…</p></div>`;
   const p=store.profile(),res=API?await apiGet("notifications",{email:p.email}):null;
   if(!res?.ok){app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="note">${API?"Could not load notification history.":"Connect Apps Script first."}</p><div class="buttons"><button onclick="notificationsPage()">Retry</button><button onclick="remindersPage()">Back</button></div></div>`;return;}
@@ -576,6 +676,7 @@ async function retryNotificationUI(id){
 
 /* ===================== MY MISTAKES + REVISION ===================== */
 async function mistakes(){
+  pushNav(mistakes);
   clearExam();const cached=store.mistakesCache();
   if(cached&&cached.length){renderMistakes(cached,true);}else{app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="note">Loading…</p></div>`;}
   const p=store.profile(),res=API?await apiGet("mistakes",{email:p.email}):null;
