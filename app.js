@@ -21,8 +21,28 @@ const store = {
   setMistakesCache:a=>localStorage.setItem("ecet_mistakes_cache",JSON.stringify(a))
 };
 
-async function apiGet(action,params={}){ if(!API)return null; try{const r=await fetch(API+"?"+new URLSearchParams({action,...params}));return await r.json();}catch(e){console.warn(e);return null;} }
-async function apiPost(action,payload={}){ if(!API)return null; try{const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload})});return await r.json();}catch(e){console.warn(e);return null;} }
+async function apiGet(action,params={},timeoutMs=12000){
+  if(!API)return null;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const r=await fetch(API+"?"+new URLSearchParams({action,...params}),{method:"GET",cache:"no-store",signal:controller.signal});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return await r.json();
+  }catch(e){console.warn("GET "+action+" failed:",e);return null;}
+  finally{clearTimeout(timer);}
+}
+async function apiPost(action,payload={},timeoutMs=15000){
+  if(!API)return null;
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload}),cache:"no-store",signal:controller.signal});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return await r.json();
+  }catch(e){console.warn("POST "+action+" failed:",e);return null;}
+  finally{clearTimeout(timer);}
+}
 
 let subjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
 let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
@@ -94,7 +114,7 @@ function submissionPayload(compact=false){
   const wrong=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)!==Number(d.correct)).length;
   const unanswered=detail.filter(d=>d.selected===null||d.selected===undefined).length;
   const percentage=test.length?Math.round(score/test.length*1000)/10:0;
-  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),detail,examSessionId,autoSubmitted:!!compact};
+  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),startTime:new Date(examStartedAt).toISOString(),testUrl:(window.APP_CONFIG&&window.APP_CONFIG.SITE_URL)||location.href.split("#")[0],detail,examSessionId,autoSubmitted:!!compact};
 }
 function sendAutoSubmit(){
   if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0||!API)return false;
@@ -133,16 +153,88 @@ async function home(){
   if(!subjects.length) subjects=await fetch("subjects.json").then(r=>r.json());
   const p=store.profile();
   app.innerHTML=`<div class="home"><h1>ECET Online Test</h1><p class="subtitle">Choose a subject. Each test gets exactly 1 minute per question — no extra time.</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Reminders</button>${p?`<button onclick="editProfile()">${esc(p.name)}</button>`:""}</div>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"></span>${p?`<button onclick="editProfile()">${esc(p.name)}</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
     <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.available?(unfinished?"Test in progress — resume any time":"Questions available"):"Question bank coming soon"}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
   </div>`;
+  checkServerStatus();
+  checkAdminAccess();
+  handleRevisionLink();
+}
+async function checkServerStatus(){
+  const el=document.getElementById('serverStatus');
+  if(!el)return;
+  el.className='server-status checking';
+  el.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';
+  if(!API){el.className='server-status offline';el.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';return;}
+  const res=await apiGet('ping',{},5000);
+  if(res?.ok){el.className='server-status online';el.innerHTML='<span class="server-dot"></span><span>Server online</span>';}
+  else{el.className='server-status offline';el.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
+}
+function handleRevisionLink(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('revision')!=='1')return;
+  history.replaceState({},'',location.pathname+location.hash);
+  requireProfile(async ()=>{
+    await mistakes();
+    const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);
+    if(items.length)startRevisionTest();
+  });
+}
+async function checkAdminAccess(){
+  const slot=document.getElementById('adminNavSlot');
+  const p=store.profile();
+  if(!slot||!p||!API)return;
+  const res=await apiGet('isAdmin',{email:p.email},5000);
+  if(res?.ok&&res.isAdmin) slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
 }
 function editProfile(){const p=store.profile()||{name:"",email:""};app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}"><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
 function saveProfileEdit(){const n=document.getElementById("pname").value.trim(),e=document.getElementById("pemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("pErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});home();}
 
+/* ===================== ADMIN QUESTION IMPORT ===================== */
+async function adminQuestionsPage(){
+  requireProfile(async ()=>{
+    const p=store.profile();
+    const access=API?await apiGet('isAdmin',{email:p.email},5000):null;
+    if(!access?.ok||!access.isAdmin){
+      app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
+      return;
+    }
+    app.innerHTML=`<div class="card"><h1>Admin — Add Questions</h1>
+      <p class="note">Upload an Excel file, preview the rows, validate them, then import them into the selected subject.</p>
+      <label>Subject</label><select id="adminSubject">${subjects.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("")}</select>
+      <label>Excel file</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
+      <div class="buttons"><button onclick="downloadQuestionTemplate()">Download Excel Template</button><button onclick="home()">Back</button></div>
+      <div id="importStatus" class="note"></div><div id="importPreview"></div>
+      <div class="buttons"><button id="importQuestionsBtn" onclick="importPreviewedQuestions()" disabled>Import Questions</button></div>
+    </div>`;
+  });
+}
+let _questionImportRows=[];
+function downloadQuestionTemplate(){
+  if(!window.XLSX){alert("Excel tools are still loading. Please try again.");return;}
+  const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101']];
+  const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
+}
+function normalizeQuestionRow(r){
+  const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
+  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),year:String(get('Year','year')||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim()};
+}
+function validateImportRows(rows){
+  const errs=[],seen=new Set();
+  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
+}
+function previewQuestionFile(ev){
+  const file=ev.target.files?.[0];if(!file)return;
+  if(!window.XLSX){document.getElementById('importStatus').textContent='Excel tools are still loading. Please try again.';return;}
+  const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''});_questionImportRows=raw.map(normalizeQuestionRow);const errors=validateImportRows(_questionImportRows);const preview=_questionImportRows.slice(0,20);document.getElementById('importStatus').innerHTML=`<b>${_questionImportRows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}`;document.getElementById('importPreview').innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Year</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.year)}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;document.getElementById('importQuestionsBtn').disabled=errors.length>0||!_questionImportRows.length;}catch(err){_questionImportRows=[];document.getElementById('importQuestionsBtn').disabled=true;document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';console.warn(err);}};reader.readAsArrayBuffer(file);
+}
+async function importPreviewedQuestions(){
+  const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
+}
+
 /* ===================== PASSWORD ===================== */
 function openPassword(i){const s=subjects[i];app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword(${i})"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword(${i})">Continue</button></div></div>`;document.getElementById("password").focus();}
-async function checkPassword(i){const s=subjects[i],v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}try{bank=await fetch(s.file).then(r=>r.json());}catch(e){bank=[];}if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
+async function checkPassword(i){const s=subjects[i],v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}try{bank=await fetch(s.file).then(r=>r.json());}catch(e){bank=[];}try{const imported=API?await apiGet('questions',{subjectId:s.id}):null;if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);}catch(e){console.warn('Imported question load failed',e);}if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
 function enroll(){const p=store.profile();if(p){app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Continue as <b>${esc(p.name)}</b> (${esc(p.email)})?</p><div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="beginExam()">Start Exam</button></div></div>`;return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Start Exam</button></div></div>`;}
 function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});beginExam();}
 async function beginExam(){const p=store.profile();apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});start();}
@@ -225,10 +317,10 @@ async function dashboard(){
   clearExam();app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">Loading…</p></div>`;const p=store.profile(),res=API?await apiGet("dashboard",{email:p.email}):null;
   if(!res?.ok){app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">${API?"Could not load dashboard.":"Connect Apps Script in config.js first."}</p><button onclick="home()">Back</button></div>`;return;}
   const d=res.data;
-  app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="meta">${esc(p.name)} • ${esc(p.email)}</p><div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Tests taken</span></div><div class="dash-tile"><b>${d.avgPercentage}%</b><span>Average %</span></div><div class="dash-tile"><b>${d.bestPercentage}%</b><span>Best %</span></div><div class="dash-tile"><b>${d.weakCount}</b><span>Active mistakes</span></div></div>
-    ${d.strongest?`<div class="advice good"><b>Strongest subject:</b> ${esc(d.strongest.subject)} — ${d.strongest.avgPercentage}% average.</div>`:""}${d.weakest?`<div class="advice weak"><b>Needs more practice:</b> ${esc(d.weakest.subject)} — ${d.weakest.avgPercentage}% average.</div>`:""}
-    <h2>Subject-wise performance</h2>${d.subjectPerformance.map(s=>`<div class="subjbar-row"><div class="subjbar-label">${esc(s.subject)}</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,s.avgPercentage)}%"></div></div><div>${s.avgPercentage}%</div></div>`).join("")||'<p class="note">No attempts yet.</p>'}
-    <h2>Test history</h2><div class="table-scroll"><table class="simple"><tr><th>Date</th><th>Subject</th><th>Score</th><th>%</th><th>Equivalent /200</th><th>Expected AP Rank</th><th>Current Practice Rank</th></tr>${d.history.map(h=>`<tr><td>${esc(h.date)}</td><td>${esc(h.subject)}</td><td>${h.score}/${h.total}</td><td>${h.percentage}%</td><td>${h.equivalentMarks}</td><td>${esc(h.expectedRank)}</td><td>${h.currentRank?`#${h.currentRank} / ${h.currentRankOutOf}`:"—"}</td></tr>`).join("")||'<tr><td colspan="7">No attempts yet.</td></tr>'}</table></div>
+  app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="meta">${esc(p.name)} • ${esc(p.email)}</p><div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Tests taken</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average %</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best %</span></div><div class="dash-tile"><b>${d.mistakes}</b><span>Active mistakes</span></div></div>
+    ${d.subjects?.length?`<div class="advice"><b>Subject performance</b> is shown below.</div>`:""}
+    <h2>Subject-wise performance</h2>${d.subjects.map(s=>`<div class="subjbar-row"><div class="subjbar-label">${esc(s.subject)}</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,s.avgPercentage)}%"></div></div><div>${s.best}%</div></div>`).join("")||'<p class="note">No attempts yet.</p>'}
+    <h2>Recent activity</h2><p class="note">Your complete attempt history is available in Attempt History.</p>
     <div class="buttons"><button onclick="goMistakes()">My Mistakes</button><button onclick="goAttemptHistory()">Attempt History</button><button onclick="home()">Subjects</button></div></div>`;
 }
 

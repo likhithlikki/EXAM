@@ -69,6 +69,12 @@ const SHEETS = {
     'CreatedAt', 'UpdatedAt', 'LastSentAt'
   ],
 
+  Questions: [
+    'QuestionId', 'SubjectId', 'Subject', 'Year', 'State', 'QuestionNumber',
+    'Question', 'OptionA', 'OptionB', 'OptionC', 'OptionD', 'CorrectAnswer',
+    'CreatedAt', 'CreatedBy'
+  ],
+
   Notifications: [
     'NotificationId', 'ReminderId', 'Email', 'UserName', 'Name',
     'Message', 'RelatedTask', 'RelatedUrl', 'ScheduledAt', 'SentAt',
@@ -361,6 +367,18 @@ function doGet(e) {
           data: reminders_(e.parameter.email)
         });
 
+      case 'questions':
+        return out_({
+          ok: true,
+          data: questions_(e.parameter.subjectId)
+        });
+
+      case 'isAdmin':
+        return out_({
+          ok: true,
+          isAdmin: isAdmin_(e.parameter.email)
+        });
+
       case 'notifications':
       case 'notificationHistory':
         return out_({
@@ -402,6 +420,9 @@ function doPost(e) {
     switch (action) {
       case 'register':
         return out_(register_(body));
+
+      case 'importQuestions':
+        return out_(importQuestions_(body));
 
       case 'submitExam':
         return out_(submitExam_(body));
@@ -498,24 +519,193 @@ function register_(body) {
     };
   }
 
-  append_(
-    sh_('Users'),
-    SHEETS.Users,
-    {
+  var sheet = sh_('Users');
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0] || SHEETS.Users;
+  var emailIndex = headers.indexOf('Email');
+  var found = false;
+
+  for (var i = 1; i < values.length; i++) {
+    if (email_(values[i][emailIndex]) === email) {
+      var nameIndex = headers.indexOf('Name');
+      var timeIndex = headers.indexOf('Timestamp');
+      var subjectIndex = headers.indexOf('LastSubject');
+      var urlIndex = headers.indexOf('LastTestUrl');
+      if (nameIndex >= 0) values[i][nameIndex] = name;
+      if (timeIndex >= 0) values[i][timeIndex] = new Date();
+      if (subjectIndex >= 0) values[i][subjectIndex] = body.subject || values[i][subjectIndex];
+      if (urlIndex >= 0) values[i][urlIndex] = body.testUrl || values[i][urlIndex];
+      sheet.getRange(i + 1, 1, 1, headers.length).setValues([values[i]]);
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    append_(sheet, SHEETS.Users, {
       Timestamp: new Date(),
       Name: name,
       Email: email,
       LastSubject: body.subject || '',
       LastTestUrl: body.testUrl || ''
-    }
-  );
+    });
+  }
 
   return {
     ok: true,
-    message: 'User saved.'
+    existing: found,
+    message: found ? 'User updated.' : 'User saved.'
   };
 }
 
+
+
+
+// ============================================================
+// 5A. QUESTION BANK IMPORT / ADMIN
+// ============================================================
+
+// Set one or more administrator emails before using the import tool.
+// Keep this list private in Apps Script.
+const ADMIN_EMAILS = [
+  'admin@example.com'
+];
+
+function isAdmin_(email) {
+  var normalized = email_(email);
+  return validEmail_(normalized) && ADMIN_EMAILS.indexOf(normalized) !== -1 && normalized !== 'admin@example.com';
+}
+
+function questionId_() {
+  return 'Q-' + Utilities.getUuid().replace(/-/g, '').slice(0, 20);
+}
+
+function importQuestions_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+
+  var subjectId = String(body.subjectId || '').trim();
+  var subject = String(body.subject || '').trim();
+  var rows = Array.isArray(body.questions) ? body.questions : [];
+
+  if (!subjectId || !subject) {
+    return { ok: false, error: 'Subject is required.' };
+  }
+  if (!rows.length) {
+    return { ok: false, error: 'No questions were supplied.' };
+  }
+  if (rows.length > 500) {
+    return { ok: false, error: 'Maximum 500 questions can be imported at once.' };
+  }
+
+  var valid = [];
+  var errors = [];
+  var seen = {};
+  var letters = ['A', 'B', 'C', 'D'];
+
+  // Protect against importing a question that already exists in the selected
+  // subject. The browser-side validation catches duplicates inside the file,
+  // while this server-side check also catches duplicates across earlier imports.
+  var existing = {};
+  var questionSheet = sh_('Questions');
+  var existingLastRow = questionSheet ? questionSheet.getLastRow() : 0;
+  if (existingLastRow > 1) {
+    var existingValues = questionSheet.getRange(2, 1, existingLastRow - 1, SHEETS.Questions.length).getValues();
+    existingValues.forEach(function(r) {
+      var existingSubjectId = String(r[1] || '').trim();
+      if (existingSubjectId !== subjectId) return;
+      var existingQuestion = String(r[6] || '').trim().toLowerCase();
+      var existingYear = String(r[3] || '').trim();
+      var existingState = String(r[4] || 'TS').trim();
+      var existingQno = String(r[5] || '').trim();
+      if (existingQuestion) {
+        existing[[existingQuestion, existingYear, existingState, existingQno].join('|')] = true;
+      }
+    });
+  }
+
+  rows.forEach(function(row, index) {
+    var line = index + 2;
+    var q = String(row.question || '').trim();
+    var options = [
+      String(row.optionA || '').trim(),
+      String(row.optionB || '').trim(),
+      String(row.optionC || '').trim(),
+      String(row.optionD || '').trim()
+    ];
+    var correct = String(row.correctAnswer || '').trim().toUpperCase();
+    var year = String(row.year || '').trim();
+    var state = String(row.state || 'TS').trim();
+    var qno = String(row.questionNumber || '').trim();
+    var rowErrors = [];
+
+    if (!q) rowErrors.push('Question is empty');
+    options.forEach(function(o, i) { if (!o) rowErrors.push('Option ' + letters[i] + ' is empty'); });
+    if (letters.indexOf(correct) === -1) rowErrors.push('Correct Answer must be A, B, C, or D');
+    if (!year) rowErrors.push('Year is empty');
+
+    var duplicateKey = [q.toLowerCase(), year, state, qno].join('|');
+    if (seen[duplicateKey]) rowErrors.push('Duplicate question in this import');
+    if (existing[duplicateKey]) rowErrors.push('Question already exists in this subject');
+    seen[duplicateKey] = true;
+
+    if (rowErrors.length) {
+      errors.push({ row: line, errors: rowErrors });
+      return;
+    }
+
+    valid.push({
+      QuestionId: questionId_(),
+      SubjectId: subjectId,
+      Subject: subject,
+      Year: year,
+      State: state,
+      QuestionNumber: qno,
+      Question: q,
+      OptionA: options[0],
+      OptionB: options[1],
+      OptionC: options[2],
+      OptionD: options[3],
+      CorrectAnswer: correct,
+      CreatedAt: new Date(),
+      CreatedBy: adminEmail
+    });
+  });
+
+  if (errors.length) {
+    return {
+      ok: false,
+      error: 'Import validation failed. No rows were added.',
+      imported: 0,
+      invalid: errors.length,
+      errors: errors
+    };
+  }
+
+  appendMany_(sh_('Questions'), SHEETS.Questions, valid);
+  return { ok: true, imported: valid.length, invalid: 0, message: valid.length + ' question(s) imported successfully.' };
+}
+
+function questions_(subjectId) {
+  var id = String(subjectId || '').trim();
+  if (!id) return [];
+  return objs_(sh_('Questions')).filter(function(row) {
+    return String(row.SubjectId) === id;
+  }).map(function(row) {
+    var letters = ['A','B','C','D'];
+    return {
+      id: String(row.QuestionId),
+      year: String(row.Year),
+      state: String(row.State || ''),
+      questionNumber: String(row.QuestionNumber || ''),
+      question: String(row.Question || ''),
+      options: [row.OptionA, row.OptionB, row.OptionC, row.OptionD].map(String),
+      answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase()))
+    };
+  });
+}
 
 // ============================================================
 // 6. RANKING
@@ -639,6 +829,15 @@ function submitExam_(body) {
   var now = new Date();
   var startTime = toDate_(body.startTime, now);
   var detail = Array.isArray(body.detail) ? body.detail : [];
+
+  if (!detail.length) {
+    return { ok: false, error: 'No question details were supplied. Please reopen the test and submit again.' };
+  }
+
+  var userRows = objs_(sh_('Users'));
+  var knownUser = userRows.find(function(row){ return email_(row.Email) === email; });
+  if (!name && knownUser) name = String(knownUser.Name || '').trim();
+  if (!name) name = 'ECET Student';
 
   // ----------------------------------------------------------
   // Recalculate score from question details.
@@ -1147,31 +1346,23 @@ function dashboard_(email) {
     return num_(row.Percentage);
   });
 
+  var subjectList = Object.keys(subjects).map(function (key) {
+    var subjectResults = results.filter(function(row){ return String(row.Subject || '') === key; });
+    var avg = subjectResults.length ? subjectResults.reduce(function(sum,row){ return sum + num_(row.Percentage); },0) / subjectResults.length : 0;
+    return {
+      subject: subjects[key].subject,
+      best: Math.round(subjects[key].best * 10) / 10,
+      avg: Math.round(avg * 10) / 10,
+      attempts: subjects[key].attempts
+    };
+  });
+
   return {
     attempts: results.length,
-
-    best:
-      percentages.length
-        ? Math.max.apply(null, percentages)
-        : 0,
-
-    avg:
-      percentages.length
-        ? Math.round(
-          (
-            percentages.reduce(function (a, b) {
-              return a + b;
-            }, 0) /
-            percentages.length
-          ) * 10
-        ) / 10
-        : 0,
-
+    best: percentages.length ? Math.max.apply(null, percentages) : 0,
+    avg: percentages.length ? Math.round((percentages.reduce(function (a, b) { return a + b; }, 0) / percentages.length) * 10) / 10 : 0,
     mistakes: mistakes.length,
-
-    subjects: Object.keys(subjects).map(function (key) {
-      return subjects[key];
-    })
+    subjects: subjectList
   };
 }
 
@@ -1449,10 +1640,19 @@ function createReminder_(body) {
   }
 
   var now = new Date();
+  var frequency = normalizeFrequency_(body.frequency);
+  var duplicate = objs_(sh_('Reminders')).find(function(row){
+    return email_(row.Email) === email &&
+      String(row.Name || '').trim() === name &&
+      String(row.Message || '').trim() === message &&
+      normalizeFrequency_(row.Frequency) === frequency &&
+      new Date(row.NextRunAt).getTime() === nextRunAt.getTime() &&
+      bool_(row.Enabled);
+  });
+  if (duplicate) {
+    return { ok: true, duplicate: true, id: duplicate.ReminderId, nextRunAt: nextRunAt.toISOString(), status: duplicate.Status || 'Active' };
+  }
   var id = Utilities.getUuid();
-
-  var frequency =
-    normalizeFrequency_(body.frequency);
 
   append_(
     sh_('Reminders'),
