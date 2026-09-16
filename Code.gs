@@ -313,25 +313,28 @@ function appendMany_(sheet, headers, objects) {
 // ============================================================
 
 function doGet(e) {
+  e = e || { parameter: {} };
+
+  var action = String(
+    (e.parameter && e.parameter.action) || ''
+  ).trim();
+
+  // Ping/health must stay lightweight and must not fail merely because
+  // sheet initialization fails, so it is answered before ensureSheets_()
+  // and does not depend on it succeeding.
+  if (action === 'ping' || action === 'health') {
+    return out_({
+      ok: true,
+      time: iso_(new Date()),
+      timezone: tz_(),
+      message: 'ECET backend is online.'
+    });
+  }
+
   try {
     ensureSheets_();
 
-    e = e || { parameter: {} };
-
-    var action = String(
-      (e.parameter && e.parameter.action) || ''
-    ).trim();
-
     switch (action) {
-      case 'ping':
-      case 'health':
-        return out_({
-          ok: true,
-          time: iso_(new Date()),
-          timezone: tz_(),
-          message: 'ECET backend is online.'
-        });
-
       case 'dashboard':
         return out_({
           ok: true,
