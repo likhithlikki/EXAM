@@ -1,17 +1,20 @@
-ECET Quiz updated files.
+ECET BACKEND — VERIFIED Code.gs
 
-Upload all files directly to the GitHub repository root.
-Replace Code.gs in Apps Script and run setup() once.
-Keep the existing Apps Script Web App URL in config.js.
-Create/keep time-driven triggers for processEmailQueue and sendRevisionReminders.
+1. Open Apps Script attached to your ECET Google Sheet.
+2. Replace the contents of Code.gs with the Code.gs in this package.
+3. Save the project.
+4. Run setup() manually once and approve the requested Google permissions.
+5. Deploy > New deployment > Web app.
+   - Execute as: Me / User deploying the web app
+   - Who has access: Anyone / Anyone with the link (anonymous access if shown)
+6. Copy the deployed URL ending in /exec.
+7. Put that exact /exec URL into the WEBSITE frontend API configuration.
+8. Do NOT use the script.googleusercontent.com echo URL shown after opening the endpoint in a browser. Google Content Service redirects responses to a temporary googleusercontent URL.
+9. Test in the browser:
+   YOUR_EXEC_URL?action=ping
+   It should return JSON containing ok:true and "ECET backend is online."
 
-Ranking:
-- Test percentage is converted to equivalent AP ECET marks out of 200.
-- Expected AP ECET rank uses the supplied ECE marks-vs-rank reference table.
-- Practice rank is dynamic among unique students in the subject using best percentage.
-- Old users' current practice ranks can change when new users submit better results.
-
-Revision:
-- Wrong and unattempted questions become due 1 day after the mistake.
-- Correct revision removes the question from active mistakes.
-- Wrong/unanswered revision schedules it again for 1 day and keeps the mistake type visible.
+Important:
+- This package fixes several backend logic issues found during review, including retryable FAILED email queue records, preservation of reminder fields during partial edits, safer monthly recurrence dates, and duplicate legacy revision-trigger cleanup.
+- The code passes a JavaScript syntax check. Apps Script services still require deployment/authorization testing in your Google account.
+- The frontend (index.html/app.js/etc.) was not included in the current code attachment, so this package does not claim to verify frontend code. The frontend must use the current /exec URL.
