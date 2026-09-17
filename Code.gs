@@ -664,13 +664,20 @@ function slugify_(text) {
 // "Practice Tests Added by Admin" section and the Add Questions dropdown
 // both read this sheet live.
 function customSubjects_() {
+  var counts = {};
+  objs_(sh_('Questions')).forEach(function (row) {
+    var sid = String(row.SubjectId || '');
+    if (!sid) return;
+    counts[sid] = (counts[sid] || 0) + 1;
+  });
   return objs_(sh_('Subjects')).map(function (row) {
     return {
       id: row.SubjectId,
       name: row.Name,
       password: row.Password,
       description: row.Description || '',
-      createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : ''
+      createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : '',
+      questionCount: counts[String(row.SubjectId)] || 0
     };
   });
 }
