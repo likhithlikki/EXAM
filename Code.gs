@@ -645,28 +645,45 @@ function register_(body) {
   };
 }
 
-// Deletes every row for an email from a sheet (bottom-up so row indices stay valid).
+// Deletes every row for an email from a sheet in one read/write operation.
+// This is much faster than calling deleteRow() once per matching row and avoids
+// Apps Script timeouts when a student has many attempts/mistakes/reminders.
 function deleteRowsByEmail_(sheetName, email) {
   var sheet = sh_(sheetName);
   if (!sheet || sheet.getLastRow() < 2) return 0;
-  var values = sheet.getDataRange().getValues();
+
+  var range = sheet.getDataRange();
+  var values = range.getValues();
+  if (!values.length) return 0;
+
   var headers = values[0];
   var emailIndex = headers.indexOf('Email');
   if (emailIndex === -1) return 0;
+
+  var kept = [headers];
   var removed = 0;
-  for (var i = values.length - 1; i >= 1; i--) {
+
+  for (var i = 1; i < values.length; i++) {
     if (email_(values[i][emailIndex]) === email) {
-      sheet.deleteRow(i + 1);
       removed++;
+    } else {
+      kept.push(values[i]);
     }
   }
+
+  if (!removed) return 0;
+
+  // Rewrite only the used data area. This keeps the header and sheet structure
+  // intact while avoiding hundreds/thousands of deleteRow() calls.
+  sheet.getRange(1, 1, values.length, headers.length).clearContent();
+  if (kept.length) {
+    sheet.getRange(1, 1, kept.length, headers.length).setValues(kept);
+  }
+
   return removed;
 }
 
-// Permanently removes a student's account and every record tied to their
-// email (results, answers, mistakes, reminders, notifications). Requires the
-// email to be confirmed by the caller (the frontend asks for confirmation
-// before sending this request).
+// Permanently removes a student's account and all records tied to the email.
 function deleteAccount_(body) {
   var email = email_(body.email);
   if (!validEmail_(email)) {
@@ -675,18 +692,39 @@ function deleteAccount_(body) {
 
   var sheetsToClean = [
     'Users', 'Results', 'Answers', 'WrongAnswers', 'Rankings',
-    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications'
+    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications',
+    'EmailQueue'
   ];
 
   var summary = {};
+  var totalRemoved = 0;
+
   sheetsToClean.forEach(function (name) {
-    summary[name] = deleteRowsByEmail_(name, email);
+    try {
+      var count = deleteRowsByEmail_(name, email);
+      summary[name] = count;
+      totalRemoved += count;
+    } catch (err) {
+      throw new Error('Could not clean ' + name + ': ' + friendlyError_(err));
+    }
   });
 
-  return { ok: true, message: 'Account and related data deleted.', removed: summary };
+  // Clear cached user-specific responses immediately.
+  try {
+    var cache = CacheService.getScriptCache();
+    cache.remove('dash_' + email);
+    cache.remove('hist_' + email);
+    cache.remove('mist_' + email);
+    cache.remove('rmnd_' + email);
+  } catch (ignore) {}
+
+  return {
+    ok: true,
+    message: totalRemoved ? 'Account and related data deleted.' : 'Account data was already empty.',
+    removed: summary,
+    totalRemoved: totalRemoved
+  };
 }
-
-
 
 
 // ============================================================
@@ -764,6 +802,14 @@ function createSubject_(body) {
   }
 
   var sheet = sh_('Subjects');
+  if (!sheet) {
+    ensureSheetsCached_();
+    sheet = sh_('Subjects');
+  }
+  if (!sheet) {
+    return { ok: false, error: 'Subjects sheet is not available. Run setup() once in Apps Script.' };
+  }
+
   var existing = objs_(sheet);
 
   var nameLower = name.toLowerCase();
@@ -792,6 +838,8 @@ function createSubject_(body) {
     CreatedBy: adminEmail,
     CreatedAt: new Date()
   });
+
+  try { CacheService.getScriptCache().remove('custom_subjects_all'); } catch (ignore) {}
 
   return {
     ok: true,

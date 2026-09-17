@@ -408,7 +408,11 @@ async function deleteAccountPrompt(){
   const p=store.profile();
   app.innerHTML=`<div class="card"><h1>Deleting account…</h1><p class="note">Please wait.</p></div>`;
   const res=API?await apiPost("deleteAccount",{email:p.email}):null;
-  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Could not delete account</h1><p class="note">${esc(res?.error||"Please try again.")}</p><div class="buttons"><button onclick="goProfile()">Back</button></div></div>`;return;}
+  if(!res?.ok){
+    const msg=res?.error||"The server did not respond. Check Server Status and try again.";
+    app.innerHTML=`<div class="card"><h1>Could not delete account</h1><p class="note">${esc(msg)}</p><div class="error">No local account data has been removed.</div><div class="buttons"><button onclick="deleteAccountPrompt()">Retry Delete</button><button onclick="goProfile()">Back</button></div></div>`;
+    return;
+  }
   localStorage.removeItem("ecet_profile");localStorage.removeItem("ecet_mistakes_cache");
   Object.keys(localStorage).filter(k=>k.startsWith("ecet_progress_")).forEach(k=>localStorage.removeItem(k));
   home();
@@ -618,8 +622,12 @@ async function createNewSubject(){
   const statusEl=document.getElementById("newSubjectStatus");
   if(!name||!password){statusEl.innerHTML='<span class="wronganswer">Subject name and password are both required.</span>';return;}
   statusEl.textContent="Creating…";
-  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description});
-  if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
+  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description},20000);
+  if(!res?.ok){
+    const msg=res?.error||"The server did not respond. Check Server Status and try again.";
+    statusEl.innerHTML=`<span class="wronganswer">${esc(msg)}</span>`;
+    return;
+  }
   customSubjects.push(res.subject);
   statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
   document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";
