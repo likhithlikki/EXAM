@@ -374,7 +374,13 @@ function doGet(e) {
           data: {
             online: true,
             isAdmin: e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false,
-            customSubjects: customSubjects_()
+            customSubjects: customSubjects_(),
+            // Live counts from the Questions sheet keyed by SubjectId, covering
+            // BOTH custom subjects and built-in subjects from subjects.json.
+            // subjects.json only has a hardcoded questionCount that never
+            // changes after admin imports more questions into an existing
+            // built-in subject, so the frontend merges this map on top of it.
+            questionCounts: allQuestionCounts_()
           }
         });
 
@@ -744,6 +750,20 @@ function customSubjects_() {
       questionCount: counts[String(row.SubjectId)] || 0
     };
   });
+}
+
+// Counts every question in the Questions sheet grouped by SubjectId,
+// regardless of whether that SubjectId belongs to a custom subject or a
+// built-in one from subjects.json. Used to keep "X Questions" on the home
+// page cards live instead of relying on subjects.json's static count.
+function allQuestionCounts_() {
+  var counts = {};
+  objs_(sh_('Questions')).forEach(function (row) {
+    var sid = String(row.SubjectId || '');
+    if (!sid) return;
+    counts[sid] = (counts[sid] || 0) + 1;
+  });
+  return counts;
 }
 
 function createSubject_(body) {
