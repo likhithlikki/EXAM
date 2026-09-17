@@ -156,8 +156,8 @@ let isAdminUnlocked=localStorage.getItem("ecet_admin_unlocked")==="1";
 const ADMIN_PANEL_PASSWORD=(window.APP_CONFIG&&window.APP_CONFIG.ADMIN_PANEL_PASSWORD)||"123";
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
-function clearExam(){
-  clearInterval(timer); timer=null; isSubmitting=false;
+function clearExam(resetSubmitting=true){
+  clearInterval(timer); timer=null; if(resetSubmitting)isSubmitting=false;
   window.removeEventListener("beforeunload",handleBeforeUnload);
   window.removeEventListener("pagehide",handlePageHide);
   window.removeEventListener("beforeunload",handleRevisionBeforeUnload);
@@ -408,11 +408,7 @@ async function deleteAccountPrompt(){
   const p=store.profile();
   app.innerHTML=`<div class="card"><h1>Deleting account…</h1><p class="note">Please wait.</p></div>`;
   const res=API?await apiPost("deleteAccount",{email:p.email}):null;
-  if(!res?.ok){
-    const msg=res?.error||"The server did not respond. Check Server Status and try again.";
-    app.innerHTML=`<div class="card"><h1>Could not delete account</h1><p class="note">${esc(msg)}</p><div class="error">No local account data has been removed.</div><div class="buttons"><button onclick="deleteAccountPrompt()">Retry Delete</button><button onclick="goProfile()">Back</button></div></div>`;
-    return;
-  }
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Could not delete account</h1><p class="note">${esc(res?.error||"Please try again.")}</p><div class="buttons"><button onclick="goProfile()">Back</button></div></div>`;return;}
   localStorage.removeItem("ecet_profile");localStorage.removeItem("ecet_mistakes_cache");
   Object.keys(localStorage).filter(k=>k.startsWith("ecet_progress_")).forEach(k=>localStorage.removeItem(k));
   home();
@@ -622,12 +618,8 @@ async function createNewSubject(){
   const statusEl=document.getElementById("newSubjectStatus");
   if(!name||!password){statusEl.innerHTML='<span class="wronganswer">Subject name and password are both required.</span>';return;}
   statusEl.textContent="Creating…";
-  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description},20000);
-  if(!res?.ok){
-    const msg=res?.error||"The server did not respond. Check Server Status and try again.";
-    statusEl.innerHTML=`<span class="wronganswer">${esc(msg)}</span>`;
-    return;
-  }
+  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description});
+  if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
   customSubjects.push(res.subject);
   statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
   document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";
@@ -810,7 +802,7 @@ function render(){const q=test[current],answered=answers.filter(x=>x!==null).len
 
 /* ===================== RESULT ===================== */
 async function submit(){
-  if(isSubmitting||!test.length)return; isSubmitting=true;clearExam();
+  if(isSubmitting||!test.length)return; isSubmitting=true;clearExam(false);
   const payload=submissionPayload();store.clearProgress(activeSubject.id);
   const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
@@ -821,6 +813,11 @@ async function submit(){
     app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;
   }
+  // The exam is finished. Clear the active-exam state so Back/Home cannot
+  // mistake the already-submitted result for an active test. Keep the
+  // selected subject + bank so Retry Test can start a fresh attempt.
+  test=[]; answers=[]; marked=[]; qTime=[]; current=0; left=0; examSessionId="";
+  revisionMode=false; revisionItems=[];
   renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 function pieHTML(r){const total=Math.max(1,r.total),c=r.score/total*100,w=r.wrong/total*100,u=r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
