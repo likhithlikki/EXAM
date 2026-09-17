@@ -84,6 +84,11 @@ const SHEETS = {
     'NotificationId', 'ReminderId', 'Email', 'UserName', 'Name',
     'Message', 'RelatedTask', 'RelatedUrl', 'ScheduledAt', 'SentAt',
     'Status', 'Error', 'RetryCount'
+  ],
+
+  ChangeLog: [
+    'ChangeId', 'Timestamp', 'EditedBy', 'Subject', 'SubjectId',
+    'QuestionId', 'QuestionSnippet', 'BeforeJSON', 'AfterJSON', 'Summary'
   ]
 };
 
@@ -349,7 +354,9 @@ function doGet(e) {
       case 'dashboard':
         return out_({
           ok: true,
-          data: dashboard_(e.parameter.email)
+          data: cached_('dash_' + email_(e.parameter.email), 30, function () {
+            return dashboard_(e.parameter.email);
+          })
         });
 
       case 'customSubjects':
@@ -368,20 +375,26 @@ function doGet(e) {
       case 'revision':
         return out_({
           ok: true,
-          data: mistakes_(e.parameter.email)
+          data: cached_('mist_' + email_(e.parameter.email), 30, function () {
+            return mistakes_(e.parameter.email);
+          })
         });
 
       case 'history':
       case 'attemptHistory':
         return out_({
           ok: true,
-          data: history_(e.parameter.email)
+          data: cached_('hist_' + email_(e.parameter.email), 30, function () {
+            return history_(e.parameter.email);
+          })
         });
 
       case 'reminders':
         return out_({
           ok: true,
-          data: reminders_(e.parameter.email)
+          data: cached_('rmnd_' + email_(e.parameter.email), 30, function () {
+            return reminders_(e.parameter.email);
+          })
         });
 
       case 'questions':
@@ -401,6 +414,12 @@ function doGet(e) {
         return out_({
           ok: true,
           data: notifications_(e.parameter.email)
+        });
+
+      case 'questionChangeLog':
+        return out_({
+          ok: true,
+          data: questionChangeLog_()
         });
 
       default:
@@ -443,6 +462,9 @@ function doPost(e) {
 
       case 'importQuestions':
         return out_(importQuestions_(body));
+
+      case 'updateQuestion':
+        return out_(updateQuestion_(body));
 
       case 'createSubject':
         return out_(createSubject_(body));
@@ -507,6 +529,23 @@ function doPost(e) {
     } catch (ignore) {
       // Nothing to do.
     }
+  }
+}
+
+// Short-lived server-side cache (Apps Script CacheService) so repeated
+// dashboard/history/mistakes/reminders loads don't rescan the whole sheet
+// every time. TTL is intentionally short so edits show up quickly.
+function cached_(key, ttlSeconds, fn) {
+  try {
+    var cache = CacheService.getScriptCache();
+    var hit = cache.get(key);
+    if (hit) return JSON.parse(hit);
+    var value = fn();
+    try { cache.put(key, JSON.stringify(value), ttlSeconds); } catch (ignore) {}
+    return value;
+  } catch (e) {
+    // Cache unavailable for any reason — fall back to computing directly.
+    return fn();
   }
 }
 
@@ -865,6 +904,118 @@ function questions_(subjectId) {
       answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase())),
       image: String(row.QuestionImage || ''),
       optionImages: [row.OptionAImage, row.OptionBImage, row.OptionCImage, row.OptionDImage].map(function(v){return String(v||'');})
+    };
+  });
+}
+
+// Admin edit of a single existing question, matched by its QuestionId so it
+// can never accidentally duplicate or touch the wrong row. Every edit is
+// recorded to the ChangeLog sheet with a before/after snapshot.
+function updateQuestion_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+
+  var questionId = String(body.questionId || '').trim();
+  if (!questionId) {
+    return { ok: false, error: 'questionId is required.' };
+  }
+
+  var q = String(body.question || '').trim();
+  var options = [
+    String(body.optionA || '').trim(),
+    String(body.optionB || '').trim(),
+    String(body.optionC || '').trim(),
+    String(body.optionD || '').trim()
+  ];
+  var correct = String(body.correctAnswer || '').trim().toUpperCase();
+  var year = String(body.year || '').trim();
+  var letters = ['A', 'B', 'C', 'D'];
+
+  if (!q) return { ok: false, error: 'Question is empty.' };
+  for (var i = 0; i < options.length; i++) {
+    if (!options[i]) return { ok: false, error: 'Option ' + letters[i] + ' is empty.' };
+  }
+  if (letters.indexOf(correct) === -1) return { ok: false, error: 'Correct Answer must be A, B, C, or D.' };
+  if (!year) return { ok: false, error: 'Year is empty.' };
+
+  var sheet = sh_('Questions');
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { ok: false, error: 'No questions found.' };
+
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var idCol = headers.indexOf('QuestionId');
+  var values = sheet.getRange(2, 1, lastRow - 1, headers.length).getValues();
+
+  var rowIndex = -1;
+  for (var r = 0; r < values.length; r++) {
+    if (String(values[r][idCol]) === questionId) { rowIndex = r; break; }
+  }
+  if (rowIndex === -1) return { ok: false, error: 'Question not found (it may have been deleted).' };
+
+  var before = {};
+  headers.forEach(function (h, i) { before[h] = values[rowIndex][i]; });
+
+  var updated = {
+    Question: q,
+    OptionA: options[0], OptionB: options[1], OptionC: options[2], OptionD: options[3],
+    CorrectAnswer: correct,
+    Year: year,
+    State: String(body.state || before.State || '').trim(),
+    QuestionNumber: String(body.questionNumber || before.QuestionNumber || '').trim(),
+    QuestionImage: String(body.questionImage || '').trim(),
+    OptionAImage: String(body.optionAImage || '').trim(),
+    OptionBImage: String(body.optionBImage || '').trim(),
+    OptionCImage: String(body.optionCImage || '').trim(),
+    OptionDImage: String(body.optionDImage || '').trim()
+  };
+
+  var after = {};
+  headers.forEach(function (h) { after[h] = updated[h] !== undefined ? updated[h] : before[h]; });
+
+  headers.forEach(function (h, i) {
+    if (updated[h] !== undefined) {
+      sheet.getRange(2 + rowIndex, i + 1).setValue(updated[h]);
+    }
+  });
+
+  // Record the change (which fields differed) to ChangeLog.
+  var changedFields = [];
+  Object.keys(updated).forEach(function (h) {
+    if (String(before[h] || '') !== String(updated[h] || '')) changedFields.push(h);
+  });
+
+  append_(sh_('ChangeLog'), SHEETS.ChangeLog, {
+    ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+    Timestamp: new Date(),
+    EditedBy: adminEmail,
+    Subject: String(before.Subject || ''),
+    SubjectId: String(before.SubjectId || ''),
+    QuestionId: questionId,
+    QuestionSnippet: q.slice(0, 120),
+    BeforeJSON: JSON.stringify(before),
+    AfterJSON: JSON.stringify(after),
+    Summary: changedFields.length ? ('Changed: ' + changedFields.join(', ')) : 'No field values changed'
+  });
+
+  return { ok: true, message: 'Question updated successfully.' };
+}
+
+// Returns the most recent ~50 ChangeLog entries, newest first.
+function questionChangeLog_() {
+  var rows = objs_(sh_('ChangeLog'));
+  rows.sort(function (a, b) { return toDate_(b.Timestamp) - toDate_(a.Timestamp); });
+  return rows.slice(0, 50).map(function (row) {
+    return {
+      changeId: String(row.ChangeId || ''),
+      timestamp: row.Timestamp ? toDate_(row.Timestamp).toISOString() : '',
+      editedBy: String(row.EditedBy || ''),
+      subject: String(row.Subject || ''),
+      subjectId: String(row.SubjectId || ''),
+      questionId: String(row.QuestionId || ''),
+      questionSnippet: String(row.QuestionSnippet || ''),
+      summary: String(row.Summary || '')
     };
   });
 }

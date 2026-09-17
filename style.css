@@ -152,6 +152,12 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 @media(max-width:550px){.wrap{padding:14px 12px 90px}.subject-grid{grid-template-columns:1fr}.stats,.dash-grid{grid-template-columns:1fr 1fr}.question{font-size:18px}.top{align-items:flex-start;flex-direction:column}.timer{font-size:20px}.palette{grid-template-columns:repeat(5,1fr)}.subjbar-row{grid-template-columns:1fr 60px}.subjbar-track{grid-column:1/3}.pie{width:150px;height:150px}.chart-main{min-width:850px}}
 
 /* ---------- Floating controls: Back / Home ---------- */
+.home-titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#hardRefreshBtn{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+#hardRefreshBtn:hover{color:var(--ink);border-color:var(--primary)}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:6px;width:28px;height:28px;font-size:14px;cursor:pointer;vertical-align:middle;margin-left:6px}
+.icon-btn.spinning{animation:spin .8s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 #homeFab,#backFab{position:fixed;bottom:18px;width:48px;height:48px;border-radius:50%;border:0;font-size:20px;cursor:pointer;box-shadow:0 6px 18px rgba(41,82,227,.35);z-index:1000;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));transition:transform .12s ease}
 #homeFab{right:18px}
 #backFab{left:18px;display:none;background:linear-gradient(135deg,#4b5a86,#2c3557)}

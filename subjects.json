@@ -4,90 +4,103 @@
     "name": "Digital Electronics",
     "file": "digital-electronics.json",
     "password": "18",
-    "available": true
+    "available": true,
+    "questionCount": 153
   },
   {
     "id": "software-engineering",
     "name": "Software Engineering",
     "file": "software-engineering.json",
     "password": "19",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "computer-organisation-microprocessors",
     "name": "Computer Organisation & Microprocessors",
     "file": "computer-organisation-microprocessors.json",
     "password": "20",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "data-structures-c",
     "name": "Data Structures through C",
     "file": "data-structures-c.json",
     "password": "21",
-    "available": true
+    "available": true,
+    "questionCount": 206
   },
   {
     "id": "computer-networks-cyber-security",
     "name": "Computer Networks & Cyber Security",
     "file": "computer-networks-cyber-security.json",
     "password": "22",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "operating-systems",
     "name": "Operating Systems",
     "file": "operating-systems.json",
     "password": "23",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "dbms",
     "name": "DBMS",
     "file": "dbms.json",
     "password": "24",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "java-programming",
     "name": "Java Programming",
     "file": "java-programming.json",
     "password": "25",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "web-technologies",
     "name": "Web Technologies",
     "file": "web-technologies.json",
     "password": "26",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "big-data-cloud-computing",
     "name": "Big Data & Cloud Computing",
     "file": "big-data-cloud-computing.json",
     "password": "27",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "android-programming",
     "name": "Android Programming",
     "file": "android-programming.json",
     "password": "28",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "internet-of-things",
     "name": "Internet of Things (IoT)",
     "file": "internet-of-things.json",
     "password": "29",
-    "available": false
+    "available": false,
+    "questionCount": 0
   },
   {
     "id": "python-programming",
     "name": "Python Programming",
     "file": "python-programming.json",
     "password": "30",
-    "available": false
+    "available": false,
+    "questionCount": 0
   }
 ]

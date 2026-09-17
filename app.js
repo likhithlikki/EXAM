@@ -84,8 +84,18 @@ let navStack=[];
 function pushNav(fn){
   if(navStack[navStack.length-1]!==fn)navStack.push(fn);
   if(navStack.length>40)navStack.shift();
+  // Back button visibility is driven explicitly by "is this Home?" rather
+  // than stack depth (which was fragile — e.g. depth could be >1 while
+  // still logically on Home after certain navigation sequences).
   const btn=document.getElementById("backFab");
-  if(btn)btn.style.display=navStack.length>1?"flex":"none";
+  if(btn)btn.style.display=(fn!==home)?"flex":"none";
+}
+function replaceNav(fn){
+  // Like pushNav, but replaces the current top-of-stack entry instead of
+  // stacking on top of it — used when a screen (e.g. the admin password
+  // prompt) is logically "consumed" by what comes next, so Back skips it.
+  if(navStack.length)navStack.pop();
+  pushNav(fn);
 }
 function goBack(){
   const inExam=activeSubject&&test.length&&!isSubmitting&&left>0&&!revisionMode;
@@ -101,8 +111,8 @@ let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubjec
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
 let _afterProfile=null;
-let isAdminUnlocked=false;
-const ADMIN_PANEL_PASSWORD="123";
+let isAdminUnlocked=localStorage.getItem("ecet_admin_unlocked")==="1";
+const ADMIN_PANEL_PASSWORD=(window.APP_CONFIG&&window.APP_CONFIG.ADMIN_PANEL_PASSWORD)||"123";
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
 function clearExam(){
@@ -220,7 +230,9 @@ function customSubjectsHTML(){
     if(!hasQuestions){
       return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
-    return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):(unfinished?"Test in progress — resume any time":"Questions available")}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    const best=subjectBest(s.name);
+    const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
+    return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
@@ -232,10 +244,10 @@ async function home(){
   if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
   customSubjects=store.customSubjectsCache();
   const p=store.profile();
-  app.innerHTML=`<div class="home"><h1>ECET Online Test</h1><p class="subtitle">Choose a subject. Each test gets exactly 1 minute per question — no extra time.</p>
+  app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload">⟳ Refresh Data</button></div><p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
-    <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.available?(unfinished?"Test in progress — resume any time":"Questions available"):"Question bank coming soon"}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
-    <h2 style="margin-top:34px">Practice Tests Added by Admin</h2>
+    <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
+    <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
     <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
   </div>`;
@@ -244,8 +256,39 @@ async function home(){
   handleRevisionLink();
   refreshCustomSubjects();
 }
-async function refreshCustomSubjects(){
+function homeSubtitle(){
+  const total=subjects.length+customSubjects.length;
+  const hist=store.dashboardCache();
+  const practiced=hist?.attempts;
+  if(practiced!==undefined&&practiced!==null)return `${total} subjects available • ${practiced} question${practiced===1?"":"s"} practiced so far`;
+  return `${total} subjects available — pick one to begin practicing.`;
+}
+function subjectCardMeta(s){
+  const unfinished=s.available&&store.getProgress(s.id);
+  if(!s.available)return "Question bank coming soon";
+  const count=s.questionCount;
+  const mins=count?count:50;
+  const best=subjectBest(s.name);
+  const bits=[];
+  if(count)bits.push(`${count} Questions`);
+  bits.push(`${mins} min`);
+  bits.push(best!=null?`Best: ${best}%`:"Best: —");
+  return unfinished?`Test in progress — resume any time<br>${bits.join(" • ")}`:bits.join(" • ");
+}
+function subjectBest(name){
+  const d=store.dashboardCache();
+  const row=d?.subjects?.find(x=>x.subject===name);
+  return row?row.best:null;
+}
+function hardRefresh(){
+  if(!confirm("Clear locally cached data and reload fresh from the server?"))return;
+  ["ecet_dashboard_cache","ecet_profiledata_cache","ecet_mistakes_cache","ecet_reminders_cache","ecet_customsubjects_cache"].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+async function refreshCustomSubjects(manual){
   if(!API)return;
+  const iconBtn=manual?document.querySelector('.icon-btn'):null;
+  if(iconBtn){iconBtn.disabled=true;iconBtn.classList.add('spinning');}
   try{
     const cs=await apiGet("customSubjects",{},7000);
     if(cs?.ok&&Array.isArray(cs.data)){
@@ -255,6 +298,7 @@ async function refreshCustomSubjects(){
       if(grid)grid.innerHTML=customSubjectsHTML();
     }
   }catch(e){console.warn("Custom subjects load failed",e);}
+  finally{if(iconBtn){iconBtn.disabled=false;iconBtn.classList.remove('spinning');}}
 }
 async function checkServerStatus(){
   const el=document.getElementById('serverStatus');
@@ -278,8 +322,12 @@ function handleRevisionLink(){
 }
 async function checkAdminAccess(){
   const slot=document.getElementById('adminNavSlot');
+  if(!slot)return;
+  // Already unlocked on this device via the admin password — skip the
+  // backend isAdmin round-trip entirely, that network wait was the delay.
+  if(isAdminUnlocked){slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';return;}
   const p=store.profile();
-  if(!slot||!p||!API)return;
+  if(!p||!API)return;
   const res=await apiGet('isAdmin',{email:p.email},5000);
   if(res?.ok&&res.isAdmin) slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
 }
@@ -301,7 +349,7 @@ async function renderProfile(){
   // Paint instantly with the last known profile stats (if any) instead of a bare
   // "Loading…" card, then quietly refresh from the server.
   if(cached&&cached.email===p.email){renderProfileBody(cached,true);}else{app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">Loading…</p></div>`;}
-  const res=API?await apiGet("profile",{email:p.email}):null;
+  const res=API?await apiGet("profile",{email:p.email},15000,2):null;
   if(!res?.ok){
     if(cached&&cached.email===p.email){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="renderProfile()">Retry</button>`;return;}
     app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">${API?"Could not load profile.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="goProfile()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
@@ -336,7 +384,7 @@ async function adminQuestionsPage(){
   pushNav(adminQuestionsPage);
   requireProfile(async ()=>{
     const p=store.profile();
-    const access=API?await apiGet('isAdmin',{email:p.email},5000):null;
+    const access=isAdminUnlocked?null:(API?await apiGet('isAdmin',{email:p.email},5000):null);
     if(!isAdminUnlocked&&(!access?.ok||!access.isAdmin)){
       app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Use the Admin button on the homepage and enter the admin password.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
       return;
@@ -362,17 +410,152 @@ async function adminQuestionsPage(){
 
       <h2 style="margin-top:26px">Don't want to type questions by hand? Ask an AI</h2>
       <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> State, Question Number, and all Image URL columns — leave blank if unused.</p>
-      <p class="note">Copy the prompt below, paste it into any AI chat (edit the topic and question count), then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
-      <textarea id="aiPromptBox" readonly rows="11" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
+      <label>Topic / Subtopics (optional but recommended)</label><input id="aiTopic" placeholder="e.g. Boolean Algebra & K-Maps" onchange="refreshAiPrompt()">
+      <label>Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
+      <label>Difficulty</label><select id="aiDifficulty" onchange="refreshAiPrompt()"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Super Hard">Super Hard</option><option value="Mixed">Mixed (all levels)</option></select>
+      <label>Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. focus on numerical problems, avoid repeats from last year" onchange="refreshAiPrompt()">
+      <p class="note">Copy the prompt below, paste it into any AI chat, then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
+      <textarea id="aiPromptBox" readonly rows="12" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
       <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
       <div id="aiCopyStatus" class="note"></div>
 
       <label style="margin-top:26px">Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
-      <div class="buttons"><button onclick="home()">Back</button></div>
       <div id="importStatus" class="note"></div><div id="importPreview"></div>
       <div class="buttons"><button id="importQuestionsBtn" onclick="importPreviewedQuestions()" disabled>Import Questions</button></div>
+    </div>
+    <div class="card">${questionFormHTML('add',null)}</div>
+    <div class="card"><h1>Admin — Manage Questions</h1>
+      <p class="note">Edit existing questions in place, or review the audit log of every edit made.</p>
+      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="home()">Back to Home</button></div>
     </div>`;
     refreshAiPrompt();
+  });
+}
+
+/* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */
+function questionFormHTML(mode,q){
+  const isEdit=mode==='edit';
+  const v=(k,d)=>esc(q&&q[k]!==undefined?q[k]:(d||''));
+  return `<h1>Admin — ${isEdit?'Edit Question':'Add a Single Question'}</h1>
+    <p class="note">${isEdit?'Editing question <b>'+esc(q.id)+'</b>. Saving updates this exact row — it cannot duplicate or affect another row.':'Fill in one question directly, without an Excel file.'}</p>
+    ${isEdit?'':`<label>Subject</label><select id="qfSubject">${adminSubjectOptions()}</select>`}
+    <label>Question</label><textarea id="qfQuestion" rows="2">${v('question')}</textarea>
+    <label>Option A</label><input id="qfA" value="${q?esc((q.options||[])[0]||''):''}">
+    <label>Option B</label><input id="qfB" value="${q?esc((q.options||[])[1]||''):''}">
+    <label>Option C</label><input id="qfC" value="${q?esc((q.options||[])[2]||''):''}">
+    <label>Option D</label><input id="qfD" value="${q?esc((q.options||[])[3]||''):''}">
+    <label>Correct Answer</label><select id="qfCorrect">${['A','B','C','D'].map(l=>`<option value="${l}" ${q&&"ABCD"[q.answer]===l?'selected':''}>${l}</option>`).join('')}</select>
+    <label>Year</label><input id="qfYear" value="${v('year',new Date().getFullYear())}">
+    <label>State (optional)</label><input id="qfState" value="${v('state','TS')}">
+    <label>Question Number (optional)</label><input id="qfQno" value="${v('questionNumber')}">
+    <label>Question Image URL (optional)</label><input id="qfQImg" value="${v('image')}">
+    <label>Option A/B/C/D Image URLs (optional)</label>
+    <input id="qfAImg" placeholder="Option A image" value="${q?esc((q.optionImages||[])[0]||''):''}">
+    <input id="qfBImg" placeholder="Option B image" value="${q?esc((q.optionImages||[])[1]||''):''}">
+    <input id="qfCImg" placeholder="Option C image" value="${q?esc((q.optionImages||[])[2]||''):''}">
+    <input id="qfDImg" placeholder="Option D image" value="${q?esc((q.optionImages||[])[3]||''):''}">
+    <div id="qfStatus" class="note"></div>
+    <div class="buttons">${isEdit?`<button onclick="editQuestionsPage()">Cancel</button><button onclick="saveQuestionEdit('${esc(q.id)}')">Save Changes</button>`:`<button onclick="saveManualQuestion()">Save Question</button>`}</div>`;
+}
+function readQuestionForm(){
+  return {
+    question:document.getElementById('qfQuestion').value.trim(),
+    optionA:document.getElementById('qfA').value.trim(),
+    optionB:document.getElementById('qfB').value.trim(),
+    optionC:document.getElementById('qfC').value.trim(),
+    optionD:document.getElementById('qfD').value.trim(),
+    correctAnswer:document.getElementById('qfCorrect').value,
+    year:document.getElementById('qfYear').value.trim(),
+    state:document.getElementById('qfState').value.trim(),
+    questionNumber:document.getElementById('qfQno').value.trim(),
+    questionImage:document.getElementById('qfQImg').value.trim(),
+    optionAImage:document.getElementById('qfAImg').value.trim(),
+    optionBImage:document.getElementById('qfBImg').value.trim(),
+    optionCImage:document.getElementById('qfCImg').value.trim(),
+    optionDImage:document.getElementById('qfDImg').value.trim()
+  };
+}
+async function saveManualQuestion(){
+  const statusEl=document.getElementById('qfStatus');
+  const sel=document.getElementById('qfSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);
+  if(!sel.value||sel.value==='__new__'){statusEl.innerHTML='<span class="wronganswer">Pick a subject first.</span>';return;}
+  const row=readQuestionForm();
+  if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
+  statusEl.textContent='Saving…';
+  const p=store.profile();
+  const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:[row]});
+  if(res?.ok){statusEl.innerHTML='<span class="correct">Question saved successfully.</span>';['qfQuestion','qfA','qfB','qfC','qfD','qfQno','qfQImg','qfAImg','qfBImg','qfCImg','qfDImg'].forEach(id=>document.getElementById(id).value='');}
+  else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||(res?.errors?.[0]?.errors?.join(', '))||'Could not save.')}</span>`;}
+}
+
+/* ===================== ADMIN — EDIT QUESTIONS ===================== */
+let _editQuestionsCache=[],_editSubjectId='';
+async function editQuestionsPage(){
+  pushNav(editQuestionsPage);
+  requireProfile(async ()=>{
+    if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+    if(API&&!customSubjects.length){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data))customSubjects=cs.data;}catch(e){}}
+    app.innerHTML=`<div class="card"><h1>Admin — Edit Questions</h1>
+      <p class="note">Pick a subject, load its questions, then click Edit on any row.</p>
+      <label>Subject</label><select id="editSubject">${adminSubjectOptions()}</select>
+      <div class="buttons"><button onclick="loadAdminQuestions()">Load Questions</button><button onclick="adminQuestionsPage()">Back</button></div>
+      <div id="editQuestionsList" class="note"></div>
+    </div>`;
+  });
+}
+async function loadAdminQuestions(){
+  const sel=document.getElementById('editSubject'),listEl=document.getElementById('editQuestionsList');
+  if(!sel.value||sel.value==='__new__'){listEl.innerHTML='<span class="wronganswer">Pick a subject.</span>';return;}
+  _editSubjectId=sel.value;
+  listEl.textContent='Loading…';
+  const res=await apiGet('questions',{subjectId:sel.value});
+  if(!res?.ok||!Array.isArray(res.data)){listEl.innerHTML='<span class="wronganswer">Could not load questions.</span>';return;}
+  _editQuestionsCache=res.data;
+  renderEditQuestionsList();
+}
+function renderEditQuestionsList(){
+  const listEl=document.getElementById('editQuestionsList');
+  if(!listEl)return;
+  if(!_editQuestionsCache.length){listEl.innerHTML='<p class="note">No questions found for this subject.</p>';return;}
+  listEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Question</th><th>Year</th><th></th></tr>
+  ${_editQuestionsCache.map(q=>`<tr><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
+  </table></div>`;
+}
+function editQuestionRow(id){
+  const q=_editQuestionsCache.find(x=>x.id===id);
+  if(!q)return;
+  pushNav(()=>editQuestionRow(id));
+  app.innerHTML=`<div class="card">${questionFormHTML('edit',q)}</div>`;
+}
+async function saveQuestionEdit(id){
+  const statusEl=document.getElementById('qfStatus');
+  const row=readQuestionForm();
+  if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
+  statusEl.textContent='Saving…';
+  const p=store.profile();
+  const res=await apiPost('updateQuestion',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",questionId:id,...row});
+  if(res?.ok){
+    statusEl.innerHTML='<span class="correct">Saved. Updating list…</span>';
+    const idx=_editQuestionsCache.findIndex(x=>x.id===id);
+    if(idx!==-1)_editQuestionsCache[idx]={...row,id,options:[row.optionA,row.optionB,row.optionC,row.optionD],answer:'ABCD'.indexOf(row.correctAnswer),image:row.questionImage,optionImages:[row.optionAImage,row.optionBImage,row.optionCImage,row.optionDImage]};
+    setTimeout(editQuestionsPage,600);
+  }else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save.')}</span>`;}
+}
+
+/* ===================== ADMIN — RECENT CHANGES (audit log) ===================== */
+async function recentChangesPage(){
+  pushNav(recentChangesPage);
+  requireProfile(async ()=>{
+    if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+    app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="note">Loading…</p></div>`;
+    const res=await apiGet('questionChangeLog',{});
+    if(!res?.ok||!Array.isArray(res.data)){app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="note">Could not load the change log.</p><div class="buttons"><button onclick="recentChangesPage()">Retry</button><button onclick="adminQuestionsPage()">Back</button></div></div>`;return;}
+    const rows=res.data;
+    app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="meta">Last ${rows.length} edit(s) to questions, newest first.</p>
+    <div class="table-scroll"><table class="simple"><tr><th>Date</th><th>Subject</th><th>Question</th><th>Edited by</th><th>What changed</th></tr>
+    ${rows.map(r=>`<tr><td>${esc(formatDateTime(r.timestamp))}</td><td>${esc(r.subject)}</td><td>${esc(r.questionSnippet.slice(0,60))}${r.questionSnippet.length>60?'…':''}</td><td>${esc(r.editedBy)}</td><td>${esc(r.summary)}</td></tr>`).join('')||'<tr><td colspan="5">No edits recorded yet.</td></tr>'}
+    </table></div>
+    <div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
   });
 }
 async function createNewSubject(){
@@ -392,10 +575,17 @@ async function createNewSubject(){
   if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
 }
 function buildAiPrompt(){
+  // Deliberately does NOT auto-fill the subject name from the dropdown —
+  // that line went stale the moment you changed the dropdown selection.
+  // Instead this asks generically for topic + count + difficulty, all
+  // editable by the admin above.
   const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
-  const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the subject";
+  const topic=document.getElementById("aiTopic")?.value?.trim()||"<pick a topic — e.g. Boolean Algebra & K-Maps>";
+  const count=document.getElementById("aiCount")?.value||20;
+  const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
+  const extra=document.getElementById("aiExtra")?.value?.trim();
   return [
-    'Generate multiple-choice exam questions for "'+subjName+'" in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
+    'Generate multiple-choice exam questions in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
     '',
     'Question [TAB] Option A [TAB] Option B [TAB] Option C [TAB] Option D [TAB] Correct Answer [TAB] Year [TAB] State [TAB] Question Number [TAB] Question Image URL [TAB] Option A Image URL [TAB] Option B Image URL [TAB] Option C Image URL [TAB] Option D Image URL',
     '',
@@ -405,8 +595,10 @@ function buildAiPrompt(){
     '- OPTIONAL columns — leave them empty but still include the tab so every row has all 14 columns: State, Question Number, Question Image URL, Option A/B/C/D Image URL.',
     '- Do NOT add a header row, numbering, bullet points, markdown formatting, or any explanation before or after — output ONLY the raw tab-separated data rows.',
     '- Use '+year+' as the Year for every row unless told otherwise.',
-    '- Topic: <REPLACE THIS — e.g. "Digital Electronics — Boolean Algebra & K-Maps">',
-    '- Number of questions: <REPLACE THIS — e.g. 20>',
+    '- Topic / subtopics: '+topic,
+    '- Number of questions: '+count,
+    '- Difficulty level: '+difficulty,
+    extra?('- Additional instructions: '+extra):'- Additional instructions: none',
     '',
     'Example of one correctly formatted row:',
     'What is the SI unit of electric current?\tAmpere\tVolt\tOhm\tWatt\tA\t'+year+'\tTS\t1\t\t\t\t\t'
@@ -460,6 +652,10 @@ function checkAdminPassword(){
   const v=document.getElementById("adminPass").value;
   if(v!==ADMIN_PANEL_PASSWORD){document.getElementById("adminPassErr").textContent="Incorrect password.";return;}
   isAdminUnlocked=true;
+  localStorage.setItem("ecet_admin_unlocked","1");
+  // Replace the password-screen stack entry so Back goes straight Home,
+  // instead of pushing the admin page on top of the password screen.
+  navStack.pop();
   adminQuestionsPage();
 }
 
@@ -567,14 +763,15 @@ async function dashboard(){
   pushNav(dashboard);
   clearExam();const p=store.profile(),cached=store.dashboardCache();
   if(cached){renderDashboardBody(cached,p,true);}else{app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">Loading…</p></div>`;}
-  const res=API?await apiGet("dashboard",{email:p.email}):null;
+  // Fetch dashboard + history in parallel (instead of sequentially) so the
+  // full page is roughly twice as fast to settle.
+  const [res,hres]=API?await Promise.all([apiGet("dashboard",{email:p.email}),apiGet("history",{email:p.email})]):[null,null];
   if(!res?.ok){
     if(cached){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="dashboard()">Retry</button>`;return;}
     app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">${API?"Could not load dashboard.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="dashboard()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
   }
   const d=res.data;store.setDashboardCache(d);
   renderDashboardBody(d,p,false);
-  const hres=API?await apiGet("history",{email:p.email}):null;
   const hist=(hres?.ok&&Array.isArray(hres.data))?hres.data:[];
   const recentEl=document.getElementById("dashRecent");
   if(recentEl){
@@ -621,8 +818,20 @@ function compareHTML(){
   const [a,b]=_compareIds.map(id=>_historyCache.find(h=>h.resultId===id)).sort((x,y)=>new Date(x.endTime||x.timestamp)-new Date(y.endTime||y.timestamp));
   if(!a||!b)return"";
   const diff=(x,y)=>{const d=(Number(y)-Number(x));return `${d>0?"+":""}${Math.round(d*100)/100}`;};
-  return `<div class="advice ${b.percentage>=a.percentage?"good":"weak"}"><b>Comparing:</b> ${esc(a.subject)} on ${esc(formatDateTime(a.endTime||a.timestamp))} → ${esc(b.subject)} on ${esc(formatDateTime(b.endTime||b.timestamp))}<br>
-  Score: ${a.score}/${a.total} → ${b.score}/${b.total} (${diff(a.score,b.score)}) • Percentage: ${a.percentage}% → ${b.percentage}% (${diff(a.percentage,b.percentage)}%) • Wrong: ${a.wrong} → ${b.wrong} • Unattempted: ${a.unanswered} → ${b.unanswered}</div>`;
+  const rows=[
+    ["Subject",esc(a.subject),esc(b.subject),""],
+    ["Date",esc(formatDateTime(a.endTime||a.timestamp)),esc(formatDateTime(b.endTime||b.timestamp)),""],
+    ["Score",`${a.score}/${a.total}`,`${b.score}/${b.total}`,diff(a.score,b.score)],
+    ["%",`${a.percentage}%`,`${b.percentage}%`,diff(a.percentage,b.percentage)+"%"],
+    ["Correct",a.correct,b.correct,diff(a.correct,b.correct)],
+    ["Wrong",a.wrong,b.wrong,diff(a.wrong,b.wrong)],
+    ["Unanswered",a.unanswered,b.unanswered,diff(a.unanswered,b.unanswered)],
+    ["Time",clock(a.totalTimeSec),clock(b.totalTimeSec),""]
+  ];
+  return `<div class="advice ${b.percentage>=a.percentage?"good":"weak"}"><b>Comparing two attempts</b></div>
+  <div class="table-scroll"><table class="simple"><tr><th>Metric</th><th>Attempt 1</th><th>Attempt 2</th><th>Change</th></tr>
+  ${rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}
+  </table></div>`;
 }
 
 /* ===================== REMINDERS (standalone, not test-dependent) ===================== */
