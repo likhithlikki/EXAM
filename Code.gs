@@ -393,7 +393,7 @@ function doGet(e) {
       case 'isAdmin':
         return out_({
           ok: true,
-          isAdmin: isAdmin_(e.parameter.email)
+          isAdmin: isAdmin_(e.parameter.email, e.parameter.password)
         });
 
       case 'notifications':
@@ -635,7 +635,13 @@ const ADMIN_EMAILS = [
   'admin@example.com'
 ];
 
-function isAdmin_(email) {
+// A simple shared password that unlocks the admin panel from the site itself,
+// without needing to register an email above. Keep this in sync with
+// ADMIN_PANEL_PASSWORD in app.js. Change it here (and in app.js) any time.
+const ADMIN_PANEL_PASSWORD = '123';
+
+function isAdmin_(email, password) {
+  if (password && String(password) === ADMIN_PANEL_PASSWORD) return true;
   var normalized = email_(email);
   return validEmail_(normalized) && ADMIN_EMAILS.indexOf(normalized) !== -1 && normalized !== 'admin@example.com';
 }
@@ -671,7 +677,7 @@ function customSubjects_() {
 
 function createSubject_(body) {
   var adminEmail = email_(body.adminEmail);
-  if (!isAdmin_(adminEmail)) {
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
     return { ok: false, error: 'Admin access is required.' };
   }
 
@@ -724,7 +730,7 @@ function createSubject_(body) {
 
 function importQuestions_(body) {
   var adminEmail = email_(body.adminEmail);
-  if (!isAdmin_(adminEmail)) {
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
     return { ok: false, error: 'Admin access is required.' };
   }
 
@@ -1612,6 +1618,7 @@ function history_(email) {
       );
     })
     .map(function (row) {
+      var liveRank = practiceRank_(row.Subject, row.Email, num_(row.Percentage));
       return {
         resultId: row.ResultId,
         timestamp: toDate_(
@@ -1626,8 +1633,8 @@ function history_(email) {
         wrong: num_(row.Wrong),
         unanswered: num_(row.Unanswered),
         totalTimeSec: num_(row.TotalTimeSec),
-        rank: row.Rank,
-        rankOutOf: row.RankOutOf,
+        rank: liveRank.rank,
+        rankOutOf: liveRank.total,
         startTime: toDate_(
           row.StartTime || row.Timestamp
         ).toISOString(),

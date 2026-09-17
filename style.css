@@ -21,6 +21,7 @@
   --shadow-lg:0 10px 30px rgba(30,50,120,.14);
 }
 *{box-sizing:border-box}
+html,body{overflow-x:hidden;max-width:100%}
 body{margin:0;background:linear-gradient(180deg,#eef2fc 0%,#f6f8fd 320px,#f2f5fc 100%);color:var(--ink);font-family:'Inter',Arial,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 .wrap{max-width:1200px;margin:auto;padding:26px 22px 90px}
@@ -51,6 +52,19 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 .password-card h1,.enroll-card h1,.card h1{color:var(--ink);font-weight:800}
 .password-card input,.enroll-card input{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:9px;font-size:17px;margin:7px 0 10px;background:#fbfcff;transition:border-color .15s ease}
 .password-card input:focus,.enroll-card input:focus,input:focus{outline:none;border-color:var(--primary)}
+
+/* ---------- Generic form fields inside any card (admin forms, etc.) ---------- */
+.card label{display:block;font-weight:700;font-size:13px;color:var(--muted);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.4px}
+.card label:first-of-type{margin-top:6px}
+.card input[type=text],.card input[type=number],.card input[type=email],.card input[type=password],.card input:not([type]),.card select,.card textarea{
+  width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:9px;font-size:15px;background:#fbfcff;color:var(--ink);font-family:inherit;transition:border-color .15s ease
+}
+.card select{cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) center,calc(100% - 13px) center;background-size:5px 5px,5px 5px;background-repeat:no-repeat;appearance:none;-webkit-appearance:none}
+.card input[type=file]{width:100%;padding:10px;border:1.5px dashed var(--line);border-radius:9px;background:#fbfcff}
+.card input:focus,.card select:focus,.card textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.card>h1+p.note,.card>p.note:first-of-type{margin-top:2px}
+.card h1{margin-bottom:6px}
+.card+.card{margin-top:18px}
 .error{min-height:24px;color:var(--danger);font-weight:600;font-size:14px}
 
 /* ---------- Exam top bar ---------- */

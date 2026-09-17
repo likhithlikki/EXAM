@@ -46,17 +46,21 @@ function loadingHide(){
   }
 }
 
-async function apiGet(action,params={},timeoutMs=9000){
+async function apiGet(action,params={},timeoutMs=12000,retries=1){
   if(!API)return null;
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),timeoutMs);
-  loadingShow();
-  try{
-    const r=await fetch(API+"?"+new URLSearchParams({action,...params}),{method:"GET",cache:"no-store",signal:controller.signal});
-    if(!r.ok) throw new Error("HTTP "+r.status);
-    return await r.json();
-  }catch(e){console.warn("GET "+action+" failed:",e);return null;}
-  finally{clearTimeout(timer);loadingHide();}
+  for(let attempt=0;attempt<=retries;attempt++){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    loadingShow();
+    try{
+      const r=await fetch(API+"?"+new URLSearchParams({action,...params}),{method:"GET",cache:"no-store",signal:controller.signal});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return await r.json();
+    }catch(e){
+      console.warn("GET "+action+" failed (attempt "+(attempt+1)+"/"+(retries+1)+"):",e);
+      if(attempt===retries)return null;
+    }finally{clearTimeout(timer);loadingHide();}
+  }
 }
 async function apiPost(action,payload={},timeoutMs=15000){
   if(!API)return null;
@@ -222,7 +226,7 @@ async function home(){
   customSubjects=store.customSubjectsCache();
   const p=store.profile();
   app.innerHTML=`<div class="home"><h1>ECET Online Test</h1><p class="subtitle">Choose a subject. Each test gets exactly 1 minute per question — no extra time.</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">${esc(p.name)}</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
     <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.available?(unfinished?"Test in progress — resume any time":"Questions available"):"Question bank coming soon"}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin</h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
@@ -363,7 +367,7 @@ async function createNewSubject(){
   const statusEl=document.getElementById("newSubjectStatus");
   if(!name||!password){statusEl.innerHTML='<span class="wronganswer">Subject name and password are both required.</span>';return;}
   statusEl.textContent="Creating…";
-  const res=await apiPost("createSubject",{adminEmail:p.email,name,password,description});
+  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description});
   if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
   customSubjects.push(res.subject);
   statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
@@ -391,7 +395,7 @@ function previewQuestionFile(ev){
   const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''}),defaultYear=document.getElementById('adminYear')?.value||'';_questionImportRows=raw.map(r=>normalizeQuestionRow(r,defaultYear));const errors=validateImportRows(_questionImportRows);const preview=_questionImportRows.slice(0,20);document.getElementById('importStatus').innerHTML=`<b>${_questionImportRows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}`;document.getElementById('importPreview').innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;document.getElementById('importQuestionsBtn').disabled=errors.length>0||!_questionImportRows.length;}catch(err){_questionImportRows=[];document.getElementById('importQuestionsBtn').disabled=true;document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';console.warn(err);}};reader.readAsArrayBuffer(file);
 }
 async function importPreviewedQuestions(){
-  const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
+  const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
 }
 
 /* ===================== ADMIN PASSWORD UNLOCK =====================
@@ -417,8 +421,16 @@ function openPassword(i){_pwSubject=subjects[i];renderPasswordCard();}
 function openCustomPassword(i){_pwSubject=customSubjects[i];renderPasswordCard();}
 function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
 async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}bank=[];if(s.file){try{bank=await fetch(s.file).then(r=>r.json());}catch(e){bank=[];}}try{const imported=API?await apiGet('questions',{subjectId:s.id}):null;if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);}catch(e){console.warn('Imported question load failed',e);}if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
-function enroll(){pushNav(enroll);const p=store.profile();if(p){app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Continue as <b>${esc(p.name)}</b> (${esc(p.email)})?</p><div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="beginExam()">Start Exam</button></div></div>`;return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Start Exam</button></div></div>`;}
-function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});beginExam();}
+function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
+function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});confirmExamStart();}
+function confirmExamStart(){
+  pushNav(confirmExamStart);
+  const p=store.profile(),mins=bank.length;
+  app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1>${activeSubject.description?`<p class="note">${esc(activeSubject.description)}</p>`:""}
+    <div class="dash-grid"><div class="dash-tile"><b>${bank.length}</b><span>Questions</span></div><div class="dash-tile"><b>${mins} min</b><span>Time limit</span></div><div class="dash-tile"><b>1 min</b><span>Per question</span></div><div class="dash-tile"><b>No</b><span>Extra time</span></div></div>
+    <p class="note">You'll be entered as <b>${esc(p.name)}</b> (${esc(p.email)}). The timer starts the moment you click Start Exam and keeps running even if you leave the page.</p>
+    <div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="home()">Back</button><button onclick="beginExam()">Start Exam</button></div></div>`;
+}
 async function beginExam(){const p=store.profile();apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});start();}
 
 /* ===================== EXAM ===================== */
@@ -519,7 +531,7 @@ async function dashboard(){
   const recentEl=document.getElementById("dashRecent");
   if(recentEl){
     const recent=hist.slice(0,5);
-    recentEl.innerHTML=recent.length?`<table class="simple"><thead><tr><th>Date</th><th>Subject</th><th>Score</th><th>%</th></tr></thead><tbody>${recent.map(r=>`<tr><td>${esc(formatDateTime(r.timestamp))}</td><td>${esc(r.subject)}</td><td>${esc(r.correct)}/${esc(r.total)}</td><td>${esc(r.percentage)}%</td></tr>`).join("")}</tbody></table>`:'<p class="note">No attempts yet.</p>';
+    recentEl.innerHTML=recent.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Date</th><th>Subject</th><th>Score</th><th>%</th></tr></thead><tbody>${recent.map(r=>`<tr><td>${esc(formatDateTime(r.timestamp))}</td><td>${esc(r.subject)}</td><td>${esc(r.correct)}/${esc(r.total)}</td><td>${esc(r.percentage)}%</td></tr>`).join("")}</tbody></table></div>`:'<p class="note">No attempts yet.</p>';
   }
   const freqEl=document.getElementById("dashFreq");
   if(freqEl){
