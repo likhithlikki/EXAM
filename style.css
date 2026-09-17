@@ -47,6 +47,12 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 .home-nav button:hover{background:var(--primary-light)}
 .subject-card button:disabled,.buttons button:disabled{background:#dfe3ee;color:#9aa2b8;cursor:not-allowed;box-shadow:none}
 .buttons button:hover:not(:disabled),.examfoot button:hover:not(:disabled),.subject-card button:hover:not(:disabled),.card>button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(41,82,227,.3)}
+
+/* While an API call is in flight (see loadingShow/loadingHide in app.js),
+   every button fades and becomes unclickable so a click can't fire twice
+   and it's obvious something is happening — even on buttons re-rendered
+   mid-request, since this is one selector rather than per-button JS. */
+body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:saturate(.6)}
 .card{padding:22px}
 .password-card,.enroll-card{max-width:520px;margin:50px auto}
 .password-card h1,.enroll-card h1,.card h1{color:var(--ink);font-weight:800}
