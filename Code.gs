@@ -649,70 +649,33 @@ function register_(body) {
 function deleteRowsByEmail_(sheetName, email) {
   var sheet = sh_(sheetName);
   if (!sheet || sheet.getLastRow() < 2) return 0;
-
   var values = sheet.getDataRange().getValues();
-  if (!values.length) return 0;
-
-  var headers = values[0].map(String);
+  var headers = values[0];
   var emailIndex = headers.indexOf('Email');
-  var toEmailIndex = headers.indexOf('ToEmail');
-
-  if (emailIndex === -1 && toEmailIndex === -1) return 0;
-
-  var kept = [values[0]];
+  if (emailIndex === -1) return 0;
   var removed = 0;
-
-  for (var i = 1; i < values.length; i++) {
-    var row = values[i];
-    var matches = false;
-
-    if (emailIndex !== -1 && email_(row[emailIndex]) === email) {
-      matches = true;
-    }
-    if (toEmailIndex !== -1 && email_(row[toEmailIndex]) === email) {
-      matches = true;
-    }
-
-    if (matches) {
+  for (var i = values.length - 1; i >= 1; i--) {
+    if (email_(values[i][emailIndex]) === email) {
+      sheet.deleteRow(i + 1);
       removed++;
-    } else {
-      kept.push(row);
     }
   }
-
-  if (!removed) return 0;
-
-  // Rewrite once instead of calling deleteRow() repeatedly. This is much
-  // faster for accounts with many attempts, answers, reminders, etc.
-  var lastRow = sheet.getLastRow();
-  var lastColumn = sheet.getLastColumn();
-  if (lastRow > 1) {
-    sheet.getRange(2, 1, lastRow - 1, lastColumn).clearContent();
-  }
-  if (kept.length > 1) {
-    sheet.getRange(2, 1, kept.length - 1, lastColumn).setValues(kept.slice(1));
-  }
-
   return removed;
 }
 
 // Permanently removes a student's account and every record tied to their
-// email (results, answers, mistakes, reminders, notifications and queued
-// emails). Requires the email to be confirmed by the caller.
+// email (results, answers, mistakes, reminders, notifications). Requires the
+// email to be confirmed by the caller (the frontend asks for confirmation
+// before sending this request).
 function deleteAccount_(body) {
   var email = email_(body.email);
   if (!validEmail_(email)) {
     return { ok: false, error: 'A valid email address is required.' };
   }
 
-  // Account deletion is a structural mutation, so do not trust the
-  // short-lived sheet setup cache here.
-  ensureSheets_();
-
   var sheetsToClean = [
     'Users', 'Results', 'Answers', 'WrongAnswers', 'Rankings',
-    'RevisionHistory', 'SubmittedSessions', 'Reminders',
-    'Notifications', 'EmailQueue'
+    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications'
   ];
 
   var summary = {};
@@ -720,22 +683,10 @@ function deleteAccount_(body) {
     summary[name] = deleteRowsByEmail_(name, email);
   });
 
-  // Remove this user's short-lived server-side cached responses immediately.
-  try {
-    CacheService.getScriptCache().removeAll([
-      'dash_' + email,
-      'mist_' + email,
-      'hist_' + email,
-      'rmnd_' + email
-    ]);
-  } catch (ignore) {}
-
-  return {
-    ok: true,
-    message: 'Account and related data deleted.',
-    removed: summary
-  };
+  return { ok: true, message: 'Account and related data deleted.', removed: summary };
 }
+
+
 
 
 // ============================================================
@@ -812,13 +763,7 @@ function createSubject_(body) {
     return { ok: false, error: 'A password for this subject is required.' };
   }
 
-  // This admin mutation must not rely on the 5-minute sheet-setup cache.
-  // Ensure the Subjects sheet exists before reading/writing it.
-  ensureSheets_();
   var sheet = sh_('Subjects');
-  if (!sheet) {
-    return { ok: false, error: 'Subjects sheet is unavailable. Please try again.' };
-  }
   var existing = objs_(sheet);
 
   var nameLower = name.toLowerCase();
@@ -1424,17 +1369,6 @@ function submitExam_(body) {
   }
 
   upsertRanking_(result);
-
-  // The dashboard/practice-card statistics are cached briefly. Invalidate
-  // this user's caches immediately so a completed test is visible at once.
-  try {
-    CacheService.getScriptCache().removeAll([
-      'dash_' + email,
-      'mist_' + email,
-      'hist_' + email,
-      'rmnd_' + email
-    ]);
-  } catch (ignore) {}
 
   var emailResult = sendResultEmail_(
     result,
