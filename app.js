@@ -147,7 +147,7 @@ function goBack(){
   (prev||home)();
 }
 
-let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
+let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[],liveQuestionCounts={};
 let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
@@ -156,8 +156,8 @@ let isAdminUnlocked=localStorage.getItem("ecet_admin_unlocked")==="1";
 const ADMIN_PANEL_PASSWORD=(window.APP_CONFIG&&window.APP_CONFIG.ADMIN_PANEL_PASSWORD)||"123";
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
-function clearExam(resetSubmitting=true){
-  clearInterval(timer); timer=null; if(resetSubmitting)isSubmitting=false;
+function clearExam(){
+  clearInterval(timer); timer=null; isSubmitting=false;
   window.removeEventListener("beforeunload",handleBeforeUnload);
   window.removeEventListener("pagehide",handlePageHide);
   window.removeEventListener("beforeunload",handleRevisionBeforeUnload);
@@ -287,7 +287,7 @@ async function home(){
   const p=store.profile();
   app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload">⟳ Refresh Data</button></div><p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
-    <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
+    <div class="subject-grid" id="builtinSubjectGrid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card" data-subject-id="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
     <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
@@ -305,7 +305,10 @@ function homeSubtitle(){
 function subjectCardMeta(s){
   const unfinished=s.available&&store.getProgress(s.id);
   if(!s.available)return "Question bank coming soon";
-  const count=s.questionCount;
+  // Prefer the live count from the Questions sheet (kept fresh by
+  // checkServerStatusAndBundle) over subjects.json's static number, so
+  // questions imported via the admin panel show up without a redeploy.
+  const count=liveQuestionCounts[s.id]!==undefined?liveQuestionCounts[s.id]:s.questionCount;
   const mins=count?count:50;
   const best=subjectBest(s.name);
   const bits=[];
@@ -356,9 +359,15 @@ async function checkServerStatusAndBundle(){
     if(Array.isArray(res.data?.customSubjects)){
       customSubjects=res.data.customSubjects;
       store.setCustomSubjectsCache(customSubjects);
-      const grid=document.getElementById("customSubjectGrid");
-      if(grid)grid.innerHTML=customSubjectsHTML();
     }
+    if(res.data?.questionCounts&&typeof res.data.questionCounts==="object"){
+      liveQuestionCounts=res.data.questionCounts;
+    }
+    const grid=document.getElementById("customSubjectGrid");
+    if(grid)grid.innerHTML=customSubjectsHTML();
+    document.querySelectorAll(".subject-grid .subject-card p").forEach((el,i)=>{
+      if(subjects[i])el.innerHTML=subjectCardMeta(subjects[i]);
+    });
   }else if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
 }
 function handleRevisionLink(){
@@ -802,7 +811,7 @@ function render(){const q=test[current],answered=answers.filter(x=>x!==null).len
 
 /* ===================== RESULT ===================== */
 async function submit(){
-  if(isSubmitting||!test.length)return; isSubmitting=true;clearExam(false);
+  if(isSubmitting||!test.length)return; clearExam();isSubmitting=true;
   const payload=submissionPayload();store.clearProgress(activeSubject.id);
   const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
@@ -813,11 +822,6 @@ async function submit(){
     app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;
   }
-  // The exam is finished. Clear the active-exam state so Back/Home cannot
-  // mistake the already-submitted result for an active test. Keep the
-  // selected subject + bank so Retry Test can start a fresh attempt.
-  test=[]; answers=[]; marked=[]; qTime=[]; current=0; left=0; examSessionId="";
-  revisionMode=false; revisionItems=[];
   renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 function pieHTML(r){const total=Math.max(1,r.total),c=r.score/total*100,w=r.wrong/total*100,u=r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
