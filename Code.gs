@@ -374,13 +374,7 @@ function doGet(e) {
           data: {
             online: true,
             isAdmin: e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false,
-            customSubjects: customSubjects_(),
-            // Live counts from the Questions sheet keyed by SubjectId, covering
-            // BOTH custom subjects and built-in subjects from subjects.json.
-            // subjects.json only has a hardcoded questionCount that never
-            // changes after admin imports more questions into an existing
-            // built-in subject, so the frontend merges this map on top of it.
-            questionCounts: allQuestionCounts_()
+            customSubjects: customSubjects_()
           }
         });
 
@@ -655,33 +649,70 @@ function register_(body) {
 function deleteRowsByEmail_(sheetName, email) {
   var sheet = sh_(sheetName);
   if (!sheet || sheet.getLastRow() < 2) return 0;
+
   var values = sheet.getDataRange().getValues();
-  var headers = values[0];
+  if (!values.length) return 0;
+
+  var headers = values[0].map(String);
   var emailIndex = headers.indexOf('Email');
-  if (emailIndex === -1) return 0;
+  var toEmailIndex = headers.indexOf('ToEmail');
+
+  if (emailIndex === -1 && toEmailIndex === -1) return 0;
+
+  var kept = [values[0]];
   var removed = 0;
-  for (var i = values.length - 1; i >= 1; i--) {
-    if (email_(values[i][emailIndex]) === email) {
-      sheet.deleteRow(i + 1);
+
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i];
+    var matches = false;
+
+    if (emailIndex !== -1 && email_(row[emailIndex]) === email) {
+      matches = true;
+    }
+    if (toEmailIndex !== -1 && email_(row[toEmailIndex]) === email) {
+      matches = true;
+    }
+
+    if (matches) {
       removed++;
+    } else {
+      kept.push(row);
     }
   }
+
+  if (!removed) return 0;
+
+  // Rewrite once instead of calling deleteRow() repeatedly. This is much
+  // faster for accounts with many attempts, answers, reminders, etc.
+  var lastRow = sheet.getLastRow();
+  var lastColumn = sheet.getLastColumn();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, lastColumn).clearContent();
+  }
+  if (kept.length > 1) {
+    sheet.getRange(2, 1, kept.length - 1, lastColumn).setValues(kept.slice(1));
+  }
+
   return removed;
 }
 
 // Permanently removes a student's account and every record tied to their
-// email (results, answers, mistakes, reminders, notifications). Requires the
-// email to be confirmed by the caller (the frontend asks for confirmation
-// before sending this request).
+// email (results, answers, mistakes, reminders, notifications and queued
+// emails). Requires the email to be confirmed by the caller.
 function deleteAccount_(body) {
   var email = email_(body.email);
   if (!validEmail_(email)) {
     return { ok: false, error: 'A valid email address is required.' };
   }
 
+  // Account deletion is a structural mutation, so do not trust the
+  // short-lived sheet setup cache here.
+  ensureSheets_();
+
   var sheetsToClean = [
     'Users', 'Results', 'Answers', 'WrongAnswers', 'Rankings',
-    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications'
+    'RevisionHistory', 'SubmittedSessions', 'Reminders',
+    'Notifications', 'EmailQueue'
   ];
 
   var summary = {};
@@ -689,10 +720,22 @@ function deleteAccount_(body) {
     summary[name] = deleteRowsByEmail_(name, email);
   });
 
-  return { ok: true, message: 'Account and related data deleted.', removed: summary };
+  // Remove this user's short-lived server-side cached responses immediately.
+  try {
+    CacheService.getScriptCache().removeAll([
+      'dash_' + email,
+      'mist_' + email,
+      'hist_' + email,
+      'rmnd_' + email
+    ]);
+  } catch (ignore) {}
+
+  return {
+    ok: true,
+    message: 'Account and related data deleted.',
+    removed: summary
+  };
 }
-
-
 
 
 // ============================================================
@@ -752,20 +795,6 @@ function customSubjects_() {
   });
 }
 
-// Counts every question in the Questions sheet grouped by SubjectId,
-// regardless of whether that SubjectId belongs to a custom subject or a
-// built-in one from subjects.json. Used to keep "X Questions" on the home
-// page cards live instead of relying on subjects.json's static count.
-function allQuestionCounts_() {
-  var counts = {};
-  objs_(sh_('Questions')).forEach(function (row) {
-    var sid = String(row.SubjectId || '');
-    if (!sid) return;
-    counts[sid] = (counts[sid] || 0) + 1;
-  });
-  return counts;
-}
-
 function createSubject_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
@@ -783,7 +812,13 @@ function createSubject_(body) {
     return { ok: false, error: 'A password for this subject is required.' };
   }
 
+  // This admin mutation must not rely on the 5-minute sheet-setup cache.
+  // Ensure the Subjects sheet exists before reading/writing it.
+  ensureSheets_();
   var sheet = sh_('Subjects');
+  if (!sheet) {
+    return { ok: false, error: 'Subjects sheet is unavailable. Please try again.' };
+  }
   var existing = objs_(sheet);
 
   var nameLower = name.toLowerCase();
@@ -1389,6 +1424,17 @@ function submitExam_(body) {
   }
 
   upsertRanking_(result);
+
+  // The dashboard/practice-card statistics are cached briefly. Invalidate
+  // this user's caches immediately so a completed test is visible at once.
+  try {
+    CacheService.getScriptCache().removeAll([
+      'dash_' + email,
+      'mist_' + email,
+      'hist_' + email,
+      'rmnd_' + email
+    ]);
+  } catch (ignore) {}
 
   var emailResult = sendResultEmail_(
     result,

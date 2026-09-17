@@ -147,7 +147,7 @@ function goBack(){
   (prev||home)();
 }
 
-let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[],liveQuestionCounts={};
+let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
 let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
@@ -156,8 +156,15 @@ let isAdminUnlocked=localStorage.getItem("ecet_admin_unlocked")==="1";
 const ADMIN_PANEL_PASSWORD=(window.APP_CONFIG&&window.APP_CONFIG.ADMIN_PANEL_PASSWORD)||"123";
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
-function clearExam(){
-  clearInterval(timer); timer=null; isSubmitting=false;
+function clearExam(resetState=true){
+  clearInterval(timer); timer=null;
+  if(resetState){
+    isSubmitting=false;
+    activeSubject=null;
+    test=[]; answers=[]; marked=[]; qTime=[];
+    current=0; left=0; questionStartedAt=0; examStartedAt=0; examSessionId="";
+    revisionMode=false; revisionItems=[];
+  }
   window.removeEventListener("beforeunload",handleBeforeUnload);
   window.removeEventListener("pagehide",handlePageHide);
   window.removeEventListener("beforeunload",handleRevisionBeforeUnload);
@@ -287,7 +294,7 @@ async function home(){
   const p=store.profile();
   app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload">⟳ Refresh Data</button></div><p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
-    <div class="subject-grid" id="builtinSubjectGrid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card" data-subject-id="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
+    <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
     <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
@@ -305,10 +312,7 @@ function homeSubtitle(){
 function subjectCardMeta(s){
   const unfinished=s.available&&store.getProgress(s.id);
   if(!s.available)return "Question bank coming soon";
-  // Prefer the live count from the Questions sheet (kept fresh by
-  // checkServerStatusAndBundle) over subjects.json's static number, so
-  // questions imported via the admin panel show up without a redeploy.
-  const count=liveQuestionCounts[s.id]!==undefined?liveQuestionCounts[s.id]:s.questionCount;
+  const count=s.questionCount;
   const mins=count?count:50;
   const best=subjectBest(s.name);
   const bits=[];
@@ -359,15 +363,9 @@ async function checkServerStatusAndBundle(){
     if(Array.isArray(res.data?.customSubjects)){
       customSubjects=res.data.customSubjects;
       store.setCustomSubjectsCache(customSubjects);
+      const grid=document.getElementById("customSubjectGrid");
+      if(grid)grid.innerHTML=customSubjectsHTML();
     }
-    if(res.data?.questionCounts&&typeof res.data.questionCounts==="object"){
-      liveQuestionCounts=res.data.questionCounts;
-    }
-    const grid=document.getElementById("customSubjectGrid");
-    if(grid)grid.innerHTML=customSubjectsHTML();
-    document.querySelectorAll(".subject-grid .subject-card p").forEach((el,i)=>{
-      if(subjects[i])el.innerHTML=subjectCardMeta(subjects[i]);
-    });
   }else if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
 }
 function handleRevisionLink(){
@@ -630,6 +628,7 @@ async function createNewSubject(){
   const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description});
   if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
   customSubjects.push(res.subject);
+  store.setCustomSubjectsCache(customSubjects);
   statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
   document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";
   const sel=document.getElementById("adminSubject");
@@ -723,7 +722,7 @@ function previewQuestionFile(ev){
   const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''}),defaultYear=document.getElementById('adminYear')?.value||'';_questionImportRows=raw.map(r=>normalizeQuestionRow(r,defaultYear));const errors=validateImportRows(_questionImportRows);const preview=_questionImportRows.slice(0,20);document.getElementById('importStatus').innerHTML=`<b>${_questionImportRows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}`;document.getElementById('importPreview').innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;document.getElementById('importQuestionsBtn').disabled=errors.length>0||!_questionImportRows.length;}catch(err){_questionImportRows=[];document.getElementById('importQuestionsBtn').disabled=true;document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';console.warn(err);}};reader.readAsArrayBuffer(file);
 }
 async function importPreviewedQuestions(){
-  const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
+  const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';await refreshCustomSubjects(false);}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
 }
 
 /* ===================== ADMIN PASSWORD UNLOCK =====================
@@ -811,8 +810,11 @@ function render(){const q=test[current],answered=answers.filter(x=>x!==null).len
 
 /* ===================== RESULT ===================== */
 async function submit(){
-  if(isSubmitting||!test.length)return; clearExam();isSubmitting=true;
-  const payload=submissionPayload();store.clearProgress(activeSubject.id);
+  if(isSubmitting||!test.length)return;
+  isSubmitting=true;
+  const payload=submissionPayload();
+  const resultSubjectName=activeSubject?.name||payload.subject||"Test";
+  store.clearProgress(activeSubject.id);
   const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
   const resp=await apiPost("submitExam",payload);
@@ -822,7 +824,8 @@ async function submit(){
     app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;
   }
-  renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
+  clearExam();
+  renderResult({subjectName:resultSubjectName,score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 function pieHTML(r){const total=Math.max(1,r.total),c=r.score/total*100,w=r.wrong/total*100,u=r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
 function timeChart(detail){const max=Math.max(60,...detail.map(d=>d.time||0));const ticks=[0,Math.round(max/4),Math.round(max/2),Math.round(max*3/4),max];return `<div class="chart-area"><div class="y-axis">${ticks.slice().reverse().map(v=>`<span>${formatSeconds(v)}</span>`).join("")}</div><div class="chart-main"><div class="gridlines">${ticks.map(()=>`<i></i>`).join("")}</div><div class="bars">${detail.map((d,i)=>{const h=Math.max(3,(d.time/max)*100);return `<button class="bar-col ${d.selected===null?"unansbar":d.selected!==d.correct?"wrongbar":""}" style="height:${h}%" onclick="showQuestionTime(${i})" title="Q${i+1}: ${formatSeconds(d.time)}"><span>${i+1}</span></button>`;}).join("")}</div><div class="x-axis">${detail.map((_,i)=>`<span>${i+1}</span>`).join("")}</div></div></div><div id="timeDetail" class="chart-detail">Click any question bar to see exact time.</div>`;}
@@ -830,7 +833,8 @@ function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;
 function renderResult(r){
   window._lastResultDetail=r.detail;
   const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
-  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="start()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+  const resultSubjectName=r.subjectName||activeSubject?.name||"Test";
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(resultSubjectName)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="start()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
 }
 function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
 function reviewListHTML(detail,filter){return detail.map((d,n)=>{const iw=d.selected!==null&&d.selected!==d.correct,iu=d.selected===null;if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${iu?"Unanswered":"ABCD"[d.selected]+". "+esc(d.options[d.selected])}</span></div><div>Correct answer: <span class="correct">${"ABCD"[d.correct]}. ${esc(d.options[d.correct])}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
