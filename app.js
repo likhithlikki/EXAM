@@ -214,7 +214,14 @@ function handlePageHide(){
 
 /* ===================== HOME ===================== */
 function customSubjectsHTML(){
-  return customSubjects.length?customSubjects.map((s,i)=>{const unfinished=store.getProgress(s.id);return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):(unfinished?"Test in progress — resume any time":"Questions available")}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
+  return customSubjects.length?customSubjects.map((s,i)=>{
+    const unfinished=store.getProgress(s.id);
+    const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
+    if(!hasQuestions){
+      return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+    }
+    return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):(unfinished?"Test in progress — resume any time":"Questions available")}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
   pushNav(home);
@@ -346,17 +353,26 @@ async function adminQuestionsPage(){
     </div>
     <div class="card"><h1>Admin — Add Questions</h1>
       <p class="note">Select an existing subject to add its questions, or pick "Create New Subject" to make a brand-new one above first.</p>
-      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}">
+      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAiPrompt();">
         ${adminSubjectOptions()}
         <option value="__new__">➕ Create New Subject…</option>
       </select>
-      <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026">
-      <p class="note">Used for any row whose Year column is left blank in the Excel file.</p>
-      <label>Excel file</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
-      <div class="buttons"><button onclick="downloadQuestionTemplate()">Download Excel Template</button><button onclick="home()">Back</button></div>
+      <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026" onchange="refreshAiPrompt()">
+      <p class="note">Used for any row whose Year column is left blank in the Excel file, and filled into the AI prompt below.</p>
+
+      <h2 style="margin-top:26px">Don't want to type questions by hand? Ask an AI</h2>
+      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> State, Question Number, and all Image URL columns — leave blank if unused.</p>
+      <p class="note">Copy the prompt below, paste it into any AI chat (edit the topic and question count), then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
+      <textarea id="aiPromptBox" readonly rows="11" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
+      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
+      <div id="aiCopyStatus" class="note"></div>
+
+      <label style="margin-top:26px">Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
+      <div class="buttons"><button onclick="home()">Back</button></div>
       <div id="importStatus" class="note"></div><div id="importPreview"></div>
       <div class="buttons"><button id="importQuestionsBtn" onclick="importPreviewedQuestions()" disabled>Import Questions</button></div>
     </div>`;
+    refreshAiPrompt();
   });
 }
 async function createNewSubject(){
@@ -374,6 +390,38 @@ async function createNewSubject(){
   document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";
   const sel=document.getElementById("adminSubject");
   if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
+}
+function buildAiPrompt(){
+  const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
+  const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the subject";
+  return [
+    'Generate multiple-choice exam questions for "'+subjName+'" in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
+    '',
+    'Question [TAB] Option A [TAB] Option B [TAB] Option C [TAB] Option D [TAB] Correct Answer [TAB] Year [TAB] State [TAB] Question Number [TAB] Question Image URL [TAB] Option A Image URL [TAB] Option B Image URL [TAB] Option C Image URL [TAB] Option D Image URL',
+    '',
+    'Rules:',
+    '- MANDATORY columns (every row must have these): Question, Option A, Option B, Option C, Option D, Correct Answer, Year.',
+    '- Correct Answer must be exactly one letter: A, B, C, or D — matching one of the four options.',
+    '- OPTIONAL columns — leave them empty but still include the tab so every row has all 14 columns: State, Question Number, Question Image URL, Option A/B/C/D Image URL.',
+    '- Do NOT add a header row, numbering, bullet points, markdown formatting, or any explanation before or after — output ONLY the raw tab-separated data rows.',
+    '- Use '+year+' as the Year for every row unless told otherwise.',
+    '- Topic: <REPLACE THIS — e.g. "Digital Electronics — Boolean Algebra & K-Maps">',
+    '- Number of questions: <REPLACE THIS — e.g. 20>',
+    '',
+    'Example of one correctly formatted row:',
+    'What is the SI unit of electric current?\tAmpere\tVolt\tOhm\tWatt\tA\t'+year+'\tTS\t1\t\t\t\t\t'
+  ].join('\n');
+}
+function refreshAiPrompt(){
+  const box=document.getElementById("aiPromptBox");
+  if(box)box.value=buildAiPrompt();
+}
+function copyAiPrompt(){
+  const box=document.getElementById("aiPromptBox"),status=document.getElementById("aiCopyStatus");
+  if(!box)return;
+  const announce=()=>{if(status)status.innerHTML='<span class="correct">Copied! Paste it into ChatGPT, Claude, or any AI chat.</span>';};
+  const fallback=()=>{try{box.focus();box.select();document.execCommand("copy");announce();}catch(e){if(status)status.innerHTML='<span class="wronganswer">Could not copy automatically — select the text above and copy it manually.</span>';}};
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(box.value).then(announce).catch(fallback);}else{fallback();}
 }
 let _questionImportRows=[];
 function downloadQuestionTemplate(){
