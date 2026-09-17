@@ -274,11 +274,11 @@ function customSubjectsHTML(){
     const unfinished=store.getProgress(s.id);
     const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
     if(!hasQuestions){
-      return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+      return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
     const best=subjectBest(s.name);
     const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
-    return `<div class="subject-card"><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
@@ -347,24 +347,38 @@ async function refreshCustomSubjects(manual){
 // Replaces the old 3-way burst (ping + isAdmin + customSubjects fired
 // separately and concurrently) with one Apps Script execution, so Home
 // makes a single round trip instead of piling three onto the backend at once.
-async function checkServerStatusAndBundle(){
+// Cached for SERVER_STATUS_TTL_MS so navigating Home <-> Dashboard <-> Mistakes
+// repeatedly doesn't re-check the server (and re-flash "Checking server...")
+// on every single visit — only the first Home visit in a while pays for it.
+let _serverStatusCache=null; // {online,isAdmin,customSubjects,checkedAt}
+const SERVER_STATUS_TTL_MS=3*60*1000;
+function applyServerStatus_(status,statusEl,slot){
+  if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':'Server offline — retry'}</span>`;}
+  if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  if(Array.isArray(status.customSubjects)){
+    customSubjects=status.customSubjects;
+    store.setCustomSubjectsCache(customSubjects);
+    const grid=document.getElementById("customSubjectGrid");
+    if(grid)grid.innerHTML=customSubjectsHTML();
+  }
+}
+async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
   const slot=document.getElementById('adminNavSlot');
-  if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';}
   if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
+  const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
+  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
+  if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';}
   if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   const p=store.profile();
   const res=await apiGet('homeBundle',p?{email:p.email}:{},7000);
   if(res?.ok){
-    if(statusEl){statusEl.className='server-status online';statusEl.innerHTML='<span class="server-dot"></span><span>Server online</span>';}
-    if(res.data?.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
-    if(Array.isArray(res.data?.customSubjects)){
-      customSubjects=res.data.customSubjects;
-      store.setCustomSubjectsCache(customSubjects);
-      const grid=document.getElementById("customSubjectGrid");
-      if(grid)grid.innerHTML=customSubjectsHTML();
-    }
-  }else if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
+    _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,checkedAt:Date.now()};
+    applyServerStatus_(_serverStatusCache,statusEl,slot);
+  }else{
+    _serverStatusCache={online:false,isAdmin:isAdminUnlocked,customSubjects,checkedAt:Date.now()};
+    if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
+  }
 }
 function handleRevisionLink(){
   const params=new URLSearchParams(location.search);
@@ -430,7 +444,7 @@ async function deleteAccountPrompt(){
   if(!confirm("This will permanently delete your account and all your results, mistakes, reminders, and history. This cannot be undone. Continue?"))return;
   const p=store.profile();
   app.innerHTML=`<div class="card"><h1>Deleting account…</h1><p class="note">Please wait.</p></div>`;
-  const res=API?await apiPost("deleteAccount",{email:p.email}):null;
+  const res=API?await apiPost("deleteAccount",{email:p.email},25000):null;
   if(!res?.ok){app.innerHTML=`<div class="card"><h1>Could not delete account</h1><p class="note">${esc(res?.error||"Please try again.")}</p><div class="buttons"><button onclick="goProfile()">Back</button></div></div>`;return;}
   localStorage.removeItem("ecet_profile");localStorage.removeItem("ecet_mistakes_cache");
   Object.keys(localStorage).filter(k=>k.startsWith("ecet_progress_")).forEach(k=>localStorage.removeItem(k));
@@ -472,6 +486,8 @@ async function adminQuestionsPage(){
       <p class="note">Used for any row whose Year column is left blank in the Excel file, and filled into the AI prompt below.</p>
 
       <h2 style="margin-top:26px">Don't want to type questions by hand? Ask an AI</h2>
+      <label>Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
+      <p class="note">The prompt below now asks the AI to hand back a ready-to-upload Excel (.xlsx) file directly — no copy-pasting rows.</p>
       <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> State, Question Number, and all Image URL columns — leave blank if unused.</p>
       <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
       <label>Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
@@ -491,7 +507,7 @@ async function adminQuestionsPage(){
       <label>Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. avoid repeats from last year, favor diagrams-based questions" onchange="refreshAiPrompt()">
       <p class="note">Copy the prompt below, paste it into any AI chat, then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
       <textarea id="aiPromptBox" readonly rows="13" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
-      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="refreshAiPrompt(true)">🔀 Reword Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
+      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
       <div id="aiCopyStatus" class="note"></div>
 
       <label style="margin-top:26px">Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
@@ -651,10 +667,12 @@ async function createNewSubject(){
   const sel=document.getElementById("adminSubject");
   if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
 }
-let _aiPromptVariant=0;
 function buildAiPrompt(){
   // Built fresh from the admin's actual answers each time (coverage, question
-  // type, difficulty, count) — not a single fixed template regardless of input.
+  // type, difficulty, count, exam name) — not a single fixed template
+  // regardless of input. This version asks the AI to hand back an actual
+  // .xlsx file (for AI tools that can generate files) instead of TSV text to
+  // paste in — upload the returned file straight into the importer above.
   const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
   const scope=document.getElementById("aiScope")?.value||"subject";
   const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the selected subject";
@@ -663,52 +681,82 @@ function buildAiPrompt(){
   const count=document.getElementById("aiCount")?.value||20;
   const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
   const extra=document.getElementById("aiExtra")?.value?.trim();
+  const examName=document.getElementById("aiExamName")?.value?.trim()||subjName;
 
-  const intros=[
-    'Act as an experienced exam-question setter.',
-    'You are creating practice questions for a competitive-exam-style mock test.',
-    'Generate high-quality multiple-choice questions for an online practice test.'
-  ];
-  const intro=intros[_aiPromptVariant%intros.length];
-
-  const coverageLine=scope==='topic'&&topic
-    ? 'Coverage: focus specifically on this topic/subtopic — '+topic+' (within '+subjName+').'
+  const subtopicsLine=scope==='topic'&&topic
+    ? topic
     : scope==='topic'
-      ? 'Coverage: focus on a specific topic within '+subjName+' — pick one well-defined, commonly-tested subtopic and stay within it.'
-      : 'Coverage: spread questions broadly across the major topics of '+subjName+' (whole-subject coverage, not just one chapter).';
+      ? 'Pick one well-defined, commonly-tested subtopic within '+subjName+' and stay within it.'
+      : 'All major topics of '+subjName+' — spread broadly, not just one chapter.';
 
   const qtypeLines={
-    'Conceptual/theory-based':'Question type: conceptual / theory-based — test definitions, principles, and understanding rather than heavy calculation.',
-    'Numerical/problem-solving':'Question type: numerical / problem-solving — most questions should require a calculation or worked-out step, with plausible numeric distractors as the wrong options.',
-    'Mixed':'Question type: a mix of conceptual and numerical/problem-solving questions, roughly balanced.',
-    'Previous-year exam style':'Question type: match the style, phrasing, and difficulty pattern typically seen in previous-year competitive exam papers for this subject.',
-    'Application/scenario-based':'Question type: application / scenario-based — frame questions around a short real-world scenario the student must reason through.'
+    'Conceptual/theory-based':'Focus on conceptual / theory-based questions — test definitions, principles, and understanding rather than heavy calculation.',
+    'Numerical/problem-solving':'Focus on numerical / problem-solving questions — most should require a calculation or worked step, with plausible numeric distractors as the wrong options.',
+    'Mixed':'Include a balanced mix of conceptual and numerical/problem-solving questions.',
+    'Previous-year exam style':'Match the style, phrasing, and difficulty pattern typically seen in previous-year competitive exam papers for this subject.',
+    'Application/scenario-based':'Frame questions around a short real-world scenario the student must reason through (application / scenario-based).'
   };
 
   return [
-    intro+' Generate multiple-choice exam questions in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
+    'You are creating practice questions for a competitive-exam-style mock test. Generate multiple-choice exam questions in an Excel (.xlsx) file.',
     '',
-    'Question [TAB] Option A [TAB] Option B [TAB] Option C [TAB] Option D [TAB] Correct Answer [TAB] Year [TAB] State [TAB] Question Number [TAB] Question Image URL [TAB] Option A Image URL [TAB] Option B Image URL [TAB] Option C Image URL [TAB] Option D Image URL',
+    'Topic: '+subjName,
+    'Subtopics: '+subtopicsLine,
+    'Number of questions: '+count,
+    'Difficulty level: '+difficulty,
+    'Year: '+year,
+    'Exam: '+examName,
     '',
-    'Rules:',
-    '- MANDATORY columns (every row must have these): Question, Option A, Option B, Option C, Option D, Correct Answer, Year.',
-    '- Correct Answer must be exactly one letter: A, B, C, or D — matching one of the four options.',
-    '- OPTIONAL columns — leave them empty but still include the tab so every row has all 14 columns: State, Question Number, Question Image URL, Option A/B/C/D Image URL.',
-    '- Do NOT add a header row, numbering, bullet points, markdown formatting, or any explanation before or after — output ONLY the raw tab-separated data rows.',
-    '- Use '+year+' as the Year for every row unless told otherwise.',
-    '- '+coverageLine,
-    '- '+(qtypeLines[qtype]||qtypeLines['Mixed']),
-    '- Number of questions: '+count,
-    '- Difficulty level: '+difficulty+(difficulty==='Mixed'?' (spread roughly evenly across easy, medium, and hard)':'.'),
-    '- Make sure no two questions are near-duplicates of each other.',
-    extra?('- Additional instructions: '+extra):'- Additional instructions: none',
+    'Excel format — mandatory',
     '',
-    'Example of one correctly formatted row:',
-    'What is the SI unit of electric current?\tAmpere\tVolt\tOhm\tWatt\tA\t'+year+'\tTS\t1\t\t\t\t\t'
+    'Create an Excel file with exactly 14 columns in this order:',
+    '',
+    '1. Question',
+    '2. Option A',
+    '3. Option B',
+    '4. Option C',
+    '5. Option D',
+    '6. Correct Answer',
+    '7. Year',
+    '8. State',
+    '9. Question Number',
+    '10. Question Image URL',
+    '11. Option A Image URL',
+    '12. Option B Image URL',
+    '13. Option C Image URL',
+    '14. Option D Image URL',
+    '',
+    'Each question must occupy one row. Include a header row with the 14 column names. Preserve this exact column order and structure.',
+    '',
+    'Question requirements',
+    '',
+    '1. Generate exactly '+count+' unique MCQs.',
+    '2. '+(qtypeLines[qtype]||qtypeLines['Mixed']),
+    '3. Ensure the difficulty is '+difficulty+', suitable for competitive exams.',
+    '4. Cover '+(scope==='topic'?'the specified subtopic(s)':'all specified subtopics')+' thoroughly.',
+    '5. Do not create duplicate or near-duplicate questions.',
+    '6. Every question must have exactly four options: A, B, C, and D.',
+    '7. Correct Answer must contain exactly one letter: A, B, C, or D, matching the correct option.',
+    '8. Verify every numerical answer, formula, and correct option before finalizing.',
+    '9. Use '+year+' in the Year column for every question.',
+    '10. Fill Question Number sequentially from 1 to '+count+'.',
+    '11. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
+    '12. Leave all image URL columns empty unless image URLs are explicitly requested.',
+    '13. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
+    ...(extra?['14. Additional instructions: '+extra]:[]),
+    '',
+    'Output requirements',
+    '',
+    '- Return ONLY the completed Excel (.xlsx) file.',
+    '- Do not output the questions as plain text, TSV, CSV, or Markdown.',
+    '- Do not provide explanations, answers, or any other text outside the Excel file.',
+    '- Ensure the file contains exactly '+count+' question rows plus the header row.',
+    '- Check that all 14 columns are present and in the correct order.',
+    '- Ensure every mandatory field is filled for every question.',
+    '- Make the Excel file ready to download and use directly.'
   ].join('\n');
 }
-function refreshAiPrompt(reword){
-  if(reword)_aiPromptVariant++;
+function refreshAiPrompt(){
   const box=document.getElementById("aiPromptBox");
   if(box)box.value=buildAiPrompt();
 }
