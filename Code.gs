@@ -328,6 +328,20 @@ function appendMany_(sheet, headers, objects) {
 // 4. WEB APP ENTRY POINTS
 // ============================================================
 
+// ensureSheets_() scans every sheet's headers on every call — real but
+// avoidable latency when it runs on every single request. Sheet structure
+// only changes on deploy, so gate it behind a short CacheService flag and
+// skip the rescan on the (very common) fast path.
+function ensureSheetsCached_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    if (cache.get('sheets_ensured')) return;
+    ensureSheets_();
+    cache.put('sheets_ensured', '1', 300); // re-check at most every 5 min
+  } catch (e) {
+    ensureSheets_();
+  }
+}
 function doGet(e) {
   e = e || { parameter: {} };
 
@@ -348,9 +362,22 @@ function doGet(e) {
   }
 
   try {
-    ensureSheets_();
+    ensureSheetsCached_();
 
     switch (action) {
+      case 'homeBundle':
+        // Collapses the home-page startup burst (ping + isAdmin + customSubjects)
+        // into a single Apps Script execution instead of 3 separate round trips
+        // firing at once and competing for the same backend.
+        return out_({
+          ok: true,
+          data: {
+            online: true,
+            isAdmin: e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false,
+            customSubjects: customSubjects_()
+          }
+        });
+
       case 'dashboard':
         return out_({
           ok: true,
@@ -443,9 +470,7 @@ function doPost(e) {
   try {
     lock.waitLock(30000);
 
-    ensureSheets_();
-
-    var body = {};
+    ensureSheetsCached_();
 
     if (e && e.postData && e.postData.contents) {
       body = JSON.parse(e.postData.contents);

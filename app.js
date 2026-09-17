@@ -46,8 +46,46 @@ function loadingHide(){
   }
 }
 
+/* ===================== NETWORK LAYER =====================
+   Apps Script backends largely serialize requests rather than truly running
+   them in parallel, so firing many GETs "at once" from the browser just makes
+   them queue behind each other until each one individually times out. This
+   layer fixes that on the client side with three things:
+   1. In-flight de-duplication: two callers asking for the same action+params
+      at the same time share one network call instead of firing two.
+   2. A small concurrency gate (max 2 requests in flight to the backend at a
+      time) so bursts (e.g. Home's startup calls) queue client-side instead
+      of all hitting Apps Script together and each blowing its own timeout.
+   3. Backoff before retrying, instead of retrying instantly into a backend
+      that's already behind. */
+const _inFlightGET=new Map();
+let _activeRequests=0;
+const _requestQueue=[];
+const MAX_CONCURRENT_REQUESTS=2;
+function _runQueued(){
+  if(_activeRequests>=MAX_CONCURRENT_REQUESTS||!_requestQueue.length)return;
+  _activeRequests++;
+  const job=_requestQueue.shift();
+  job().finally(()=>{_activeRequests--;_runQueued();});
+}
+function _enqueue(job){
+  return new Promise((resolve)=>{
+    _requestQueue.push(()=>job().then(resolve,()=>resolve(null)));
+    _runQueued();
+  });
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
 async function apiGet(action,params={},timeoutMs=12000,retries=1){
   if(!API)return null;
+  const key=action+"?"+new URLSearchParams(params).toString();
+  if(_inFlightGET.has(key))return _inFlightGET.get(key); // de-dupe identical concurrent calls
+  const promise=_enqueue(()=>_doGet(action,params,timeoutMs,retries))
+    .finally(()=>_inFlightGET.delete(key));
+  _inFlightGET.set(key,promise);
+  return promise;
+}
+async function _doGet(action,params,timeoutMs,retries){
   for(let attempt=0;attempt<=retries;attempt++){
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),timeoutMs);
@@ -59,20 +97,23 @@ async function apiGet(action,params={},timeoutMs=12000,retries=1){
     }catch(e){
       console.warn("GET "+action+" failed (attempt "+(attempt+1)+"/"+(retries+1)+"):",e);
       if(attempt===retries)return null;
+      await sleep(600*(attempt+1)); // backoff before retrying into a possibly-overloaded backend
     }finally{clearTimeout(timer);loadingHide();}
   }
 }
 async function apiPost(action,payload={},timeoutMs=15000){
   if(!API)return null;
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),timeoutMs);
-  loadingShow();
-  try{
-    const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload}),cache:"no-store",signal:controller.signal});
-    if(!r.ok) throw new Error("HTTP "+r.status);
-    return await r.json();
-  }catch(e){console.warn("POST "+action+" failed:",e);return null;}
-  finally{clearTimeout(timer);loadingHide();}
+  return _enqueue(async()=>{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    loadingShow();
+    try{
+      const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload}),cache:"no-store",signal:controller.signal});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return await r.json();
+    }catch(e){console.warn("POST "+action+" failed:",e);return null;}
+    finally{clearTimeout(timer);loadingHide();}
+  });
 }
 
 /* ===================== BACK NAVIGATION STACK =====================
@@ -251,10 +292,8 @@ async function home(){
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
     <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
   </div>`;
-  checkServerStatus();
-  checkAdminAccess();
+  checkServerStatusAndBundle();
   handleRevisionLink();
-  refreshCustomSubjects();
 }
 function homeSubtitle(){
   const total=subjects.length+customSubjects.length;
@@ -300,15 +339,27 @@ async function refreshCustomSubjects(manual){
   }catch(e){console.warn("Custom subjects load failed",e);}
   finally{if(iconBtn){iconBtn.disabled=false;iconBtn.classList.remove('spinning');}}
 }
-async function checkServerStatus(){
-  const el=document.getElementById('serverStatus');
-  if(!el)return;
-  el.className='server-status checking';
-  el.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';
-  if(!API){el.className='server-status offline';el.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';return;}
-  const res=await apiGet('ping',{},5000);
-  if(res?.ok){el.className='server-status online';el.innerHTML='<span class="server-dot"></span><span>Server online</span>';}
-  else{el.className='server-status offline';el.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
+// Replaces the old 3-way burst (ping + isAdmin + customSubjects fired
+// separately and concurrently) with one Apps Script execution, so Home
+// makes a single round trip instead of piling three onto the backend at once.
+async function checkServerStatusAndBundle(){
+  const statusEl=document.getElementById('serverStatus');
+  const slot=document.getElementById('adminNavSlot');
+  if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';}
+  if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
+  if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  const p=store.profile();
+  const res=await apiGet('homeBundle',p?{email:p.email}:{},7000);
+  if(res?.ok){
+    if(statusEl){statusEl.className='server-status online';statusEl.innerHTML='<span class="server-dot"></span><span>Server online</span>';}
+    if(res.data?.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+    if(Array.isArray(res.data?.customSubjects)){
+      customSubjects=res.data.customSubjects;
+      store.setCustomSubjectsCache(customSubjects);
+      const grid=document.getElementById("customSubjectGrid");
+      if(grid)grid.innerHTML=customSubjectsHTML();
+    }
+  }else if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
 }
 function handleRevisionLink(){
   const params=new URLSearchParams(location.search);
@@ -319,17 +370,6 @@ function handleRevisionLink(){
     const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);
     if(items.length)startRevisionTest();
   });
-}
-async function checkAdminAccess(){
-  const slot=document.getElementById('adminNavSlot');
-  if(!slot)return;
-  // Already unlocked on this device via the admin password — skip the
-  // backend isAdmin round-trip entirely, that network wait was the delay.
-  if(isAdminUnlocked){slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';return;}
-  const p=store.profile();
-  if(!p||!API)return;
-  const res=await apiGet('isAdmin',{email:p.email},5000);
-  if(res?.ok&&res.isAdmin) slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
 }
 function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",email:""};app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}"><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
 function saveProfileEdit(){const n=document.getElementById("pname").value.trim(),e=document.getElementById("pemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("pErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});home();}
@@ -410,13 +450,25 @@ async function adminQuestionsPage(){
 
       <h2 style="margin-top:26px">Don't want to type questions by hand? Ask an AI</h2>
       <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> State, Question Number, and all Image URL columns — leave blank if unused.</p>
-      <label>Topic / Subtopics (optional but recommended)</label><input id="aiTopic" placeholder="e.g. Boolean Algebra & K-Maps" onchange="refreshAiPrompt()">
-      <label>Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
+      <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
+      <label>Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
+        <option value="subject">Whole subject (broad coverage)</option>
+        <option value="topic">Specific topic(s) / subtopic(s)</option>
+      </select>
+      <div id="aiTopicRow" style="display:none"><label>Topic / Subtopics</label><input id="aiTopic" placeholder="e.g. Boolean Algebra & K-Maps" onchange="refreshAiPrompt()"></div>
+      <label>Type of questions</label><select id="aiQType" onchange="refreshAiPrompt()">
+        <option value="Conceptual/theory-based">Conceptual / theory-based</option>
+        <option value="Numerical/problem-solving">Numerical / problem-solving</option>
+        <option value="Mixed" selected>Mixed (concept + numerical)</option>
+        <option value="Previous-year exam style">Previous-year exam style</option>
+        <option value="Application/scenario-based">Application / scenario-based</option>
+      </select>
       <label>Difficulty</label><select id="aiDifficulty" onchange="refreshAiPrompt()"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Super Hard">Super Hard</option><option value="Mixed">Mixed (all levels)</option></select>
-      <label>Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. focus on numerical problems, avoid repeats from last year" onchange="refreshAiPrompt()">
+      <label>Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
+      <label>Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. avoid repeats from last year, favor diagrams-based questions" onchange="refreshAiPrompt()">
       <p class="note">Copy the prompt below, paste it into any AI chat, then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
-      <textarea id="aiPromptBox" readonly rows="12" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
-      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
+      <textarea id="aiPromptBox" readonly rows="13" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
+      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="refreshAiPrompt(true)">🔀 Reword Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
       <div id="aiCopyStatus" class="note"></div>
 
       <label style="margin-top:26px">Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
@@ -574,18 +626,42 @@ async function createNewSubject(){
   const sel=document.getElementById("adminSubject");
   if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
 }
+let _aiPromptVariant=0;
 function buildAiPrompt(){
-  // Deliberately does NOT auto-fill the subject name from the dropdown —
-  // that line went stale the moment you changed the dropdown selection.
-  // Instead this asks generically for topic + count + difficulty, all
-  // editable by the admin above.
+  // Built fresh from the admin's actual answers each time (coverage, question
+  // type, difficulty, count) — not a single fixed template regardless of input.
   const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
-  const topic=document.getElementById("aiTopic")?.value?.trim()||"<pick a topic — e.g. Boolean Algebra & K-Maps>";
+  const scope=document.getElementById("aiScope")?.value||"subject";
+  const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the selected subject";
+  const topic=document.getElementById("aiTopic")?.value?.trim();
+  const qtype=document.getElementById("aiQType")?.value||"Mixed";
   const count=document.getElementById("aiCount")?.value||20;
   const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
   const extra=document.getElementById("aiExtra")?.value?.trim();
+
+  const intros=[
+    'Act as an experienced exam-question setter.',
+    'You are creating practice questions for a competitive-exam-style mock test.',
+    'Generate high-quality multiple-choice questions for an online practice test.'
+  ];
+  const intro=intros[_aiPromptVariant%intros.length];
+
+  const coverageLine=scope==='topic'&&topic
+    ? 'Coverage: focus specifically on this topic/subtopic — '+topic+' (within '+subjName+').'
+    : scope==='topic'
+      ? 'Coverage: focus on a specific topic within '+subjName+' — pick one well-defined, commonly-tested subtopic and stay within it.'
+      : 'Coverage: spread questions broadly across the major topics of '+subjName+' (whole-subject coverage, not just one chapter).';
+
+  const qtypeLines={
+    'Conceptual/theory-based':'Question type: conceptual / theory-based — test definitions, principles, and understanding rather than heavy calculation.',
+    'Numerical/problem-solving':'Question type: numerical / problem-solving — most questions should require a calculation or worked-out step, with plausible numeric distractors as the wrong options.',
+    'Mixed':'Question type: a mix of conceptual and numerical/problem-solving questions, roughly balanced.',
+    'Previous-year exam style':'Question type: match the style, phrasing, and difficulty pattern typically seen in previous-year competitive exam papers for this subject.',
+    'Application/scenario-based':'Question type: application / scenario-based — frame questions around a short real-world scenario the student must reason through.'
+  };
+
   return [
-    'Generate multiple-choice exam questions in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
+    intro+' Generate multiple-choice exam questions in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
     '',
     'Question [TAB] Option A [TAB] Option B [TAB] Option C [TAB] Option D [TAB] Correct Answer [TAB] Year [TAB] State [TAB] Question Number [TAB] Question Image URL [TAB] Option A Image URL [TAB] Option B Image URL [TAB] Option C Image URL [TAB] Option D Image URL',
     '',
@@ -595,16 +671,19 @@ function buildAiPrompt(){
     '- OPTIONAL columns — leave them empty but still include the tab so every row has all 14 columns: State, Question Number, Question Image URL, Option A/B/C/D Image URL.',
     '- Do NOT add a header row, numbering, bullet points, markdown formatting, or any explanation before or after — output ONLY the raw tab-separated data rows.',
     '- Use '+year+' as the Year for every row unless told otherwise.',
-    '- Topic / subtopics: '+topic,
+    '- '+coverageLine,
+    '- '+(qtypeLines[qtype]||qtypeLines['Mixed']),
     '- Number of questions: '+count,
-    '- Difficulty level: '+difficulty,
+    '- Difficulty level: '+difficulty+(difficulty==='Mixed'?' (spread roughly evenly across easy, medium, and hard)':'.'),
+    '- Make sure no two questions are near-duplicates of each other.',
     extra?('- Additional instructions: '+extra):'- Additional instructions: none',
     '',
     'Example of one correctly formatted row:',
     'What is the SI unit of electric current?\tAmpere\tVolt\tOhm\tWatt\tA\t'+year+'\tTS\t1\t\t\t\t\t'
   ].join('\n');
 }
-function refreshAiPrompt(){
+function refreshAiPrompt(reword){
+  if(reword)_aiPromptVariant++;
   const box=document.getElementById("aiPromptBox");
   if(box)box.value=buildAiPrompt();
 }
