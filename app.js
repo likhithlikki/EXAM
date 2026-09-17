@@ -648,60 +648,118 @@ async function createNewSubject(){
 }
 let _aiPromptVariant=0;
 function buildAiPrompt(){
-  // Built fresh from the admin's actual answers each time (coverage, question
-  // type, difficulty, count) — not a single fixed template regardless of input.
-  const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
+  // Build the AI question-generation prompt from the admin's current selections.
+  const year=document.getElementById("adminYear")?.value||"2026";
   const scope=document.getElementById("aiScope")?.value||"subject";
-  const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the selected subject";
-  const topic=document.getElementById("aiTopic")?.value?.trim();
+  const sel=document.getElementById("adminSubject");
+  const subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the selected subject";
+  const topic=document.getElementById("aiTopic")?.value?.trim()||"";
   const qtype=document.getElementById("aiQType")?.value||"Mixed";
   const count=document.getElementById("aiCount")?.value||20;
-  const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
-  const extra=document.getElementById("aiExtra")?.value?.trim();
+  const difficulty=document.getElementById("aiDifficulty")?.value||"Super Hard";
+  const extra=document.getElementById("aiExtra")?.value?.trim()||"";
 
   const intros=[
-    'Act as an experienced exam-question setter.',
-    'You are creating practice questions for a competitive-exam-style mock test.',
-    'Generate high-quality multiple-choice questions for an online practice test.'
+    "You are creating practice questions for a competitive-exam-style mock test.",
+    "Act as an experienced competitive-exam question setter.",
+    "Generate high-quality multiple-choice exam questions for a competitive-exam-style mock test."
   ];
+
   const intro=intros[_aiPromptVariant%intros.length];
 
-  const coverageLine=scope==='topic'&&topic
-    ? 'Coverage: focus specifically on this topic/subtopic — '+topic+' (within '+subjName+').'
-    : scope==='topic'
-      ? 'Coverage: focus on a specific topic within '+subjName+' — pick one well-defined, commonly-tested subtopic and stay within it.'
-      : 'Coverage: spread questions broadly across the major topics of '+subjName+' (whole-subject coverage, not just one chapter).';
+  const coverageLine=
+    scope==="topic"&&topic
+      ? "Topic: "+topic
+      : "Topic: "+subjName;
+
+  const subtopicsLine=
+    scope==="topic"&&topic
+      ? "Subtopics: Cover the specified topic thoroughly and include its important subtopics."
+      : "Subtopics: Cover the major subtopics of "+subjName+" thoroughly.";
 
   const qtypeLines={
-    'Conceptual/theory-based':'Question type: conceptual / theory-based — test definitions, principles, and understanding rather than heavy calculation.',
-    'Numerical/problem-solving':'Question type: numerical / problem-solving — most questions should require a calculation or worked-out step, with plausible numeric distractors as the wrong options.',
-    'Mixed':'Question type: a mix of conceptual and numerical/problem-solving questions, roughly balanced.',
-    'Previous-year exam style':'Question type: match the style, phrasing, and difficulty pattern typically seen in previous-year competitive exam papers for this subject.',
-    'Application/scenario-based':'Question type: application / scenario-based — frame questions around a short real-world scenario the student must reason through.'
+    "Conceptual/theory-based":
+      "Include conceptual and theory-based questions that test deep understanding, principles, definitions, and application of concepts.",
+    "Numerical/problem-solving":
+      "Include numerical and problem-solving questions requiring calculations, derivations, logical steps, or multi-step reasoning.",
+    "Mixed":
+      "Include a balanced mix of conceptual and numerical/problem-solving questions.",
+    "Previous-year exam style":
+      "Follow the style, structure, reasoning level, and difficulty pattern commonly associated with previous-year competitive exam questions.",
+    "Application/scenario-based":
+      "Include application and scenario-based questions requiring students to apply concepts to unfamiliar situations."
   };
 
+  const questionType=
+    qtypeLines[qtype]||
+    "Include a balanced mix of conceptual and numerical/problem-solving questions.";
+
   return [
-    intro+' Generate multiple-choice exam questions in EXACTLY this format — one question per line, columns separated by a single TAB character (so the result pastes straight into Excel), in this exact order:',
-    '',
-    'Question [TAB] Option A [TAB] Option B [TAB] Option C [TAB] Option D [TAB] Correct Answer [TAB] Year [TAB] State [TAB] Question Number [TAB] Question Image URL [TAB] Option A Image URL [TAB] Option B Image URL [TAB] Option C Image URL [TAB] Option D Image URL',
-    '',
-    'Rules:',
-    '- MANDATORY columns (every row must have these): Question, Option A, Option B, Option C, Option D, Correct Answer, Year.',
-    '- Correct Answer must be exactly one letter: A, B, C, or D — matching one of the four options.',
-    '- OPTIONAL columns — leave them empty but still include the tab so every row has all 14 columns: State, Question Number, Question Image URL, Option A/B/C/D Image URL.',
-    '- Do NOT add a header row, numbering, bullet points, markdown formatting, or any explanation before or after — output ONLY the raw tab-separated data rows.',
-    '- Use '+year+' as the Year for every row unless told otherwise.',
-    '- '+coverageLine,
-    '- '+(qtypeLines[qtype]||qtypeLines['Mixed']),
-    '- Number of questions: '+count,
-    '- Difficulty level: '+difficulty+(difficulty==='Mixed'?' (spread roughly evenly across easy, medium, and hard)':'.'),
-    '- Make sure no two questions are near-duplicates of each other.',
-    extra?('- Additional instructions: '+extra):'- Additional instructions: none',
-    '',
-    'Example of one correctly formatted row:',
-    'What is the SI unit of electric current?\tAmpere\tVolt\tOhm\tWatt\tA\t'+year+'\tTS\t1\t\t\t\t\t'
-  ].join('\n');
+    intro,
+    "",
+    "Generate multiple-choice exam questions in an Excel (.xlsx) file.",
+    "",
+    coverageLine,
+    subtopicsLine,
+    "Number of questions: "+count,
+    "Difficulty level: "+(difficulty||"Super Hard"),
+    "Year: "+year,
+    "Exam: "+subjName,
+    "",
+    "Excel format — mandatory",
+    "",
+    "Create an Excel file with exactly 14 columns in this order:",
+    "",
+    "1. Question",
+    "2. Option A",
+    "3. Option B",
+    "4. Option C",
+    "5. Option D",
+    "6. Correct Answer",
+    "7. Year",
+    "8. State",
+    "9. Question Number",
+    "10. Question Image URL",
+    "11. Option A Image URL",
+    "12. Option B Image URL",
+    "13. Option C Image URL",
+    "14. Option D Image URL",
+    "",
+    "Each question must occupy one row.",
+    "Include a header row with the 14 column names.",
+    "Preserve this exact column order and structure.",
+    "",
+    "Question requirements",
+    "",
+    "1. Generate exactly "+count+" unique MCQs.",
+    "2. "+questionType,
+    "3. Ensure the difficulty is "+(difficulty||"Super Hard")+", suitable for competitive exams.",
+    "4. Cover all specified subtopics thoroughly.",
+    "5. Do not create duplicate or near-duplicate questions.",
+    "6. Every question must have exactly four options: A, B, C, and D.",
+    "7. Correct Answer must contain exactly one letter: A, B, C, or D, matching the correct option.",
+    "8. Verify every numerical answer, formula, and correct option before finalizing.",
+    "9. Use "+year+" in the Year column for every question.",
+    "10. Fill Question Number sequentially from 1 to "+count+".",
+    "11. Fill State with the requested state abbreviation, or leave it empty if no state is specified.",
+    "12. Leave all image URL columns empty unless image URLs are explicitly requested.",
+    "13. Do not invent facts, ambiguous questions, or questions with multiple correct answers.",
+    "",
+    "Output requirements",
+    "",
+    "- Return ONLY the completed Excel (.xlsx) file.",
+    "- Do not output the questions as plain text, TSV, CSV, or Markdown.",
+    "- Do not provide explanations, answers, or any other text outside the Excel file.",
+    "- Ensure the file contains exactly "+count+" question rows plus the header row.",
+    "- Check that all 14 columns are present and in the correct order.",
+    "- Ensure every mandatory field is filled for every question.",
+    "- Make the Excel file ready to download and use directly.",
+    extra
+      ? "- Additional instructions: "+extra
+      : "- Additional instructions: none"
+  ].join("\n");
 }
+
 function refreshAiPrompt(reword){
   if(reword)_aiPromptVariant++;
   const box=document.getElementById("aiPromptBox");
