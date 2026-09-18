@@ -1261,7 +1261,7 @@ function submitExam_(body) {
     return { ok: false, error: 'No question details were supplied. Please reopen the test and submit again.' };
   }
 
-  // 3-day re-attempt cooldown. Only rejects a genuinely NEW session: if this
+  // 1-day re-attempt cooldown. Only rejects a genuinely NEW session: if this
   // attempt's startTime is at or before the last completed attempt's time,
   // it's the resume of an exam that was already running before the cooldown
   // existed (or is that same completed attempt being resubmitted, which the
@@ -1655,7 +1655,7 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
   // fall back to +Infinity so the very first comparison always takes
   // percentage rather than silently keeping an undefined "worst".
   s.worst = Math.min(s.worst === undefined ? Infinity : s.worst, percentage);
-  // Drives the 3-day re-attempt cooldown (see subjectStatus_ / dashboard_).
+  // Drives the 1-day re-attempt cooldown (see subjectStatus_ / dashboard_).
   // Stored as an ISO string so it survives JSON round-tripping untouched.
   s.lastAttempt = iso_(result.EndTime || new Date());
   subjectStats[subject] = s;
@@ -1678,7 +1678,7 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
 // Reads just the lastAttempt timestamp for one (email, subject) pair straight
 // out of the already-maintained UserStats row — a single-row lookup, not a
 // scan or recompute of anything. Returns null if the user/subject has no
-// completed attempt yet. Backs both the 3-day cooldown check in submitExam_
+// completed attempt yet. Backs both the 1-day cooldown check in submitExam_
 // and the subjectStatus_ endpoint the frontend polls before starting a test.
 function getSubjectLastAttempt_(email, subject) {
   email = email_(email);
@@ -1697,11 +1697,11 @@ function getSubjectLastAttempt_(email, subject) {
 }
 
 // Re-attempt cooldown: once a subject is completed, the same user can't
-// start a fresh attempt on it again for 3 days. Purely a practice-pacing
+// start a fresh attempt on it again for 1 day. Purely a practice-pacing
 // rule — it never queues or sends any email/reminder about it, and it never
 // blocks resuming an exam that was already in progress before the cooldown
 // started (see subjectStatus_ callers on the frontend for that distinction).
-var SUBJECT_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000;
+var SUBJECT_COOLDOWN_MS = 1 * 24 * 60 * 60 * 1000;
 
 function subjectStatus_(email, subject) {
   email = email_(email);

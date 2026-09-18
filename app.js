@@ -145,9 +145,7 @@ function replaceNav(fn){
   pushNav(fn);
 }
 function goBack(){
-  const inExam=activeSubject&&test.length&&!isSubmitting&&left>0&&!revisionMode;
-  const inRevision=revisionMode&&revisionItems.length&&!isSubmitting;
-  if(inExam||inRevision){safeGoHome();return;}
+  if(examActive){safeGoHome();return;}
   navStack.pop();
   const prev=navStack.pop();
   (prev||home)();
@@ -157,6 +155,29 @@ let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
 let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
+/* ===================== STRICT EXAM-ACTIVE STATE =====================
+ * BUG THIS FIXES: previously "is an exam running?" was recomputed from
+ * activeSubject/test.length/left/isSubmitting/revisionMode every time a
+ * guard needed an answer. submit() and submitRevisionTest() only ever
+ * reset isSubmitting — they never cleared test/answers/activeSubject/left
+ * — so as soon as ANY later navigation (home/dashboard/mistakes) called
+ * clearExam() and flipped isSubmitting back to false, those stale
+ * leftovers made the guards think an exam was still running. That's why
+ * clicking Home (or the back button) after seeing your result could pop
+ * "Exam is in progress... submitted automatically" and shove you back
+ * into the test, sometimes even re-submitting it.
+ *
+ * Fix: examActive is the ONLY thing any guard is allowed to check. It is
+ * set true in exactly two places (start(), startRevisionTest()) and set
+ * false in exactly two places (submit(), submitRevisionTest()) — the
+ * instant you click Submit, not after the network call resolves. Once
+ * it's false, it STAYS false through any amount of navigation, stale
+ * variables, or re-renders, until a brand new exam is explicitly started.
+ * This makes "submitted = done, permanently, for this attempt" a hard
+ * guarantee instead of something re-derived (and re-breakable) on every
+ * navigation.
+ */
+let examActive=false;
 let _afterProfile=null;
 let isAdminUnlocked=localStorage.getItem("ecet_admin_unlocked")==="1";
 const ADMIN_PANEL_PASSWORD=(window.APP_CONFIG&&window.APP_CONFIG.ADMIN_PANEL_PASSWORD)||"123";
@@ -178,12 +199,10 @@ function clearExam(){
    (see handleBeforeUnload/handlePageHide and their revision equivalents) — those cannot
    guarantee interception either; browsers only allow a generic "leave site?" prompt there. */
 function safeGoHome(){
-  const inExam=activeSubject&&test.length&&!isSubmitting&&left>0&&!revisionMode;
-  const inRevision=revisionMode&&revisionItems.length&&!isSubmitting;
-  if(inExam||inRevision){
+  if(examActive){
     const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
     if(!leave)return;
-    if(inRevision)submitRevisionTest();else submit();
+    if(revisionMode)submitRevisionTest();else submit();
     return;
   }
   home();
@@ -196,13 +215,11 @@ function disarmBackGuard(){
   window.removeEventListener("popstate",handleBackGuard);
 }
 function handleBackGuard(){
-  const inExam=activeSubject&&test.length&&!isSubmitting&&left>0&&!revisionMode;
-  const inRevision=revisionMode&&revisionItems.length&&!isSubmitting;
-  if(!inExam&&!inRevision){ disarmBackGuard(); return; }
+  if(!examActive){ disarmBackGuard(); return; }
   const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
   if(leave){
     disarmBackGuard();
-    if(inRevision)submitRevisionTest();else submit();
+    if(revisionMode)submitRevisionTest();else submit();
   } else {
     try{ history.pushState({ecetGuard:true},""); }catch(e){}
   }
@@ -249,14 +266,14 @@ function submissionPayload(compact=false){
 // recompute), so leaving does not let you pause the clock — it just lets you
 // actually come back to your answers instead of losing them.
 function handleBeforeUnload(e){
-  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
+  if(!examActive||isSubmitting||revisionMode||!test.length||left<=0)return;
   persist();
   e.preventDefault();
   e.returnValue="Your exam is still in progress. It will be waiting for you to resume when you come back.";
   return e.returnValue;
 }
 function handlePageHide(){
-  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
+  if(!examActive||isSubmitting||revisionMode||!test.length||left<=0)return;
   persist();
 }
 
@@ -332,12 +349,15 @@ function subjectBest(name){
   const row=d?.subjects?.find(x=>x.subject===name);
   return row?row.best:null;
 }
-// Reads the 3-day cooldown state for a subject straight out of the same
+// Reads the 1-day cooldown state for a subject straight out of the same
 // precomputed dashboard stats already cached locally — no extra request and
-// no recalculation, just a lookup + one date comparison.
+// no recalculation, just a lookup + one date comparison. This is only used
+// for the *display* of locked cards on Home; the actual gate that stops the
+// timer from starting lives in beginExam()/retryExam() below, which always
+// re-checks against the live server instead of trusting this cache.
 function lockInfoFromLastAttempt_(lastAttempt){
   if(!lastAttempt)return{locked:false};
-  const unlockAt=new Date(lastAttempt).getTime()+3*24*60*60*1000;
+  const unlockAt=new Date(lastAttempt).getTime()+1*24*60*60*1000;
   const remaining=unlockAt-Date.now();
   return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
 }
@@ -507,7 +527,7 @@ function renderProfileBody(d,connecting){
     <div class="dash-grid"><div class="dash-tile"><b>${d.mistakes}</b><span>Mistakes count</span></div><div class="dash-tile"><b>${d.reminders}</b><span>Reminders count</span></div></div>
     <h2>Subjects attended</h2>
     ${d.subjects?.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Subject</th><th>Times attended</th><th>Best %</th><th>Worst %</th><th>Average %</th><th>Status</th></tr></thead><tbody>${d.subjects.map(s=>`<tr><td>${esc(s.subject)}</td><td>${s.attempts}</td><td>${s.best}%</td><td>${s.worst!=null?s.worst+"%":"—"}</td><td>${s.avg}%</td><td>${subjectStatusCellHTML(s)}</td></tr>`).join("")}</tbody></table></div>
-    <p class="note">A subject is locked for 3 days after you complete an attempt on it, then unlocks automatically — no email is sent about this.</p>`:'<p class="note">No attempts yet.</p>'}
+    <p class="note">A subject is locked for 1 day after you complete an attempt on it, then unlocks automatically — no email is sent about this.</p>`:'<p class="note">No attempts yet.</p>'}
     <p class="note">See Dashboard for recent activity and test frequency.</p>
     <div class="buttons"><button onclick="editProfile()">Edit Profile</button><button onclick="goDashboard()">Dashboard</button><button onclick="logoutUser()">Logout</button><button onclick="deleteAccountPrompt()">Delete Account</button><button onclick="home()">Home</button></div></div>`;
   armCooldownTicker();
@@ -945,7 +965,56 @@ function confirmExamStart(){
     <p class="note">You'll be entered as <b>${esc(p.name)}</b> (${esc(p.email)}). The timer starts the moment you click Start Exam and keeps running even if you leave the page.</p>
     <div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="home()">Back</button><button onclick="beginExam()">Start Exam</button></div></div>`;
 }
-async function beginExam(){const p=store.profile();apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});start();}
+/* ===================== STRICT PRE-START LOCK CHECK =====================
+ * BUG THIS FIXES: the "1-day locked" check on Home only ever looked at a
+ * locally cached dashboard snapshot (store.dashboardCache()), which can be
+ * stale right after a submit. Worse, the Result page's "Retry Test" button
+ * called start() directly, skipping the password screen (and therefore
+ * guardSubjectLock_()) entirely — so a freshly-submitted, locked subject
+ * could still be reopened with a running timer with zero lock check.
+ *
+ * Fix: start() is only ever reached for a NEW attempt through this one
+ * gate. It asks the backend for the live, authoritative lock state for
+ * this exact (email, subject) — not the cache — and refuses to render the
+ * exam or start the timer if it's still locked. Resuming an in-progress
+ * exam is never subject to this (there's nothing "new" being started), so
+ * the check is skipped whenever saved progress exists for the subject. */
+async function gateStartNewAttempt_(subject){
+  if(store.getProgress(subject.id))return true; // resuming — never gated
+  if(!API)return true; // no backend configured, nothing to check against
+  const p=store.profile();
+  const status=await apiGet("subjectStatus",{email:p.email,subject:subject.name},8000,1);
+  if(status?.ok&&status.data?.locked){
+    showSubjectLockedScreen_(subject.name,status.data.unlockAt);
+    return false;
+  }
+  return true;
+}
+
+function showSubjectLockedScreen_(name,unlockAtIso){
+  const unlockAt=new Date(unlockAtIso).getTime();
+  const remaining=Math.max(0,unlockAt-Date.now());
+  pushNav(()=>showSubjectLockedScreen_(name,unlockAtIso));
+  app.innerHTML=`<div class="card"><h1>${esc(name)} is locked</h1><p class="note">You already attempted this subject. You can retake it in <b id="lockCountdown" data-unlock="${unlockAt}">${formatCooldown(remaining)}</b>.</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
+  clearInterval(_lockCountdownTimer);
+  _lockCountdownTimer=setInterval(()=>{
+    const el=document.getElementById("lockCountdown");
+    if(!el){clearInterval(_lockCountdownTimer);return;}
+    const remaining=Number(el.dataset.unlock)-Date.now();
+    if(remaining<=0){home();return;}
+    el.textContent=formatCooldown(remaining);
+  },30000);
+}
+async function beginExam(){
+  const p=store.profile();
+  if(!(await gateStartNewAttempt_(activeSubject)))return;
+  apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});
+  start();
+}
+async function retryExam(){
+  if(!(await gateStartNewAttempt_(activeSubject)))return;
+  start();
+}
 
 /* ===================== EXAM ===================== */
 function start(){
@@ -974,6 +1043,7 @@ function start(){
     } else { startFreshExam(); }
   } else { startFreshExam(); }
   questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
+  examActive=true;
   window.addEventListener("beforeunload",handleBeforeUnload);
   window.addEventListener("pagehide",handlePageHide);
   armBackGuard();
@@ -1013,7 +1083,19 @@ async function submit(){
   // Back button wrongly shows "Exam is in progress..." and can call submit() a
   // second time for the same attempt.
   if(isSubmitting||!test.length)return; clearExam();isSubmitting=true;
-  const payload=submissionPayload();store.clearProgress(activeSubject.id);
+
+  /* STRICT: the instant Submit is clicked, the exam is over — permanently,
+   * not just until the next clearExam() call resets isSubmitting. This is
+   * what makes it safe for the Result page's Retry/Dashboard/Subjects
+   * buttons, and any later Back navigation, to never again ask "exam in
+   * progress?" for this attempt. We build the payload FIRST (it captures
+   * everything it needs into its own local object), then clear the exam
+   * runtime state, so nothing stale is left for a later guard to trip on. */
+  const payload=submissionPayload();
+  store.clearProgress(activeSubject.id);
+  examActive=false;
+  test=[];answers=[];marked=[];qTime=[];left=0;current=0;
+
   const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
   const resp=await apiPost("submitExam",payload);
@@ -1028,11 +1110,41 @@ async function submit(){
       app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
       return;
     }
-    store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,questionOrder:test.map(q=>q.id),optionOrders:test.map(q=>q.optionOrder)});
-    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    // NOTE: since we already cleared test/answers/left above, this retry
+    // path can no longer restore progress from those globals — resubmit
+    // works off the payload we already built, so just retry sending it.
+    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;
   }
+  // Reflect the new cooldown in the local cache immediately, so Home's
+  // subject card (and guardSubjectLock_) shows "Locked" without waiting
+  // on the next dashboard refresh. This is a display convenience only —
+  // gateStartNewAttempt_() above is what actually enforces the lock.
+  const dc=store.dashboardCache();
+  if(dc){
+    dc.subjects=dc.subjects||[];
+    const nowIso=new Date().toISOString();
+    let srow=dc.subjects.find(s=>s.subject===activeSubject.name);
+    if(srow)srow.lastAttempt=nowIso;
+    else dc.subjects.push({subject:activeSubject.name,best:percentage,worst:percentage,avg:percentage,attempts:1,lastAttempt:nowIso});
+    store.setDashboardCache(dc);
+  }
   renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
+}
+async function retrySubmit(payload){
+  app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Retrying…</p></div>`;
+  const resp=await apiPost("submitExam",payload);
+  if(!resp?.ok){
+    isSubmitting=false;
+    if(resp?.cooldown?.locked){
+      store.clearProgress(activeSubject.id);
+      app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+      return;
+    }
+    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    return;
+  }
+  renderResult({score:payload.score,total:payload.total,percentage:payload.percentage,wrong:payload.wrong,unanswered:payload.unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 function pieHTML(r){const total=Math.max(1,r.total),c=r.score/total*100,w=r.wrong/total*100,u=r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
 function timeChart(detail){const max=Math.max(60,...detail.map(d=>d.time||0));const ticks=[0,Math.round(max/4),Math.round(max/2),Math.round(max*3/4),max];return `<div class="chart-area"><div class="y-axis">${ticks.slice().reverse().map(v=>`<span>${formatSeconds(v)}</span>`).join("")}</div><div class="chart-main"><div class="gridlines">${ticks.map(()=>`<i></i>`).join("")}</div><div class="bars">${detail.map((d,i)=>{const h=Math.max(3,(d.time/max)*100);return `<button class="bar-col ${d.selected===null?"unansbar":d.selected!==d.correct?"wrongbar":""}" style="height:${h}%" onclick="showQuestionTime(${i})" title="Q${i+1}: ${formatSeconds(d.time)}"><span>${i+1}</span></button>`;}).join("")}</div><div class="x-axis">${detail.map((_,i)=>`<span>${i+1}</span>`).join("")}</div></div></div><div id="timeDetail" class="chart-detail">Click any question bar to see exact time.</div>`;}
@@ -1040,7 +1152,7 @@ function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;
 function renderResult(r){
   window._lastResultDetail=r.detail;
   const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
-  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="start()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
 }
 function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
 function reviewListHTML(detail,filter){return detail.map((d,n)=>{const iw=d.selected!==null&&d.selected!==d.correct,iu=d.selected===null;if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${iu?"Unanswered":"ABCD"[d.selected]+". "+esc(d.options[d.selected])}</span></div><div>Correct answer: <span class="correct">${"ABCD"[d.correct]}. ${esc(d.options[d.correct])}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
@@ -1264,7 +1376,7 @@ function renderMistakes(items,connecting){
 }
 function formatCountdown(ms){let s=Math.ceil(ms/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60),sec=s%60;return `${d}d ${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(sec).padStart(2,"0")}s`;}
 function mistakeCountdownLoop(){const el=document.querySelector(".countdown");if(!el)return;const items=store.mistakesCache(),next=items.filter(m=>dueDate(m)>new Date()).sort((a,b)=>dueDate(a)-dueDate(b))[0];if(!next){mistakes();return;}el.innerHTML=`<b>Next revision test:</b> ${formatCountdown(dueDate(next)-new Date())}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small>`;setTimeout(mistakeCountdownLoop,1000);}
-async function startRevisionTest(){const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items).map(m=>({...m,options:shuffle((m.options||[]).map((text,index)=>({text,index,img:(m.optionImages||[])[index]||""})))}));revisionItems=revisionItems.map(m=>{const order=m.options.map(x=>x.index),opts=m.options.map(x=>x.text),imgs=m.options.map(x=>x.img);return {...m,options:opts,optionImages:imgs,correctIndex:order.indexOf(Number(m.correctIndex)),optionOrder:order};});test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,image:m.image||"",optionImages:m.optionImages||[],answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60;/* 1 min/question, no extra time */examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);window.addEventListener("beforeunload",handleRevisionBeforeUnload);window.addEventListener("pagehide",handleRevisionPageHide);armBackGuard();renderRevision();}
+async function startRevisionTest(){const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items).map(m=>({...m,options:shuffle((m.options||[]).map((text,index)=>({text,index,img:(m.optionImages||[])[index]||""})))}));revisionItems=revisionItems.map(m=>{const order=m.options.map(x=>x.index),opts=m.options.map(x=>x.text),imgs=m.options.map(x=>x.img);return {...m,options:opts,optionImages:imgs,correctIndex:order.indexOf(Number(m.correctIndex)),optionOrder:order};});test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,image:m.image||"",optionImages:m.optionImages||[],answer:m.correctIndex,wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60;/* 1 min/question, no extra time */examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);examActive=true;window.addEventListener("beforeunload",handleRevisionBeforeUnload);window.addEventListener("pagehide",handleRevisionPageHide);armBackGuard();renderRevision();}
 function sendRevisionAutoSubmit(){
   if(isSubmitting||!revisionMode||!revisionItems.length||!API)return false;
   const marker="ecet_revision_auto_submit_"+(revisionItems.map(x=>x.wrongId).join("|")||Date.now());
@@ -1281,15 +1393,23 @@ function sendRevisionAutoSubmit(){
   return accepted;
 }
 function handleRevisionBeforeUnload(e){
-  if(isSubmitting||!revisionMode||!revisionItems.length)return;
+  if(!examActive||isSubmitting||!revisionMode||!revisionItems.length)return;
   sendRevisionAutoSubmit();
   e.preventDefault();e.returnValue="Your revision test is still running. It will be submitted automatically.";return e.returnValue;
 }
-function handleRevisionPageHide(){if(!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
+function handleRevisionPageHide(){if(examActive&&!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
 
 function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
 function revisionChoose(v){answers[current]=v;renderRevision();}
 function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}
-async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);window.removeEventListener("beforeunload",handleRevisionBeforeUnload);window.removeEventListener("pagehide",handleRevisionPageHide);disarmBackGuard();commitTime();const p=store.profile();const items=revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]}));app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 1 day.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
+async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);window.removeEventListener("beforeunload",handleRevisionBeforeUnload);window.removeEventListener("pagehide",handleRevisionPageHide);disarmBackGuard();commitTime();
+  /* STRICT: same reasoning as submit() above — revisionMode/revisionItems
+   * used to be left populated after finishing, so any later navigation
+   * that reset isSubmitting (via clearExam()) made the guards think a
+   * revision test was still running. Clearing here makes "finished" final. */
+  const p=store.profile();const items=revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],time:qTime[i]}));
+  examActive=false;
+  revisionMode=false;revisionItems=[];test=[];answers=[];marked=[];qTime=[];left=0;current=0;
+  app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 1 day.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
 
 home();
