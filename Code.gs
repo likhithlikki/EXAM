@@ -1938,37 +1938,30 @@ function sendResultEmail_(result, rank, unlock) {
     unlock
   );
 
-  try {
-    MailApp.sendEmail({
-      to: email_(result.Email),
-      subject: subject,
-      htmlBody: html
-    });
+  // submitExam_ runs inside doPost's script lock. MailApp.sendEmail is a
+  // network call (1–4s) — calling it live here would hold that lock for
+  // the whole send, blocking every other doPost request (including other
+  // students' submitExam calls) until it finished. So we never send here:
+  // we just queue a fast sheet append, and processEmailQueue() (a
+  // background trigger) sends it a few seconds later, outside this lock.
+  append_(
+    sh_('EmailQueue'),
+    SHEETS.EmailQueue,
+    {
+      QueueId: Utilities.getUuid(),
+      ToEmail: email_(result.Email),
+      EmailType: 'result',
+      Subject: subject,
+      HtmlBody: html,
+      CreatedAt: new Date(),
+      SentAt: '',
+      Status: 'PENDING'
+    }
+  );
 
-    return {
-      status: 'SENT'
-    };
-
-  } catch (error) {
-    append_(
-      sh_('EmailQueue'),
-      SHEETS.EmailQueue,
-      {
-        QueueId: Utilities.getUuid(),
-        ToEmail: email_(result.Email),
-        EmailType: 'result',
-        Subject: subject,
-        HtmlBody: html,
-        CreatedAt: new Date(),
-        SentAt: '',
-        Status: 'PENDING'
-      }
-    );
-
-    return {
-      status: 'QUEUED'
-    };
-  }
+  return {
+    status: 'QUEUED'
+  };
 }
 
 
@@ -3000,16 +2993,23 @@ function updateNotificationStatus_(
 function processReminders() {
   var lock = LockService.getScriptLock();
 
-  try {
-    lock.waitLock(30000);
+  // Run-guard: if a previous processReminders run (or an overlapping
+  // trigger fire) is still in progress, skip this run instead of
+  // waiting up to 30s for the lock and piling another lock-holder on
+  // top of the last one. The next trigger fire a few minutes from now
+  // will pick up anything still due.
+  if (!lock.tryLock(0)) {
+    return 'Reminder processor skipped — a previous run is still in progress.';
+  }
 
+  var dueList = [];
+
+  try {
     ensureSheets_();
 
     var reminderSheet = sh_('Reminders');
     var reminders = objs_(reminderSheet);
     var now = new Date();
-
-    var processed = 0;
 
     reminders.forEach(function (reminder) {
       if (!bool_(reminder.Enabled)) {
@@ -3033,11 +3033,12 @@ function processReminders() {
         return;
       }
 
-      processed++;
-
       var notificationId =
         Utilities.getUuid();
 
+      // This append is a fast sheet write, not a network call, so it's
+      // fine to do while still holding the lock — it also claims the
+      // reminder so a concurrent run can't queue it twice.
       append_(
         sh_('Notifications'),
         SHEETS.Notifications,
@@ -3058,23 +3059,12 @@ function processReminders() {
         }
       );
 
-      var sent = sendReminder_(
-        reminder,
-        notificationId
-      );
-
-      updateReminderAfterSend_(
-        reminder.ReminderId,
-        sent,
-        dueAt,
-        reminder.Frequency
-      );
+      dueList.push({
+        reminder: reminder,
+        notificationId: notificationId,
+        dueAt: dueAt
+      });
     });
-
-    return (
-      'Reminder processor completed. ' +
-      'Processed: ' + processed
-    );
 
   } finally {
     try {
@@ -3083,6 +3073,33 @@ function processReminders() {
       // Nothing to do.
     }
   }
+
+  // The slow part — MailApp.sendEmail is a network call, 1–4s each —
+  // now runs AFTER the lock has been released, so a queue of reminders
+  // no longer blocks doPost/submitExam or anything else waiting on the
+  // script lock.
+  var processed = 0;
+
+  dueList.forEach(function (item) {
+    processed++;
+
+    var sent = sendReminder_(
+      item.reminder,
+      item.notificationId
+    );
+
+    updateReminderAfterSend_(
+      item.reminder.ReminderId,
+      sent,
+      item.dueAt,
+      item.reminder.Frequency
+    );
+  });
+
+  return (
+    'Reminder processor completed. ' +
+    'Processed: ' + processed
+  );
 }
 
 function updateReminderAfterSend_(
@@ -3316,9 +3333,18 @@ function retryNotification_(body) {
 function processEmailQueue() {
   var lock = LockService.getScriptLock();
 
-  try {
-    lock.waitLock(30000);
+  // Run-guard: if a previous processEmailQueue run (or an overlapping
+  // trigger fire) is still in progress, skip this run instead of
+  // waiting up to 30s for the lock and piling another lock-holder on
+  // top of the last one. The next trigger fire a few minutes from now
+  // will pick up anything still pending.
+  if (!lock.tryLock(0)) {
+    return 'Email queue processor skipped — a previous run is still in progress.';
+  }
 
+  var toSend = [];
+
+  try {
     ensureSheets_();
 
     var sheet = sh_('EmailQueue');
@@ -3342,11 +3368,6 @@ function processEmailQueue() {
     var htmlIndex =
       headers.indexOf('HtmlBody');
 
-    var sentAtIndex =
-      headers.indexOf('SentAt');
-
-    var processed = 0;
-
     for (var i = 1; i < values.length; i++) {
       var status =
         String(values[i][statusIndex] || '');
@@ -3358,23 +3379,10 @@ function processEmailQueue() {
         continue;
       }
 
-      try {
-        MailApp.sendEmail({
-          to: values[i][toIndex],
-          subject: values[i][subjectIndex],
-          htmlBody: values[i][htmlIndex]
-        });
-
-        values[i][sentAtIndex] = new Date();
-        values[i][statusIndex] = 'SENT';
-
-        processed++;
-
-      } catch (error) {
-        values[i][statusIndex] =
-          'FAILED: ' +
-          String(error).slice(0, 200);
-      }
+      // Claim this row now, while we still hold the lock, so a
+      // concurrent run can't pick it up too. This is a fast sheet
+      // write, not a network call.
+      values[i][statusIndex] = 'SENDING';
 
       sheet
         .getRange(
@@ -3384,12 +3392,14 @@ function processEmailQueue() {
           headers.length
         )
         .setValues([values[i]]);
-    }
 
-    return (
-      'Email queue completed. ' +
-      'Processed: ' + processed
-    );
+      toSend.push({
+        rowIndex: i,
+        to: values[i][toIndex],
+        subject: values[i][subjectIndex],
+        html: values[i][htmlIndex]
+      });
+    }
 
   } finally {
     try {
@@ -3398,6 +3408,50 @@ function processEmailQueue() {
       // Nothing to do.
     }
   }
+
+  if (!toSend.length) {
+    return 'Email queue completed. Processed: 0';
+  }
+
+  // The slow part — MailApp.sendEmail, one network call per email —
+  // now runs AFTER the lock has been released, so a backlog of queued
+  // emails no longer blocks doPost/submitExam or anything else waiting
+  // on the script lock.
+  var sheet2 = sh_('EmailQueue');
+  var headers2 = sheet2.getDataRange().getValues()[0];
+  var statusIndex2 = headers2.indexOf('Status');
+  var sentAtIndex2 = headers2.indexOf('SentAt');
+  var processed = 0;
+
+  toSend.forEach(function (item) {
+    try {
+      MailApp.sendEmail({
+        to: item.to,
+        subject: item.subject,
+        htmlBody: item.html
+      });
+
+      sheet2
+        .getRange(item.rowIndex + 1, statusIndex2 + 1)
+        .setValue('SENT');
+
+      sheet2
+        .getRange(item.rowIndex + 1, sentAtIndex2 + 1)
+        .setValue(new Date());
+
+      processed++;
+
+    } catch (error) {
+      sheet2
+        .getRange(item.rowIndex + 1, statusIndex2 + 1)
+        .setValue('FAILED: ' + String(error).slice(0, 200));
+    }
+  });
+
+  return (
+    'Email queue completed. ' +
+    'Processed: ' + processed
+  );
 }
 
 

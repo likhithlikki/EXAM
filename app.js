@@ -301,8 +301,8 @@ async function home(){
 function homeSubtitle(){
   const total=subjects.length+customSubjects.length;
   const hist=store.dashboardCache();
-  const practiced=hist?.attempts;
-  if(practiced!==undefined&&practiced!==null)return `${total} subjects available • ${practiced} question${practiced===1?"":"s"} practiced so far`;
+  const practiced=hist?.subjects?.length;
+  if(practiced!==undefined&&practiced!==null)return `${total} subjects available • ${practiced} subject${practiced===1?"":"s"} practiced so far`;
   return `${total} subjects available — pick one to begin practicing.`;
 }
 function subjectCardHTML(s,i){
