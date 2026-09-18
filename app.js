@@ -816,7 +816,17 @@ let _pwSubject=null;
 function openPassword(i){_pwSubject=subjects[i];renderPasswordCard();}
 function openCustomPassword(i){_pwSubject=customSubjects[i];renderPasswordCard();}
 function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
-async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}bank=[];if(s.file){try{bank=await fetch(s.file).then(r=>r.json());}catch(e){bank=[];}}try{const imported=API?await apiGet('questions',{subjectId:s.id}):null;if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);}catch(e){console.warn('Imported question load failed',e);}if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
+async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}
+  // These two are independent — the static question-bank file and the
+  // admin-imported questions from the backend — so fetch them in parallel
+  // instead of waiting on the file before even starting the API call.
+  const [staticBank,imported]=await Promise.all([
+    s.file?fetch(s.file).then(r=>r.json()).catch(()=>[]):Promise.resolve([]),
+    API?apiGet('questions',{subjectId:s.id}).catch(()=>null):Promise.resolve(null)
+  ]);
+  bank=Array.isArray(staticBank)?staticBank:[];
+  if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);
+  if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
 function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
 function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});confirmExamStart();}
 function confirmExamStart(){
