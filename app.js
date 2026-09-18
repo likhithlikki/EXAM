@@ -6,6 +6,7 @@ const clock = sec => { sec=Math.max(0,Math.floor(sec||0)); const h=Math.floor(se
 const isoDate = d => { const x=new Date(d); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); };
 const formatDateTime = v => { const d=new Date(v); return isNaN(d)?String(v||"—"):d.toLocaleString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}); };
 const formatSeconds = s => { s=Math.max(0,Math.round(Number(s)||0)); return s<60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; };
+const formatCooldown = ms => { ms=Math.max(0,ms); const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000); if(d>0)return `${d}d ${h}h`; if(h>0)return `${h}h ${m}m`; return `${m}m`; };
 const addDays = (v,n) => { const d=new Date(v); d.setDate(d.getDate()+n); return d; };
 const dueDate = m => new Date(m.revisionDueIso || m.revisionDueDate);
 const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
@@ -237,35 +238,26 @@ function submissionPayload(compact=false){
   const percentage=test.length?Math.round(score/test.length*1000)/10:0;
   return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),startTime:new Date(examStartedAt).toISOString(),testUrl:(window.APP_CONFIG&&window.APP_CONFIG.SITE_URL)||location.href.split("#")[0],detail,examSessionId,autoSubmitted:!!compact};
 }
-function sendAutoSubmit(){
-  if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0||!API)return false;
-  const marker="ecet_auto_submit_"+examSessionId;
-  if(sessionStorage.getItem(marker)==="1")return true;
-  isSubmitting=true;
-  const payload={action:"submitExam",...submissionPayload(true)};
-  const body=JSON.stringify(payload);
-  let accepted=false;
-  try{
-    if(navigator.sendBeacon){ accepted=navigator.sendBeacon(API,new Blob([body],{type:"text/plain;charset=UTF-8"})); }
-  }catch(err){console.warn("Beacon submit failed",err);}
-  if(!accepted){
-    try{ fetch(API,{method:"POST",body,keepalive:true}); accepted=true; }catch(err){console.warn("Keepalive submit failed",err);}
-  }
-  if(accepted){ sessionStorage.setItem(marker,"1"); store.clearProgress(activeSubject.id); }
-  return accepted;
-}
+// NOTE: Closing the tab, refreshing, or losing connectivity must NOT finalize the
+// exam — it must only save progress so "Resume Exam" on Home has something to
+// restore. (Previously this fired a sendBeacon submitExam on every close/refresh,
+// which "succeeds" from the browser's point of view almost immediately regardless
+// of whether the backend ever receives it, and then wiped the saved progress — so
+// the exam looked auto-submitted and there was nothing left to resume, even though
+// Home still advertised "Test in progress — resume any time.") The timer keeps
+// counting against the wall clock while you're away (see start()'s elapsed-time
+// recompute), so leaving does not let you pause the clock — it just lets you
+// actually come back to your answers instead of losing them.
 function handleBeforeUnload(e){
   if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
   persist();
-  sendAutoSubmit();
   e.preventDefault();
-  e.returnValue="Your exam is still running. It will be submitted automatically.";
+  e.returnValue="Your exam is still in progress. It will be waiting for you to resume when you come back.";
   return e.returnValue;
 }
 function handlePageHide(){
   if(isSubmitting||revisionMode||!activeSubject||!test.length||left<=0)return;
   persist();
-  sendAutoSubmit();
 }
 
 /* ===================== HOME ===================== */
@@ -278,7 +270,10 @@ function customSubjectsHTML(){
     }
     const best=subjectBest(s.name);
     const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
-    return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}</p><button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    // A cooldown never blocks resuming an exam already in progress — only starting a brand-new attempt.
+    const lock=!unfinished?subjectLockInfo(s.name):{locked:false};
+    const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
+    return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
@@ -290,15 +285,18 @@ async function home(){
   if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
   customSubjects=store.customSubjectsCache();
   const p=store.profile();
-  app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload">⟳ Refresh Data</button></div><p class="subtitle">${homeSubtitle()}</p>
+  app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload">⟳ Refresh Data</button></div>
+    ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
+    <p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
-    <div class="subject-grid">${subjects.map((s,i)=>{const unfinished=s.available&&store.getProgress(s.id);return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}</p><button ${s.available?`onclick="openPassword(${i})"`:"disabled"}>${s.available?(unfinished?"Resume Exam":"Open Exam"):"Coming Soon"}</button>${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;}).join("")}</div>
+    <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
     <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
   </div>`;
   checkServerStatusAndBundle();
   handleRevisionLink();
+  armCooldownTicker();
 }
 function homeSubtitle(){
   const total=subjects.length+customSubjects.length;
@@ -306,6 +304,16 @@ function homeSubtitle(){
   const practiced=hist?.attempts;
   if(practiced!==undefined&&practiced!==null)return `${total} subjects available • ${practiced} question${practiced===1?"":"s"} practiced so far`;
   return `${total} subjects available — pick one to begin practicing.`;
+}
+function subjectCardHTML(s,i){
+  const unfinished=s.available&&store.getProgress(s.id);
+  // A cooldown never blocks resuming an exam already in progress — only
+  // starting a brand-new attempt.
+  const lock=(s.available&&!unfinished)?subjectLockInfo(s.name):{locked:false};
+  const btn=!s.available?`<button disabled>Coming Soon</button>`
+    :lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`
+    :`<button onclick="openPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
+  return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
 }
 function subjectCardMeta(s){
   const unfinished=s.available&&store.getProgress(s.id);
@@ -323,6 +331,51 @@ function subjectBest(name){
   const d=store.dashboardCache();
   const row=d?.subjects?.find(x=>x.subject===name);
   return row?row.best:null;
+}
+// Reads the 3-day cooldown state for a subject straight out of the same
+// precomputed dashboard stats already cached locally — no extra request and
+// no recalculation, just a lookup + one date comparison.
+function lockInfoFromLastAttempt_(lastAttempt){
+  if(!lastAttempt)return{locked:false};
+  const unlockAt=new Date(lastAttempt).getTime()+3*24*60*60*1000;
+  const remaining=unlockAt-Date.now();
+  return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
+}
+function subjectLockInfo(name){
+  const d=store.dashboardCache();
+  const row=d?.subjects?.find(x=>x.subject===name);
+  return lockInfoFromLastAttempt_(row?.lastAttempt);
+}
+function lockBadgeHTML(unlockAt){
+  return `<span class="cooldown-badge" data-unlock="${unlockAt}">Locked — retake in ${formatCooldown(unlockAt-Date.now())}</span>`;
+}
+// Re-renders just the meta text / lock state on already-painted subject
+// cards once fresh precomputed stats arrive from homeBundle, instead of a
+// full home() re-render (which would also reset scroll position).
+function refreshSubjectCardStats(){
+  const grid=document.querySelector('.home .subject-grid');
+  if(grid)grid.innerHTML=subjects.map((s,i)=>subjectCardHTML(s,i)).join("");
+  const cgrid=document.getElementById('customSubjectGrid');
+  if(cgrid)cgrid.innerHTML=customSubjectsHTML();
+  armCooldownTicker();
+}
+let _cooldownTicker=null;
+// One shared interval updates every locked card's countdown text in place —
+// cheap even with many locked subjects, since it's just formatting a stored
+// timestamp difference, not a network call or recompute.
+function armCooldownTicker(){
+  clearInterval(_cooldownTicker);
+  if(!document.querySelector('.cooldown-badge'))return;
+  _cooldownTicker=setInterval(()=>{
+    const badges=document.querySelectorAll('.cooldown-badge');
+    if(!badges.length){clearInterval(_cooldownTicker);return;}
+    badges.forEach(b=>{
+      const unlockAt=Number(b.dataset.unlock);
+      const remaining=unlockAt-Date.now();
+      if(remaining<=0){refreshSubjectCardStats();return;}
+      b.textContent=`Locked — retake in ${formatCooldown(remaining)}`;
+    });
+  },30000);
 }
 function hardRefresh(){
   if(!confirm("Clear locally cached data and reload fresh from the server?"))return;
@@ -375,6 +428,11 @@ async function checkServerStatusAndBundle(force){
   if(res?.ok){
     _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,checkedAt:Date.now()};
     applyServerStatus_(_serverStatusCache,statusEl,slot);
+    // homeBundle already carries the same pre-aggregated stats dashboard_()
+    // would return (a single-row UserStats lookup, not a recompute) — cache
+    // it here too so subject cards show real Best/Worst/cooldown data on
+    // every home visit, not only after the user has opened My Dashboard once.
+    if(p&&res.data?.dashboard){store.setDashboardCache(res.data.dashboard);refreshSubjectCardStats();}
   }else{
     _serverStatusCache={online:false,isAdmin:isAdminUnlocked,customSubjects,checkedAt:Date.now()};
     if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
@@ -390,17 +448,27 @@ function handleRevisionLink(){
     if(items.length)startRevisionTest();
   });
 }
-function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",email:""};app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}"><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
+function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",email:""};
+  // Email is intentionally locked here. Every piece of a user's data (dashboard,
+  // mistakes, reminders, history, progress) is keyed by email on the backend, so
+  // silently letting someone edit it here would look up (or create) a different
+  // account and make all their existing data appear to vanish — like a brand new
+  // account. Name is just a display label and is always safe to change freely.
+  app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}" disabled title="To change your email, log out and sign in with the new email."><p class="note">Your data (results, mistakes, reminders, history) is tied to your email. To switch to a different email, log out and sign in again with the new one — it will start as a separate account.</p><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
 async function saveProfileEdit(){
-  const n=document.getElementById("pname").value.trim(),e=document.getElementById("pemail").value.trim();
-  if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("pErr").textContent="Enter a valid name and email.";return;}
+  const n=document.getElementById("pname").value.trim();
+  const p=store.profile()||{name:"",email:""};
+  const e=p.email; // email is locked in this form — never taken from the input
+  if(!n){document.getElementById("pErr").textContent="Enter a valid name.";return;}
   const errEl=document.getElementById("pErr");errEl.textContent="";
   const btn=document.querySelector('.enroll-card .buttons button[onclick="saveProfileEdit()"]');
   if(btn){btn.disabled=true;btn.textContent="Saving…";}
   // Persist to the backend Users sheet too (keyed by email), not just localStorage —
   // otherwise a name change never reaches the account record, so the same email
   // keeps showing the old name everywhere the backend is the source of truth
-  // (dashboard, rankings, result emails, admin views).
+  // (dashboard, rankings, result emails, admin views). Email is always the
+  // existing one, so this always updates the SAME account row, never creates
+  // a new one.
   const res=API?await apiPost("register",{name:n,email:e}):null;
   if(API&&!res?.ok){
     errEl.textContent=res?.error||"Could not save your details. Please try again.";
@@ -411,13 +479,21 @@ async function saveProfileEdit(){
   home();
 }
 function goProfile(){requireProfile(renderProfile);}
+function subjectStatusCellHTML(s){
+  const lock=lockInfoFromLastAttempt_(s.lastAttempt);
+  if(!lock.locked)return '<span class="correct">Available</span>';
+  return `<span class="cooldown-badge" data-unlock="${lock.unlockAt}">Locked — ${formatCooldown(lock.remaining)}</span>`;
+}
 function renderProfileBody(d,connecting){
   app.innerHTML=`<div class="card"><h1>My Profile</h1>${connecting?connBannerHTML():""}<p class="meta">${esc(d.name)} • ${esc(d.email)}</p><p class="note">Member since ${d.createdAt?esc(formatDateTime(d.createdAt)):"—"}</p>
     <div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Exams attended</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average marks</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best marks</span></div><div class="dash-tile"><b>${d.attempts}</b><span>Total attempts</span></div></div>
     <div class="dash-grid"><div class="dash-tile"><b>${d.mistakes}</b><span>Mistakes count</span></div><div class="dash-tile"><b>${d.reminders}</b><span>Reminders count</span></div></div>
-    <h2>Subject-wise attempts &amp; performance</h2>${d.subjects?.length?d.subjects.map(s=>`<div class="subjbar-row"><div class="subjbar-label">${esc(s.subject)} (${s.attempts})</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,s.avg)}%"></div></div><div>${s.best}%</div></div>`).join(""):'<p class="note">No attempts yet.</p>'}
+    <h2>Subjects attended</h2>
+    ${d.subjects?.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Subject</th><th>Times attended</th><th>Best %</th><th>Worst %</th><th>Average %</th><th>Status</th></tr></thead><tbody>${d.subjects.map(s=>`<tr><td>${esc(s.subject)}</td><td>${s.attempts}</td><td>${s.best}%</td><td>${s.worst!=null?s.worst+"%":"—"}</td><td>${s.avg}%</td><td>${subjectStatusCellHTML(s)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="note">A subject is locked for 3 days after you complete an attempt on it, then unlocks automatically — no email is sent about this.</p>`:'<p class="note">No attempts yet.</p>'}
     <p class="note">See Dashboard for recent activity and test frequency.</p>
     <div class="buttons"><button onclick="editProfile()">Edit Profile</button><button onclick="goDashboard()">Dashboard</button><button onclick="logoutUser()">Logout</button><button onclick="deleteAccountPrompt()">Delete Account</button><button onclick="home()">Home</button></div></div>`;
+  armCooldownTicker();
 }
 async function renderProfile(){
   pushNav(renderProfile);
@@ -813,8 +889,23 @@ function checkAdminPassword(){
 
 /* ===================== PASSWORD ===================== */
 let _pwSubject=null;
-function openPassword(i){_pwSubject=subjects[i];renderPasswordCard();}
-function openCustomPassword(i){_pwSubject=customSubjects[i];renderPasswordCard();}
+let _lockCountdownTimer=null;
+function openPassword(i){_pwSubject=subjects[i];if(guardSubjectLock_(subjects[i]))return;renderPasswordCard();}
+function openCustomPassword(i){_pwSubject=customSubjects[i];if(guardSubjectLock_(customSubjects[i]))return;renderPasswordCard();}
+// Defense in depth: the subject cards already hide/disable "Open Exam" while
+// locked, but this re-checks the same precomputed lastAttempt right before
+// the password screen too, in case a card was rendered before fresh stats
+// arrived. Never blocks resuming an in-progress exam. Returns true if blocked.
+function guardSubjectLock_(s){
+  if(!s||store.getProgress(s.id))return false;
+  const lock=subjectLockInfo(s.name);
+  if(!lock.locked)return false;
+  pushNav(()=>guardSubjectLock_(s));
+  app.innerHTML=`<div class="card"><h1>${esc(s.name)} is locked</h1><p class="note">You already attempted this subject recently. You can retake it in <b id="lockCountdown" data-unlock="${lock.unlockAt}">${formatCooldown(lock.remaining)}</b>.</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
+  clearInterval(_lockCountdownTimer);
+  _lockCountdownTimer=setInterval(()=>{const el=document.getElementById("lockCountdown");if(!el){clearInterval(_lockCountdownTimer);return;}const remaining=Number(el.dataset.unlock)-Date.now();if(remaining<=0){home();return;}el.textContent=formatCooldown(remaining);},30000);
+  return true;
+}
 function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
 async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}
   // These two are independent — the static question-bank file and the
@@ -850,7 +941,19 @@ function start(){
       return q?restoreQuestionOrder(q,saved.optionOrders?.[pos]):null;
     }).filter(Boolean);
     if(restored.length===bank.length){
-      test=restored;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=Math.max(0,Math.min(test.length-1,saved.current||0));left=saved.left;examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();
+      test=restored;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=Math.max(0,Math.min(test.length-1,saved.current||0));examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();
+      // Recompute the remaining time from the wall clock instead of trusting the
+      // frozen "left" that was saved before the tab closed. This is what makes
+      // "resume any time" safe to allow: the clock keeps running against real
+      // elapsed time while you're away, so closing the tab can't be used to pause
+      // it, and if time actually ran out while you were gone, resuming submits
+      // whatever was answered instead of reopening an already-expired exam.
+      left=Math.max(0,test.length*60-Math.floor((Date.now()-examStartedAt)/1000));
+      if(left<=0){
+        questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
+        submit();
+        return;
+      }
     } else { startFreshExam(); }
   } else { startFreshExam(); }
   questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
@@ -899,6 +1002,15 @@ async function submit(){
   const resp=await apiPost("submitExam",payload);
   if(!resp?.ok){
     isSubmitting=false;
+    if(resp?.cooldown?.locked){
+      // This only happens if a fresh attempt somehow got started during the
+      // cooldown (the "Open Exam" screen already blocks that normally). The
+      // progress isn't restored here since the cooldown means a new attempt
+      // shouldn't have been possible in the first place.
+      store.clearProgress(activeSubject.id);
+      app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+      return;
+    }
     store.setProgress(activeSubject.id,{email:store.profile()?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,questionOrder:test.map(q=>q.id),optionOrders:test.map(q=>q.optionOrder)});
     app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Your answers are still saved on this device. Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="submit()">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;

@@ -29,6 +29,7 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 /* ---------- Home ---------- */
 .home{text-align:center}
 .home h1{font-size:32px;margin:6px 0 8px;font-weight:800;background:linear-gradient(90deg,var(--primary),#6a3df0);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.2px}
+.home-username{font-family:'Poppins','Inter',Arial,sans-serif;font-size:clamp(28px,6vw,46px);font-weight:800;color:var(--ink);margin:2px 0 6px;line-height:1.15;letter-spacing:.2px}
 .subtitle{color:var(--muted);margin-bottom:22px;font-size:15px}
 .home-nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
 .subject-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left}
@@ -57,6 +58,7 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .password-card,.enroll-card{max-width:520px;margin:50px auto}
 .password-card h1,.enroll-card h1,.card h1{color:var(--ink);font-weight:800}
 .password-card input,.enroll-card input{width:100%;padding:13px;border:1.5px solid var(--line);border-radius:9px;font-size:17px;margin:7px 0 10px;background:#fbfcff;transition:border-color .15s ease}
+.enroll-card input[disabled]{background:#eef0f4;color:#777;cursor:not-allowed}
 .password-card input:focus,.enroll-card input:focus,input:focus{outline:none;border-color:var(--primary)}
 
 /* ---------- Generic form fields inside any card (admin forms, etc.) ---------- */
@@ -102,6 +104,7 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .stat b{display:block;font-size:22px;margin-bottom:4px;color:var(--primary-dark)}
 .correct{font-weight:700;color:var(--success)}
 .wronganswer{font-weight:700;color:var(--danger)}
+.cooldown-badge{display:inline-block;font-weight:700;color:var(--danger);background:rgba(176,0,32,.08);border-radius:6px;padding:2px 8px;font-size:13px}
 .review{border-top:1px solid var(--line);padding:13px 0;line-height:1.5}
 .review.wrong{background:var(--danger-bg);border-radius:8px;padding:12px 12px}
 .qtime{color:var(--muted);font-size:13px}

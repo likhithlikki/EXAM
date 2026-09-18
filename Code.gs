@@ -415,16 +415,31 @@ function doGet(e) {
 
     switch (action) {
       case 'homeBundle':
-        // Collapses the home-page startup burst (ping + isAdmin + customSubjects)
-        // into a single Apps Script execution instead of 3 separate round trips
-        // firing at once and competing for the same backend.
+        // Collapses the home-page startup burst (ping + isAdmin + customSubjects
+        // + dashboard stats) into a single Apps Script execution instead of
+        // several separate round trips firing at once and competing for the
+        // same backend. Dashboard data is only computed/attached when an
+        // email is present, and even then it's the cached, pre-aggregated
+        // UserStats read (see dashboard_) — never a fresh scan.
         return out_({
           ok: true,
           data: {
             online: true,
             isAdmin: e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false,
-            customSubjects: customSubjects_()
+            customSubjects: customSubjects_(),
+            dashboard: e.parameter.email ? cached_('dash_' + email_(e.parameter.email), 30, function () {
+              return dashboard_(e.parameter.email);
+            }) : null
           }
+        });
+
+      case 'subjectStatus':
+        // Single-row lookup of one subject's cooldown state for this user —
+        // not a recompute of anything. Lets the frontend gate "Open Exam"
+        // with a live countdown without ever recalculating stats.
+        return out_({
+          ok: true,
+          data: subjectStatus_(e.parameter.email, e.parameter.subject)
         });
 
       case 'dashboard':
@@ -1246,6 +1261,24 @@ function submitExam_(body) {
     return { ok: false, error: 'No question details were supplied. Please reopen the test and submit again.' };
   }
 
+  // 3-day re-attempt cooldown. Only rejects a genuinely NEW session: if this
+  // attempt's startTime is at or before the last completed attempt's time,
+  // it's the resume of an exam that was already running before the cooldown
+  // existed (or is that same completed attempt being resubmitted, which the
+  // session-dedup check above already handled) — resuming is always allowed.
+  // This never sends an email or creates a reminder; it's a pure pacing rule.
+  var lastAttemptAt = getSubjectLastAttempt_(email, subject);
+  if (lastAttemptAt) {
+    var unlockAt = new Date(lastAttemptAt.getTime() + SUBJECT_COOLDOWN_MS);
+    if (now < unlockAt && startTime > lastAttemptAt) {
+      return {
+        ok: false,
+        error: 'You already attempted "' + subject + '" recently. You can retake it after ' + iso_(unlockAt) + '.',
+        cooldown: { locked: true, unlockAt: iso_(unlockAt) }
+      };
+    }
+  }
+
   var userRows = objs_(sh_('Users'));
   var knownUser = userRows.find(function(row){ return email_(row.Email) === email; });
   if (!name && knownUser) name = String(knownUser.Name || '').trim();
@@ -1614,10 +1647,17 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
     : values[rowIndex];
 
   var subjectStats = parseSubjectStats_(row[subjJsonIndex]);
-  var s = subjectStats[subject] || { attempts: 0, sum: 0, best: 0 };
+  var s = subjectStats[subject] || { attempts: 0, sum: 0, best: 0, worst: 100 };
   s.attempts += 1;
   s.sum += percentage;
   s.best = Math.max(s.best, percentage);
+  // worst may be undefined on entries created before this field existed —
+  // fall back to +Infinity so the very first comparison always takes
+  // percentage rather than silently keeping an undefined "worst".
+  s.worst = Math.min(s.worst === undefined ? Infinity : s.worst, percentage);
+  // Drives the 3-day re-attempt cooldown (see subjectStatus_ / dashboard_).
+  // Stored as an ISO string so it survives JSON round-tripping untouched.
+  s.lastAttempt = iso_(result.EndTime || new Date());
   subjectStats[subject] = s;
 
   row[emailIndex] = email;
@@ -1635,8 +1675,51 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
   }
 }
 
-// Called when mistakes are cleared (submitRevision_) so MistakesCount stays
-// correct without ever re-scanning WrongAnswers.
+// Reads just the lastAttempt timestamp for one (email, subject) pair straight
+// out of the already-maintained UserStats row — a single-row lookup, not a
+// scan or recompute of anything. Returns null if the user/subject has no
+// completed attempt yet. Backs both the 3-day cooldown check in submitExam_
+// and the subjectStatus_ endpoint the frontend polls before starting a test.
+function getSubjectLastAttempt_(email, subject) {
+  email = email_(email);
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  if (!values.length) return null;
+  var headers = values[0];
+  var rowIndex = findUserStatsRowIndex_(values, headers, email);
+  if (rowIndex === -1) return null;
+  var subjJsonIndex = headers.indexOf('SubjectStatsJSON');
+  var subjectStats = parseSubjectStats_(values[rowIndex][subjJsonIndex]);
+  var s = subjectStats[String(subject || '')];
+  if (!s || !s.lastAttempt) return null;
+  var d = new Date(s.lastAttempt);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// Re-attempt cooldown: once a subject is completed, the same user can't
+// start a fresh attempt on it again for 3 days. Purely a practice-pacing
+// rule — it never queues or sends any email/reminder about it, and it never
+// blocks resuming an exam that was already in progress before the cooldown
+// started (see subjectStatus_ callers on the frontend for that distinction).
+var SUBJECT_COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000;
+
+function subjectStatus_(email, subject) {
+  email = email_(email);
+  subject = String(subject || '');
+  var lastAttempt = getSubjectLastAttempt_(email, subject);
+  if (!lastAttempt) {
+    return { locked: false, lastAttempt: null, unlockAt: null };
+  }
+  var unlockAt = new Date(lastAttempt.getTime() + SUBJECT_COOLDOWN_MS);
+  var locked = new Date() < unlockAt;
+  return {
+    locked: locked,
+    lastAttempt: iso_(lastAttempt),
+    unlockAt: locked ? iso_(unlockAt) : null
+  };
+}
+
+
 function adjustUserMistakesCount_(email, delta) {
   if (!delta) return;
   email = email_(email);
@@ -1681,10 +1764,15 @@ function migrateUserStats_() {
     u.attempts += 1;
     u.sum += percentage;
     u.best = Math.max(u.best, percentage);
-    var s = u.subjects[subject] || { attempts: 0, sum: 0, best: 0 };
+    var s = u.subjects[subject] || { attempts: 0, sum: 0, best: 0, worst: 100, lastAttempt: null };
     s.attempts += 1;
     s.sum += percentage;
     s.best = Math.max(s.best, percentage);
+    s.worst = Math.min(s.worst, percentage);
+    var endTime = toDate_(row.EndTime || row.Timestamp);
+    if (!s.lastAttempt || endTime > new Date(s.lastAttempt)) {
+      s.lastAttempt = iso_(endTime);
+    }
     u.subjects[subject] = s;
   });
 
@@ -1921,8 +2009,12 @@ function dashboard_(email) {
     return {
       subject: key,
       best: Math.round(s.best * 10) / 10,
+      // Older rows created before "worst" existed won't have it — fall back
+      // to best so the UI never shows a blank instead of a number.
+      worst: Math.round((s.worst === undefined ? s.best : s.worst) * 10) / 10,
       avg: s.attempts ? Math.round((s.sum / s.attempts) * 10) / 10 : 0,
-      attempts: s.attempts
+      attempts: s.attempts,
+      lastAttempt: s.lastAttempt || null
     };
   });
 
@@ -1943,7 +2035,13 @@ function bootstrapUserStatsRow_(email, legacy) {
   var headers = userStatsHeaders_();
   var subjectStats = {};
   (legacy.subjects || []).forEach(function (s) {
-    subjectStats[s.subject] = { attempts: s.attempts, sum: s.avg * s.attempts, best: s.best };
+    subjectStats[s.subject] = {
+      attempts: s.attempts,
+      sum: s.avg * s.attempts,
+      best: s.best,
+      worst: s.worst === undefined ? s.best : s.worst,
+      lastAttempt: s.lastAttempt || null
+    };
   });
   sheet.appendRow([
     email, legacy.attempts, legacy.attempts * legacy.avg, legacy.best,
@@ -1977,7 +2075,9 @@ function dashboardLegacy_(email) {
       subjects[key] = {
         subject: row.Subject,
         best: 0,
-        attempts: 0
+        worst: 100,
+        attempts: 0,
+        lastAttempt: null
       };
     }
 
@@ -1985,6 +2085,16 @@ function dashboardLegacy_(email) {
       subjects[key].best,
       num_(row.Percentage)
     );
+
+    subjects[key].worst = Math.min(
+      subjects[key].worst,
+      num_(row.Percentage)
+    );
+
+    var endTime = toDate_(row.EndTime || row.Timestamp);
+    if (!subjects[key].lastAttempt || endTime > new Date(subjects[key].lastAttempt)) {
+      subjects[key].lastAttempt = iso_(endTime);
+    }
 
     subjects[key].attempts++;
   });
@@ -1999,8 +2109,10 @@ function dashboardLegacy_(email) {
     return {
       subject: subjects[key].subject,
       best: Math.round(subjects[key].best * 10) / 10,
+      worst: Math.round(subjects[key].worst * 10) / 10,
       avg: Math.round(avg * 10) / 10,
-      attempts: subjects[key].attempts
+      attempts: subjects[key].attempts,
+      lastAttempt: subjects[key].lastAttempt
     };
   });
 
