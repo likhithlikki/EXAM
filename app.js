@@ -387,7 +387,7 @@ async function refreshCustomSubjects(manual){
   const iconBtn=manual?document.querySelector('.icon-btn'):null;
   if(iconBtn){iconBtn.disabled=true;iconBtn.classList.add('spinning');}
   try{
-    const cs=await apiGet("customSubjects",{},7000);
+    const cs=await apiGet("customSubjects",{},SERVER_STATUS_TIMEOUT_MS);
     if(cs?.ok&&Array.isArray(cs.data)){
       customSubjects=cs.data;
       store.setCustomSubjectsCache(cs.data);
@@ -405,8 +405,17 @@ async function refreshCustomSubjects(manual){
 // on every single visit — only the first Home visit in a while pays for it.
 let _serverStatusCache=null; // {online,isAdmin,customSubjects,checkedAt}
 const SERVER_STATUS_TTL_MS=3*60*1000;
+// Cold Apps Script containers routinely take 10-11s to answer doGet (see
+// execution log), so the status check's timeout has to comfortably clear
+// that or the frontend gives up right before the real response lands.
+const SERVER_STATUS_TIMEOUT_MS=15000;
+let _offlineRetryTimer=null;
+// "retry" is a real clickable control, not just static text in the offline
+// message — clicking it forces a fresh check instead of waiting for the
+// cache TTL or for the user to navigate Home again.
+function offlineStatusHTML_(){return 'Server offline — <span class="retry-link" onclick="checkServerStatusAndBundle(true)">retry</span>';}
 function applyServerStatus_(status,statusEl,slot){
-  if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':'Server offline — retry'}</span>`;}
+  if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
   if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   if(Array.isArray(status.customSubjects)){
     customSubjects=status.customSubjects;
@@ -418,13 +427,14 @@ function applyServerStatus_(status,statusEl,slot){
 async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
   const slot=document.getElementById('adminNavSlot');
+  if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
   if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
   const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
   if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
   if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';}
   if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   const p=store.profile();
-  const res=await apiGet('homeBundle',p?{email:p.email}:{},7000);
+  const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS);
   if(res?.ok){
     _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,checkedAt:Date.now()};
     applyServerStatus_(_serverStatusCache,statusEl,slot);
@@ -435,7 +445,14 @@ async function checkServerStatusAndBundle(force){
     if(p&&res.data?.dashboard){store.setDashboardCache(res.data.dashboard);refreshSubjectCardStats();}
   }else{
     _serverStatusCache={online:false,isAdmin:isAdminUnlocked,customSubjects,checkedAt:Date.now()};
-    if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — retry</span>';}
+    if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML=`<span class="server-dot"></span><span>${offlineStatusHTML_()}</span>`;}
+    // Don't just sit on "offline" until the user manually revisits Home —
+    // keep quietly re-checking in the background, but only while the status
+    // pill is still on screen (stop once the user has navigated away).
+    _offlineRetryTimer=setTimeout(()=>{
+      _offlineRetryTimer=null;
+      if(document.getElementById('serverStatus'))checkServerStatusAndBundle(true);
+    },12000);
   }
 }
 function handleRevisionLink(){
