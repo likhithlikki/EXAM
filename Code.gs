@@ -50,6 +50,14 @@ const SHEETS = {
     'Total', 'Attempts', 'LastAttempt'
   ],
 
+  // One row per user. Kept up to date incrementally at submit-time so the
+  // dashboard is a single-row lookup instead of a full Results/WrongAnswers
+  // scan on every load (see dashboard_ and userStats_*).
+  UserStats: [
+    'Email', 'Attempts', 'SumPercentage', 'BestPercentage',
+    'MistakesCount', 'SubjectStatsJSON', 'UpdatedAt'
+  ],
+
   RevisionHistory: [
     'Email', 'Subject', 'QuestionId', 'ActionDate', 'Action', 'MistakeType'
   ],
@@ -295,6 +303,47 @@ function objs_(sheet) {
 
       return obj;
     });
+}
+
+// Finds the first row where columnHeader === value (TextFinder-based search
+// of a single column, rather than pulling every column of every row into
+// memory the way objs_() does) and returns that row as a header-keyed
+// object. Use this instead of objs_().find(...) on hot paths / large sheets
+// when you only need one row.
+function findRowByColumn_(sheetName, columnHeader, value) {
+  var sheet = sh_(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var col = headers.indexOf(columnHeader) + 1;
+  if (!col) return null;
+
+  var range = sheet.getRange(2, col, sheet.getLastRow() - 1, 1);
+  var match = range.createTextFinder(String(value)).matchEntireCell(true).findNext();
+  if (!match) return null;
+
+  var rowValues = sheet.getRange(match.getRow(), 1, 1, headers.length).getValues()[0];
+  var obj = {};
+  headers.forEach(function (h, i) { obj[h] = rowValues[i]; });
+  return obj;
+}
+
+// Same TextFinder search as findRowByColumn_, but returns just one other
+// column's value from the matching row instead of the whole row — for
+// lookups where that's all that's needed (e.g. session id -> result id).
+function findInColumn_(sheetName, searchHeader, searchValue, returnHeader) {
+  var sheet = sh_(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var searchCol = headers.indexOf(searchHeader) + 1;
+  var returnCol = headers.indexOf(returnHeader) + 1;
+  if (!searchCol || !returnCol) return null;
+
+  var range = sheet.getRange(2, searchCol, sheet.getLastRow() - 1, 1);
+  var match = range.createTextFinder(String(searchValue)).matchEntireCell(true).findNext();
+  if (!match) return null;
+
+  var value = sheet.getRange(match.getRow(), returnCol).getValue();
+  return (value === '' || value === null || value === undefined) ? null : String(value);
 }
 
 function append_(sheet, headers, object) {
@@ -645,7 +694,15 @@ function register_(body) {
   };
 }
 
-// Deletes every row for an email from a sheet (bottom-up so row indices stay valid).
+// Deletes every row for an email from a sheet. Rewrites the kept rows in one
+// setValues() call and trims the leftover tail in one deleteRows() call,
+// instead of calling sheet.deleteRow() once per matching row — a user with a
+// long history could have hundreds of Answers rows, and one deleteRow() per
+// row (each of which reflows the whole sheet) was slow enough to blow past
+// the client's timeout and, because doPost holds one script-wide lock, could
+// also stall every OTHER concurrent register/submit/delete request queued
+// behind it. This version costs exactly 2 sheet operations no matter how
+// many rows are removed.
 function deleteRowsByEmail_(sheetName, email) {
   var sheet = sh_(sheetName);
   if (!sheet || sheet.getLastRow() < 2) return 0;
@@ -653,12 +710,26 @@ function deleteRowsByEmail_(sheetName, email) {
   var headers = values[0];
   var emailIndex = headers.indexOf('Email');
   if (emailIndex === -1) return 0;
+
+  var kept = [];
   var removed = 0;
-  for (var i = values.length - 1; i >= 1; i--) {
+  for (var i = 1; i < values.length; i++) {
     if (email_(values[i][emailIndex]) === email) {
-      sheet.deleteRow(i + 1);
       removed++;
+    } else {
+      kept.push(values[i]);
     }
+  }
+  if (!removed) return 0;
+
+  var lastRow = sheet.getLastRow();
+  var numCols = Math.max(1, sheet.getLastColumn());
+  if (kept.length) {
+    sheet.getRange(2, 1, kept.length, numCols).setValues(kept);
+  }
+  var tailStart = kept.length + 2;
+  if (tailStart <= lastRow) {
+    sheet.deleteRows(tailStart, lastRow - tailStart + 1);
   }
   return removed;
 }
@@ -675,7 +746,8 @@ function deleteAccount_(body) {
 
   var sheetsToClean = [
     'Users', 'Results', 'Answers', 'WrongAnswers', 'Rankings',
-    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications'
+    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications',
+    'UserStats'
   ];
 
   var summary = {};
@@ -1049,8 +1121,17 @@ function questionChangeLog_() {
 // 6. RANKING
 // ============================================================
 
+// Ranks this attempt against every other user's BEST score in the same
+// subject. Used to read the entire Results sheet (every attempt from every
+// user, across every subject) on every single test submission — the hottest
+// write path in the app, and one that runs under the global script lock, so
+// it was the biggest single thing slowing submissions down as history grew.
+// The Rankings sheet already stores exactly one row per (user, subject) with
+// their BestPercentage, kept current by upsertRanking_ right after this
+// runs — so read that instead: it grows with unique user×subject pairs, not
+// with every attempt ever taken.
 function practiceRank_(subject, email, percentage) {
-  var rows = objs_(sh_('Results')).filter(function (row) {
+  var rows = objs_(sh_('Rankings')).filter(function (row) {
     return String(row.Subject) === String(subject);
   });
 
@@ -1063,17 +1144,10 @@ function practiceRank_(subject, email, percentage) {
       return;
     }
 
-    var pct = Math.max(
+    bestByUser[userEmail] = Math.max(
       0,
-      Math.min(100, num_(row.Percentage))
+      Math.min(100, num_(row.BestPercentage))
     );
-
-    if (
-      bestByUser[userEmail] === undefined ||
-      pct > bestByUser[userEmail]
-    ) {
-      bestByUser[userEmail] = pct;
-    }
   });
 
   var currentEmail = email_(email);
@@ -1147,16 +1221,16 @@ function submitExam_(body) {
     };
   }
 
-  // Duplicate submission protection.
+  // Duplicate submission protection. Uses TextFinder to search just the
+  // ExamSessionId / ResultId columns instead of objs_() (which would pull
+  // every column of every row, across every user, into memory just to
+  // find one match) — this runs on every single submission, so it's worth
+  // keeping cheap as both sheets grow.
   if (sessionId) {
-    var prior = objs_(sh_('SubmittedSessions')).find(function (row) {
-      return String(row.ExamSessionId) === sessionId;
-    });
+    var priorResultId = findInColumn_('SubmittedSessions', 'ExamSessionId', sessionId, 'ResultId');
 
-    if (prior) {
-      var oldResult = objs_(sh_('Results')).find(function (row) {
-        return String(row.ResultId) === String(prior.ResultId);
-      });
+    if (priorResultId) {
+      var oldResult = findRowByColumn_('Results', 'ResultId', priorResultId);
 
       if (oldResult) {
         return resultResponse_(oldResult, true);
@@ -1354,6 +1428,8 @@ function submitExam_(body) {
     mistakeRows
   );
 
+  recordAttemptInUserStats_(result, mistakeRows.length);
+
   if (sessionId) {
     append_(
       sh_('SubmittedSessions'),
@@ -1475,6 +1551,172 @@ function upsertRanking_(result) {
       LastAttempt: new Date()
     }
   );
+}
+
+
+// ============================================================
+// 8b. USER STATS (incremental dashboard cache)
+// ============================================================
+// dashboard_() used to recompute everything from a full scan of Results +
+// WrongAnswers on every single load, which only gets slower as those sheets
+// grow with every attempt from every user. UserStats keeps one row per user,
+// updated incrementally right here at submit-time, so a dashboard load is a
+// single-row lookup no matter how much history has piled up.
+
+function userStatsHeaders_() {
+  return SHEETS.UserStats;
+}
+
+// Finds the row (values[], 0-based, includes header row at index 0) for an
+// email in a values[][] snapshot of the UserStats sheet. Returns -1 if none.
+function findUserStatsRowIndex_(values, headers, email) {
+  var emailIndex = headers.indexOf('Email');
+  for (var i = 1; i < values.length; i++) {
+    if (email_(values[i][emailIndex]) === email) return i;
+  }
+  return -1;
+}
+
+function parseSubjectStats_(json) {
+  try {
+    var parsed = JSON.parse(json || '{}');
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// Called once per submitted test, right after that attempt's mistakes are
+// known. Updates (or creates) the single UserStats row for this email.
+function recordAttemptInUserStats_(result, newMistakesCount) {
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  var headers = values.length ? values[0] : userStatsHeaders_();
+
+  var email = email_(result.Email);
+  var percentage = num_(result.Percentage);
+  var subject = String(result.Subject || '');
+
+  var emailIndex = headers.indexOf('Email');
+  var attemptsIndex = headers.indexOf('Attempts');
+  var sumIndex = headers.indexOf('SumPercentage');
+  var bestIndex = headers.indexOf('BestPercentage');
+  var mistakesIndex = headers.indexOf('MistakesCount');
+  var subjJsonIndex = headers.indexOf('SubjectStatsJSON');
+  var updatedIndex = headers.indexOf('UpdatedAt');
+
+  var rowIndex = values.length
+    ? findUserStatsRowIndex_(values, headers, email)
+    : -1;
+
+  var row = rowIndex === -1
+    ? headers.map(function () { return ''; })
+    : values[rowIndex];
+
+  var subjectStats = parseSubjectStats_(row[subjJsonIndex]);
+  var s = subjectStats[subject] || { attempts: 0, sum: 0, best: 0 };
+  s.attempts += 1;
+  s.sum += percentage;
+  s.best = Math.max(s.best, percentage);
+  subjectStats[subject] = s;
+
+  row[emailIndex] = email;
+  row[attemptsIndex] = num_(row[attemptsIndex]) + 1;
+  row[sumIndex] = num_(row[sumIndex]) + percentage;
+  row[bestIndex] = Math.max(num_(row[bestIndex]), percentage);
+  row[mistakesIndex] = num_(row[mistakesIndex]) + num_(newMistakesCount);
+  row[subjJsonIndex] = JSON.stringify(subjectStats);
+  row[updatedIndex] = new Date();
+
+  if (rowIndex === -1) {
+    sheet.getRange(sheet.getLastRow() + 1, 1, 1, headers.length).setValues([row]);
+  } else {
+    sheet.getRange(rowIndex + 1, 1, 1, headers.length).setValues([row]);
+  }
+}
+
+// Called when mistakes are cleared (submitRevision_) so MistakesCount stays
+// correct without ever re-scanning WrongAnswers.
+function adjustUserMistakesCount_(email, delta) {
+  if (!delta) return;
+  email = email_(email);
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  if (!values.length) return;
+
+  var headers = values[0];
+  var rowIndex = findUserStatsRowIndex_(values, headers, email);
+  if (rowIndex === -1) return;
+
+  var mistakesIndex = headers.indexOf('MistakesCount');
+  var updatedIndex = headers.indexOf('UpdatedAt');
+  var row = values[rowIndex];
+
+  row[mistakesIndex] = Math.max(0, num_(row[mistakesIndex]) + delta);
+  row[updatedIndex] = new Date();
+
+  sheet.getRange(rowIndex + 1, 1, 1, headers.length).setValues([row]);
+}
+
+// One-time backfill for users who already had Results/WrongAnswers before
+// UserStats existed. Safe to re-run — it recomputes each user from scratch
+// rather than double-adding. Run manually from the Apps Script editor once
+// after deploying this update; not called from doGet/doPost.
+function migrateUserStats_() {
+  var results = objs_(sh_('Results'));
+  var wrongAnswers = objs_(sh_('WrongAnswers')).filter(function (row) {
+    return !bool_(row.Revised);
+  });
+
+  var byEmail = {};
+
+  results.forEach(function (row) {
+    var email = email_(row.Email);
+    if (!byEmail[email]) {
+      byEmail[email] = { attempts: 0, sum: 0, best: 0, mistakes: 0, subjects: {} };
+    }
+    var percentage = num_(row.Percentage);
+    var subject = String(row.Subject || '');
+    var u = byEmail[email];
+    u.attempts += 1;
+    u.sum += percentage;
+    u.best = Math.max(u.best, percentage);
+    var s = u.subjects[subject] || { attempts: 0, sum: 0, best: 0 };
+    s.attempts += 1;
+    s.sum += percentage;
+    s.best = Math.max(s.best, percentage);
+    u.subjects[subject] = s;
+  });
+
+  wrongAnswers.forEach(function (row) {
+    var email = email_(row.Email);
+    if (!byEmail[email]) {
+      byEmail[email] = { attempts: 0, sum: 0, best: 0, mistakes: 0, subjects: {} };
+    }
+    byEmail[email].mistakes += 1;
+  });
+
+  var sheet = sh_('UserStats');
+  var headers = userStatsHeaders_();
+  var now = new Date();
+
+  var rows = Object.keys(byEmail).map(function (email) {
+    var u = byEmail[email];
+    return [
+      email, u.attempts, u.sum, u.best, u.mistakes, JSON.stringify(u.subjects), now
+    ];
+  });
+
+  // Wipe and rewrite rather than upsert row-by-row — this only runs once,
+  // manually, so a clean full rebuild is simpler and safer than merging.
+  if (sheet.getLastRow() > 1) {
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
+  }
+  if (rows.length) {
+    sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  }
+
+  return { ok: true, usersMigrated: rows.length };
 }
 
 
@@ -1646,7 +1888,73 @@ function sendResultEmail_(result, rank, unlock) {
 // 10. DASHBOARD / MISTAKES / HISTORY
 // ============================================================
 
+// Reads the single UserStats row for this email — O(1)-ish regardless of how
+// many attempts exist across the whole app. Falls back to the old full-sheet
+// scan (dashboardLegacy_) only for a user who attempted tests before
+// UserStats existed and hasn't had migrateUserStats_() run for them yet; that
+// fallback also writes the computed result back so the NEXT load is fast.
 function dashboard_(email) {
+  email = email_(email);
+
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  var headers = values.length ? values[0] : userStatsHeaders_();
+  var rowIndex = values.length ? findUserStatsRowIndex_(values, headers, email) : -1;
+
+  if (rowIndex === -1) {
+    var legacy = dashboardLegacy_(email);
+    if (legacy.attempts > 0 || legacy.mistakes > 0) {
+      bootstrapUserStatsRow_(email, legacy);
+    }
+    return legacy;
+  }
+
+  var row = values[rowIndex];
+  var attempts = num_(row[headers.indexOf('Attempts')]);
+  var sum = num_(row[headers.indexOf('SumPercentage')]);
+  var best = num_(row[headers.indexOf('BestPercentage')]);
+  var mistakes = num_(row[headers.indexOf('MistakesCount')]);
+  var subjectStats = parseSubjectStats_(row[headers.indexOf('SubjectStatsJSON')]);
+
+  var subjectList = Object.keys(subjectStats).map(function (key) {
+    var s = subjectStats[key];
+    return {
+      subject: key,
+      best: Math.round(s.best * 10) / 10,
+      avg: s.attempts ? Math.round((s.sum / s.attempts) * 10) / 10 : 0,
+      attempts: s.attempts
+    };
+  });
+
+  return {
+    attempts: attempts,
+    best: Math.round(best * 10) / 10,
+    avg: attempts ? Math.round((sum / attempts) * 10) / 10 : 0,
+    mistakes: mistakes,
+    subjects: subjectList
+  };
+}
+
+// Writes a freshly-computed legacy result into UserStats so subsequent loads
+// for this user hit the fast path. Rebuilds SubjectStatsJSON in the {sum,
+// best, attempts} shape recordAttemptInUserStats_ expects.
+function bootstrapUserStatsRow_(email, legacy) {
+  var sheet = sh_('UserStats');
+  var headers = userStatsHeaders_();
+  var subjectStats = {};
+  (legacy.subjects || []).forEach(function (s) {
+    subjectStats[s.subject] = { attempts: s.attempts, sum: s.avg * s.attempts, best: s.best };
+  });
+  sheet.appendRow([
+    email, legacy.attempts, legacy.attempts * legacy.avg, legacy.best,
+    legacy.mistakes, JSON.stringify(subjectStats), new Date()
+  ]);
+}
+
+// The original full-sheet-scan implementation. Only reached now as a
+// fallback for a user missing a UserStats row (see dashboard_ above) and by
+// migrateUserStats_.
+function dashboardLegacy_(email) {
   email = email_(email);
 
   var results = objs_(sh_('Results')).filter(function (row) {
@@ -1880,6 +2188,8 @@ function submitRevision_(body) {
   var wrong = 0;
   var unattempted = 0;
 
+  var touchedRows = [];
+
   for (var i = 1; i < values.length; i++) {
     var wrongId = String(
       values[i][indexOfHeader('WrongId')]
@@ -1935,24 +2245,26 @@ function submitRevision_(body) {
     }
 
     values[i][indexOfHeader('ReminderSent')] = false;
+    touchedRows.push(i);
   }
 
-  if (values.length > 1) {
-    sheet
-      .getRange(
-        2,
-        1,
-        values.length - 1,
-        headers.length
-      )
-      .setValues(values.slice(1));
-  }
+  // Write back only the rows that actually changed, instead of rewriting
+  // the whole sheet on every revision submission (as before). WrongAnswers
+  // accumulates one row per wrong/unattempted question from every user,
+  // forever, so a full rewrite here got a little slower with every passing
+  // day; this batch is bounded by how many questions were in THIS revision
+  // test, not by how big the sheet has grown.
+  touchedRows.forEach(function (i) {
+    sheet.getRange(i + 1, 1, 1, headers.length).setValues([values[i]]);
+  });
 
   appendMany_(
     sh_('RevisionHistory'),
     SHEETS.RevisionHistory,
     historyRows
   );
+
+  adjustUserMistakesCount_(email, -correct);
 
   return {
     ok: true,
@@ -2291,34 +2603,33 @@ function toggleReminder_(body) {
 }
 
 function deleteReminder_(body) {
+  // A single targeted lookup (one match, then done) rather than a scan
+  // over many rows — a single TextFinder call is a safe, direct swap for
+  // the full-sheet read here (no "many small calls" downside like a loop
+  // of lookups would have).
   var sheet = sh_('Reminders');
-  var values = sheet.getDataRange().getValues();
-
-  if (!values.length) {
-    return {
-      ok: false,
-      error: 'Reminder not found.'
-    };
+  if (!sheet || sheet.getLastRow() < 2) {
+    return { ok: false, error: 'Reminder not found.' };
   }
 
-  var headers = values[0];
-
-  var idIndex = headers.indexOf('ReminderId');
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var idCol = headers.indexOf('ReminderId') + 1;
   var emailIndex = headers.indexOf('Email');
+  if (!idCol) return { ok: false, error: 'Reminder not found.' };
 
   var email = email_(body.email);
   var reminderId = String(body.id || '').trim();
 
-  for (var i = 1; i < values.length; i++) {
-    if (
-      String(values[i][idIndex]) === reminderId &&
-      email_(values[i][emailIndex]) === email
-    ) {
-      sheet.deleteRow(i + 1);
+  var idRange = sheet.getRange(2, idCol, sheet.getLastRow() - 1, 1);
+  var match = idRange.createTextFinder(reminderId).matchEntireCell(true).findNext();
 
-      return {
-        ok: true
-      };
+  if (match) {
+    var rowNum = match.getRow();
+    var rowEmail = email_(sheet.getRange(rowNum, emailIndex + 1).getValue());
+
+    if (rowEmail === email) {
+      sheet.deleteRow(rowNum);
+      return { ok: true };
     }
   }
 
