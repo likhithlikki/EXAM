@@ -1197,18 +1197,45 @@ function practiceRank_(subject, email, percentage) {
  * It is NOT calculated from official ECET normalization data.
  */
 function expectedRank_(percentage) {
+
   var p = num_(percentage);
 
-  if (p >= 65) return '1 – 10';
-  if (p >= 60) return '11 – 20';
-  if (p >= 55) return '21 – 40';
-  if (p >= 50) return '41 – 60';
-  if (p >= 45) return '61 – 100';
-  if (p >= 40) return '101 – 200';
-  if (p >= 35) return '201 – 500';
-  if (p >= 30) return '501 – 1000';
+  // Minimum qualifying percentage = 25%
+  if (p < 25) return 'Not Qualified';
 
-  return '1001+';
+  // Percentage -> estimated specific rank
+  var points = [
+    [25, 8500],
+    [30, 8000],
+    [35, 7000],
+    [40, 6000],
+    [45, 5000],
+    [50, 3000],
+    [65, 1200],
+    [75, 400],
+    [85, 100],
+    [95, 10],
+    [100, 1]
+  ];
+
+  for (var i = 0; i < points.length - 1; i++) {
+
+    var p1 = points[i][0];
+    var r1 = points[i][1];
+
+    var p2 = points[i + 1][0];
+    var r2 = points[i + 1][1];
+
+    if (p >= p1 && p <= p2) {
+
+      var rawRank =
+        r1 + ((p - p1) / (p2 - p1)) * (r2 - r1);
+
+      return Math.max(1, Math.round(rawRank));
+    }
+  }
+
+  return 1;
 }
 
 
