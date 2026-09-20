@@ -81,7 +81,7 @@ const SHEETS = {
     'QuestionId', 'SubjectId', 'Subject', 'Year', 'State', 'QuestionNumber',
     'Question', 'OptionA', 'OptionB', 'OptionC', 'OptionD', 'CorrectAnswer',
     'CreatedAt', 'CreatedBy', 'QuestionImage', 'OptionAImage', 'OptionBImage',
-    'OptionCImage', 'OptionDImage', 'Topic'
+    'OptionCImage', 'OptionDImage', 'Topic', 'Exam'
   ],
 
   Subjects: [
@@ -724,6 +724,18 @@ function doPost(e) {
       case 'deleteSubjects':
         return out_(deleteSubjects_(body));
 
+      case 'renameSubject':
+        return out_(renameSubject_(body));
+
+      case 'mergeSubjects':
+        return out_(mergeSubjects_(body));
+
+      case 'moveTopicTests':
+        return out_(moveTopicTests_(body));
+
+      case 'renameTopicTest':
+        return out_(renameTopicTest_(body));
+
       case 'createSubject':
         return out_(createSubject_(body));
 
@@ -1021,11 +1033,13 @@ function topicKey_(value) {
 function ensureQuestionsSchema_() {
   var sheet = sh_('Questions');
   if (!sheet) return null;
-  var lastCol = Math.max(1, sheet.getLastColumn());
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
-  if (headers.indexOf('Topic') === -1) {
-    sheet.getRange(1, lastCol + 1).setValue('Topic').setFontWeight('bold');
-  }
+  ['Topic', 'Exam'].forEach(function (name) {
+    var lastCol = Math.max(1, sheet.getLastColumn());
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+    if (headers.indexOf(name) === -1) {
+      sheet.getRange(1, lastCol + 1).setValue(name).setFontWeight('bold');
+    }
+  });
   return sheet;
 }
 
@@ -1057,46 +1071,72 @@ function appendManyByHeader_(sheet, objects) {
     .setValues(values);
 }
 
-// One pass over the Questions sheet: question count per subject, plus the
-// ordered list of topics (with counts) per subject. Topics keep the order in
-// which they were first added, so an admin who adds Basics, then
+// EXAMS. The same subject can be practised for more than one exam (for example
+// Digital Electronics for ECET and for GATE). Every question has an optional
+// Exam; a question without one belongs to its subject's "home" exam — the Exam
+// typed when a custom subject was created, or ECET for the built-in subjects.
+// A "test" on the home page is one exam of one subject: its full test, plus one
+// topic test per topic that has questions in that exam.
+function subjectHomeExams_() {
+  var map = {};
+  objs_(sh_('Subjects')).forEach(function (row) {
+    map[String(row.SubjectId)] = cleanTopic_(row.Exam);
+  });
+  return map;
+}
+
+function homeExamOf_(homes, subjectId) {
+  return Object.prototype.hasOwnProperty.call(homes, subjectId) ? homes[subjectId] : 'ECET';
+}
+
+// One pass over the Questions sheet: question count per subject, the exams used
+// by each subject (with question totals) and its topic tests. Everything keeps
+// the order in which it was first added, so an admin who adds Basics, then
 // Capacitors & Inductors, then Two-Ports sees them in that order.
 function questionStats_() {
+  var homes = subjectHomeExams_();
   var counts = {};
+  var exams = {};
   var topics = {};
   objs_(sh_('Questions')).forEach(function (row) {
     var sid = String(row.SubjectId || '');
     if (!sid) return;
     counts[sid] = (counts[sid] || 0) + 1;
 
+    var exam = cleanTopic_(row.Exam) || homeExamOf_(homes, sid);
+    var examKey = 'k:' + topicKey_(exam);
+    var examBucket = exams[sid] || (exams[sid] = { order: [], map: {} });
+    if (!examBucket.map[examKey]) {
+      examBucket.map[examKey] = { name: exam, total: 0 };
+      examBucket.order.push(examKey);
+    }
+    examBucket.map[examKey].total++;
+
     var topic = cleanTopic_(row.Topic);
     if (!topic) return;
-    var key = 'k:' + topicKey_(topic);
-    var bucket = topics[sid] || (topics[sid] = { order: [], map: {} });
-    if (!bucket.map[key]) {
-      bucket.map[key] = { name: topic, count: 0 };
-      bucket.order.push(key);
+    var key = examKey + '|' + topicKey_(topic);
+    var topicBucket = topics[sid] || (topics[sid] = { order: [], map: {} });
+    if (!topicBucket.map[key]) {
+      topicBucket.map[key] = { name: topic, exam: exam, count: 0 };
+      topicBucket.order.push(key);
     }
-    bucket.map[key].count++;
+    topicBucket.map[key].count++;
   });
-  return { counts: counts, topics: topics };
+  return { counts: counts, exams: exams, topics: topics, homes: homes };
 }
 
-// { subjectId: { total: <all questions>, topics: [{ name, count }, ...] } }
+// { subjectId: { total, exams: [{ name, total }], topics: [{ name, count, exam }] } }
 // Covers every subject that has stored questions, including the built-in
 // subjects that also receive admin-imported questions.
 function topicSummary_(stats) {
   stats = stats || questionStats_();
   var out = {};
   Object.keys(stats.counts).forEach(function (sid) {
-    var bucket = stats.topics[sid];
+    var eb = stats.exams[sid], tb = stats.topics[sid];
     out[sid] = {
       total: stats.counts[sid],
-      topics: bucket
-        ? bucket.order.map(function (key) {
-            return { name: bucket.map[key].name, count: bucket.map[key].count };
-          })
-        : []
+      exams: eb ? eb.order.map(function (k) { return { name: eb.map[k].name, total: eb.map[k].total }; }) : [],
+      topics: tb ? tb.order.map(function (k) { return { name: tb.map[k].name, count: tb.map[k].count, exam: tb.map[k].exam }; }) : []
     };
   });
   return out;
@@ -1210,13 +1250,16 @@ function importQuestions_(body) {
   // instead of creating a near-duplicate one.
   var existing = {};
   var topicCanon = {};
+  var examCanon = {};
+  var homeExam = homeExamOf_(subjectHomeExams_(), subjectId);
+  if (homeExam) examCanon['k:' + topicKey_(homeExam)] = homeExam;
   var existingLastRow = questionSheet ? questionSheet.getLastRow() : 0;
   if (existingLastRow > 1) {
     var existingLastCol = questionSheet.getLastColumn();
     var existingHeaders = questionSheet.getRange(1, 1, 1, existingLastCol).getValues()[0].map(String);
     var colOf = function (name) { return existingHeaders.indexOf(name); };
     var cSubjectId = colOf('SubjectId'), cYear = colOf('Year'), cState = colOf('State');
-    var cQno = colOf('QuestionNumber'), cQuestion = colOf('Question'), cTopic = colOf('Topic');
+    var cQno = colOf('QuestionNumber'), cQuestion = colOf('Question'), cTopic = colOf('Topic'), cExam = colOf('Exam');
     var existingValues = questionSheet.getRange(2, 1, existingLastRow - 1, existingLastCol).getValues();
     existingValues.forEach(function(r) {
       var existingSubjectId = String(r[cSubjectId] || '').trim();
@@ -1227,6 +1270,10 @@ function importQuestions_(body) {
       var existingQno = String(r[cQno] || '').trim();
       if (existingQuestion) {
         existing[[existingQuestion, existingYear, existingState, existingQno].join('|')] = true;
+      }
+      var existingExam = cExam === -1 ? '' : cleanTopic_(r[cExam]);
+      if (existingExam && !examCanon['k:' + topicKey_(existingExam)]) {
+        examCanon['k:' + topicKey_(existingExam)] = existingExam;
       }
       var existingTopic = cTopic === -1 ? '' : cleanTopic_(r[cTopic]);
       if (existingTopic && !topicCanon['k:' + topicKey_(existingTopic)]) {
@@ -1258,6 +1305,16 @@ function importQuestions_(body) {
       var topicSlot = 'k:' + topicKey_(topic);
       if (!topicCanon[topicSlot]) topicCanon[topicSlot] = topic;
       topic = topicCanon[topicSlot];
+    }
+
+    // Same rule for the exam: the row's own Exam, else the one chosen for the whole import.
+    var exam = cleanTopic_(cleanTopic_(row.exam) ? row.exam : body.exam);
+    if (exam.length > 40) {
+      rowErrors.push('Exam is longer than 40 characters');
+    } else if (exam) {
+      var examSlot = 'k:' + topicKey_(exam);
+      if (!examCanon[examSlot]) examCanon[examSlot] = exam;
+      exam = examCanon[examSlot];
     }
 
     if (!q) rowErrors.push('Question is empty');
@@ -1295,7 +1352,8 @@ function importQuestions_(body) {
       OptionBImage: String(row.optionBImage || '').trim(),
       OptionCImage: String(row.optionCImage || '').trim(),
       OptionDImage: String(row.optionDImage || '').trim(),
-      Topic: topic
+      Topic: topic,
+      Exam: exam
     });
   });
 
@@ -1486,6 +1544,7 @@ function questions_(subjectId) {
       options: [row.OptionA, row.OptionB, row.OptionC, row.OptionD].map(String),
       answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase())),
       topic: cleanTopic_(row.Topic),
+      exam: cleanTopic_(row.Exam),
       image: String(row.QuestionImage || ''),
       optionImages: [row.OptionAImage, row.OptionBImage, row.OptionCImage, row.OptionDImage].map(function(v){return String(v||'');})
     };
@@ -1529,6 +1588,11 @@ function updateQuestion_(body) {
     return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
   }
 
+  var examInput = body.exam === undefined ? null : cleanTopic_(body.exam);
+  if (examInput !== null && examInput.length > 40) {
+    return { ok: false, error: 'Exam is longer than 40 characters.' };
+  }
+
   var sheet = ensureQuestionsSchema_();
   var lastRow = sheet.getLastRow();
   if (lastRow < 2) return { ok: false, error: 'No questions found.' };
@@ -1560,6 +1624,19 @@ function updateQuestion_(body) {
     }
   }
 
+  // Exam: same idea — keep when not sent, otherwise reuse this subject's existing spelling.
+  var exam = examInput === null ? cleanTopic_(before.Exam) : examInput;
+  if (exam && examInput !== null) {
+    var examCol = headers.indexOf('Exam');
+    var examSubjectCol = headers.indexOf('SubjectId');
+    for (var e = 0; e < values.length; e++) {
+      if (e === rowIndex) continue;
+      if (String(values[e][examSubjectCol]) !== String(values[rowIndex][examSubjectCol])) continue;
+      var otherExam = cleanTopic_(values[e][examCol]);
+      if (otherExam && topicKey_(otherExam) === topicKey_(exam)) { exam = otherExam; break; }
+    }
+  }
+
   var updated = {
     Question: q,
     OptionA: options[0], OptionB: options[1], OptionC: options[2], OptionD: options[3],
@@ -1572,7 +1649,8 @@ function updateQuestion_(body) {
     OptionBImage: String(body.optionBImage || '').trim(),
     OptionCImage: String(body.optionCImage || '').trim(),
     OptionDImage: String(body.optionDImage || '').trim(),
-    Topic: topic
+    Topic: topic,
+    Exam: exam
   };
 
   var after = {};
@@ -1606,10 +1684,10 @@ function updateQuestion_(body) {
   return { ok: true, message: 'Question updated successfully.' };
 }
 
-// Admin: file many existing questions of one subject under a topic in a single
-// call (or clear their topic by sending an empty topic). This is how questions
-// that were imported before topics existed get sorted into topic-wise tests.
-// Every changed question is written to the ChangeLog like a normal edit.
+// Admin: file many existing questions of one subject under a topic (and, when
+// `exam` is sent, under an exam) in a single call. An empty topic takes them out
+// of their topic. This is how questions imported before topics/exams existed get
+// sorted into topic-wise tests. Every changed question is written to ChangeLog.
 function setQuestionTopic_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
@@ -1619,6 +1697,8 @@ function setQuestionTopic_(body) {
   var subjectId = String(body.subjectId || '').trim();
   var ids = Array.isArray(body.questionIds) ? body.questionIds.map(String) : [];
   var topic = cleanTopic_(body.topic);
+  var examProvided = body.exam !== undefined;
+  var exam = examProvided ? cleanTopic_(body.exam) : '';
 
   if (!subjectId) return { ok: false, error: 'Subject is required.' };
   if (!ids.length) return { ok: false, error: 'Select at least one question.' };
@@ -1626,6 +1706,7 @@ function setQuestionTopic_(body) {
   if (topic.length > MAX_TOPIC_LENGTH) {
     return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
   }
+  if (exam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
 
   var sheet = ensureQuestionsSchema_();
   var lastRow = sheet.getLastRow();
@@ -1636,36 +1717,39 @@ function setQuestionTopic_(body) {
   var idCol = headers.indexOf('QuestionId');
   var subjectCol = headers.indexOf('SubjectId');
   var topicCol = headers.indexOf('Topic');
+  var examCol = headers.indexOf('Exam');
   var subjectNameCol = headers.indexOf('Subject');
   var questionCol = headers.indexOf('Question');
   var values = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 
-  // Reuse the spelling other questions in this subject already use.
-  if (topic) {
-    for (var t = 0; t < values.length; t++) {
-      if (String(values[t][subjectCol]) !== subjectId) continue;
-      var other = cleanTopic_(values[t][topicCol]);
-      if (other && topicKey_(other) === topicKey_(topic) && ids.indexOf(String(values[t][idCol])) === -1) {
-        topic = other;
-        break;
-      }
-    }
+  // Reuse the spellings other questions in this subject already use.
+  var wantedIds = {};
+  ids.forEach(function (id) { wantedIds[id] = true; });
+  for (var t = 0; t < values.length; t++) {
+    if (String(values[t][subjectCol]) !== subjectId) continue;
+    if (wantedIds[String(values[t][idCol])]) continue;
+    var otherTopic = cleanTopic_(values[t][topicCol]);
+    if (topic && otherTopic && topicKey_(otherTopic) === topicKey_(topic)) topic = otherTopic;
+    var otherExam = cleanTopic_(values[t][examCol]);
+    if (exam && otherExam && topicKey_(otherExam) === topicKey_(exam)) exam = otherExam;
   }
-
-  var wanted = {};
-  ids.forEach(function (id) { wanted[id] = true; });
 
   var changes = [];
   var updatedCount = 0;
-  var newColumn = values.map(function (row) { return [row[topicCol]]; });
+  var newTopics = values.map(function (row) { return [row[topicCol]]; });
+  var newExams = values.map(function (row) { return [row[examCol]]; });
 
   values.forEach(function (row, index) {
     var id = String(row[idCol]);
-    if (!wanted[id] || String(row[subjectCol]) !== subjectId) return;
+    if (!wantedIds[id] || String(row[subjectCol]) !== subjectId) return;
     updatedCount++;
-    var previous = cleanTopic_(row[topicCol]);
-    if (previous === topic) return;
-    newColumn[index] = [topic];
+    var previousTopic = cleanTopic_(row[topicCol]);
+    var previousExam = cleanTopic_(row[examCol]);
+    var topicChanged = previousTopic !== topic;
+    var examChanged = examProvided && previousExam !== exam;
+    if (!topicChanged && !examChanged) return;
+    newTopics[index] = [topic];
+    if (examProvided) newExams[index] = [exam];
     changes.push({
       ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
       Timestamp: new Date(),
@@ -1674,9 +1758,9 @@ function setQuestionTopic_(body) {
       SubjectId: subjectId,
       QuestionId: id,
       QuestionSnippet: String(row[questionCol] || '').slice(0, 120),
-      BeforeJSON: JSON.stringify({ Topic: previous }),
-      AfterJSON: JSON.stringify({ Topic: topic }),
-      Summary: 'Changed: Topic'
+      BeforeJSON: JSON.stringify(examProvided ? { Topic: previousTopic, Exam: previousExam } : { Topic: previousTopic }),
+      AfterJSON: JSON.stringify(examProvided ? { Topic: topic, Exam: exam } : { Topic: topic }),
+      Summary: 'Changed: ' + (examProvided ? 'Topic, Exam' : 'Topic')
     });
   });
 
@@ -1685,7 +1769,8 @@ function setQuestionTopic_(body) {
   }
 
   if (changes.length) {
-    sheet.getRange(2, topicCol + 1, newColumn.length, 1).setValues(newColumn);
+    sheet.getRange(2, topicCol + 1, newTopics.length, 1).setValues(newTopics);
+    if (examProvided) sheet.getRange(2, examCol + 1, newExams.length, 1).setValues(newExams);
     appendMany_(sh_('ChangeLog'), SHEETS.ChangeLog, changes);
   }
 
@@ -1694,7 +1779,8 @@ function setQuestionTopic_(body) {
     updated: updatedCount,
     changed: changes.length,
     topic: topic,
-    message: updatedCount + ' question(s) ' + (topic ? 'filed under "' + topic + '".' : 'moved out of their topic.')
+    exam: examProvided ? exam : undefined,
+    message: updatedCount + ' question(s) ' + (topic ? 'filed under "' + topic + '"' : 'moved out of their topic') + (examProvided && exam ? ' for ' + exam : '') + '.'
   };
 }
 
@@ -1866,6 +1952,290 @@ function deleteSubjects_(body) {
     deletedIds: foundIds,
     message: foundIds.length + ' subject(s) and ' + deletedQuestions + ' question(s) deleted.'
   };
+}
+
+// ------------------------------------------------------------
+// CONTROL CENTRE — rename / merge subjects, rename / move topic tests
+// (past results are NOT rewritten: they stay under the name they were taken as)
+// ------------------------------------------------------------
+function readQuestionTable_() {
+  var sheet = ensureQuestionsSchema_();
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = lastRow >= 2 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
+  return {
+    sheet: sheet,
+    headers: headers,
+    values: values,
+    col: function (name) { return headers.indexOf(name); }
+  };
+}
+
+function writeQuestionColumns_(table, names) {
+  if (!table.values.length) return;
+  names.forEach(function (name) {
+    var c = table.col(name);
+    if (c === -1) return;
+    table.sheet
+      .getRange(2, c + 1, table.values.length, 1)
+      .setValues(table.values.map(function (row) { return [row[c]]; }));
+  });
+}
+
+function logSubjectChange_(adminEmail, subjectName, subjectId, summary, before, after) {
+  appendMany_(sh_('ChangeLog'), SHEETS.ChangeLog, [{
+    ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+    Timestamp: new Date(),
+    EditedBy: adminEmail,
+    Subject: subjectName,
+    SubjectId: subjectId,
+    QuestionId: '',
+    QuestionSnippet: '',
+    BeforeJSON: JSON.stringify(before || {}),
+    AfterJSON: JSON.stringify(after || {}),
+    Summary: summary
+  }]);
+}
+
+// Finds a subject row in the Subjects sheet (custom subjects only).
+function findSubjectRow_(subjectId) {
+  var sheet = ensureSubjectsSchema_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return null;
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  var idCol = headers.indexOf('SubjectId');
+  for (var i = 0; i < values.length; i++) {
+    if (String(values[i][idCol]) === subjectId) {
+      return { sheet: sheet, headers: headers, values: values, index: i, rowNumber: i + 2,
+        name: String(values[i][headers.indexOf('Name')] || ''),
+        exam: cleanTopic_(values[i][headers.indexOf('Exam')]) };
+    }
+  }
+  return null;
+}
+
+// A move/merge target can be a custom subject or one of the built-in subjects.
+function resolveTargetSubject_(targetId, targetName) {
+  var custom = findSubjectRow_(targetId);
+  if (custom) return { id: targetId, name: custom.name, custom: true };
+  var wanted = cleanTopic_(targetName).toLowerCase();
+  for (var i = 0; i < STATIC_SUBJECT_NAMES.length; i++) {
+    if (STATIC_SUBJECT_NAMES[i].toLowerCase() === wanted) {
+      return { id: targetId, name: STATIC_SUBJECT_NAMES[i], custom: false };
+    }
+  }
+  return null;
+}
+
+function renameSubject_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var subjectId = String(body.subjectId || '').trim();
+  var newName = cleanTopic_(body.newName);
+  if (!subjectId) return { ok: false, error: 'Subject is required.' };
+  if (!newName) return { ok: false, error: 'Enter the new name.' };
+  if (newName.length > 80) return { ok: false, error: 'Subject name is longer than 80 characters.' };
+
+  var row = findSubjectRow_(subjectId);
+  if (!row) return { ok: false, error: 'Only custom subjects can be renamed here. Built-in subjects are named in subjects.json.' };
+
+  var lower = newName.toLowerCase();
+  var taken = STATIC_SUBJECT_NAMES.some(function (n) { return n.toLowerCase() === lower; });
+  var nameCol = row.headers.indexOf('Name'), idCol = row.headers.indexOf('SubjectId');
+  row.values.forEach(function (r, i) {
+    if (i !== row.index && String(r[nameCol]).toLowerCase() === lower) taken = true;
+  });
+  if (taken) return { ok: false, error: 'Another subject already uses that name.' };
+
+  row.sheet.getRange(row.rowNumber, nameCol + 1).setValue(newName);
+
+  var table = readQuestionTable_();
+  var qSubjectId = table.col('SubjectId'), qSubject = table.col('Subject');
+  var moved = 0;
+  table.values.forEach(function (r) {
+    if (String(r[qSubjectId]) === subjectId) { r[qSubject] = newName; moved++; }
+  });
+  if (moved) writeQuestionColumns_(table, ['Subject']);
+
+  logSubjectChange_(adminEmail, newName, subjectId, 'Subject renamed', { name: row.name }, { name: newName });
+  return { ok: true, name: newName, message: 'Renamed "' + row.name + '" to "' + newName + '".' };
+}
+
+// Moves every question of the source subjects into the target subject, then
+// removes the (now empty) source subjects. Each question keeps its topic, and
+// keeps its exam: a question with no exam of its own takes its source subject's
+// exam, so it does not silently switch to the target's.
+function mergeSubjects_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var targetId = String(body.targetId || '').trim();
+  var sources = (Array.isArray(body.sourceIds) ? body.sourceIds : []).map(String).filter(function (id, i, all) {
+    return id && all.indexOf(id) === i;
+  });
+  if (!targetId) return { ok: false, error: 'Choose the subject to merge into.' };
+  if (!sources.length) return { ok: false, error: 'Select at least one subject to merge.' };
+  if (sources.indexOf(targetId) !== -1) return { ok: false, error: 'A subject cannot be merged into itself.' };
+  if (sources.length > 50) return { ok: false, error: 'Maximum 50 subjects can be merged at once.' };
+
+  var target = resolveTargetSubject_(targetId, body.targetName);
+  if (!target) return { ok: false, error: 'The subject to merge into was not found.' };
+
+  var found = {};
+  for (var i = 0; i < sources.length; i++) {
+    var row = findSubjectRow_(sources[i]);
+    if (!row) return { ok: false, error: 'Only custom subjects can be merged away (' + sources[i] + ' is not one).' };
+    found[sources[i]] = row;
+  }
+
+  var table = readQuestionTable_();
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam');
+  var perSource = {};
+  table.values.forEach(function (r) {
+    var sid = String(r[cSid]);
+    if (!found[sid]) return;
+    if (!cleanTopic_(r[cExam])) r[cExam] = found[sid].exam;
+    r[cSid] = targetId;
+    r[cSubject] = target.name;
+    perSource[sid] = (perSource[sid] || 0) + 1;
+  });
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam']);
+
+  Object.keys(found)
+    .map(function (id) { return found[id].rowNumber; })
+    .sort(function (a, b) { return b - a; })
+    .forEach(function (rowNumber) { ensureSubjectsSchema_().deleteRow(rowNumber); });
+
+  var totalMoved = 0;
+  Object.keys(found).forEach(function (id) {
+    totalMoved += perSource[id] || 0;
+    logSubjectChange_(adminEmail, found[id].name, id, 'Merged into ' + target.name + ' (' + (perSource[id] || 0) + ' questions)',
+      { subject: found[id].name, exam: found[id].exam }, { mergedInto: target.name });
+  });
+  return {
+    ok: true,
+    mergedSubjects: Object.keys(found).length,
+    movedQuestions: totalMoved,
+    mergedIds: Object.keys(found),
+    message: Object.keys(found).length + ' subject(s) merged into "' + target.name + '" (' + totalMoved + ' questions moved).'
+  };
+}
+
+// Picks out the questions of one subject that belong to the given topic tests.
+// items: [{ topic, exam }] with exam = the exam shown for the test (blank = none).
+function selectTopicTestRows_(table, subjectId, items) {
+  var homes = subjectHomeExams_();
+  var home = homeExamOf_(homes, subjectId);
+  var wanted = {};
+  items.forEach(function (it) {
+    wanted[topicKey_(it.exam) + '|' + topicKey_(it.topic)] = true;
+  });
+  var cSid = table.col('SubjectId'), cTopic = table.col('Topic'), cExam = table.col('Exam');
+  var rows = [];
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== subjectId) return;
+    var topic = cleanTopic_(r[cTopic]);
+    if (!topic) return;
+    var exam = cleanTopic_(r[cExam]) || home;
+    if (wanted[topicKey_(exam) + '|' + topicKey_(topic)]) rows.push({ row: r, exam: exam });
+  });
+  return rows;
+}
+
+function cleanItems_(raw) {
+  return (Array.isArray(raw) ? raw : []).map(function (it) {
+    return { topic: cleanTopic_(it && it.topic), exam: cleanTopic_(it && it.exam) };
+  }).filter(function (it) { return it.topic; });
+}
+
+// Moves whole topic tests (all their questions) from one subject to another.
+function moveTopicTests_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var fromId = String(body.fromSubjectId || '').trim();
+  var toId = String(body.toSubjectId || '').trim();
+  var items = cleanItems_(body.items);
+  if (!fromId || !toId) return { ok: false, error: 'Choose the subject to move to.' };
+  if (fromId === toId) return { ok: false, error: 'Those tests are already in that subject.' };
+  if (!items.length) return { ok: false, error: 'Select at least one topic test.' };
+  var target = resolveTargetSubject_(toId, body.toSubjectName);
+  if (!target) return { ok: false, error: 'The subject to move to was not found.' };
+
+  var table = readQuestionTable_();
+  var picked = selectTopicTestRows_(table, fromId, items);
+  if (!picked.length) return { ok: false, error: 'None of the selected topic tests were found.' };
+
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  // spell each topic the way the target subject already spells it
+  var canon = {};
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== toId) return;
+    var t = cleanTopic_(r[cTopic]);
+    if (t && !canon['k:' + topicKey_(t)]) canon['k:' + topicKey_(t)] = t;
+  });
+  var fromName = '';
+  picked.forEach(function (p) {
+    fromName = fromName || String(p.row[cSubject] || '');
+    var slot = 'k:' + topicKey_(p.row[cTopic]);
+    if (canon[slot]) p.row[cTopic] = canon[slot]; else canon[slot] = cleanTopic_(p.row[cTopic]);
+    p.row[cExam] = p.exam;         // the exam becomes explicit, so it survives the move
+    p.row[cSid] = toId;
+    p.row[cSubject] = target.name;
+  });
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
+  logSubjectChange_(adminEmail, fromName, fromId, 'Moved ' + items.length + ' topic test(s) to ' + target.name + ' (' + picked.length + ' questions)',
+    { from: fromName, tests: items }, { to: target.name });
+  return { ok: true, moved: picked.length, tests: items.length, message: items.length + ' topic test(s) moved to "' + target.name + '" (' + picked.length + ' questions).' };
+}
+
+// Renames a topic test and/or changes the exam it belongs to. Renaming it to the
+// name of an existing topic test of the same exam combines the two.
+function renameTopicTest_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var subjectId = String(body.subjectId || '').trim();
+  var topic = cleanTopic_(body.topic), exam = cleanTopic_(body.exam);
+  var newTopic = cleanTopic_(body.newTopic);
+  var examProvided = body.newExam !== undefined;
+  var newExam = examProvided ? cleanTopic_(body.newExam) : exam;
+  if (!subjectId || !topic) return { ok: false, error: 'Topic test not specified.' };
+  if (!newTopic) return { ok: false, error: 'Enter the new topic name.' };
+  if (newTopic.length > MAX_TOPIC_LENGTH) return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  if (newExam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
+
+  var table = readQuestionTable_();
+  var picked = selectTopicTestRows_(table, subjectId, [{ topic: topic, exam: exam }]);
+  if (!picked.length) return { ok: false, error: 'That topic test was not found.' };
+
+  var homes = subjectHomeExams_();
+  var home = homeExamOf_(homes, subjectId);
+  var cSid = table.col('SubjectId'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  // reuse the spellings the subject already has for the destination exam / topic
+  // (the rows being renamed are skipped, so a change of capitals alone still works)
+  var pickedRows = picked.map(function (p) { return p.row; });
+  var destExam = newExam || home;
+  var examSpelling = newExam, topicSpelling = newTopic;
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== subjectId || pickedRows.indexOf(r) !== -1) return;
+    var re = cleanTopic_(r[cExam]) || home;
+    if (newExam && cleanTopic_(r[cExam]) && topicKey_(re) === topicKey_(newExam)) examSpelling = cleanTopic_(r[cExam]);
+    if (topicKey_(re) === topicKey_(destExam) && topicKey_(r[cTopic]) === topicKey_(newTopic)) topicSpelling = cleanTopic_(r[cTopic]);
+  });
+  picked.forEach(function (p) {
+    p.row[cTopic] = topicSpelling;
+    if (examProvided) p.row[cExam] = newExam ? examSpelling : '';
+  });
+  writeQuestionColumns_(table, examProvided ? ['Topic', 'Exam'] : ['Topic']);
+  logSubjectChange_(adminEmail, '', subjectId, 'Topic test renamed (' + picked.length + ' questions)',
+    { topic: topic, exam: exam }, { topic: topicSpelling, exam: examProvided ? newExam : exam });
+  return { ok: true, changed: picked.length, topic: topicSpelling, exam: examProvided ? newExam : exam,
+    message: 'Topic test renamed to "' + topicSpelling + '"' + (newExam ? ' (' + newExam + ')' : '') + '.' };
 }
 
 // Returns the most recent ~50 ChangeLog entries, newest first.

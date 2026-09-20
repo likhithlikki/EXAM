@@ -60,3 +60,12 @@ The script adds missing columns to existing sheets. It does not intentionally de
 - A new `Exam` column is added to the end of the `Subjects` sheet automatically.
 - After pasting the new `Code.gs`, deploy a **new version** (Deploy → Manage deployments → Edit → New version).
 
+## Update: exams inside a subject, rename / merge / move
+
+- **One subject, several exams.** Every question now has an optional `Exam` (GATE, ECET or anything else). A question with no exam belongs to its subject's *default exam*: the Exam typed when a custom subject was created, or ECET for the built-in subjects. On Home, the subject card only shows how many topic tests it has; inside, each exam gets its own block with its Full Subject Test and numbered topic tests. An exam with no topics shows just its Full Subject Test.
+- A new `Exam` column is added to the end of the `Questions` sheet automatically (like `Topic`). The Excel template has a 16th column, `Exam`; older 14- and 15-column files still import.
+- **Test names stay stable.** Tests of the default exam keep the old names (`Networks`, `Networks — Basics`), so earlier results and waits are untouched. Tests of another exam are named `Networks (GATE)` and `Networks (GATE) — Basics`.
+- **Control Centre → Subjects:** rename a custom subject, merge subjects into another (custom or built-in) and delete. **Topic Tests:** rename a topic test, change its exam, combine tests, or move topic tests to another subject. Past results are not rewritten — they stay under the name they were taken as, so a renamed or moved test starts with a fresh wait.
+- New backend actions: `renameSubject`, `mergeSubjects`, `moveTopicTests`, `renameTopicTest` (all need the admin and Control Centre passwords). After pasting the new `Code.gs`, deploy a **new version**.
+- **About page:** `about.html` (linked from the Home menu) explains the site in a warm, non-blue colour scheme.
+

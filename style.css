@@ -178,8 +178,6 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 
 /* ---------- Floating controls: Back / Home ---------- */
 .home-titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-#hardRefreshBtn{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
-#hardRefreshBtn:hover{color:var(--ink);border-color:var(--primary)}
 .icon-btn{background:none;border:1px solid var(--line);border-radius:6px;width:28px;height:28px;font-size:14px;cursor:pointer;vertical-align:middle;margin-left:6px}
 .icon-btn.spinning{animation:spin .8s linear infinite}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -233,8 +231,9 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 /* Admin exam time control */
 .tc-btns{display:flex;flex-wrap:wrap;gap:6px}
 .tc-btns button{padding:7px 12px;font-size:13px;min-width:0;border:0;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;cursor:pointer;font-weight:600}
-.tc-amount{display:flex;gap:8px;max-width:360px}
-.tc-amount input{flex:1}
+.tc-amount{display:flex;gap:10px;align-items:stretch;max-width:420px}
+.tc-amount input[type=number]{flex:0 0 130px;width:130px;min-width:0;text-align:center;font-weight:700}
+.tc-amount select{flex:1 1 140px;width:auto;min-width:0}
 #tcUser{width:100%}
 /* ---------- Subject cards: exam badge + topic-test count ---------- */
 .card-tags{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}
@@ -299,3 +298,22 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 /* ---------- Admin: bulk "move to topic" tool ---------- */
 .topic-bulk{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0 16px;background:#fbfcff}
 .topic-bulk select{margin-bottom:6px}
+
+/* ---------- Refresh Data button ---------- */
+#hardRefreshBtn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px 9px 14px;border:0;border-radius:999px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.01em;color:#fff;background:linear-gradient(135deg,#14b8a6 0%,#0d9488 55%,#0f766e 100%);box-shadow:0 6px 16px rgba(13,148,136,.35),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+#hardRefreshBtn .rf-ico{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.22);font-size:16px;line-height:1;transition:transform .5s ease}
+#hardRefreshBtn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 9px 20px rgba(13,148,136,.42),inset 0 1px 0 rgba(255,255,255,.35)}
+#hardRefreshBtn:hover .rf-ico{transform:rotate(180deg)}
+#hardRefreshBtn:active{transform:translateY(0);box-shadow:0 3px 8px rgba(13,148,136,.35)}
+#hardRefreshBtn.busy{pointer-events:none;filter:saturate(.85)}
+#hardRefreshBtn.busy .rf-ico{animation:rfSpin .7s linear infinite}
+@keyframes rfSpin{to{transform:rotate(360deg)}}
+
+/* ---------- Test list: one block per exam ---------- */
+.exam-group{display:flex;flex-direction:column;gap:8px}
+.exam-group+.exam-group{margin-top:16px}
+.exam-badge.sm{font-size:10.5px;padding:1px 7px}
+.cc-tools{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:12px 0;background:#fbfcff}
+.cc-tools select{margin-bottom:8px}
+.cc-row>button.ghost{padding:7px 14px;font-size:13px;font-weight:700;font-family:inherit;border-radius:8px;border:1.5px solid var(--primary);background:#fff;color:var(--primary-dark);cursor:pointer;transition:background .15s ease}
+.cc-row>button.ghost:hover{background:var(--primary-light)}

@@ -4,7 +4,9 @@ Responsive single-page ECET practice-test website with a Google Apps Script back
 
 ## Features
 
-- Topic-wise tests inside a subject (e.g. Networks → Basics, Capacitors & Inductors, Two-Ports), grouped on Home, each with its own best score and 1-day cooldown, plus a topic-wise breakdown on the full-test result.
+- Topic-wise tests inside a subject, one numbered list per exam (GATE, ECET or another), each test with its own best score and wait, plus a topic-wise breakdown on the full-test result.
+- Control Centre for admins: locks and default wait, passwords, rename / merge / delete subjects, rename / move topic tests.
+- About page (`about.html`).
 - Main tests with 1 minute per question and no negative marking.
 - Countdown timer and automatic submission at zero.
 - Local autosave and resume after refresh/browser crash.

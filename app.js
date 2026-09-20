@@ -279,49 +279,64 @@ function handlePageHide(){
 
 
 /* ===================== TOPIC-WISE TESTS =====================
- * A subject can hold several topic tests — e.g. "Networks" → Basics,
- * Capacitors & Inductors, Two-Ports. Each question carries an optional `topic`.
+ * The same subject can be practised for more than one exam (say Digital
+ * Electronics for ECET *and* for GATE), and inside each exam it can have topic
+ * tests (Basics, Capacitors & Inductors, Two-Ports …). Every question carries an
+ * optional `exam` and `topic`. A question without an exam belongs to its
+ * subject's "home" exam: the Exam typed when a custom subject was created, or
+ * ECET for the built-in subjects.
  *
- * A topic test is a "test unit": a copy of the subject whose name is
- * "<Subject> — <Topic>" and whose id is "<subjectId>::<topic-slug>-<hash>".
- * Everything downstream already keys on the subject name/id — password, autosave
- * and resume, the 1-day cooldown, results, rank, mistakes, dashboard, emails —
- * so every topic test automatically gets its own attempts, best score and
- * cooldown with no other changes. The whole-subject test keeps the plain subject
- * name, so nothing already recorded is touched. Results are sent to the backend
- * with the PARENT subject id, so reports can still group by subject.
+ * For each exam of a subject the Home page offers:
+ *   • a Full Subject Test (all that exam's questions) — the only row when the
+ *     exam has no topics, and
+ *   • one numbered topic test per topic.
  *
- * Where topics come from:
- *   • questions stored on the backend  → homeBundle/customSubjects `topicSummary`
- *   • questions in the static JSON     → an optional "topic" field on a question,
- *                                        counted here once per page load
- */
+ * Every test is a "test unit": a copy of the subject with its own name and id.
+ * Password, autosave/resume, the wait after an exam, results, rank, mistakes,
+ * dashboard and emails all key on that name/id, so each test automatically gets
+ * its own attempts, best score and wait. Names stay stable:
+ *   home exam  → "Subject"   and  "Subject — Topic"        (what older results used)
+ *   other exam → "Subject (GATE)"  and  "Subject (GATE) — Topic"
+ * Results go to the backend with the PARENT subject id so reports can group them. */
 const TOPIC_SEP=" — ";
 const cleanTopic=t=>String(t??"").replace(/\s+/g," ").trim();
 const topicKey=t=>cleanTopic(t).toLowerCase();
 const topicSlug=t=>topicKey(t).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"topic";
 const hashStr=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);};
 const readJsonLS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return v&&typeof v==="object"&&!Array.isArray(v)?v:d;}catch(e){return d;}};
-let _serverTopics=readJsonLS("ecet_topic_summary_cache",{}); // {subjectId:{total,topics:[{name,count}]}}
-let _staticTopics=readJsonLS("ecet_static_topics_cache",{}); // same shape, from the static JSON banks
+let _serverTopics=readJsonLS("ecet_topic_summary_cache_v2",{}); // {subjectId:{total,exams:[{name,total}],topics:[{name,count,exam}]}}
+let _staticTopics=readJsonLS("ecet_static_topics_cache_v2",{}); // same shape, counted from the static JSON banks
 let _staticTopicsChecked=false;
-let _expandedSubjects=new Set(); // Home cards whose topic list is open
-let _unlockedSubjects=new Set(); // subjects whose password was entered this visit (so topic tests don't ask again)
+let _expandedSubjects=new Set(); // Home cards whose test list is open
+let _unlockedSubjects=new Set(); // subjects whose password was entered this visit (so other tests of it don't ask again)
 
+function findSubjectById(id){return subjects.find(s=>s.id===id)||customSubjects.find(s=>s.id===id);}
+// The exam a question belongs to when it has none of its own.
+function homeExam(s){
+  const p=(s&&findSubjectById(s.parentId||s.id))||s;
+  if(!p)return "";
+  return subjects.some(x=>x.id===p.id)?"ECET":cleanTopic(p.exam);
+}
 function tallyTopics(list){
   const m=new Map();
   (list||[]).forEach(q=>{const k=topicKey(q&&q.topic);if(!k)return;const e=m.get(k);if(e)e.count++;else m.set(k,{name:cleanTopic(q.topic),count:1});});
   return [...m.values()];
 }
-function mergeTopics(...lists){
-  const m=new Map();
-  lists.forEach(l=>(l||[]).forEach(t=>{const k=topicKey(t.name);if(!k)return;const e=m.get(k);if(e)e.count+=Number(t.count)||0;else m.set(k,{name:cleanTopic(t.name),count:Number(t.count)||0});}));
-  return [...m.values()];
+// {exams:[{name,total}],topics:[{name,count,exam}]} for a list of questions
+function tallyBank(list,home){
+  const exams=new Map(),topics=new Map();
+  (list||[]).forEach(q=>{
+    const ex=cleanTopic(q&&q.exam)||home,ek=topicKey(ex);
+    const e=exams.get(ek)||{name:ex,total:0};e.total++;exams.set(ek,e);
+    const tk=topicKey(q&&q.topic);if(!tk)return;
+    const key=ek+"|"+tk,t=topics.get(key)||{name:cleanTopic(q.topic),exam:ex,count:0};t.count++;topics.set(key,t);
+  });
+  return {exams:[...exams.values()],topics:[...topics.values()]};
 }
 function setServerTopics(map){
   if(!map||typeof map!=="object"||Array.isArray(map))return;
   _serverTopics=map;
-  try{localStorage.setItem("ecet_topic_summary_cache",JSON.stringify(map));}catch(e){}
+  try{localStorage.setItem("ecet_topic_summary_cache_v2",JSON.stringify(map));}catch(e){}
 }
 async function ensureStaticTopics(){
   if(_staticTopicsChecked)return;
@@ -331,71 +346,101 @@ async function ensureStaticTopics(){
     try{
       const arr=await fetch(s.file).then(r=>r.json());
       if(!Array.isArray(arr))return;
-      const next={total:arr.length,topics:tallyTopics(arr)};
+      const next={total:arr.length,...tallyBank(arr,"ECET")};
       if(JSON.stringify(_staticTopics[s.id])!==JSON.stringify(next)){_staticTopics[s.id]=next;changed=true;}
     }catch(e){}
   }));
   if(changed){
-    try{localStorage.setItem("ecet_static_topics_cache",JSON.stringify(_staticTopics));}catch(e){}
+    try{localStorage.setItem("ecet_static_topics_cache_v2",JSON.stringify(_staticTopics));}catch(e){}
     refreshSubjectCardStats();
   }
 }
-// Topics (in the order they were first added) and the total question count of a subject.
+// One entry per exam of the subject (home exam first): {exam,examKey,isHome,total,topics:[{name,count}]}
+function subjectGroups(s){
+  const home=homeExam(s),homeKey=topicKey(home),m=new Map();
+  const grp=name=>{const k=topicKey(name);let g=m.get(k);if(!g){g={exam:cleanTopic(name),examKey:k,total:0,topics:[]};m.set(k,g);}return g;};
+  [_staticTopics[s.id],_serverTopics[s.id]].forEach(src=>{
+    if(!src)return;
+    const hasExams=Array.isArray(src.exams)&&src.exams.length>0;
+    (src.exams||[]).forEach(x=>{grp(x.name).total+=Number(x.total)||0;});
+    (src.topics||[]).forEach(t=>{
+      const g=grp(t.exam===undefined?home:t.exam),k=topicKey(t.name),ex=g.topics.find(x=>topicKey(x.name)===k),c=Number(t.count)||0;
+      if(ex)ex.count+=c;else g.topics.push({name:cleanTopic(t.name),count:c});
+      if(!hasExams)g.total+=c; // older cached summaries had no exam totals
+    });
+  });
+  const list=[...m.values()];
+  list.forEach(g=>{g.isHome=g.examKey===homeKey;const t=g.topics.reduce((n,x)=>n+x.count,0);if(g.total<t)g.total=t;});
+  return list.sort((a,b)=>(b.isHome?1:0)-(a.isHome?1:0));
+}
+// Flat topic list, exam list and the question total of a subject.
 function subjectTopicInfo(s){
-  const st=_staticTopics[s.id],sv=_serverTopics[s.id];
-  const topics=mergeTopics(st&&st.topics,sv&&sv.topics);
+  const groups=subjectGroups(s),st=_staticTopics[s.id],sv=_serverTopics[s.id];
+  const topics=[];groups.forEach(g=>g.topics.forEach(t=>topics.push({...t,exam:g.exam,examKey:g.examKey,isHome:g.isHome})));
   const total=s.file
     ?(st?st.total:(s.questionCount||0))+(sv?sv.total:0)
     :(s.questionCount!==undefined?s.questionCount:(sv?sv.total:0));
-  return {topics,total};
+  return {groups,topics,total,topicCount:topics.length};
 }
-function findSubjectById(id){return subjects.find(s=>s.id===id)||customSubjects.find(s=>s.id===id);}
-function topicUnit(parent,topic){
-  const name=cleanTopic(topic),t=subjectTopicInfo(parent).topics.find(x=>topicKey(x.name)===topicKey(name));
-  return {...parent,id:parent.id+"::"+topicSlug(name)+"-"+hashStr(topicKey(name)),name:parent.name+TOPIC_SEP+name,parentId:parent.id,parentName:parent.name,topic:name,topicKey:topicKey(name),description:"Topic test — "+name,questionCount:t?t.count:undefined};
+// A subject gets the expandable test list when it has topic tests or more than one exam.
+function hasTestList(s){const i=subjectTopicInfo(s);return i.topicCount>0||i.groups.length>1;}
+function fullUnit(parent,g){
+  if(g.isHome)return {...parent,exam:g.exam,examKey:g.examKey,questionCount:g.total};
+  return {...parent,id:parent.id+"::x-"+topicSlug(g.exam)+"-"+hashStr(g.examKey),name:parent.name+" ("+g.exam+")",parentId:parent.id,parentName:parent.name,exam:g.exam,examKey:g.examKey,description:"Full test — "+g.exam,questionCount:g.total};
 }
-// ti = -1 → the whole-subject test, otherwise the index into subjectTopicInfo(parent).topics
-function unitFor(sid,ti){
+function topicUnit(parent,g,t){
+  const home=g.isHome,base=home?parent.name:parent.name+" ("+g.exam+")";
+  const id=home?parent.id+"::"+topicSlug(t.name)+"-"+hashStr(topicKey(t.name))
+              :parent.id+"::"+topicSlug(g.exam)+"~"+topicSlug(t.name)+"-"+hashStr(g.examKey+"|"+topicKey(t.name));
+  return {...parent,id,name:base+TOPIC_SEP+t.name,parentId:parent.id,parentName:parent.name,exam:g.exam,examKey:g.examKey,topic:t.name,topicKey:topicKey(t.name),description:"Topic test — "+t.name+(g.exam?" ("+g.exam+")":""),questionCount:t.count};
+}
+// gi = which exam group, ti = -1 for that exam's full test, else the topic index inside the group
+function unitFor(sid,gi,ti){
   const parent=findSubjectById(sid);if(!parent)return null;
-  if(ti<0)return parent;
-  const t=subjectTopicInfo(parent).topics[ti];
-  return t?topicUnit(parent,t.name):null;
+  const g=subjectGroups(parent)[gi];if(!g)return null;
+  if(ti<0)return fullUnit(parent,g);
+  const t=g.topics[ti];
+  return t?topicUnit(parent,g,t):null;
 }
-// The exam a subject belongs to — GATE, ECET or anything else typed when it was created.
-// Built-in subjects are the ECET syllabus; older custom subjects without one fall back to a
-// GATE / ECET mentioned in their description.
-function detectExam_(text){const m=String(text||"").match(/\b(GATE|ECET)\b/i);return m?m[1].toUpperCase():"";}
-function examLabel(s){
-  const p=(s&&findSubjectById(s.parentId||s.id))||s;
-  if(!p)return "";
-  if(cleanTopic(p.exam))return cleanTopic(p.exam);
-  if(subjects.some(x=>x.id===p.id))return "ECET";
-  return detectExam_(p.description);
+function allUnitsOf(s){
+  const out=[];
+  subjectGroups(s).forEach(g=>{out.push(fullUnit(s,g));g.topics.forEach(t=>out.push(topicUnit(s,g,t)));});
+  if(!out.length)out.push(s);
+  return out;
 }
-// Exam badge + "N topic tests" pill shown on every subject card.
+// every test name of a subject (used where an admin picks a test, e.g. locks)
+function unitNames(s){const n=allUnitsOf(s).map(u=>u.name);if(!n.includes(s.name))n.unshift(s.name);return n;}
+// exam shown in the exam header: a test's own exam, or the subject's home exam
+function examLabel(s){if(!s)return "";return s.examKey!==undefined?(s.exam||""):homeExam(s);}
+// Home card: only how many topic tests the subject has — no exam, no topic names.
 function cardTagsHTML(s,showCount){
-  const ex=examLabel(s),n=subjectTopicInfo(s).topics.length,bits=[];
-  if(ex)bits.push(`<span class="exam-badge">${esc(ex)}</span>`);
-  if(showCount)bits.push(`<span class="count-pill${n?"":" zero"}">📚 ${n?`${n} topic test${n===1?"":"s"}`:"No topic tests yet"}</span>`);
-  return bits.length?`<div class="card-tags">${bits.join("")}</div>`:"";
+  if(!showCount)return "";
+  const n=subjectTopicInfo(s).topicCount;
+  return `<div class="card-tags"><span class="count-pill${n?"":" zero"}">📚 ${n?`${n} topic test${n===1?"":"s"}`:"No topic tests yet"}</span></div>`;
 }
-function testRowHTML(parent,ti,label,count){
-  const unit=ti<0?parent:topicUnit(parent,label);
+function testRowHTML(parent,g,gi,ti){
+  const unit=ti<0?fullUnit(parent,g):topicUnit(parent,g,g.topics[ti]);
   const unfinished=store.getProgress(unit.id);
-  // A cooldown never blocks resuming a test already in progress — only starting a new attempt.
+  // A wait never blocks resuming a test already in progress — only starting a new attempt.
   const lock=!unfinished?subjectLockInfo(unit.name):{locked:false};
-  const best=subjectBest(unit.name),ex=examLabel(parent);
-  const bits=[];if(ex)bits.push(esc(ex));if(count)bits.push(`${count} Q`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
-  const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openTestUnit('${esc(parent.id)}',${ti})">${unfinished?"Resume":"Start"}</button>`;
-  const remind=unfinished?`<button class="ghost" onclick="quickRemindUnit('${esc(parent.id)}',${ti})">Remind me later</button>`:"";
-  return `<div class="topic-row${ti<0?" full":""}"><span class="topic-num">${ti<0?"★":ti+1}</span><div class="topic-info"><b>${ti<0?"Full Subject Test":esc(label)}</b><small>${bits.join(" • ")}${unfinished?" • In progress":""}</small>${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}</div><div class="topic-actions">${btn}${remind}</div></div>`;
+  const best=subjectBest(unit.name),count=ti<0?g.total:g.topics[ti].count;
+  const bits=[];if(count)bits.push(`${count} Q`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
+  const btn=lock.locked?`<button disabled title="You can retake this after the wait">Locked</button>`:`<button onclick="openTestUnit('${esc(parent.id)}',${gi},${ti})">${unfinished?"Resume":"Start"}</button>`;
+  const remind=unfinished?`<button class="ghost" onclick="quickRemindUnit('${esc(parent.id)}',${gi},${ti})">Remind me later</button>`:"";
+  return `<div class="topic-row${ti<0?" full":""}"><span class="topic-num">${ti<0?"★":ti+1}</span><div class="topic-info"><b>${ti<0?"Full Subject Test":esc(g.topics[ti].name)}</b><small>${bits.join(" • ")}${unfinished?" • In progress":""}</small>${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}</div><div class="topic-actions">${btn}${remind}</div></div>`;
+}
+// One exam of the subject: a heading with the exam, then its tests. An exam with no topics is
+// just its Full Subject Test; an exam with topics lists the Full Subject Test and then 1, 2, 3 …
+function groupHTML(s,g,gi,multi){
+  const head=(multi||g.exam)?`<div class="topic-panel-head"><span class="exam-badge">${esc(g.exam||"General")}</span>${g.topics.length?`<span>${g.topics.length} topic test${g.topics.length===1?"":"s"}</span>`:""}</div>`:"";
+  const rows=testRowHTML(s,g,gi,-1)+g.topics.map((t,ti)=>testRowHTML(s,g,gi,ti)).join("");
+  return `<div class="exam-group">${head}${rows}</div>`;
 }
 function topicCardHTML(s,i){
-  const info=subjectTopicInfo(s),topics=info.topics,open=_expandedSubjects.has(s.id),ex=examLabel(s);
-  const inProgress=!!store.getProgress(s.id)||topics.some(t=>store.getProgress(topicUnit(s,t.name).id));
-  const chips=topics.slice(0,3).map(t=>`<span class="topic-chip">${esc(t.name)}</span>`).join("")+(topics.length>3?`<span class="topic-chip more">+${topics.length-3} more</span>`:"");
-  const panel=open?`<div class="topic-panel"><div class="topic-panel-head">Topic tests${ex?` <span class="exam-badge">${esc(ex)}</span>`:""}</div>${testRowHTML(s,-1,s.name,info.total)}${topics.map((t,ti)=>testRowHTML(s,ti,t.name,t.count)).join("")}</div>`:"";
-  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p>${open?"":`<div class="topic-chips">${chips}</div>`}<button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
+  const info=subjectTopicInfo(s),open=_expandedSubjects.has(s.id);
+  const inProgress=allUnitsOf(s).some(u=>store.getProgress(u.id));
+  const panel=open?`<div class="topic-panel">${info.groups.map((g,gi)=>groupHTML(s,g,gi,info.groups.length>1)).join("")}</div>`:"";
+  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p><button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
 }
 function toggleTopics(sid){
   if(_expandedSubjects.has(sid))_expandedSubjects.delete(sid);else _expandedSubjects.add(sid);
@@ -405,16 +450,16 @@ function toggleTopics(sid){
     if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
 }
-function openTestUnit(sid,ti){
-  const unit=unitFor(sid,ti);if(!unit)return;
+function openTestUnit(sid,gi,ti){
+  const unit=unitFor(sid,gi,ti);if(!unit)return;
   _pwSubject=unit;
   if(guardSubjectLock_(unit))return;
   // The subject password was already entered this visit → go straight to the test.
   if(_unlockedSubjects.has(unit.parentId||unit.id)){loadBankAndEnroll_(unit);return;}
   renderPasswordCard();
 }
-function quickRemindUnit(sid,ti){const u=unitFor(sid,ti);if(u)quickRemindLater(u.id,u.name);}
-// Per-topic score table, shown on the result page of a test that mixes topics (the full subject test).
+function quickRemindUnit(sid,gi,ti){const u=unitFor(sid,gi,ti);if(u)quickRemindLater(u.id,u.name);}
+// Per-topic score table, shown on the result page of a test that mixes topics (a full subject test).
 function topicBreakdownHTML(detail){
   const m=new Map();
   detail.forEach(d=>{
@@ -434,7 +479,7 @@ let _jumpActive=-1,_jumpItems=[];
 function jumpAllSubjects_(){
   // Every topic test is searchable too ("Networks — Two-Ports"); picking one opens its subject card.
   const out=[];
-  const add=(s,soon)=>{out.push({id:s.id,name:s.name,soon});if(!soon)subjectTopicInfo(s).topics.forEach(t=>out.push({id:s.id,name:s.name+TOPIC_SEP+t.name,topic:t.name}));};
+  const add=(s,soon)=>{out.push({id:s.id,name:s.name,soon});if(!soon)subjectGroups(s).forEach(g=>g.topics.forEach(t=>out.push({id:s.id,name:topicUnit(s,g,t).name,topic:t.name})));};
   subjects.forEach(s=>add(s,!s.available));
   customSubjects.forEach(s=>add(s,s.questionCount===0));
   return out;
@@ -492,7 +537,7 @@ function customSubjectsHTML(){
     if(!hasQuestions){
       return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
-    if(subjectTopicInfo(s).topics.length)return topicCardHTML(s,i);
+    if(hasTestList(s))return topicCardHTML(s,i);
     const best=subjectBest(s.name);
     const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
     // A cooldown never blocks resuming an exam already in progress — only starting a brand-new attempt.
@@ -510,10 +555,10 @@ async function home(){
   if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
   customSubjects=store.customSubjectsCache();
   const p=store.profile();
-  app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload">⟳ Refresh Data</button></div>
+  app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload"><span class="rf-ico" aria-hidden="true">⟳</span><span>Refresh Data</span></button></div>
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <p class="subtitle">${homeSubtitle()}</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
     <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
@@ -533,7 +578,7 @@ function homeSubtitle(){
   return `${total} subjects available — pick one to begin practicing.`;
 }
 function subjectCardHTML(s,i){
-  if(s.available&&subjectTopicInfo(s).topics.length)return topicCardHTML(s,i);
+  if(s.available&&hasTestList(s))return topicCardHTML(s,i);
   const unfinished=s.available&&store.getProgress(s.id);
   // A cooldown never blocks resuming an exam already in progress — only
   // starting a brand-new attempt.
@@ -622,8 +667,9 @@ function armCooldownTicker(){
 }
 function hardRefresh(){
   if(!confirm("Clear locally cached data and reload fresh from the server?"))return;
-  ["ecet_dashboard_cache","ecet_profiledata_cache","ecet_mistakes_cache","ecet_reminders_cache","ecet_customsubjects_cache","ecet_topic_summary_cache","ecet_static_topics_cache"].forEach(k=>localStorage.removeItem(k));
-  location.reload();
+  ["ecet_dashboard_cache","ecet_profiledata_cache","ecet_mistakes_cache","ecet_reminders_cache","ecet_customsubjects_cache","ecet_topic_summary_cache","ecet_static_topics_cache","ecet_topic_summary_cache_v2","ecet_static_topics_cache_v2"].forEach(k=>localStorage.removeItem(k));
+  const b=document.getElementById("hardRefreshBtn");if(b)b.classList.add("busy");
+  setTimeout(()=>location.reload(),350);
 }
 async function refreshCustomSubjects(manual){
   if(!API)return;
@@ -796,12 +842,47 @@ async function deleteAccountPrompt(){
  * text box. Used by Add Questions, Add a Single Question, Edit Question and the
  * bulk "move to topic" tool. `pfx` keeps each instance's element ids apart;
  * `cb` is the name of a global function to call whenever the choice changes. */
-function topicsForSubjectId(sid){const s=findSubjectById(sid);return s?subjectTopicInfo(s).topics:[];}
-function topicFieldHTML(pfx,sid,current,cb){
-  const topics=topicsForSubjectId(sid),cur=cleanTopic(current);
+function topicsForSubjectId(sid,exam){
+  const s=findSubjectById(sid);if(!s)return [];
+  const key=topicKey(exam||homeExam(s)),g=subjectGroups(s).find(x=>x.examKey===key);
+  return g?g.topics:[];
+}
+// Exam dropdown: the subject's default, exams it already uses, GATE / ECET, or another one.
+// current === null (bulk tool only) means "keep each question's current exam".
+function examFieldHTML(pfx,sid,current,cb,keepOption){
+  const s=findSubjectById(sid),home=s?homeExam(s):"",hk=topicKey(home),seen=new Set(),opts=[];
+  [...(s?subjectGroups(s).map(g=>g.exam):[]),"GATE","ECET"].forEach(n=>{const k=topicKey(n);if(!k||k===hk||seen.has(k))return;seen.add(k);opts.push(n);});
+  const cur=current===null?null:cleanTopic(current);
+  const chosen=cur===null?"__keep__":!cur||topicKey(cur)===hk?"":(opts.find(n=>topicKey(n)===topicKey(cur))||"__new__");
+  return `<select id="${pfx}ExamSel" onchange="examSelChanged('${pfx}')">${keepOption?`<option value="__keep__" ${chosen==="__keep__"?"selected":""}>— Keep each question's current exam —</option>`:""}<option value="" ${chosen===""?"selected":""}>Subject default${home?` (${esc(home)})`:" (no exam)"}</option>${opts.map(n=>`<option value="${esc(n)}" ${chosen===n?"selected":""}>${esc(n)}</option>`).join("")}<option value="__new__" ${chosen==="__new__"?"selected":""}>➕ Another exam…</option></select><input id="${pfx}ExamNew" type="text" maxlength="40" placeholder="Exam name, e.g. TS PGECET" value="${chosen==="__new__"?esc(cur):""}" style="${chosen==="__new__"?"":"display:none;"}margin-top:8px" oninput="topicInputChanged('${cb||""}')">`;
+}
+function topicFieldHTML(pfx,sid,current,cb,exam){
+  const topics=topicsForSubjectId(sid,exam),cur=cleanTopic(current);
   const match=cur?topics.find(t=>topicKey(t.name)===topicKey(cur)):null;
   const chosen=!cur?"":match?match.name:"__new__";
   return `<select id="${pfx}TopicSel" onchange="topicSelChanged('${pfx}'${cb?`,'${cb}'`:""})"><option value="">— No topic (general subject question) —</option>${topics.map(t=>`<option value="${esc(t.name)}" ${chosen===t.name?"selected":""}>${esc(t.name)} (${t.count} question${t.count===1?"":"s"})</option>`).join("")}<option value="__new__" ${chosen==="__new__"?"selected":""}>➕ New topic…</option></select><input id="${pfx}TopicNew" type="text" maxlength="80" placeholder="New topic name, e.g. Capacitors &amp; Inductors" value="${chosen==="__new__"?esc(cur):""}" style="${chosen==="__new__"?"":"display:none;"}margin-top:8px" oninput="topicInputChanged(${cb?`'${cb}'`:""})">`;
+}
+// Both fields together; the topic list follows the chosen exam.
+function examTopicHTML(pfx,sid,curExam,curTopic,cb,keepOption){
+  const ex=curExam===null?"":cleanTopic(curExam);
+  return `<div id="${pfx}ET" data-sid="${esc(sid)}" data-cb="${cb||""}"><label>Exam</label>${examFieldHTML(pfx,sid,curExam,cb,keepOption)}<label>Topic (optional)</label><div id="${pfx}TopicSub">${topicFieldHTML(pfx,sid,curTopic,cb,ex)}</div></div>`;
+}
+function examSelChanged(pfx){
+  const wrap=document.getElementById(pfx+"ET"),sel=document.getElementById(pfx+"ExamSel"),inp=document.getElementById(pfx+"ExamNew");
+  if(!wrap||!sel||!inp)return;
+  const isNew=sel.value==="__new__";inp.style.display=isNew?"":"none";if(isNew)inp.focus();
+  const ex=readExamField(pfx);
+  document.getElementById(pfx+"TopicSub").innerHTML=topicFieldHTML(pfx,wrap.dataset.sid,readTopicField(pfx),wrap.dataset.cb,ex==="__keep__"?"":ex);
+  const cb=wrap.dataset.cb;if(cb&&typeof window[cb]==="function")window[cb]();
+}
+function readExamField(pfx){
+  const sel=document.getElementById(pfx+"ExamSel");if(!sel)return "";
+  if(sel.value==="__new__")return cleanTopic(document.getElementById(pfx+"ExamNew")?.value);
+  return sel.value==="__keep__"?"__keep__":cleanTopic(sel.value);
+}
+function examFieldIncomplete(pfx){
+  const sel=document.getElementById(pfx+"ExamSel");
+  return !!sel&&sel.value==="__new__"&&!cleanTopic(document.getElementById(pfx+"ExamNew")?.value);
 }
 function topicSelChanged(pfx,cb){
   const sel=document.getElementById(pfx+"TopicSel"),inp=document.getElementById(pfx+"TopicNew");
@@ -824,8 +905,8 @@ function topicFieldIncomplete(pfx){
 function refreshAdminTopicField(keep){
   const sel=document.getElementById("adminSubject"),wrap=document.getElementById("adminTopicWrap");
   if(!sel||!wrap)return;
-  const cur=keep?readTopicField("at"):"";
-  wrap.innerHTML=topicFieldHTML("at",sel.value,cur,"adminTopicChanged");
+  const e=keep?readExamField("at"):"",t=keep?readTopicField("at"):"";
+  wrap.innerHTML=examTopicHTML("at",sel.value,e==="__keep__"?"":e,t,"adminTopicChanged");
 }
 function adminTopicChanged(){refreshAiPrompt();renderImportPreview();}
 
@@ -860,9 +941,9 @@ async function adminQuestionsPage(){
         ${adminSubjectOptions()}
         <option value="__new__">➕ Create New Subject…</option>
       </select>
-      <label>Topic (optional) — makes a topic-wise test</label>
+      <label style="margin-top:14px">Exam &amp; topic (optional) — makes a topic-wise test</label>
       <div id="adminTopicWrap"></div>
-      <p class="note">Questions saved under a topic show up on the Home page inside their subject as their own test — for example <b>Networks → Basics, Capacitors &amp; Inductors, Two-Ports</b> — and they also stay part of the subject's full test. Pick an existing topic, choose <b>New topic…</b> to create one, or leave <b>No topic</b> for ordinary subject questions. An Excel file can also carry its own <b>Topic</b> column; rows with a blank Topic use the topic chosen here.</p>
+      <p class="note">The same subject can be used for more than one exam: pick the <b>Exam</b> these questions are for (GATE, ECET or another), and a <b>Topic</b> to make a topic-wise test — for example <b>Networks → GATE → Basics, Capacitors &amp; Inductors, Two-Ports</b>. On the Home page each exam gets its own list inside the subject; an exam with no topics is just its Full Subject Test. An Excel file can also carry its own <b>Topic</b> and <b>Exam</b> columns; rows with a blank value use what is chosen here.</p>
       <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026" onchange="refreshAiPrompt()">
       <p class="note">Used for any row whose Year column is left blank in the Excel file, and filled into the AI prompt below.</p>
 
@@ -927,7 +1008,7 @@ function fmtMinutes(m){
 // Preset chips (24 hours / 3 days / 7 days / 1 month) + a Custom amount. `pfx` keeps instances apart.
 function durationPickerHTML(pfx,minutes){
   const preset=DURATION_PRESETS.some(([,m])=>m===minutes),custom=!preset;
-  const unit=minutes%1440===0?1440:minutes%60===0?60:1;
+  const unit=preset?1:(minutes%1440===0?1440:minutes%60===0?60:1); // a fresh Custom box starts in minutes, so a typed 221 can't become 221 days
   return `<div class="dur-chips" id="${pfx}Chips" data-sel="${custom?"custom":minutes}">${DURATION_PRESETS.map(([l,m])=>`<button type="button" class="dur-chip${minutes===m?" on":""}" data-min="${m}" onclick="durPick('${pfx}',${m})">${l}</button>`).join("")}<button type="button" class="dur-chip${custom?" on":""}" data-min="custom" onclick="durPick('${pfx}','custom')">Custom</button></div><div class="tc-amount" id="${pfx}Custom" style="${custom?"":"display:none;"}margin-top:10px"><input id="${pfx}Amount" type="number" min="0" step="1" placeholder="e.g. 5" value="${custom&&minutes>0?minutes/unit:""}"><select id="${pfx}Unit"><option value="1" ${unit===1?"selected":""}>minutes</option><option value="60" ${unit===60?"selected":""}>hours</option><option value="1440" ${unit===1440?"selected":""}>days</option></select></div>`;
 }
 function durPick(pfx,m){
@@ -971,7 +1052,7 @@ async function controlLogin(){
   requireProfile(()=>ccRender());
 }
 function ccRender(){
-  const tabs=[["locks","🔒 Locks & Timers"],["passwords","🔑 Passwords"],["subjects","🗂 Subjects"]];
+  const tabs=[["locks","🔒 Locks & Timers"],["passwords","🔑 Passwords"],["subjects","🗂 Subjects"],["tests","🧩 Topic Tests"]];
   app.innerHTML=`<div class="card cc"><h1>🎛 Control Centre</h1><div class="cc-tabs">${tabs.map(([k,l])=>`<button class="${_ccTab===k?"on":""}" data-tab="${k}" onclick="ccTab('${k}')">${l}</button>`).join("")}</div><div id="ccBody"></div><div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
   ccTab(_ccTab);
 }
@@ -990,13 +1071,13 @@ async function ccTab(tab){
     _defaultCooldownMin=res.cooldownMinutes;
   }
   if(_ccTab!==tab)return; // the admin clicked another tab while this one was loading
-  if(tab==="locks")ccLocksTab();else if(tab==="passwords")ccPasswordsTab();else ccSubjectsTab();
+  if(tab==="locks")ccLocksTab();else if(tab==="passwords")ccPasswordsTab();else if(tab==="tests")ccTestsTab();else ccSubjectsTab();
 }
 
 /* ---------- 🔒 Locks & Timers ---------- */
 function ccLocksTab(){
   const body=document.getElementById("ccBody");if(!body)return;
-  _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>{_tcSubjects.push(s.name);subjectTopicInfo(s).topics.forEach(t=>_tcSubjects.push(s.name+TOPIC_SEP+t.name));}); // each topic test has its own lock
+  _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>unitNames(s).forEach(n=>_tcSubjects.push(n))); // each topic test has its own lock
   body.innerHTML=`<h2>Default wait after an exam</h2>
     <p class="note">A subject stays locked for <b id="ccDefaultLabel">${esc(fmtMinutes(_ccData.cooldownMinutes))}</b> after a student finishes it. Choose a new wait for everyone. Students who finished recently are re-checked against it straight away.</p>
     ${durationPickerHTML("dw",_ccData.cooldownMinutes)}
@@ -1082,11 +1163,11 @@ function ccTogglePw(){_ccShowPw=!_ccShowPw;ccPasswordsTab();}
 function ccPasswordsTab(){
   const body=document.getElementById("ccBody");if(!body)return;
   const show=v=>_ccShowPw?`<code>${esc(v)}</code>`:"••••••";
-  const all=[...subjects.map(s=>({name:s.name,exam:examLabel(s),pw:s.password,kind:s.available?"Built-in":"Built-in (coming soon)"})),..._ccData.subjects.map(s=>({name:s.name,exam:examLabel(s),pw:s.password,kind:"Custom"}))];
+  const all=[...subjects.map(s=>({name:s.name,exam:homeExam(s),pw:s.password,kind:s.available?"Built-in":"Built-in (coming soon)"})),..._ccData.subjects.map(s=>({name:s.name,exam:homeExam(s),pw:s.password,kind:"Custom"}))];
   body.innerHTML=`<p class="note">These are the passwords students type to open a subject, plus the admin passwords. They stay hidden until you press the button.</p>
     <div class="buttons"><button onclick="ccTogglePw()">${_ccShowPw?"🙈 Hide passwords":"👁 Show passwords"}</button></div>
     <h2>Subject passwords</h2>
-    <div class="table-scroll"><table class="simple"><thead><tr><th>#</th><th>Subject</th><th>Exam</th><th>Type</th><th>Password</th></tr></thead><tbody>${all.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td>${r.exam?esc(r.exam):"—"}</td><td>${esc(r.kind)}</td><td>${show(r.pw)}</td></tr>`).join("")}</tbody></table></div>
+    <div class="table-scroll"><table class="simple"><thead><tr><th>#</th><th>Subject</th><th>Default exam</th><th>Type</th><th>Password</th></tr></thead><tbody>${all.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td>${r.exam?esc(r.exam):"—"}</td><td>${esc(r.kind)}</td><td>${show(r.pw)}</td></tr>`).join("")}</tbody></table></div>
     <h2>Admin</h2>
     <div class="table-scroll"><table class="simple"><tbody>
       <tr><td><b>Admin panel password</b></td><td>${show(_ccData.adminPanelPassword)}</td></tr>
@@ -1095,48 +1176,132 @@ function ccPasswordsTab(){
     </tbody></table></div>`;
 }
 
-/* ---------- 🗂 Subjects (exam label + multi-delete) ---------- */
+/* ---------- 🗂 Subjects: rename, merge, delete, default exam ---------- */
+let _ccFlash="",_ccTests=[],_ccTestSel=new Set();
+function ccFlashHTML(){const m=_ccFlash;_ccFlash="";return m;}
+function ccTargets_(){return [...subjects.map(s=>({id:s.id,name:s.name,builtin:true})),..._ccData.subjects.map(s=>({id:s.id,name:s.name}))];}
+function ccTargetOptions_(){return ccTargets_().map(t=>`<option value="${esc(t.id)}">${esc(t.name)}${t.builtin?" (built-in)":""}</option>`).join("");}
+function ccMsg_(html){const m=document.getElementById("ccDelMsg");if(m)m.innerHTML=html;}
+// reload everything from the server, then show a message on the tab that is open
+async function ccReload(flashHTML){_ccFlash=flashHTML||"";_ccData=null;_ccSel=new Set();_ccTestSel=new Set();await ccTab(_ccTab);}
+function ccForget_(ids){ids.forEach(id=>{_expandedSubjects.delete(id);_unlockedSubjects.delete(id);});}
 function ccSubjectsTab(){
   const body=document.getElementById("ccBody");if(!body)return;
   const custom=_ccData.subjects,n=_ccSel.size;
   body.innerHTML=`<datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
-    <p class="note">Tick the custom subjects you want to remove, then press Delete. A subject is deleted <b>together with all of its questions</b>; students' past results stay. Built-in subjects come from <code>subjects.json</code>, so they can't be deleted here. The Exam box sets the GATE / ECET label shown on the subject and its topic tests.</p>
-    <div class="buttons"><button class="ghost" onclick="ccSelectAll(true)">Select all</button><button class="ghost" onclick="ccSelectAll(false)">Clear</button><button class="danger" id="ccDelBtn" onclick="ccDeleteSelected()">🗑 Delete selected (${n})</button></div>
-    <div id="ccDelMsg" class="note"></div>
-    <div class="cc-list">${custom.length?custom.map((s,i)=>`<div class="cc-row"><input type="checkbox" class="cc-check" ${_ccSel.has(s.id)?"checked":""} onchange="ccToggle('${esc(s.id)}',this.checked)" aria-label="Select ${esc(s.name)}"><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.questionCount||0} questions • ${subjectTopicInfo(s).topics.length} topic test${subjectTopicInfo(s).topics.length===1?"":"s"}</small></div><input class="cc-exam" list="examChoices" value="${esc(s.exam||"")}" placeholder="Exam" maxlength="40" autocomplete="off" onchange="ccSetExam('${esc(s.id)}',this.value)" title="Exam label (GATE, ECET, …)"></div>`).join(""):'<p class="note">No custom subjects yet.</p>'}
-    ${subjects.length?`<h2 style="margin-top:22px">Built-in subjects</h2>${subjects.map((s,i)=>`<div class="cc-row builtin"><input type="checkbox" class="cc-check" disabled><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.available?(s.questionCount||0)+" questions":"coming soon"} • ${subjectTopicInfo(s).topics.length} topic tests • ${esc(examLabel(s)||"—")}</small></div></div>`).join("")}`:""}</div>`;
+    <p class="note">Tick custom subjects to <b>merge</b> them into another subject, or to <b>delete</b> them. Merging moves all their questions (with their topics and exams) into the chosen subject and removes the merged subjects. Deleting removes a subject <b>with all its questions</b>. Past results stay under the old names either way. Built-in subjects come from <code>subjects.json</code> and can be merged <i>into</i>, but not renamed, merged away or deleted here.</p>
+    <div class="buttons"><button class="ghost" onclick="ccSelectAll(true)">Select all</button><button class="ghost" onclick="ccSelectAll(false)">Clear</button></div>
+    <div class="cc-tools"><label>Merge the ticked subjects into</label><select id="ccMergeTarget">${ccTargetOptions_()}</select>
+      <div class="buttons"><button id="ccMergeBtn" onclick="ccMergeSelected()">🔗 Merge selected (${n})</button><button class="danger" id="ccDelBtn" onclick="ccDeleteSelected()">🗑 Delete selected (${n})</button></div></div>
+    <div id="ccDelMsg" class="note">${ccFlashHTML()}</div>
+    <div class="cc-list">${custom.length?custom.map((s,i)=>{const ti=subjectTopicInfo(s).topicCount;return `<div class="cc-row"><input type="checkbox" class="cc-check" ${_ccSel.has(s.id)?"checked":""} onchange="ccToggle('${esc(s.id)}',this.checked)" aria-label="Select ${esc(s.name)}"><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.questionCount||0} questions • ${ti} topic test${ti===1?"":"s"}</small></div><button class="ghost" onclick="ccRenameSubject('${esc(s.id)}')">✏️ Rename</button><input class="cc-exam" list="examChoices" value="${esc(s.exam||"")}" placeholder="Default exam" maxlength="40" autocomplete="off" onchange="ccSetExam('${esc(s.id)}',this.value)" title="Default exam — the exam of this subject's questions that have none of their own"></div>`;}).join(""):'<p class="note">No custom subjects yet.</p>'}
+    ${subjects.length?`<h2 style="margin-top:22px">Built-in subjects</h2>${subjects.map((s,i)=>`<div class="cc-row builtin"><input type="checkbox" class="cc-check" disabled><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.available?(s.questionCount||0)+" questions":"coming soon"} • ${subjectTopicInfo(s).topicCount} topic tests</small></div></div>`).join("")}`:""}</div>`;
 }
-function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const b=document.getElementById("ccDelBtn");if(b)b.textContent=`🗑 Delete selected (${_ccSel.size})`;}
+function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const d=document.getElementById("ccDelBtn"),m=document.getElementById("ccMergeBtn");if(d)d.textContent=`🗑 Delete selected (${_ccSel.size})`;if(m)m.textContent=`🔗 Merge selected (${_ccSel.size})`;}
 function ccSelectAll(on){_ccSel=new Set(on?_ccData.subjects.map(s=>s.id):[]);ccSubjectsTab();}
 async function ccSetExam(id,val){
-  const msg=document.getElementById("ccDelMsg");
   const res=await apiPost("setSubjectExam",{...controlAuth_(),subjectId:id,exam:val.trim()},30000);
   if(ccDenied(res))return;
-  if(!res?.ok){if(msg)msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save the exam.")}</span>`;return;}
+  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not save the exam.")}</span>`);return;}
   [_ccData.subjects.find(s=>s.id===id),customSubjects.find(s=>s.id===id)].forEach(s=>{if(s)s.exam=res.exam;});
   store.setCustomSubjectsCache(customSubjects);
-  if(msg)msg.innerHTML=`<span class="correct">${esc(res.message||"Saved.")}</span>`;
+  ccMsg_(`<span class="correct">${esc(res.message||"Saved.")}</span>`);
+}
+async function ccRenameSubject(id){
+  const s=_ccData.subjects.find(x=>x.id===id);if(!s)return;
+  const nn=prompt("New name for this subject:",s.name);if(nn===null)return;
+  const name=cleanTopic(nn);if(!name||name===s.name)return;
+  if(!confirm(`Rename "${s.name}" to "${name}"?\n\nIts questions move with it. Past results stay under the old name, so students' wait for this subject starts fresh.`))return;
+  ccMsg_('<span class="note">Renaming…</span>');
+  const res=await apiPost("renameSubject",{...controlAuth_(),subjectId:id,newName:name},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not rename. Please try again.")}</span>`);return;}
+  await ccReload(`<span class="correct">${esc(res.message||"Renamed.")}</span>`);
+}
+async function ccMergeSelected(){
+  const ids=[..._ccSel],targetId=document.getElementById("ccMergeTarget")?.value;
+  if(!ids.length){ccMsg_('<span class="wronganswer">Tick at least one subject to merge first.</span>');return;}
+  if(ids.includes(targetId)){ccMsg_('<span class="wronganswer">The subject you merge into cannot also be ticked — untick it or pick another target.</span>');return;}
+  const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean),tgt=ccTargets_().find(t=>t.id===targetId);
+  if(!tgt)return;
+  const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
+  if(!confirm(`Merge ${list.length} subject${list.length===1?"":"s"} into "${tgt.name}"?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nAll ${qs} question${qs===1?"":"s"} move into "${tgt.name}" and keep their topics and exams. The merged subjects disappear. Past results stay under the old names. This cannot be undone.`))return;
+  ccMsg_('<span class="note">Merging…</span>');
+  const res=await apiPost("mergeSubjects",{...controlAuth_(),targetId,targetName:tgt.name,sourceIds:ids},120000);
+  if(ccDenied(res))return;
+  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not merge. Please try again.")}</span>`);return;}
+  ccForget_(res.mergedIds||ids);
+  await ccReload(`<span class="correct">${esc(res.message||"Merged.")}</span>`);
 }
 async function ccDeleteSelected(){
-  const msg=document.getElementById("ccDelMsg"),ids=[..._ccSel];
-  if(!ids.length){msg.innerHTML='<span class="wronganswer">Tick at least one subject first.</span>';return;}
+  const ids=[..._ccSel];
+  if(!ids.length){ccMsg_('<span class="wronganswer">Tick at least one subject first.</span>');return;}
   const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean);
   const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
   if(!confirm(`Delete ${list.length} subject${list.length===1?"":"s"}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${qs} question${qs===1?"":"s"}. Students' past results are kept. This cannot be undone.`))return;
-  msg.textContent="Deleting…";
+  ccMsg_('<span class="note">Deleting…</span>');
   const res=await apiPost("deleteSubjects",{...controlAuth_(),subjectIds:ids},120000);
   if(ccDenied(res))return;
-  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not delete. Please try again.")}</span>`;return;}
+  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not delete. Please try again.")}</span>`);return;}
   const gone=new Set(res.deletedIds||ids);
-  _ccData.subjects=_ccData.subjects.filter(s=>!gone.has(s.id));
-  customSubjects=customSubjects.filter(s=>!gone.has(s.id));
-  store.setCustomSubjectsCache(customSubjects);
-  gone.forEach(id=>{_expandedSubjects.delete(id);_unlockedSubjects.delete(id);delete _serverTopics[id];
-    try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});
+  ccForget_([...gone]);
+  gone.forEach(id=>{delete _serverTopics[id];try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});
   setServerTopics(_serverTopics);
-  _ccSel=new Set();
-  ccSubjectsTab();
-  document.getElementById("ccDelMsg").innerHTML=`<span class="correct">${esc(res.message||"Deleted.")}</span>`;
+  await ccReload(`<span class="correct">${esc(res.message||"Deleted.")}</span>`);
+}
+
+/* ---------- 🧩 Topic Tests: rename, change exam, move to another subject ---------- */
+function ccTestsTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  _ccTests=[];
+  const sections=ccTargets_().map(sub=>{
+    const list=(_serverTopics[sub.id]||{}).topics||[];
+    if(!list.length)return "";
+    const rows=list.map(t=>{
+      const i=_ccTests.length;_ccTests.push({sid:sub.id,sname:sub.name,topic:t.name,exam:t.exam||"",count:t.count});
+      return `<div class="cc-row"><input type="checkbox" class="cc-check" ${_ccTestSel.has(i)?"checked":""} onchange="ccTestToggle(${i},this.checked)" aria-label="Select ${esc(t.name)}"><div class="cc-row-main"><b>${esc(t.name)}</b><small>${t.exam?`<span class="exam-badge sm">${esc(t.exam)}</span> `:""}${t.count} question${t.count===1?"":"s"}</small></div><button class="ghost" onclick="ccRenameTest(${i})">✏️ Rename</button></div>`;
+    }).join("");
+    return `<h2>${esc(sub.name)}</h2><div class="cc-list">${rows}</div>`;
+  }).join("");
+  body.innerHTML=`<p class="note">Rename a topic test, change the exam it belongs to, or move whole topic tests to another subject. Renaming a test to the name of an existing one (in the same exam) combines them. Only tests made from questions stored in the sheet can be changed here — topics tagged inside <code>subjects.json</code> stay as they are. Past results stay under the old name, so the wait for a renamed or moved test starts fresh.</p>
+    <div class="cc-tools"><label>Move the ticked topic tests to</label><select id="ccMoveTarget">${ccTargetOptions_()}</select>
+      <div class="buttons"><button id="ccMoveBtn" onclick="ccMoveTests()">➡️ Move ticked (${_ccTestSel.size})</button></div></div>
+    <div id="ccDelMsg" class="note">${ccFlashHTML()}</div>
+    ${sections||'<p class="note">No topic tests yet. Add questions with a topic in Admin → Add Questions.</p>'}`;
+}
+function ccTestToggle(i,on){if(on)_ccTestSel.add(i);else _ccTestSel.delete(i);const b=document.getElementById("ccMoveBtn");if(b)b.textContent=`➡️ Move ticked (${_ccTestSel.size})`;}
+async function ccRenameTest(i){
+  const t=_ccTests[i];if(!t)return;
+  const nt=prompt(`Name of this topic test (in ${t.sname}):`,t.topic);if(nt===null)return;
+  const newTopic=cleanTopic(nt);if(!newTopic)return;
+  const ne=prompt("Exam for this topic test (GATE, ECET or another exam). Leave empty for the subject's default exam:",t.exam);if(ne===null)return;
+  const newExam=cleanTopic(ne);
+  if(newTopic===t.topic&&newExam===t.exam)return;
+  if(!confirm(`Change "${t.topic}"${t.exam?" ("+t.exam+")":""} to "${newTopic}"${newExam?" ("+newExam+")":""}?\n\nPast results stay under the old name, so the wait for this test starts fresh.`))return;
+  ccMsg_('<span class="note">Saving…</span>');
+  const res=await apiPost("renameTopicTest",{...controlAuth_(),subjectId:t.sid,topic:t.topic,exam:t.exam,newTopic,newExam},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`);return;}
+  await ccReload(`<span class="correct">${esc(res.message||"Saved.")}</span>`);
+}
+async function ccMoveTests(){
+  const picks=[..._ccTestSel].map(i=>_ccTests[i]).filter(Boolean),toId=document.getElementById("ccMoveTarget")?.value;
+  if(!picks.length){ccMsg_('<span class="wronganswer">Tick at least one topic test first.</span>');return;}
+  const tgt=ccTargets_().find(t=>t.id===toId);if(!tgt)return;
+  if(picks.some(p=>p.sid===toId)){ccMsg_('<span class="wronganswer">Some ticked tests are already in that subject — untick them or pick another subject.</span>');return;}
+  const qs=picks.reduce((n,p)=>n+p.count,0);
+  if(!confirm(`Move ${picks.length} topic test${picks.length===1?"":"s"} to "${tgt.name}"?\n\n${picks.map(p=>"• "+p.topic+(p.exam?" ("+p.exam+")":"")+" — from "+p.sname).join("\n")}\n\n${qs} question${qs===1?"":"s"} move with them and keep their exam. Past results stay under the old names, so the wait for these tests starts fresh.`))return;
+  ccMsg_('<span class="note">Moving…</span>');
+  const bySubject=new Map();
+  picks.forEach(p=>{const l=bySubject.get(p.sid)||[];l.push({topic:p.topic,exam:p.exam});bySubject.set(p.sid,l);});
+  const done=[];let failed="";
+  for(const [sid,items] of bySubject){
+    const res=await apiPost("moveTopicTests",{...controlAuth_(),fromSubjectId:sid,items,toSubjectId:toId,toSubjectName:tgt.name},60000);
+    if(ccDenied(res))return;
+    if(!res?.ok){failed=res?.error||"Could not move. Please try again.";break;}
+    done.push(res.message);
+  }
+  await ccReload(`${done.map(m=>`<span class="correct">${esc(m)}</span>`).join("<br>")}${failed?`${done.length?"<br>":""}<span class="wronganswer">${esc(failed)}</span>`:""}`);
 }
 
 /* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */
@@ -1146,7 +1311,7 @@ function questionFormHTML(mode,q){
   return `<h1>Admin — ${isEdit?'Edit Question':'Add a Single Question'}</h1>
     <p class="note">${isEdit?'Editing question <b>'+esc(q.id)+'</b>. Saving updates this exact row — it cannot duplicate or affect another row.':'Fill in one question directly, without an Excel file.'}</p>
     ${isEdit?'':`<label>Subject</label><select id="qfSubject" onchange="qfSubjectChanged()">${adminSubjectOptions()}</select>`}
-    <label>Topic (optional)</label><div id="qfTopicWrap">${topicFieldHTML('qf',isEdit?_editSubjectId:((subjects[0]||customSubjects[0]||{}).id||''),isEdit?q.topic:'','')}</div>
+    <div id="qfTopicWrap">${examTopicHTML('qf',isEdit?_editSubjectId:((subjects[0]||customSubjects[0]||{}).id||''),isEdit?q.exam:'',isEdit?q.topic:'','')}</div>
     <label>Question</label><textarea id="qfQuestion" rows="2">${v('question')}</textarea>
     <label>Option A</label><input id="qfA" value="${q?esc((q.options||[])[0]||''):''}">
     <label>Option B</label><input id="qfB" value="${q?esc((q.options||[])[1]||''):''}">
@@ -1181,12 +1346,13 @@ function readQuestionForm(){
     optionBImage:document.getElementById('qfBImg').value.trim(),
     optionCImage:document.getElementById('qfCImg').value.trim(),
     optionDImage:document.getElementById('qfDImg').value.trim(),
-    topic:readTopicField('qf')
+    topic:readTopicField('qf'),
+    exam:readExamField('qf')
   };
 }
 function qfSubjectChanged(){
   const sel=document.getElementById('qfSubject'),wrap=document.getElementById('qfTopicWrap');
-  if(sel&&wrap)wrap.innerHTML=topicFieldHTML('qf',sel.value,'','');
+  if(sel&&wrap)wrap.innerHTML=examTopicHTML('qf',sel.value,'','','');
 }
 async function saveManualQuestion(){
   const statusEl=document.getElementById('qfStatus');
@@ -1194,7 +1360,7 @@ async function saveManualQuestion(){
   if(!sel.value||sel.value==='__new__'){statusEl.innerHTML='<span class="wronganswer">Pick a subject first.</span>';return;}
   const row=readQuestionForm();
   if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
-  if(topicFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  if(topicFieldIncomplete('qf')||examFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   statusEl.textContent='Saving…';
   const p=store.profile();
   const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:[row]});
@@ -1204,7 +1370,7 @@ async function saveManualQuestion(){
     const keepTopic=row.topic;
     await refreshCustomSubjects();
     const wrap=document.getElementById('qfTopicWrap');
-    if(wrap)wrap.innerHTML=topicFieldHTML('qf',sel.value,keepTopic,'');
+    if(wrap)wrap.innerHTML=examTopicHTML('qf',sel.value,row.exam,keepTopic,'');
     refreshAdminTopicField(true);
   }
   else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||(res?.errors?.[0]?.errors?.join(', '))||'Could not save.')}</span>`;}
@@ -1236,31 +1402,39 @@ async function loadAdminQuestions(){
   _editSelected=new Set();
   renderEditQuestionsList();
 }
+function editExamOf_(q){return cleanTopic(q.exam)||homeExam(findSubjectById(_editSubjectId));}
 function renderEditQuestionsList(){
   const listEl=document.getElementById('editQuestionsList');
   if(!listEl)return;
   listEl.className='';
   if(!_editQuestionsCache.length){listEl.className='note';listEl.innerHTML='<p class="note">No questions found for this subject.</p>';return;}
-  const topics=tallyTopics(_editQuestionsCache),untagged=_editQuestionsCache.filter(q=>!cleanTopic(q.topic)).length;
+  const combos=new Map();
+  _editQuestionsCache.forEach(q=>{const t=cleanTopic(q.topic);if(!t)return;const ex=editExamOf_(q),k=topicKey(ex)+'|'+topicKey(t),e=combos.get(k)||{topic:t,exam:ex,count:0};e.count++;combos.set(k,e);});
+  const untagged=_editQuestionsCache.filter(q=>!cleanTopic(q.topic)).length;
   listEl.innerHTML=`<div class="topic-bulk">
     <label>Show</label>
-    <select id="editTopicFilter" onchange="renderEditTable()"><option value="">All questions (${_editQuestionsCache.length})</option><option value="__none__">No topic yet (${untagged})</option>${topics.map(t=>`<option value="${esc(t.name)}">${esc(t.name)} (${t.count})</option>`).join('')}</select>
-    <label>Move the ticked questions to a topic</label>
-    ${topicFieldHTML('bk',_editSubjectId,'','')}
+    <select id="editTopicFilter" onchange="renderEditTable()"><option value="">All questions (${_editQuestionsCache.length})</option><option value="__none__">No topic yet (${untagged})</option>${[...combos].map(([k,e])=>`<option value="${esc(k)}">${esc(e.topic)}${e.exam?' — '+esc(e.exam):''} (${e.count})</option>`).join('')}</select>
+    <label>Move the ticked questions to an exam / topic</label>
+    ${examTopicHTML('bk',_editSubjectId,null,'','',true)}
     <div class="buttons"><button id="bulkTopicBtn" onclick="bulkAssignTopic()">Apply to ticked (0)</button></div>
-    <div id="bulkTopicStatus" class="note">Tick questions in the table (or the box in the header to tick everything shown), pick a topic, then apply. Choose “No topic” to take them out of a topic.</div>
+    <div id="bulkTopicStatus" class="note">Tick questions in the table (or the box in the header to tick everything shown), pick an exam and topic, then apply. Choose “No topic” to take them out of a topic.</div>
   </div><div id="editTableWrap"></div>`;
   renderEditTable();
 }
 function visibleEditRows_(){
   const f=document.getElementById('editTopicFilter')?.value||'';
-  return _editQuestionsCache.filter(q=>!f||(f==='__none__'?!cleanTopic(q.topic):topicKey(q.topic)===topicKey(f)));
+  return _editQuestionsCache.filter(q=>{
+    if(!f)return true;
+    const t=cleanTopic(q.topic);
+    if(f==='__none__')return !t;
+    return !!t&&(topicKey(editExamOf_(q))+'|'+topicKey(t))===f;
+  });
 }
 function renderEditTable(){
   const wrap=document.getElementById('editTableWrap');if(!wrap)return;
   const rows=visibleEditRows_(),allTicked=rows.length>0&&rows.every(q=>_editSelected.has(q.id));
-  wrap.innerHTML=rows.length?`<div class="table-scroll"><table class="simple"><tr><th><input type="checkbox" ${allTicked?'checked':''} onchange="toggleEditAll(this.checked)" title="Tick / untick everything shown"></th><th>Question</th><th>Topic</th><th>Year</th><th></th></tr>
-  ${rows.map(q=>`<tr><td><input type="checkbox" ${_editSelected.has(q.id)?'checked':''} onchange="toggleEditSel('${esc(q.id)}',this.checked)"></td><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${q.topic?esc(q.topic):'—'}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
+  wrap.innerHTML=rows.length?`<div class="table-scroll"><table class="simple"><tr><th><input type="checkbox" ${allTicked?'checked':''} onchange="toggleEditAll(this.checked)" title="Tick / untick everything shown"></th><th>Question</th><th>Topic</th><th>Exam</th><th>Year</th><th></th></tr>
+  ${rows.map(q=>`<tr><td><input type="checkbox" ${_editSelected.has(q.id)?'checked':''} onchange="toggleEditSel('${esc(q.id)}',this.checked)"></td><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${q.topic?esc(q.topic):'—'}</td><td>${editExamOf_(q)?esc(editExamOf_(q)):'—'}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
   </table></div>`:'<p class="note">No questions match this filter.</p>';
   updateBulkBtn();
 }
@@ -1270,16 +1444,18 @@ function updateBulkBtn(){const b=document.getElementById('bulkTopicBtn');if(b)b.
 async function bulkAssignTopic(){
   const st=document.getElementById('bulkTopicStatus'),ids=[..._editSelected];
   if(!ids.length){st.innerHTML='<span class="wronganswer">Tick at least one question first.</span>';return;}
-  if(topicFieldIncomplete('bk')){st.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic.</span>';return;}
-  const topic=readTopicField('bk');
+  if(topicFieldIncomplete('bk')||examFieldIncomplete('bk')){st.innerHTML='<span class="wronganswer">Type the new name, or choose an existing exam / topic.</span>';return;}
+  const topic=readTopicField('bk'),exam=readExamField('bk');
   if(!topic&&!confirm(`Take ${ids.length} question(s) out of their topic?`))return;
   st.textContent='Saving…';
-  const res=await apiPost('setQuestionTopic',{...adminAuth_(),subjectId:_editSubjectId,questionIds:ids,topic},60000);
+  const payload={...adminAuth_(),subjectId:_editSubjectId,questionIds:ids,topic};
+  if(exam!=='__keep__')payload.exam=exam;
+  const res=await apiPost('setQuestionTopic',payload,60000);
   if(!res?.ok){st.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save. Please check your connection and try again.')}</span>`;return;}
   const finalTopic=res.topic!==undefined?res.topic:topic;
-  _editQuestionsCache.forEach(q=>{if(_editSelected.has(q.id))q.topic=finalTopic;});
+  _editQuestionsCache.forEach(q=>{if(_editSelected.has(q.id)){q.topic=finalTopic;if(exam!=='__keep__')q.exam=res.exam!==undefined?res.exam:exam;}});
   _editSelected=new Set();
-  await refreshCustomSubjects(); // Home and the dropdowns pick up the new topic straight away
+  await refreshCustomSubjects(); // Home and the dropdowns pick up the change straight away
   renderEditQuestionsList();
   const st2=document.getElementById('bulkTopicStatus');
   if(st2)st2.innerHTML=`<span class="correct">${esc(res.message||'Saved.')}</span>`;
@@ -1294,7 +1470,7 @@ async function saveQuestionEdit(id){
   const statusEl=document.getElementById('qfStatus');
   const row=readQuestionForm();
   if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
-  if(topicFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  if(topicFieldIncomplete('qf')||examFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   statusEl.textContent='Saving…';
   const p=store.profile();
   const res=await apiPost('updateQuestion',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",questionId:id,...row});
@@ -1354,8 +1530,9 @@ function buildAiPrompt(){
   const count=document.getElementById("aiCount")?.value||20;
   const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
   const extra=document.getElementById("aiExtra")?.value?.trim();
-  const examName=document.getElementById("aiExamName")?.value?.trim()||examLabel(findSubjectById(sel?.value))||subjName;
   const topicSel=readTopicField("at"); // the topic-wise test these questions will be filed under (may be empty)
+  const examSel=readExamField("at");   // the exam they are for (empty = the subject's default exam)
+  const examName=document.getElementById("aiExamName")?.value?.trim()||examSel||homeExam(findSubjectById(sel?.value))||subjName;
 
   const subtopicsLine=scope==='topic'&&topic
     ? (topicSel?topicSel+' — focusing on: '+topic:topic)
@@ -1379,6 +1556,7 @@ function buildAiPrompt(){
     'Topic: '+subjName,
     'Subtopics: '+subtopicsLine,
     ...(topicSel?['Topic (value for the Topic column): '+topicSel]:[]),
+    ...(examSel?['Exam (value for the Exam column): '+examSel]:[]),
     'Number of questions: '+count,
     'Difficulty level: '+difficulty,
     'Year: '+year,
@@ -1386,7 +1564,7 @@ function buildAiPrompt(){
     '',
     'Excel format — mandatory',
     '',
-    'Create an Excel file with exactly 15 columns in this order:',
+    'Create an Excel file with exactly 16 columns in this order:',
     '',
     '1. Question',
     '2. Option A',
@@ -1403,8 +1581,9 @@ function buildAiPrompt(){
     '13. Option C Image URL',
     '14. Option D Image URL',
     '15. Topic',
+    '16. Exam',
     '',
-    'Each question must occupy one row. Include a header row with the 15 column names. Preserve this exact column order and structure.',
+    'Each question must occupy one row. Include a header row with the 16 column names. Preserve this exact column order and structure.',
     '',
     'Question requirements',
     '',
@@ -1421,8 +1600,9 @@ function buildAiPrompt(){
     '11. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
     '12. Leave all image URL columns empty unless image URLs are explicitly requested.',
     '13. '+(topicSel?'Fill the Topic column with exactly "'+topicSel+'" for every question (same spelling and capitalization).':'Leave the Topic column empty.'),
-    '14. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
-    ...(extra?['15. Additional instructions: '+extra]:[]),
+    '14. '+(examSel?'Fill the Exam column with exactly "'+examSel+'" for every question.':'Leave the Exam column empty.'),
+    '15. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
+    ...(extra?['16. Additional instructions: '+extra]:[]),
     '',
     'Output requirements',
     '',
@@ -1430,7 +1610,7 @@ function buildAiPrompt(){
     '- Do not output the questions as plain text, TSV, CSV, or Markdown.',
     '- Do not provide explanations, answers, or any other text outside the Excel file.',
     '- Ensure the file contains exactly '+count+' question rows plus the header row.',
-    '- Check that all 15 columns are present and in the correct order.',
+    '- Check that all 16 columns are present and in the correct order.',
     '- Ensure every mandatory field is filled for every question.',
     '- Make the Excel file ready to download and use directly.'
   ].join('\n');
@@ -1449,16 +1629,16 @@ function copyAiPrompt(){
 let _questionImportRows=[];
 function downloadQuestionTemplate(){
   if(!window.XLSX){alert("Excel tools are still loading. Please try again.");return;}
-  const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','','']];
+  const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic','Exam'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','','','']];
   const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
 }
 function normalizeQuestionRow(r,defaultYear){
   const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
-  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name'))};
+  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name')),exam:cleanTopic(get('Exam','exam','Exam Name'))};
 }
 function validateImportRows(rows){
   const errs=[],seen=new Set();
-  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
+  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('Exam longer than 40 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
 }
 function previewQuestionFile(ev){
   const file=ev.target.files?.[0];if(!file)return;
@@ -1480,22 +1660,22 @@ function previewQuestionFile(ev){
   reader.readAsArrayBuffer(file);
 }
 // The rows as they will actually be saved: a row's own Topic column wins, otherwise the topic picked above.
-function effectiveImportRows_(){const t=readTopicField('at');return _questionImportRows.map(r=>({...r,topic:cleanTopic(r.topic)||t}));}
+function effectiveImportRows_(){const t=readTopicField('at'),e=readExamField('at');return _questionImportRows.map(r=>({...r,topic:cleanTopic(r.topic)||t,exam:cleanTopic(r.exam)||e}));}
 function renderImportPreview(){
   const statusEl=document.getElementById('importStatus'),prevEl=document.getElementById('importPreview'),btn=document.getElementById('importQuestionsBtn');
   if(!statusEl||!prevEl||!btn||!_questionImportRows.length)return;
   const rows=effectiveImportRows_(),errors=validateImportRows(rows),preview=rows.slice(0,20);
   const tally=new Map();
-  rows.forEach(r=>{const k=topicKey(r.topic),e=tally.get(k)||{name:r.topic,n:0};e.n++;tally.set(k,e);});
-  const topicLine=[...tally.values()].map(e=>`${e.name?esc(e.name):'<i>no topic</i>'} × ${e.n}`).join(' • ');
-  statusEl.innerHTML=`<b>${rows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}<br><span class="note">Topics in this import: ${topicLine}</span>`;
-  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Topic</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
-  btn.disabled=errors.length>0||!rows.length||topicFieldIncomplete('at');
+  rows.forEach(r=>{const k=topicKey(r.exam)+'|'+topicKey(r.topic),e=tally.get(k)||{name:r.topic,exam:r.exam,n:0};e.n++;tally.set(k,e);});
+  const topicLine=[...tally.values()].map(e=>`${e.name?esc(e.name):'<i>no topic</i>'}${e.exam?' ('+esc(e.exam)+')':''} × ${e.n}`).join(' • ');
+  statusEl.innerHTML=`<b>${rows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}<br><span class="note">Topic tests in this import: ${topicLine}</span>`;
+  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Topic</th><th>Exam</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${r.exam?esc(r.exam):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
+  btn.disabled=errors.length>0||!rows.length||(topicFieldIncomplete('at')||examFieldIncomplete('at'));
 }
 async function importPreviewedQuestions(){
   const btn=document.getElementById('importQuestionsBtn'),status=document.getElementById('importStatus');
   if(!_questionImportRows.length||btn.disabled)return;
-  if(topicFieldIncomplete('at')){status.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  if((topicFieldIncomplete('at')||examFieldIncomplete('at'))){status.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   btn.disabled=true;
   const p=store.profile(),sel=document.getElementById('adminSubject');
   const subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);
@@ -1586,6 +1766,10 @@ async function loadBankAndEnroll_(s){
   ]);
   bank=Array.isArray(staticBank)?staticBank:[];
   if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);
+  // every question gets its effective exam (its own, else the subject's home exam) so a test can pick its exam
+  const home=homeExam(s);
+  bank.forEach(q=>{q.exam=cleanTopic(q.exam)||home;});
+  if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
   if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
   if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
 function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
@@ -1704,7 +1888,7 @@ function toggleReview(){marked[current]=!marked[current];persist();render();}
 function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
 function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
 function confirmSubmit(){const u=answers.filter(x=>x===null).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
-function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>${esc(examLabel(activeSubject)||"ECET")} ${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
+function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>${examLabel(activeSubject)&&!activeSubject.name.includes("("+examLabel(activeSubject)+")")?esc(examLabel(activeSubject))+" ":""}${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
 
 /* ===================== RESULT ===================== */
 async function submit(){

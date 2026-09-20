@@ -32,3 +32,8 @@ CONTROL CENTRE (new)
 - Subjects: set GATE / ECET / other exam per subject; tick several custom subjects and delete them.
 - Home: every subject card shows its exam and how many topic tests it has; topic tests open as a numbered list.
 
+EXAMS + TOPIC TESTS (updated)
+- A subject can be used for several exams. Home cards show only the number of topic tests; inside, each exam has its own numbered list.
+- Admin -> Add Questions: choose Exam and Topic. Control Centre -> Subjects / Topic Tests: rename, merge, move.
+- about.html: an About page (warm, non-blue colours) linked from the Home menu.
+
