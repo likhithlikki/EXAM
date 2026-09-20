@@ -243,7 +243,7 @@ function submissionPayload(compact=false){
   const p=store.profile();
   const detail=test.map((q,n)=>{
     const selected=answers[n], isWrong=selected!==null&&selected!==undefined&&Number(selected)!==Number(q.answer);
-    const d={id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,correct:q.answer,selected,marked:marked[n],time:Math.round(qTime[n]||0)};
+    const d={id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,topic:q.topic||"",correct:q.answer,selected,marked:marked[n],time:Math.round(qTime[n]||0)};
     // On normal submit keep everything. On tab-close submit, omit question/options
     // for correct/unanswered items to keep the Beacon payload small enough for browsers.
     if(!compact || isWrong){ d.question=q.question; d.options=q.options; d.image=q.image||""; d.optionImages=q.optionImages||[]; }
@@ -253,7 +253,7 @@ function submissionPayload(compact=false){
   const wrong=detail.filter(d=>d.selected!==null&&d.selected!==undefined&&Number(d.selected)!==Number(d.correct)).length;
   const unanswered=detail.filter(d=>d.selected===null||d.selected===undefined).length;
   const percentage=test.length?Math.round(score/test.length*1000)/10:0;
-  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),startTime:new Date(examStartedAt).toISOString(),testUrl:(window.APP_CONFIG&&window.APP_CONFIG.SITE_URL)||location.href.split("#")[0],detail,examSessionId,autoSubmitted:!!compact};
+  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.parentId||activeSubject.id,score,total:test.length,percentage,correct:score,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),startTime:new Date(examStartedAt).toISOString(),testUrl:(window.APP_CONFIG&&window.APP_CONFIG.SITE_URL)||location.href.split("#")[0],detail,examSessionId,autoSubmitted:!!compact};
 }
 // NOTE: Closing the tab, refreshing, or losing connectivity must NOT finalize the
 // exam — it must only save progress so "Resume Exam" on Home has something to
@@ -277,20 +277,210 @@ function handlePageHide(){
   persist();
 }
 
+
+/* ===================== TOPIC-WISE TESTS =====================
+ * A subject can hold several topic tests — e.g. "Networks" → Basics,
+ * Capacitors & Inductors, Two-Ports. Each question carries an optional `topic`.
+ *
+ * A topic test is a "test unit": a copy of the subject whose name is
+ * "<Subject> — <Topic>" and whose id is "<subjectId>::<topic-slug>-<hash>".
+ * Everything downstream already keys on the subject name/id — password, autosave
+ * and resume, the 1-day cooldown, results, rank, mistakes, dashboard, emails —
+ * so every topic test automatically gets its own attempts, best score and
+ * cooldown with no other changes. The whole-subject test keeps the plain subject
+ * name, so nothing already recorded is touched. Results are sent to the backend
+ * with the PARENT subject id, so reports can still group by subject.
+ *
+ * Where topics come from:
+ *   • questions stored on the backend  → homeBundle/customSubjects `topicSummary`
+ *   • questions in the static JSON     → an optional "topic" field on a question,
+ *                                        counted here once per page load
+ */
+const TOPIC_SEP=" — ";
+const cleanTopic=t=>String(t??"").replace(/\s+/g," ").trim();
+const topicKey=t=>cleanTopic(t).toLowerCase();
+const topicSlug=t=>topicKey(t).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"topic";
+const hashStr=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);};
+const readJsonLS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return v&&typeof v==="object"&&!Array.isArray(v)?v:d;}catch(e){return d;}};
+let _serverTopics=readJsonLS("ecet_topic_summary_cache",{}); // {subjectId:{total,topics:[{name,count}]}}
+let _staticTopics=readJsonLS("ecet_static_topics_cache",{}); // same shape, from the static JSON banks
+let _staticTopicsChecked=false;
+let _expandedSubjects=new Set(); // Home cards whose topic list is open
+let _unlockedSubjects=new Set(); // subjects whose password was entered this visit (so topic tests don't ask again)
+
+function tallyTopics(list){
+  const m=new Map();
+  (list||[]).forEach(q=>{const k=topicKey(q&&q.topic);if(!k)return;const e=m.get(k);if(e)e.count++;else m.set(k,{name:cleanTopic(q.topic),count:1});});
+  return [...m.values()];
+}
+function mergeTopics(...lists){
+  const m=new Map();
+  lists.forEach(l=>(l||[]).forEach(t=>{const k=topicKey(t.name);if(!k)return;const e=m.get(k);if(e)e.count+=Number(t.count)||0;else m.set(k,{name:cleanTopic(t.name),count:Number(t.count)||0});}));
+  return [...m.values()];
+}
+function setServerTopics(map){
+  if(!map||typeof map!=="object"||Array.isArray(map))return;
+  _serverTopics=map;
+  try{localStorage.setItem("ecet_topic_summary_cache",JSON.stringify(map));}catch(e){}
+}
+async function ensureStaticTopics(){
+  if(_staticTopicsChecked)return;
+  _staticTopicsChecked=true;
+  let changed=false;
+  await Promise.all(subjects.filter(s=>s.available&&s.file).map(async s=>{
+    try{
+      const arr=await fetch(s.file).then(r=>r.json());
+      if(!Array.isArray(arr))return;
+      const next={total:arr.length,topics:tallyTopics(arr)};
+      if(JSON.stringify(_staticTopics[s.id])!==JSON.stringify(next)){_staticTopics[s.id]=next;changed=true;}
+    }catch(e){}
+  }));
+  if(changed){
+    try{localStorage.setItem("ecet_static_topics_cache",JSON.stringify(_staticTopics));}catch(e){}
+    refreshSubjectCardStats();
+  }
+}
+// Topics (in the order they were first added) and the total question count of a subject.
+function subjectTopicInfo(s){
+  const st=_staticTopics[s.id],sv=_serverTopics[s.id];
+  const topics=mergeTopics(st&&st.topics,sv&&sv.topics);
+  const total=s.file
+    ?(st?st.total:(s.questionCount||0))+(sv?sv.total:0)
+    :(s.questionCount!==undefined?s.questionCount:(sv?sv.total:0));
+  return {topics,total};
+}
+function findSubjectById(id){return subjects.find(s=>s.id===id)||customSubjects.find(s=>s.id===id);}
+function topicUnit(parent,topic){
+  const name=cleanTopic(topic),t=subjectTopicInfo(parent).topics.find(x=>topicKey(x.name)===topicKey(name));
+  return {...parent,id:parent.id+"::"+topicSlug(name)+"-"+hashStr(topicKey(name)),name:parent.name+TOPIC_SEP+name,parentId:parent.id,parentName:parent.name,topic:name,topicKey:topicKey(name),description:"Topic test — "+name,questionCount:t?t.count:undefined};
+}
+// ti = -1 → the whole-subject test, otherwise the index into subjectTopicInfo(parent).topics
+function unitFor(sid,ti){
+  const parent=findSubjectById(sid);if(!parent)return null;
+  if(ti<0)return parent;
+  const t=subjectTopicInfo(parent).topics[ti];
+  return t?topicUnit(parent,t.name):null;
+}
+function testRowHTML(parent,ti,label,count){
+  const unit=ti<0?parent:topicUnit(parent,label);
+  const unfinished=store.getProgress(unit.id);
+  // A cooldown never blocks resuming a test already in progress — only starting a new attempt.
+  const lock=!unfinished?subjectLockInfo(unit.name):{locked:false};
+  const best=subjectBest(unit.name);
+  const bits=[];if(count)bits.push(`${count} Questions`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
+  const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openTestUnit('${esc(parent.id)}',${ti})">${unfinished?"Resume":"Start"}</button>`;
+  const remind=unfinished?`<button class="ghost" onclick="quickRemindUnit('${esc(parent.id)}',${ti})">Remind me later</button>`:"";
+  return `<div class="topic-row${ti<0?" full":""}"><div class="topic-info"><b>${ti<0?"🎯 Full Subject Test":esc(label)}</b><small>${bits.join(" • ")}${unfinished?" • In progress":""}</small>${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</div><div class="topic-actions">${btn}${remind}</div></div>`;
+}
+function topicCardHTML(s,i){
+  const info=subjectTopicInfo(s),topics=info.topics,open=_expandedSubjects.has(s.id);
+  const inProgress=!!store.getProgress(s.id)||topics.some(t=>store.getProgress(topicUnit(s,t.name).id));
+  const chips=topics.slice(0,3).map(t=>`<span class="topic-chip">${esc(t.name)}</span>`).join("")+(topics.length>3?`<span class="topic-chip more">+${topics.length-3} more</span>`:"");
+  const panel=open?`<div class="topic-panel">${testRowHTML(s,-1,s.name,info.total)}${topics.map((t,ti)=>testRowHTML(s,ti,t.name,t.count)).join("")}</div>`:"";
+  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions • ${topics.length} topic test${topics.length===1?"":"s"}${inProgress?"<br>Test in progress — resume any time":""}</p>${open?"":`<div class="topic-chips">${chips}</div>`}<button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
+}
+function toggleTopics(sid){
+  if(_expandedSubjects.has(sid))_expandedSubjects.delete(sid);else _expandedSubjects.add(sid);
+  refreshSubjectCardStats();
+  if(_expandedSubjects.has(sid)){
+    const card=[...document.querySelectorAll('.subject-card')].find(c=>c.dataset.sid===sid);
+    if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+}
+function openTestUnit(sid,ti){
+  const unit=unitFor(sid,ti);if(!unit)return;
+  _pwSubject=unit;
+  if(guardSubjectLock_(unit))return;
+  // The subject password was already entered this visit → go straight to the test.
+  if(_unlockedSubjects.has(unit.parentId||unit.id)){loadBankAndEnroll_(unit);return;}
+  renderPasswordCard();
+}
+function quickRemindUnit(sid,ti){const u=unitFor(sid,ti);if(u)quickRemindLater(u.id,u.name);}
+// Per-topic score table, shown on the result page of a test that mixes topics (the full subject test).
+function topicBreakdownHTML(detail){
+  const m=new Map();
+  detail.forEach(d=>{
+    const k=topicKey(d.topic);if(!k)return;
+    const e=m.get(k)||{name:cleanTopic(d.topic),total:0,correct:0};
+    e.total++;
+    if(d.selected!==null&&d.selected!==undefined&&Number(d.selected)===Number(d.correct))e.correct++;
+    m.set(k,e);
+  });
+  if(m.size<2)return "";
+  const rows=[...m.values()].map(e=>({...e,pct:Math.round(e.correct/e.total*100)})).sort((a,b)=>a.pct-b.pct||b.total-a.total);
+  return `<h2>Topic-wise performance</h2><p class="note">Weakest topics first — a good place to focus your next practice.</p>${rows.map(e=>`<div class="subjbar-row"><div class="subjbar-label">${esc(e.name)} (${e.correct}/${e.total})</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${e.pct}%"></div></div><div>${e.pct}%</div></div>`).join("")}`;
+}
+
+/* ===================== HOME: SUBJECT SEARCH / JUMP ===================== */
+let _jumpActive=-1,_jumpItems=[];
+function jumpAllSubjects_(){
+  // Every topic test is searchable too ("Networks — Two-Ports"); picking one opens its subject card.
+  const out=[];
+  const add=(s,soon)=>{out.push({id:s.id,name:s.name,soon});if(!soon)subjectTopicInfo(s).topics.forEach(t=>out.push({id:s.id,name:s.name+TOPIC_SEP+t.name,topic:t.name}));};
+  subjects.forEach(s=>add(s,!s.available));
+  customSubjects.forEach(s=>add(s,s.questionCount===0));
+  return out;
+}
+function renderJumpList(showAll){
+  const list=document.getElementById('jumpList'),input=document.getElementById('subjectJump');
+  if(!list||!input)return;
+  const q=showAll===true?'':input.value.trim().toLowerCase();
+  _jumpItems=jumpAllSubjects_().filter(s=>!q||s.name.toLowerCase().includes(q));
+  _jumpActive=_jumpItems.length&&q?0:-1;
+  list.innerHTML=_jumpItems.length?_jumpItems.map((s,i)=>`<div class="jump-item${i===_jumpActive?' active':''}" data-i="${i}" onmousedown="event.preventDefault();jumpToSubject(${i})">${esc(s.name)}${s.soon?' <span class="jump-soon">coming soon</span>':''}</div>`).join(''):'<div class="jump-empty">No subject matches your search</div>';
+  list.hidden=false;
+}
+function toggleJumpList(){
+  const list=document.getElementById('jumpList');if(!list)return;
+  if(list.hidden){document.getElementById('subjectJump').value='';renderJumpList(true);}else list.hidden=true;
+}
+function jumpKey(ev){
+  const list=document.getElementById('jumpList');if(!list)return;
+  if(ev.key==='Escape'){list.hidden=true;return;}
+  if(list.hidden&&(ev.key==='ArrowDown'))renderJumpList(true);
+  if(!_jumpItems.length)return;
+  if(ev.key==='ArrowDown'||ev.key==='ArrowUp'){
+    ev.preventDefault();
+    _jumpActive=(_jumpActive+(ev.key==='ArrowDown'?1:-1)+_jumpItems.length)%_jumpItems.length;
+    list.querySelectorAll('.jump-item').forEach((el,i)=>el.classList.toggle('active',i===_jumpActive));
+    list.querySelector('.jump-item.active')?.scrollIntoView({block:'nearest'});
+  }else if(ev.key==='Enter'){ev.preventDefault();jumpToSubject(_jumpActive>=0?_jumpActive:0);}
+}
+function jumpToSubject(i){
+  const s=_jumpItems[i];if(!s)return;
+  const list=document.getElementById('jumpList'),input=document.getElementById('subjectJump');
+  if(list)list.hidden=true;
+  if(input){input.value=s.name;input.blur();}
+  if(s.topic){_expandedSubjects.add(s.id);refreshSubjectCardStats();}
+  const card=[...document.querySelectorAll('.subject-card')].find(c=>c.dataset.sid===s.id);
+  if(!card)return;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash');
+  setTimeout(()=>card.classList.remove('flash'),2600);
+  // Put the cursor on the card's main button so Enter opens it straight away.
+  const btn=card.querySelector('button:not([disabled])');
+  if(btn)setTimeout(()=>btn.focus({preventScroll:true}),450);
+}
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('subjectJumpWrap'),list=document.getElementById('jumpList');
+  if(list&&wrap&&!wrap.contains(e.target))list.hidden=true;
+});
+
 /* ===================== HOME ===================== */
 function customSubjectsHTML(){
   return customSubjects.length?customSubjects.map((s,i)=>{
     const unfinished=store.getProgress(s.id);
     const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
     if(!hasQuestions){
-      return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
+    if(subjectTopicInfo(s).topics.length)return topicCardHTML(s,i);
     const best=subjectBest(s.name);
     const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
     // A cooldown never blocks resuming an exam already in progress — only starting a brand-new attempt.
     const lock=!unfinished?subjectLockInfo(s.name):{locked:false};
     const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-    return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
@@ -306,6 +496,7 @@ async function home(){
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
+    <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text" placeholder="🔍 Search or pick a subject to go straight to it…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
@@ -314,6 +505,7 @@ async function home(){
   checkServerStatusAndBundle();
   handleRevisionLink();
   armCooldownTicker();
+  ensureStaticTopics();
 }
 function homeSubtitle(){
   const total=subjects.length+customSubjects.length;
@@ -323,6 +515,7 @@ function homeSubtitle(){
   return `${total} subjects available — pick one to begin practicing.`;
 }
 function subjectCardHTML(s,i){
+  if(s.available&&subjectTopicInfo(s).topics.length)return topicCardHTML(s,i);
   const unfinished=s.available&&store.getProgress(s.id);
   // A cooldown never blocks resuming an exam already in progress — only
   // starting a brand-new attempt.
@@ -330,7 +523,7 @@ function subjectCardHTML(s,i){
   const btn=!s.available?`<button disabled>Coming Soon</button>`
     :lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`
     :`<button onclick="openPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-  return `<div class="subject-card"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
 }
 function subjectCardMeta(s){
   const unfinished=s.available&&store.getProgress(s.id);
@@ -361,10 +554,21 @@ function lockInfoFromLastAttempt_(lastAttempt){
   const remaining=unlockAt-Date.now();
   return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
 }
+// The server now sends the real unlock time (unlockAt) for every subject,
+// which already includes any admin adjustment. Older cached data without it
+// falls back to the plain 24-hour rule.
+function lockInfoFromRow_(row){
+  if(!row)return{locked:false};
+  if(row.unlockAt!==undefined){
+    if(!row.unlockAt)return{locked:false};
+    const unlockAt=new Date(row.unlockAt).getTime(),remaining=unlockAt-Date.now();
+    return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
+  }
+  return lockInfoFromLastAttempt_(row.lastAttempt);
+}
 function subjectLockInfo(name){
   const d=store.dashboardCache();
-  const row=d?.subjects?.find(x=>x.subject===name);
-  return lockInfoFromLastAttempt_(row?.lastAttempt);
+  return lockInfoFromRow_(d?.subjects?.find(x=>x.subject===name));
 }
 function lockBadgeHTML(unlockAt){
   return `<span class="cooldown-badge" data-unlock="${unlockAt}">Locked — retake in ${formatCooldown(unlockAt-Date.now())}</span>`;
@@ -399,7 +603,7 @@ function armCooldownTicker(){
 }
 function hardRefresh(){
   if(!confirm("Clear locally cached data and reload fresh from the server?"))return;
-  ["ecet_dashboard_cache","ecet_profiledata_cache","ecet_mistakes_cache","ecet_reminders_cache","ecet_customsubjects_cache"].forEach(k=>localStorage.removeItem(k));
+  ["ecet_dashboard_cache","ecet_profiledata_cache","ecet_mistakes_cache","ecet_reminders_cache","ecet_customsubjects_cache","ecet_topic_summary_cache","ecet_static_topics_cache"].forEach(k=>localStorage.removeItem(k));
   location.reload();
 }
 async function refreshCustomSubjects(manual){
@@ -411,8 +615,8 @@ async function refreshCustomSubjects(manual){
     if(cs?.ok&&Array.isArray(cs.data)){
       customSubjects=cs.data;
       store.setCustomSubjectsCache(cs.data);
-      const grid=document.getElementById("customSubjectGrid");
-      if(grid)grid.innerHTML=customSubjectsHTML();
+      if(cs.topicSummary)setServerTopics(cs.topicSummary);
+      refreshSubjectCardStats();
     }
   }catch(e){console.warn("Custom subjects load failed",e);}
   finally{if(iconBtn){iconBtn.disabled=false;iconBtn.classList.remove('spinning');}}
@@ -437,12 +641,14 @@ function offlineStatusHTML_(){return 'Server offline — <span class="retry-link
 function applyServerStatus_(status,statusEl,slot){
   if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
   if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  let changed=false;
+  if(status.topicSummary){setServerTopics(status.topicSummary);changed=true;}
   if(Array.isArray(status.customSubjects)){
     customSubjects=status.customSubjects;
     store.setCustomSubjectsCache(customSubjects);
-    const grid=document.getElementById("customSubjectGrid");
-    if(grid)grid.innerHTML=customSubjectsHTML();
+    changed=true;
   }
+  if(changed)refreshSubjectCardStats(); // re-renders both grids (built-in subjects can have topics too)
 }
 async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
@@ -456,7 +662,7 @@ async function checkServerStatusAndBundle(force){
   const p=store.profile();
   const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS);
   if(res?.ok){
-    _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,checkedAt:Date.now()};
+    _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
     applyServerStatus_(_serverStatusCache,statusEl,slot);
     // homeBundle already carries the same pre-aggregated stats dashboard_()
     // would return (a single-row UserStats lookup, not a recompute) — cache
@@ -517,7 +723,7 @@ async function saveProfileEdit(){
 }
 function goProfile(){requireProfile(renderProfile);}
 function subjectStatusCellHTML(s){
-  const lock=lockInfoFromLastAttempt_(s.lastAttempt);
+  const lock=lockInfoFromRow_(s);
   if(!lock.locked)return '<span class="correct">Available</span>';
   return `<span class="cooldown-badge" data-unlock="${lock.unlockAt}">Locked — ${formatCooldown(lock.remaining)}</span>`;
 }
@@ -565,6 +771,44 @@ async function deleteAccountPrompt(){
 }
 
 /* ===================== ADMIN QUESTION IMPORT ===================== */
+/* ===================== ADMIN — TOPIC FIELD (shared) =====================
+ * A dropdown of the subject's existing topics, plus "New topic…" which reveals a
+ * text box. Used by Add Questions, Add a Single Question, Edit Question and the
+ * bulk "move to topic" tool. `pfx` keeps each instance's element ids apart;
+ * `cb` is the name of a global function to call whenever the choice changes. */
+function topicsForSubjectId(sid){const s=findSubjectById(sid);return s?subjectTopicInfo(s).topics:[];}
+function topicFieldHTML(pfx,sid,current,cb){
+  const topics=topicsForSubjectId(sid),cur=cleanTopic(current);
+  const match=cur?topics.find(t=>topicKey(t.name)===topicKey(cur)):null;
+  const chosen=!cur?"":match?match.name:"__new__";
+  return `<select id="${pfx}TopicSel" onchange="topicSelChanged('${pfx}'${cb?`,'${cb}'`:""})"><option value="">— No topic (general subject question) —</option>${topics.map(t=>`<option value="${esc(t.name)}" ${chosen===t.name?"selected":""}>${esc(t.name)} (${t.count} question${t.count===1?"":"s"})</option>`).join("")}<option value="__new__" ${chosen==="__new__"?"selected":""}>➕ New topic…</option></select><input id="${pfx}TopicNew" type="text" maxlength="80" placeholder="New topic name, e.g. Capacitors &amp; Inductors" value="${chosen==="__new__"?esc(cur):""}" style="${chosen==="__new__"?"":"display:none;"}margin-top:8px" oninput="topicInputChanged(${cb?`'${cb}'`:""})">`;
+}
+function topicSelChanged(pfx,cb){
+  const sel=document.getElementById(pfx+"TopicSel"),inp=document.getElementById(pfx+"TopicNew");
+  if(!sel||!inp)return;
+  const isNew=sel.value==="__new__";
+  inp.style.display=isNew?"":"none";
+  if(isNew)inp.focus();
+  if(cb&&typeof window[cb]==="function")window[cb]();
+}
+function topicInputChanged(cb){if(cb&&typeof window[cb]==="function")window[cb]();}
+function readTopicField(pfx){
+  const sel=document.getElementById(pfx+"TopicSel");if(!sel)return "";
+  return cleanTopic(sel.value==="__new__"?document.getElementById(pfx+"TopicNew")?.value:sel.value);
+}
+// "New topic…" chosen but nothing typed yet.
+function topicFieldIncomplete(pfx){
+  const sel=document.getElementById(pfx+"TopicSel");
+  return !!sel&&sel.value==="__new__"&&!cleanTopic(document.getElementById(pfx+"TopicNew")?.value);
+}
+function refreshAdminTopicField(keep){
+  const sel=document.getElementById("adminSubject"),wrap=document.getElementById("adminTopicWrap");
+  if(!sel||!wrap)return;
+  const cur=keep?readTopicField("at"):"";
+  wrap.innerHTML=topicFieldHTML("at",sel.value,cur,"adminTopicChanged");
+}
+function adminTopicChanged(){refreshAiPrompt();renderImportPreview();}
+
 function adminSubjectOptions(){
   const staticOpts=subjects.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
   const customOpts=customSubjects.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
@@ -579,7 +823,7 @@ async function adminQuestionsPage(){
       app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Use the Admin button on the homepage and enter the admin password.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
       return;
     }
-    if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data)){customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);}}catch(e){console.warn("Custom subjects load failed",e);}}
+    if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data)){customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);if(cs.topicSummary)setServerTopics(cs.topicSummary);}}catch(e){console.warn("Custom subjects load failed",e);}}
     const curYear=new Date().getFullYear();
     app.innerHTML=`<div class="card"><h1>Admin — Create New Subject</h1>
       <p class="note">Create a brand-new practice test subject with no code or GitHub changes. It appears immediately in "Practice Tests Added by Admin" on the homepage, and below in the Subject dropdown so you can bulk-import its questions.</p>
@@ -591,17 +835,20 @@ async function adminQuestionsPage(){
     </div>
     <div class="card"><h1>Admin — Add Questions</h1>
       <p class="note">Select an existing subject to add its questions, or pick "Create New Subject" to make a brand-new one above first.</p>
-      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAiPrompt();">
+      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAdminTopicField();refreshAiPrompt();renderImportPreview();">
         ${adminSubjectOptions()}
         <option value="__new__">➕ Create New Subject…</option>
       </select>
+      <label>Topic (optional) — makes a topic-wise test</label>
+      <div id="adminTopicWrap"></div>
+      <p class="note">Questions saved under a topic show up on the Home page inside their subject as their own test — for example <b>Networks → Basics, Capacitors &amp; Inductors, Two-Ports</b> — and they also stay part of the subject's full test. Pick an existing topic, choose <b>New topic…</b> to create one, or leave <b>No topic</b> for ordinary subject questions. An Excel file can also carry its own <b>Topic</b> column; rows with a blank Topic use the topic chosen here.</p>
       <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026" onchange="refreshAiPrompt()">
       <p class="note">Used for any row whose Year column is left blank in the Excel file, and filled into the AI prompt below.</p>
 
       <h2 style="margin-top:26px">Don't want to type questions by hand? Ask an AI</h2>
       <label>Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
       <p class="note">The prompt below now asks the AI to hand back a ready-to-upload Excel (.xlsx) file directly — no copy-pasting rows.</p>
-      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> State, Question Number, and all Image URL columns — leave blank if unused.</p>
+      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> Topic, State, Question Number, and all Image URL columns — leave blank if unused.</p>
       <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
       <label>Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
         <option value="subject">Whole subject (broad coverage)</option>
@@ -630,10 +877,71 @@ async function adminQuestionsPage(){
     <div class="card">${questionFormHTML('add',null)}</div>
     <div class="card"><h1>Admin — Manage Questions</h1>
       <p class="note">Edit existing questions in place, or review the audit log of every edit made.</p>
-      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="home()">Back to Home</button></div>
+      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="adminTimePage()">⏱ Exam Time Control</button><button onclick="home()">Back to Home</button></div>
     </div>`;
+    refreshAdminTopicField();
     refreshAiPrompt();
   });
+}
+
+
+/* ===================== ADMIN — EXAM TIME CONTROL ===================== */
+let _tcSubjects=[],_tcUsers=[];
+function adminAuth_(){const p=store.profile();return{adminEmail:p?.email||"",adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:""};}
+function adminTimePage(){
+  pushNav(adminTimePage);
+  if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+  requireProfile(async()=>{
+    _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>{_tcSubjects.push(s.name);subjectTopicInfo(s).topics.forEach(t=>_tcSubjects.push(s.name+TOPIC_SEP+t.name));}); // each topic test has its own cooldown
+    app.innerHTML=`<div class="card"><h1>Admin — Exam Time Control</h1>
+      <p class="note">Normally a subject stays locked for 24 hours after a student finishes it. Use this to open it right away, shorten the wait, or make it longer for one student. Only you can do this.</p>
+      <label>Student</label>
+      <input id="tcFilter" placeholder="Type a name or email to filter…" oninput="tcFilterUsers()" autocomplete="off">
+      <select id="tcUser" size="6" onchange="tcLoadStatus()" style="margin-top:8px"><option disabled>Loading students…</option></select>
+      <div id="tcMsg" class="note"></div>
+      <div id="tcBody"></div>
+      <div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
+    const res=await apiPost('adminCooldownList',{...adminAuth_(),includeUsers:true},30000);
+    if(!res?.ok){document.getElementById('tcUser').innerHTML='';document.getElementById('tcMsg').innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not load students. Check your connection and try again.')}</span>`;return;}
+    _tcUsers=res.users||[];tcFilterUsers();
+  });
+}
+function tcFilterUsers(){
+  const q=(document.getElementById('tcFilter')?.value||'').trim().toLowerCase(),sel=document.getElementById('tcUser');
+  if(!sel)return;
+  const keep=sel.value;
+  const list=_tcUsers.filter(u=>!q||u.name.toLowerCase().includes(q)||u.email.includes(q));
+  sel.innerHTML=list.length?list.map(u=>`<option value="${esc(u.email)}" ${u.email===keep?'selected':''}>${esc(u.name||'(no name)')} — ${esc(u.email)}</option>`).join(''):'<option disabled>No student found</option>';
+}
+async function tcLoadStatus(){
+  const email=document.getElementById('tcUser')?.value,body=document.getElementById('tcBody');
+  if(!email||!body)return;
+  body.innerHTML='<p class="note">Loading…</p>';
+  const res=await apiPost('adminCooldownList',{...adminAuth_(),targetEmail:email,subjects:_tcSubjects},30000);
+  if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||'Could not load this student.')}</p>`;return;}
+  const btns=i=>`<button onclick="tcAct(${i},'unlock')">Unlock now</button><button onclick="tcAct(${i},'set')">Set wait</button><button onclick="tcAct(${i},'add')">+ Add</button><button onclick="tcAct(${i},'sub')">− Reduce</button><button onclick="tcAct(${i},'default')">Normal 24h</button>`;
+  const rows=(res.statuses||[]).map((s,i)=>`<tr><td><b>${esc(s.subject)}</b><br><span class="note">${s.lastAttempt?'Last attempt '+esc(formatDateTime(s.lastAttempt)):'Never attempted'}</span></td><td>${s.locked?`<span class="cooldown-badge">Locked — ${formatCooldown(s.remainingMinutes*60000)}</span>`:'<span class="correct">Available</span>'}${s.overridden?'<br><span class="note">adjusted by admin</span>':''}</td><td><div class="tc-btns">${btns(i)}</div></td></tr>`).join('');
+  body.innerHTML=`<h2>Amount</h2><div class="tc-amount"><input id="tcAmount" type="number" min="0" step="1" placeholder="e.g. 30"><select id="tcUnit"><option value="1">minutes</option><option value="60">hours</option><option value="1440">days</option></select></div>
+    <p class="note">“Unlock now” and “Normal 24h” need no amount. “Set wait” = locked for exactly this long from now (0 = unlocked). “Add” / “Reduce” change the wait that is left.</p>
+    <div class="table-scroll"><table class="simple"><thead><tr><th>Subject</th><th>Status</th><th>Change</th></tr></thead><tbody>
+    <tr><td><b>All subjects</b></td><td>—</td><td><div class="tc-btns">${btns(-1)}</div></td></tr>${rows}</tbody></table></div>`;
+}
+async function tcAct(i,mode){
+  const email=document.getElementById('tcUser')?.value,msg=document.getElementById('tcMsg');
+  if(!email){msg.innerHTML='<span class="wronganswer">Select a student first.</span>';return;}
+  const subject=i<0?'*':_tcSubjects[i];
+  let minutes=0,apiMode=mode;
+  if(mode==='set'||mode==='add'||mode==='sub'){
+    const raw=document.getElementById('tcAmount').value,val=Number(raw);
+    if(raw===''||!isFinite(val)||val<0){msg.innerHTML='<span class="wronganswer">Enter an amount (0 or more) first.</span>';return;}
+    minutes=val*Number(document.getElementById('tcUnit').value);
+    if(mode==='sub'){minutes=-minutes;apiMode='add';}
+  }
+  msg.innerHTML='<span class="note">Saving…</span>';
+  const res=await apiPost('adminCooldownAdjust',{...adminAuth_(),targetEmail:email,subject,mode:apiMode,minutes},30000);
+  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save. Please try again.')}</span>`;return;}
+  msg.innerHTML=`<span class="correct">${esc(res.message||'Saved.')}</span>`;
+  tcLoadStatus();
 }
 
 /* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */
@@ -642,7 +950,8 @@ function questionFormHTML(mode,q){
   const v=(k,d)=>esc(q&&q[k]!==undefined?q[k]:(d||''));
   return `<h1>Admin — ${isEdit?'Edit Question':'Add a Single Question'}</h1>
     <p class="note">${isEdit?'Editing question <b>'+esc(q.id)+'</b>. Saving updates this exact row — it cannot duplicate or affect another row.':'Fill in one question directly, without an Excel file.'}</p>
-    ${isEdit?'':`<label>Subject</label><select id="qfSubject">${adminSubjectOptions()}</select>`}
+    ${isEdit?'':`<label>Subject</label><select id="qfSubject" onchange="qfSubjectChanged()">${adminSubjectOptions()}</select>`}
+    <label>Topic (optional)</label><div id="qfTopicWrap">${topicFieldHTML('qf',isEdit?_editSubjectId:((subjects[0]||customSubjects[0]||{}).id||''),isEdit?q.topic:'','')}</div>
     <label>Question</label><textarea id="qfQuestion" rows="2">${v('question')}</textarea>
     <label>Option A</label><input id="qfA" value="${q?esc((q.options||[])[0]||''):''}">
     <label>Option B</label><input id="qfB" value="${q?esc((q.options||[])[1]||''):''}">
@@ -676,8 +985,13 @@ function readQuestionForm(){
     optionAImage:document.getElementById('qfAImg').value.trim(),
     optionBImage:document.getElementById('qfBImg').value.trim(),
     optionCImage:document.getElementById('qfCImg').value.trim(),
-    optionDImage:document.getElementById('qfDImg').value.trim()
+    optionDImage:document.getElementById('qfDImg').value.trim(),
+    topic:readTopicField('qf')
   };
+}
+function qfSubjectChanged(){
+  const sel=document.getElementById('qfSubject'),wrap=document.getElementById('qfTopicWrap');
+  if(sel&&wrap)wrap.innerHTML=topicFieldHTML('qf',sel.value,'','');
 }
 async function saveManualQuestion(){
   const statusEl=document.getElementById('qfStatus');
@@ -685,17 +999,24 @@ async function saveManualQuestion(){
   if(!sel.value||sel.value==='__new__'){statusEl.innerHTML='<span class="wronganswer">Pick a subject first.</span>';return;}
   const row=readQuestionForm();
   if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
+  if(topicFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   statusEl.textContent='Saving…';
   const p=store.profile();
   const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:[row]});
-  if(res?.ok){statusEl.innerHTML='<span class="correct">Question saved successfully — available immediately in Practice Tests.</span>';['qfQuestion','qfA','qfB','qfC','qfD','qfQno','qfQImg','qfAImg','qfBImg','qfCImg','qfDImg'].forEach(id=>document.getElementById(id).value='');
-    refreshCustomSubjects(); // keep home/admin question counts in sync right away, no manual reload needed
+  if(res?.ok){statusEl.innerHTML=`<span class="correct">Question saved successfully${row.topic?' under topic “'+esc(row.topic)+'”':''} — available immediately in Practice Tests.</span>`;['qfQuestion','qfA','qfB','qfC','qfD','qfQno','qfQImg','qfAImg','qfBImg','qfCImg','qfDImg'].forEach(id=>document.getElementById(id).value='');
+    // Keep home/admin question counts and topic lists in sync right away. The topic just used stays
+    // selected, so a run of questions for the same topic needs no re-picking.
+    const keepTopic=row.topic;
+    await refreshCustomSubjects();
+    const wrap=document.getElementById('qfTopicWrap');
+    if(wrap)wrap.innerHTML=topicFieldHTML('qf',sel.value,keepTopic,'');
+    refreshAdminTopicField(true);
   }
   else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||(res?.errors?.[0]?.errors?.join(', '))||'Could not save.')}</span>`;}
 }
 
 /* ===================== ADMIN — EDIT QUESTIONS ===================== */
-let _editQuestionsCache=[],_editSubjectId='';
+let _editQuestionsCache=[],_editSubjectId='',_editSelected=new Set();
 async function editQuestionsPage(){
   pushNav(editQuestionsPage);
   requireProfile(async ()=>{
@@ -717,15 +1038,56 @@ async function loadAdminQuestions(){
   const res=await apiGet('questions',{subjectId:sel.value});
   if(!res?.ok||!Array.isArray(res.data)){listEl.innerHTML='<span class="wronganswer">Could not load questions.</span>';return;}
   _editQuestionsCache=res.data;
+  _editSelected=new Set();
   renderEditQuestionsList();
 }
 function renderEditQuestionsList(){
   const listEl=document.getElementById('editQuestionsList');
   if(!listEl)return;
-  if(!_editQuestionsCache.length){listEl.innerHTML='<p class="note">No questions found for this subject.</p>';return;}
-  listEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Question</th><th>Year</th><th></th></tr>
-  ${_editQuestionsCache.map(q=>`<tr><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
-  </table></div>`;
+  listEl.className='';
+  if(!_editQuestionsCache.length){listEl.className='note';listEl.innerHTML='<p class="note">No questions found for this subject.</p>';return;}
+  const topics=tallyTopics(_editQuestionsCache),untagged=_editQuestionsCache.filter(q=>!cleanTopic(q.topic)).length;
+  listEl.innerHTML=`<div class="topic-bulk">
+    <label>Show</label>
+    <select id="editTopicFilter" onchange="renderEditTable()"><option value="">All questions (${_editQuestionsCache.length})</option><option value="__none__">No topic yet (${untagged})</option>${topics.map(t=>`<option value="${esc(t.name)}">${esc(t.name)} (${t.count})</option>`).join('')}</select>
+    <label>Move the ticked questions to a topic</label>
+    ${topicFieldHTML('bk',_editSubjectId,'','')}
+    <div class="buttons"><button id="bulkTopicBtn" onclick="bulkAssignTopic()">Apply to ticked (0)</button></div>
+    <div id="bulkTopicStatus" class="note">Tick questions in the table (or the box in the header to tick everything shown), pick a topic, then apply. Choose “No topic” to take them out of a topic.</div>
+  </div><div id="editTableWrap"></div>`;
+  renderEditTable();
+}
+function visibleEditRows_(){
+  const f=document.getElementById('editTopicFilter')?.value||'';
+  return _editQuestionsCache.filter(q=>!f||(f==='__none__'?!cleanTopic(q.topic):topicKey(q.topic)===topicKey(f)));
+}
+function renderEditTable(){
+  const wrap=document.getElementById('editTableWrap');if(!wrap)return;
+  const rows=visibleEditRows_(),allTicked=rows.length>0&&rows.every(q=>_editSelected.has(q.id));
+  wrap.innerHTML=rows.length?`<div class="table-scroll"><table class="simple"><tr><th><input type="checkbox" ${allTicked?'checked':''} onchange="toggleEditAll(this.checked)" title="Tick / untick everything shown"></th><th>Question</th><th>Topic</th><th>Year</th><th></th></tr>
+  ${rows.map(q=>`<tr><td><input type="checkbox" ${_editSelected.has(q.id)?'checked':''} onchange="toggleEditSel('${esc(q.id)}',this.checked)"></td><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${q.topic?esc(q.topic):'—'}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
+  </table></div>`:'<p class="note">No questions match this filter.</p>';
+  updateBulkBtn();
+}
+function toggleEditAll(on){visibleEditRows_().forEach(q=>{if(on)_editSelected.add(q.id);else _editSelected.delete(q.id);});renderEditTable();}
+function toggleEditSel(id,on){if(on)_editSelected.add(id);else _editSelected.delete(id);updateBulkBtn();}
+function updateBulkBtn(){const b=document.getElementById('bulkTopicBtn');if(b)b.textContent=`Apply to ticked (${_editSelected.size})`;}
+async function bulkAssignTopic(){
+  const st=document.getElementById('bulkTopicStatus'),ids=[..._editSelected];
+  if(!ids.length){st.innerHTML='<span class="wronganswer">Tick at least one question first.</span>';return;}
+  if(topicFieldIncomplete('bk')){st.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic.</span>';return;}
+  const topic=readTopicField('bk');
+  if(!topic&&!confirm(`Take ${ids.length} question(s) out of their topic?`))return;
+  st.textContent='Saving…';
+  const res=await apiPost('setQuestionTopic',{...adminAuth_(),subjectId:_editSubjectId,questionIds:ids,topic},60000);
+  if(!res?.ok){st.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save. Please check your connection and try again.')}</span>`;return;}
+  const finalTopic=res.topic!==undefined?res.topic:topic;
+  _editQuestionsCache.forEach(q=>{if(_editSelected.has(q.id))q.topic=finalTopic;});
+  _editSelected=new Set();
+  await refreshCustomSubjects(); // Home and the dropdowns pick up the new topic straight away
+  renderEditQuestionsList();
+  const st2=document.getElementById('bulkTopicStatus');
+  if(st2)st2.innerHTML=`<span class="correct">${esc(res.message||'Saved.')}</span>`;
 }
 function editQuestionRow(id){
   const q=_editQuestionsCache.find(x=>x.id===id);
@@ -737,12 +1099,14 @@ async function saveQuestionEdit(id){
   const statusEl=document.getElementById('qfStatus');
   const row=readQuestionForm();
   if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
+  if(topicFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   statusEl.textContent='Saving…';
   const p=store.profile();
   const res=await apiPost('updateQuestion',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",questionId:id,...row});
   if(res?.ok){
     statusEl.innerHTML='<span class="correct">Saved. Updating list…</span>';
     const idx=_editQuestionsCache.findIndex(x=>x.id===id);
+    refreshCustomSubjects(); // topic list on Home / in the dropdowns follows the edit
     if(idx!==-1)_editQuestionsCache[idx]={...row,id,options:[row.optionA,row.optionB,row.optionC,row.optionD],answer:'ABCD'.indexOf(row.correctAnswer),image:row.questionImage,optionImages:[row.optionAImage,row.optionBImage,row.optionCImage,row.optionDImage]};
     setTimeout(editQuestionsPage,600);
   }else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save.')}</span>`;}
@@ -795,12 +1159,15 @@ function buildAiPrompt(){
   const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
   const extra=document.getElementById("aiExtra")?.value?.trim();
   const examName=document.getElementById("aiExamName")?.value?.trim()||subjName;
+  const topicSel=readTopicField("at"); // the topic-wise test these questions will be filed under (may be empty)
 
   const subtopicsLine=scope==='topic'&&topic
-    ? topic
+    ? (topicSel?topicSel+' — focusing on: '+topic:topic)
     : scope==='topic'
-      ? 'Pick one well-defined, commonly-tested subtopic within '+subjName+' and stay within it.'
-      : 'All major topics of '+subjName+' — spread broadly, not just one chapter.';
+      ? (topicSel?'Everything commonly tested under "'+topicSel+'" in '+subjName:'Pick one well-defined, commonly-tested subtopic within '+subjName+' and stay within it.')
+      : topicSel
+        ? 'Everything commonly tested under "'+topicSel+'" in '+subjName
+        : 'All major topics of '+subjName+' — spread broadly, not just one chapter.';
 
   const qtypeLines={
     'Conceptual/theory-based':'Focus on conceptual / theory-based questions — test definitions, principles, and understanding rather than heavy calculation.',
@@ -815,6 +1182,7 @@ function buildAiPrompt(){
     '',
     'Topic: '+subjName,
     'Subtopics: '+subtopicsLine,
+    ...(topicSel?['Topic (value for the Topic column): '+topicSel]:[]),
     'Number of questions: '+count,
     'Difficulty level: '+difficulty,
     'Year: '+year,
@@ -822,7 +1190,7 @@ function buildAiPrompt(){
     '',
     'Excel format — mandatory',
     '',
-    'Create an Excel file with exactly 14 columns in this order:',
+    'Create an Excel file with exactly 15 columns in this order:',
     '',
     '1. Question',
     '2. Option A',
@@ -838,8 +1206,9 @@ function buildAiPrompt(){
     '12. Option B Image URL',
     '13. Option C Image URL',
     '14. Option D Image URL',
+    '15. Topic',
     '',
-    'Each question must occupy one row. Include a header row with the 14 column names. Preserve this exact column order and structure.',
+    'Each question must occupy one row. Include a header row with the 15 column names. Preserve this exact column order and structure.',
     '',
     'Question requirements',
     '',
@@ -855,8 +1224,9 @@ function buildAiPrompt(){
     '10. Fill Question Number sequentially from 1 to '+count+'.',
     '11. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
     '12. Leave all image URL columns empty unless image URLs are explicitly requested.',
-    '13. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
-    ...(extra?['14. Additional instructions: '+extra]:[]),
+    '13. '+(topicSel?'Fill the Topic column with exactly "'+topicSel+'" for every question (same spelling and capitalization).':'Leave the Topic column empty.'),
+    '14. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
+    ...(extra?['15. Additional instructions: '+extra]:[]),
     '',
     'Output requirements',
     '',
@@ -864,7 +1234,7 @@ function buildAiPrompt(){
     '- Do not output the questions as plain text, TSV, CSV, or Markdown.',
     '- Do not provide explanations, answers, or any other text outside the Excel file.',
     '- Ensure the file contains exactly '+count+' question rows plus the header row.',
-    '- Check that all 14 columns are present and in the correct order.',
+    '- Check that all 15 columns are present and in the correct order.',
     '- Ensure every mandatory field is filled for every question.',
     '- Make the Excel file ready to download and use directly.'
   ].join('\n');
@@ -883,24 +1253,85 @@ function copyAiPrompt(){
 let _questionImportRows=[];
 function downloadQuestionTemplate(){
   if(!window.XLSX){alert("Excel tools are still loading. Please try again.");return;}
-  const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','']];
+  const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','','']];
   const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
 }
 function normalizeQuestionRow(r,defaultYear){
   const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
-  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim()};
+  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name'))};
 }
 function validateImportRows(rows){
   const errs=[],seen=new Set();
-  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
+  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
 }
 function previewQuestionFile(ev){
   const file=ev.target.files?.[0];if(!file)return;
   if(!window.XLSX){document.getElementById('importStatus').textContent='Excel tools are still loading. Please try again.';return;}
-  const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''}),defaultYear=document.getElementById('adminYear')?.value||'';_questionImportRows=raw.map(r=>normalizeQuestionRow(r,defaultYear));const errors=validateImportRows(_questionImportRows);const preview=_questionImportRows.slice(0,20);document.getElementById('importStatus').innerHTML=`<b>${_questionImportRows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}`;document.getElementById('importPreview').innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;document.getElementById('importQuestionsBtn').disabled=errors.length>0||!_questionImportRows.length;}catch(err){_questionImportRows=[];document.getElementById('importQuestionsBtn').disabled=true;document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';console.warn(err);}};reader.readAsArrayBuffer(file);
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''}),defaultYear=document.getElementById('adminYear')?.value||'';
+      _questionImportRows=raw.map(r=>normalizeQuestionRow(r,defaultYear));
+      renderImportPreview();
+    }catch(err){
+      _questionImportRows=[];
+      document.getElementById('importQuestionsBtn').disabled=true;
+      document.getElementById('importPreview').innerHTML='';
+      document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';
+      console.warn(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+// The rows as they will actually be saved: a row's own Topic column wins, otherwise the topic picked above.
+function effectiveImportRows_(){const t=readTopicField('at');return _questionImportRows.map(r=>({...r,topic:cleanTopic(r.topic)||t}));}
+function renderImportPreview(){
+  const statusEl=document.getElementById('importStatus'),prevEl=document.getElementById('importPreview'),btn=document.getElementById('importQuestionsBtn');
+  if(!statusEl||!prevEl||!btn||!_questionImportRows.length)return;
+  const rows=effectiveImportRows_(),errors=validateImportRows(rows),preview=rows.slice(0,20);
+  const tally=new Map();
+  rows.forEach(r=>{const k=topicKey(r.topic),e=tally.get(k)||{name:r.topic,n:0};e.n++;tally.set(k,e);});
+  const topicLine=[...tally.values()].map(e=>`${e.name?esc(e.name):'<i>no topic</i>'} × ${e.n}`).join(' • ');
+  statusEl.innerHTML=`<b>${rows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}<br><span class="note">Topics in this import: ${topicLine}</span>`;
+  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Topic</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
+  btn.disabled=errors.length>0||!rows.length||topicFieldIncomplete('at');
 }
 async function importPreviewedQuestions(){
-  const btn=document.getElementById('importQuestionsBtn');if(!_questionImportRows.length||btn.disabled)return;btn.disabled=true;btn.textContent='Importing…';const p=store.profile(),sel=document.getElementById('adminSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:_questionImportRows});if(res?.ok){document.getElementById('importStatus').innerHTML=`<span class="correct"><b>${res.imported}</b> question(s) imported successfully — available immediately in Practice Tests.</span>`;_questionImportRows=[];document.getElementById('importPreview').innerHTML='';refreshCustomSubjects();/* keep home/admin question counts in sync right away, no manual reload needed */}else{document.getElementById('importStatus').innerHTML=`<span class="wronganswer">${esc(res?.error||'Import failed.')}</span>`;if(res?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${res.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;}btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
+  const btn=document.getElementById('importQuestionsBtn'),status=document.getElementById('importStatus');
+  if(!_questionImportRows.length||btn.disabled)return;
+  if(topicFieldIncomplete('at')){status.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  btn.disabled=true;
+  const p=store.profile(),sel=document.getElementById('adminSubject');
+  const subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);
+  const rows=effectiveImportRows_(),total=rows.length,BATCH=50;
+  let done=0,lastRes=null;
+  /* Importing is sent in small batches with a long timeout. If the browser stops
+     waiting (slow Apps Script) the batch may STILL have been saved, so we never
+     report "failed" from silence: we re-send the same batch, and the server
+     answers "already imported" if it had gone through the first time. */
+  for(let i=0;i<total;i+=BATCH){
+    const batch=rows.slice(i,i+BATCH);
+    btn.textContent=`Importing ${Math.min(i+BATCH,total)} / ${total}…`;
+    let res=null;
+    for(let attempt=0;attempt<3&&!res;attempt++){
+      if(attempt){status.innerHTML=`<span class="note">Server is slow — confirming the last batch was saved…</span>`;await sleep(4000*attempt);}
+      res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:batch},90000);
+    }
+    lastRes=res;
+    if(!res?.ok)break;
+    done+=batch.length;
+  }
+  if(done===total){
+    status.innerHTML=`<span class="correct"><b>${total}</b> question(s) imported successfully — available immediately in Practice Tests.</span>`;
+    _questionImportRows=[];document.getElementById('importPreview').innerHTML='';
+    await refreshCustomSubjects(); // keep home/admin question counts and topic lists in sync
+    refreshAdminTopicField(true);  // a topic created by this import is now selectable, and stays selected
+  }else{
+    const msg=lastRes?lastRes.error||'Import failed.':'Could not reach the server, so the last batch could not be confirmed. Wait a minute and use “Import Questions” again — questions already saved are detected automatically.';
+    status.innerHTML=`<span class="wronganswer">${esc(msg)}</span>${done?`<br><span class="note">${done} of ${total} question(s) were already saved before this happened.</span>`:''}`;
+    if(lastRes?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${lastRes.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;
+  }
+  btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
 }
 
 /* ===================== ADMIN PASSWORD UNLOCK =====================
@@ -945,16 +1376,22 @@ function guardSubjectLock_(s){
 }
 function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
 async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;if(v!==String(s.password)){document.getElementById("passError").textContent="Incorrect password.";return;}
+  _unlockedSubjects.add(s.parentId||s.id);
+  await loadBankAndEnroll_(s);
+}
+async function loadBankAndEnroll_(s){
+  const parentId=s.parentId||s.id; // a topic test loads its parent subject's questions, then keeps only its topic
   // These two are independent — the static question-bank file and the
   // admin-imported questions from the backend — so fetch them in parallel
   // instead of waiting on the file before even starting the API call.
   const [staticBank,imported]=await Promise.all([
     s.file?fetch(s.file).then(r=>r.json()).catch(()=>[]):Promise.resolve([]),
-    API?apiGet('questions',{subjectId:s.id}).catch(()=>null):Promise.resolve(null)
+    API?apiGet('questions',{subjectId:parentId}).catch(()=>null):Promise.resolve(null)
   ]);
   bank=Array.isArray(staticBank)?staticBank:[];
   if(imported?.ok&&Array.isArray(imported.data)&&imported.data.length)bank=bank.concat(imported.data);
-  if(!bank.length){app.innerHTML=`<div class="card"><h2>Question bank not available.</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
+  if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
+  if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
 function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
 function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});confirmExamStart();}
 function confirmExamStart(){
@@ -1071,7 +1508,7 @@ function toggleReview(){marked[current]=!marked[current];persist();render();}
 function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
 function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
 function confirmSubmit(){const u=answers.filter(x=>x===null).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
-function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>ECET ${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
+function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>ECET ${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
 
 /* ===================== RESULT ===================== */
 async function submit(){
@@ -1152,7 +1589,7 @@ function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;
 function renderResult(r){
   window._lastResultDetail=r.detail;
   const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
-  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
 }
 function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
 function reviewListHTML(detail,filter){return detail.map((d,n)=>{const iw=d.selected!==null&&d.selected!==d.correct,iu=d.selected===null;if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${iu?"Unanswered":"ABCD"[d.selected]+". "+esc(d.options[d.selected])}</span></div><div>Correct answer: <span class="correct">${"ABCD"[d.correct]}. ${esc(d.options[d.correct])}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}

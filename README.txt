@@ -18,3 +18,9 @@ Important:
 - This package fixes several backend logic issues found during review, including retryable FAILED email queue records, preservation of reminder fields during partial edits, safer monthly recurrence dates, and duplicate legacy revision-trigger cleanup.
 - The code passes a JavaScript syntax check. Apps Script services still require deployment/authorization testing in your Google account.
 - The frontend (index.html/app.js/etc.) was not included in the current code attachment, so this package does not claim to verify frontend code. The frontend must use the current /exec URL.
+
+TOPIC-WISE TESTS (new)
+- Subjects can be split into topic tests. In Admin -> Add Questions pick a Topic (or "New topic...").
+- Questions saved with a topic appear on Home inside their subject. The full-subject test still contains every question.
+- Old questions: Admin -> Edit Questions -> tick questions -> "Move the ticked questions to a topic".
+- Built-in subjects (JSON files): add a "topic" field to a question, e.g. "topic": "Boolean Algebra".

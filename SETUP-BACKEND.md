@@ -33,3 +33,20 @@
 ## Existing sheets
 
 The script adds missing columns to existing sheets. It does not intentionally delete old data. If you already have older columns, keep them; the new columns are appended during `setup()`.
+
+## Update: dropdowns, exam time control, safer imports
+
+- Re-paste the new `Code.gs`, **Save**, then **Deploy → Manage deployments → Edit → New version → Deploy** (the `/exec` URL stays the same).
+- Run `setup()` once. It adds the `CooldownOverrides` sheet and puts dropdowns on the fixed-value columns of every sheet
+  (Reminders: Frequency / Status / Enabled, Notifications, EmailQueue, WrongAnswers, Results, Answers, Questions CorrectAnswer, etc.).
+- After you add a new subject, run `applyDropdowns` so its name appears in the Subject dropdowns.
+- Admin → **⏱ Exam Time Control**: pick a student, then unlock now, set the wait, add or reduce time, or restore the normal 24 h.
+
+## Update: topic-wise tests
+
+- Re-paste the new `Code.gs`, **Save**, then **Deploy → Manage deployments → Edit → New version → Deploy** (the `/exec` URL stays the same). Upload the new `app.js`, `style.css` and `Code.gs`-matching site files together.
+- No manual sheet change is needed: a `Topic` column is added to the end of the `Questions` sheet automatically the first time you import, edit or bulk-move a question (running `setup()` also adds it).
+- Topic names are matched ignoring capitals and extra spaces, so "basics" and "Basics " become one topic. Maximum 80 characters.
+- A topic test is recorded as its own subject name, for example `Networks — Basics`, so its results, best score, rank and 1-day lock are separate from the full `Networks` test. The `SubjectId` column keeps the parent subject id (`networks`).
+- New backend action `setQuestionTopic` (admin only) moves many questions of one subject into a topic in one call; every change is written to `ChangeLog`.
+- Excel import: a 15th column `Topic` is optional. Older 14-column files still import.

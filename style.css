@@ -210,3 +210,40 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .q-img{display:block;max-width:100%;max-height:320px;height:auto;margin:8px 0 14px;border-radius:10px;border:1px solid var(--line);object-fit:contain}
 .opt-img{display:block;max-width:220px;max-height:160px;height:auto;margin:6px 0 0;border-radius:8px;border:1px solid var(--line);object-fit:contain}
 @media(max-width:550px){.q-img{max-height:220px}.opt-img{max-width:100%;max-height:140px}}
+
+/* Home subject search */
+.subject-jump{position:relative;max-width:520px;margin:18px 0 20px}
+.subject-jump input{width:100%;padding-right:52px;box-sizing:border-box}
+.jump-toggle{position:absolute;right:4px;top:4px;bottom:4px;width:44px;padding:0;min-width:0;border-radius:8px}
+.jump-list{position:absolute;left:0;right:0;top:calc(100% + 4px);max-height:280px;overflow:auto;background:var(--card,#fff);border:1px solid rgba(120,120,140,.35);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.18);z-index:30}
+.jump-item{padding:11px 14px;cursor:pointer}
+.jump-item.active,.jump-item:hover{background:rgba(79,70,229,.12)}
+.jump-soon{font-size:12px;opacity:.6;margin-left:6px}
+.jump-empty{padding:12px 14px;opacity:.7}
+.subject-card.flash{animation:cardFlash 2.4s ease}
+@keyframes cardFlash{0%,60%{box-shadow:0 0 0 4px rgba(79,70,229,.65)}100%{box-shadow:0 0 0 0 rgba(79,70,229,0)}}
+/* Admin exam time control */
+.tc-btns{display:flex;flex-wrap:wrap;gap:6px}
+.tc-btns button{padding:7px 10px;font-size:13px;min-width:0}
+.tc-amount{display:flex;gap:8px;max-width:360px}
+.tc-amount input{flex:1}
+#tcUser{width:100%}
+/* ---------- Topic-wise tests (Home cards + admin) ---------- */
+.subject-card.has-topics{border-top-color:var(--accent)}
+.subject-card.expanded{grid-column:1/-1}
+.topic-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.topic-chip{display:inline-block;background:var(--primary-light);color:var(--primary-dark);border:1px solid #d7ddfb;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:600}
+.topic-chip.more{background:#fff;color:var(--muted);border-style:dashed}
+.topic-panel{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px;margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
+.topic-row{display:flex;flex-direction:column;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fbfcff}
+.topic-row.full{background:linear-gradient(160deg,#fff,var(--primary-light));border-color:#c9d3fb;grid-column:1/-1;flex-direction:row;align-items:center;flex-wrap:wrap}
+.topic-row.full .topic-info{flex:1 1 220px}
+.topic-info b{display:block;font-size:15.5px;color:var(--ink);margin-bottom:3px}
+.topic-info small{color:var(--muted);font-size:13px}
+.topic-actions{display:flex;flex-wrap:wrap;gap:8px}
+.subject-card .topic-row button{padding:8px 16px;font-size:14px}
+.subject-card .topic-row button.ghost{background:#fff;color:var(--primary-dark);border:1.5px solid var(--primary);box-shadow:none}
+.subject-card .topic-row button.ghost:hover:not(:disabled){background:var(--primary-light);box-shadow:none}
+.topic-bulk{border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0 16px;background:#fbfcff}
+.topic-bulk select{margin-bottom:6px}
+@media(max-width:550px){.topic-panel{grid-template-columns:1fr}.topic-row.full{flex-direction:column;align-items:stretch}}
