@@ -50,3 +50,13 @@ The script adds missing columns to existing sheets. It does not intentionally de
 - A topic test is recorded as its own subject name, for example `Networks — Basics`, so its results, best score, rank and 1-day lock are separate from the full `Networks` test. The `SubjectId` column keeps the parent subject id (`networks`).
 - New backend action `setQuestionTopic` (admin only) moves many questions of one subject into a topic in one call; every change is written to `ChangeLog`.
 - Excel import: a 15th column `Topic` is optional. Older 14-column files still import.
+
+## Update: Control Centre
+
+- The admin page button **Exam Time Control** is now **🎛 Control Centre**. It asks for its own password, which is kept only in `Code.gs` (`CONTROL_CENTRE_PASSWORD = '5798'`) — the website never contains it. To change it, edit that line, Save and deploy a new version.
+- **Locks & Timers:** choose a default wait after an exam (24 hours, 3 days, 7 days, 1 month or custom) for everyone, and Lock / Unlock now / Add / Reduce / Normal for one student. Lock works even on a subject the student has never attempted. The default wait is stored as a script property (`COOLDOWN_MINUTES`); no sheet change is needed.
+- **Passwords:** hidden until "Show passwords"; lists every subject password and the admin passwords.
+- **Subjects:** set each subject's Exam label (GATE, ECET or anything else), and tick several custom subjects to delete them. Deleting a subject also deletes its questions; students' results are kept and each deletion is written to `ChangeLog`. Built-in subjects (`subjects.json`) cannot be deleted from the website.
+- A new `Exam` column is added to the end of the `Subjects` sheet automatically.
+- After pasting the new `Code.gs`, deploy a **new version** (Deploy → Manage deployments → Edit → New version).
+

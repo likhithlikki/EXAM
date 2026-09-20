@@ -361,23 +361,41 @@ function unitFor(sid,ti){
   const t=subjectTopicInfo(parent).topics[ti];
   return t?topicUnit(parent,t.name):null;
 }
+// The exam a subject belongs to — GATE, ECET or anything else typed when it was created.
+// Built-in subjects are the ECET syllabus; older custom subjects without one fall back to a
+// GATE / ECET mentioned in their description.
+function detectExam_(text){const m=String(text||"").match(/\b(GATE|ECET)\b/i);return m?m[1].toUpperCase():"";}
+function examLabel(s){
+  const p=(s&&findSubjectById(s.parentId||s.id))||s;
+  if(!p)return "";
+  if(cleanTopic(p.exam))return cleanTopic(p.exam);
+  if(subjects.some(x=>x.id===p.id))return "ECET";
+  return detectExam_(p.description);
+}
+// Exam badge + "N topic tests" pill shown on every subject card.
+function cardTagsHTML(s,showCount){
+  const ex=examLabel(s),n=subjectTopicInfo(s).topics.length,bits=[];
+  if(ex)bits.push(`<span class="exam-badge">${esc(ex)}</span>`);
+  if(showCount)bits.push(`<span class="count-pill${n?"":" zero"}">📚 ${n?`${n} topic test${n===1?"":"s"}`:"No topic tests yet"}</span>`);
+  return bits.length?`<div class="card-tags">${bits.join("")}</div>`:"";
+}
 function testRowHTML(parent,ti,label,count){
   const unit=ti<0?parent:topicUnit(parent,label);
   const unfinished=store.getProgress(unit.id);
   // A cooldown never blocks resuming a test already in progress — only starting a new attempt.
   const lock=!unfinished?subjectLockInfo(unit.name):{locked:false};
-  const best=subjectBest(unit.name);
-  const bits=[];if(count)bits.push(`${count} Questions`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
+  const best=subjectBest(unit.name),ex=examLabel(parent);
+  const bits=[];if(ex)bits.push(esc(ex));if(count)bits.push(`${count} Q`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
   const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openTestUnit('${esc(parent.id)}',${ti})">${unfinished?"Resume":"Start"}</button>`;
   const remind=unfinished?`<button class="ghost" onclick="quickRemindUnit('${esc(parent.id)}',${ti})">Remind me later</button>`:"";
-  return `<div class="topic-row${ti<0?" full":""}"><div class="topic-info"><b>${ti<0?"🎯 Full Subject Test":esc(label)}</b><small>${bits.join(" • ")}${unfinished?" • In progress":""}</small>${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</div><div class="topic-actions">${btn}${remind}</div></div>`;
+  return `<div class="topic-row${ti<0?" full":""}"><span class="topic-num">${ti<0?"★":ti+1}</span><div class="topic-info"><b>${ti<0?"Full Subject Test":esc(label)}</b><small>${bits.join(" • ")}${unfinished?" • In progress":""}</small>${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}</div><div class="topic-actions">${btn}${remind}</div></div>`;
 }
 function topicCardHTML(s,i){
-  const info=subjectTopicInfo(s),topics=info.topics,open=_expandedSubjects.has(s.id);
+  const info=subjectTopicInfo(s),topics=info.topics,open=_expandedSubjects.has(s.id),ex=examLabel(s);
   const inProgress=!!store.getProgress(s.id)||topics.some(t=>store.getProgress(topicUnit(s,t.name).id));
   const chips=topics.slice(0,3).map(t=>`<span class="topic-chip">${esc(t.name)}</span>`).join("")+(topics.length>3?`<span class="topic-chip more">+${topics.length-3} more</span>`:"");
-  const panel=open?`<div class="topic-panel">${testRowHTML(s,-1,s.name,info.total)}${topics.map((t,ti)=>testRowHTML(s,ti,t.name,t.count)).join("")}</div>`:"";
-  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions • ${topics.length} topic test${topics.length===1?"":"s"}${inProgress?"<br>Test in progress — resume any time":""}</p>${open?"":`<div class="topic-chips">${chips}</div>`}<button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
+  const panel=open?`<div class="topic-panel"><div class="topic-panel-head">Topic tests${ex?` <span class="exam-badge">${esc(ex)}</span>`:""}</div>${testRowHTML(s,-1,s.name,info.total)}${topics.map((t,ti)=>testRowHTML(s,ti,t.name,t.count)).join("")}</div>`:"";
+  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p>${open?"":`<div class="topic-chips">${chips}</div>`}<button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
 }
 function toggleTopics(sid){
   if(_expandedSubjects.has(sid))_expandedSubjects.delete(sid);else _expandedSubjects.add(sid);
@@ -427,7 +445,7 @@ function renderJumpList(showAll){
   const q=showAll===true?'':input.value.trim().toLowerCase();
   _jumpItems=jumpAllSubjects_().filter(s=>!q||s.name.toLowerCase().includes(q));
   _jumpActive=_jumpItems.length&&q?0:-1;
-  list.innerHTML=_jumpItems.length?_jumpItems.map((s,i)=>`<div class="jump-item${i===_jumpActive?' active':''}" data-i="${i}" onmousedown="event.preventDefault();jumpToSubject(${i})">${esc(s.name)}${s.soon?' <span class="jump-soon">coming soon</span>':''}</div>`).join(''):'<div class="jump-empty">No subject matches your search</div>';
+  list.innerHTML=_jumpItems.length?_jumpItems.map((s,i)=>`<div class="jump-item${i===_jumpActive?' active':''}${s.topic?' is-topic':''}" data-i="${i}" onmousedown="event.preventDefault();jumpToSubject(${i})">${s.topic?'<span class="jump-arrow">↳</span>':''}${esc(s.name)}${s.soon?' <span class="jump-soon">coming soon</span>':''}</div>`).join(''):'<div class="jump-empty">No subject matches your search</div>';
   list.hidden=false;
 }
 function toggleJumpList(){
@@ -472,7 +490,7 @@ function customSubjectsHTML(){
     const unfinished=store.getProgress(s.id);
     const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
     if(!hasQuestions){
-      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
     if(subjectTopicInfo(s).topics.length)return topicCardHTML(s,i);
     const best=subjectBest(s.name);
@@ -480,7 +498,7 @@ function customSubjectsHTML(){
     // A cooldown never blocks resuming an exam already in progress — only starting a brand-new attempt.
     const lock=!unfinished?subjectLockInfo(s.name):{locked:false};
     const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
@@ -496,7 +514,7 @@ async function home(){
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
-    <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text" placeholder="🔍 Search or pick a subject to go straight to it…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
+    <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
@@ -523,7 +541,7 @@ function subjectCardHTML(s,i){
   const btn=!s.available?`<button disabled>Coming Soon</button>`
     :lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`
     :`<button onclick="openPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2><p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,s.available)}<p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
 }
 function subjectCardMeta(s){
   const unfinished=s.available&&store.getProgress(s.id);
@@ -548,9 +566,10 @@ function subjectBest(name){
 // for the *display* of locked cards on Home; the actual gate that stops the
 // timer from starting lives in beginExam()/retryExam() below, which always
 // re-checks against the live server instead of trusting this cache.
+let _defaultCooldownMin=24*60; // the server's default wait; 24 hours unless changed in the Control Centre
 function lockInfoFromLastAttempt_(lastAttempt){
   if(!lastAttempt)return{locked:false};
-  const unlockAt=new Date(lastAttempt).getTime()+1*24*60*60*1000;
+  const unlockAt=new Date(lastAttempt).getTime()+_defaultCooldownMin*60*1000;
   const remaining=unlockAt-Date.now();
   return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
 }
@@ -662,6 +681,7 @@ async function checkServerStatusAndBundle(force){
   const p=store.profile();
   const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS);
   if(res?.ok){
+    if(Number.isFinite(res.data?.cooldownMinutes))_defaultCooldownMin=res.data.cooldownMinutes;
     _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
     applyServerStatus_(_serverStatusCache,statusEl,slot);
     // homeBundle already carries the same pre-aggregated stats dashboard_()
@@ -829,6 +849,7 @@ async function adminQuestionsPage(){
       <p class="note">Create a brand-new practice test subject with no code or GitHub changes. It appears immediately in "Practice Tests Added by Admin" on the homepage, and below in the Subject dropdown so you can bulk-import its questions.</p>
       <label>Subject Name</label><input id="newSubjectName" placeholder="e.g. Machine Learning Basics">
       <label>Subject Password</label><input id="newSubjectPassword" placeholder="Password students will enter">
+      <label>Exam / category</label><input id="newSubjectExam" list="examChoices" placeholder="GATE, ECET or anything else" autocomplete="off"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
       <label>Description (optional)</label><input id="newSubjectDesc" placeholder="Shown as the subject's tagline on the homepage">
       <div id="newSubjectStatus" class="note"></div>
       <div class="buttons"><button onclick="createNewSubject()">Create Subject</button></div>
@@ -877,7 +898,7 @@ async function adminQuestionsPage(){
     <div class="card">${questionFormHTML('add',null)}</div>
     <div class="card"><h1>Admin — Manage Questions</h1>
       <p class="note">Edit existing questions in place, or review the audit log of every edit made.</p>
-      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="adminTimePage()">⏱ Exam Time Control</button><button onclick="home()">Back to Home</button></div>
+      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="openControlCentre()">🎛 Control Centre</button><button onclick="home()">Back to Home</button></div>
     </div>`;
     refreshAdminTopicField();
     refreshAiPrompt();
@@ -885,63 +906,237 @@ async function adminQuestionsPage(){
 }
 
 
-/* ===================== ADMIN — EXAM TIME CONTROL ===================== */
-let _tcSubjects=[],_tcUsers=[];
+/* ===================== ADMIN — CONTROL CENTRE =====================
+ * Opened from the admin page with its own password (checked on the server — the
+ * password is never in this file). Tabs:
+ *   🔒 Locks & Timers — default wait for everyone + lock/unlock any subject for one student
+ *   🔑 Passwords      — every subject password and the admin passwords
+ *   🗂 Subjects       — set a subject's exam, select and delete several subjects at once */
+let _tcSubjects=[],_tcUsers=[],_controlPw="",_ccTab="locks",_ccData=null,_ccShowPw=false,_ccSel=new Set();
 function adminAuth_(){const p=store.profile();return{adminEmail:p?.email||"",adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:""};}
-function adminTimePage(){
-  pushNav(adminTimePage);
+function controlAuth_(){return{...adminAuth_(),controlPassword:_controlPw};}
+const DURATION_PRESETS=[["24 hours",1440],["3 days",4320],["7 days",10080],["1 month",43200]];
+function fmtMinutes(m){
+  m=Math.round(Number(m)||0);
+  if(m<=0)return "no wait";
+  if(m%43200===0)return m===43200?"1 month":(m/43200)+" months";
+  if(m%1440===0){const d=m/1440;return d===1?"24 hours":d+" days";}
+  if(m%60===0){const h=m/60;return h+" hour"+(h===1?"":"s");}
+  return m+" minutes";
+}
+// Preset chips (24 hours / 3 days / 7 days / 1 month) + a Custom amount. `pfx` keeps instances apart.
+function durationPickerHTML(pfx,minutes){
+  const preset=DURATION_PRESETS.some(([,m])=>m===minutes),custom=!preset;
+  const unit=minutes%1440===0?1440:minutes%60===0?60:1;
+  return `<div class="dur-chips" id="${pfx}Chips" data-sel="${custom?"custom":minutes}">${DURATION_PRESETS.map(([l,m])=>`<button type="button" class="dur-chip${minutes===m?" on":""}" data-min="${m}" onclick="durPick('${pfx}',${m})">${l}</button>`).join("")}<button type="button" class="dur-chip${custom?" on":""}" data-min="custom" onclick="durPick('${pfx}','custom')">Custom</button></div><div class="tc-amount" id="${pfx}Custom" style="${custom?"":"display:none;"}margin-top:10px"><input id="${pfx}Amount" type="number" min="0" step="1" placeholder="e.g. 5" value="${custom&&minutes>0?minutes/unit:""}"><select id="${pfx}Unit"><option value="1" ${unit===1?"selected":""}>minutes</option><option value="60" ${unit===60?"selected":""}>hours</option><option value="1440" ${unit===1440?"selected":""}>days</option></select></div>`;
+}
+function durPick(pfx,m){
+  const chips=document.getElementById(pfx+"Chips");if(!chips)return;
+  chips.dataset.sel=String(m);
+  chips.querySelectorAll(".dur-chip").forEach(b=>b.classList.toggle("on",b.dataset.min===String(m)));
+  const c=document.getElementById(pfx+"Custom");if(c)c.style.display=m==="custom"?"":"none";
+}
+// minutes chosen in a picker, or null when a custom amount is missing/invalid
+function readDuration(pfx){
+  const chips=document.getElementById(pfx+"Chips");if(!chips)return null;
+  const sel=chips.dataset.sel;
+  if(sel!=="custom")return Number(sel);
+  const raw=document.getElementById(pfx+"Amount").value,val=Number(raw);
+  if(raw===""||!isFinite(val)||val<0)return null;
+  return Math.round(val*Number(document.getElementById(pfx+"Unit").value));
+}
+// A Control Centre call was refused because the password is missing/wrong → ask for it again.
+function ccDenied(res){
+  if(res&&res.ok===false&&/Control Centre password/i.test(res.error||"")){_controlPw="";_ccData=null;renderControlGate("Please enter the Control Centre password again.");return true;}
+  return false;
+}
+function openControlCentre(){_controlPw="";_ccData=null;_ccShowPw=false;_ccSel=new Set();controlCentrePage();}
+function controlCentrePage(){
+  pushNav(controlCentrePage);
   if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
-  requireProfile(async()=>{
-    _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>{_tcSubjects.push(s.name);subjectTopicInfo(s).topics.forEach(t=>_tcSubjects.push(s.name+TOPIC_SEP+t.name));}); // each topic test has its own cooldown
-    app.innerHTML=`<div class="card"><h1>Admin — Exam Time Control</h1>
-      <p class="note">Normally a subject stays locked for 24 hours after a student finishes it. Use this to open it right away, shorten the wait, or make it longer for one student. Only you can do this.</p>
-      <label>Student</label>
-      <input id="tcFilter" placeholder="Type a name or email to filter…" oninput="tcFilterUsers()" autocomplete="off">
-      <select id="tcUser" size="6" onchange="tcLoadStatus()" style="margin-top:8px"><option disabled>Loading students…</option></select>
-      <div id="tcMsg" class="note"></div>
-      <div id="tcBody"></div>
-      <div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
-    const res=await apiPost('adminCooldownList',{...adminAuth_(),includeUsers:true},30000);
-    if(!res?.ok){document.getElementById('tcUser').innerHTML='';document.getElementById('tcMsg').innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not load students. Check your connection and try again.')}</span>`;return;}
+  if(!_controlPw){renderControlGate();return;}
+  requireProfile(()=>ccRender());
+}
+function renderControlGate(msg){
+  app.innerHTML=`<div class="card password-card"><h1>🎛 Control Centre</h1><p>Enter the Control Centre password.</p><input id="ccPassword" type="password" inputmode="numeric" placeholder="Password" autocomplete="off" onkeydown="if(event.key==='Enter')controlLogin()"><div id="ccGateError" class="error">${msg?esc(msg):""}</div><div class="buttons"><button onclick="adminQuestionsPage()">Back</button><button onclick="controlLogin()">Unlock</button></div></div>`;
+  document.getElementById("ccPassword")?.focus();
+}
+async function controlLogin(){
+  const pw=(document.getElementById("ccPassword")?.value||"").trim(),err=document.getElementById("ccGateError");
+  if(!pw){err.textContent="Enter the password.";return;}
+  err.textContent="Checking…";
+  const res=await apiPost("controlLogin",{...adminAuth_(),controlPassword:pw},20000);
+  if(!res?.ok){err.textContent=res?res.error||"Incorrect password.":"Could not reach the server. Check your connection and try again.";return;}
+  _controlPw=pw;
+  requireProfile(()=>ccRender());
+}
+function ccRender(){
+  const tabs=[["locks","🔒 Locks & Timers"],["passwords","🔑 Passwords"],["subjects","🗂 Subjects"]];
+  app.innerHTML=`<div class="card cc"><h1>🎛 Control Centre</h1><div class="cc-tabs">${tabs.map(([k,l])=>`<button class="${_ccTab===k?"on":""}" data-tab="${k}" onclick="ccTab('${k}')">${l}</button>`).join("")}</div><div id="ccBody"></div><div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
+  ccTab(_ccTab);
+}
+async function ccTab(tab){
+  _ccTab=tab;
+  document.querySelectorAll(".cc-tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const body=document.getElementById("ccBody");if(!body)return;
+  if(!_ccData){
+    body.innerHTML='<p class="note">Loading…</p>';
+    const res=await apiPost("controlData",controlAuth_(),30000);
+    if(ccDenied(res))return;
+    if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||"Could not load. Check your connection and try again.")}</p>`;return;}
+    _ccData=res;
+    if(Array.isArray(res.subjects)){customSubjects=res.subjects;store.setCustomSubjectsCache(res.subjects);}
+    if(res.topicSummary)setServerTopics(res.topicSummary);
+    _defaultCooldownMin=res.cooldownMinutes;
+  }
+  if(_ccTab!==tab)return; // the admin clicked another tab while this one was loading
+  if(tab==="locks")ccLocksTab();else if(tab==="passwords")ccPasswordsTab();else ccSubjectsTab();
+}
+
+/* ---------- 🔒 Locks & Timers ---------- */
+function ccLocksTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>{_tcSubjects.push(s.name);subjectTopicInfo(s).topics.forEach(t=>_tcSubjects.push(s.name+TOPIC_SEP+t.name));}); // each topic test has its own lock
+  body.innerHTML=`<h2>Default wait after an exam</h2>
+    <p class="note">A subject stays locked for <b id="ccDefaultLabel">${esc(fmtMinutes(_ccData.cooldownMinutes))}</b> after a student finishes it. Choose a new wait for everyone. Students who finished recently are re-checked against it straight away.</p>
+    ${durationPickerHTML("dw",_ccData.cooldownMinutes)}
+    <div class="buttons"><button onclick="ccSaveDefault()">Save default wait</button></div><div id="ccDefaultMsg" class="note"></div>
+    <hr class="cc-hr">
+    <h2>Lock or unlock a subject for one student</h2>
+    <label>Student</label>
+    <input id="tcFilter" placeholder="Type a name or email to filter…" oninput="tcFilterUsers()" autocomplete="off">
+    <select id="tcUser" size="6" onchange="tcLoadStatus()" style="margin-top:8px"><option disabled>Loading students…</option></select>
+    <h2 style="margin-top:22px">How long?</h2>
+    <p class="note">Used by <b>Lock</b> (locked for exactly this long from now), <b>＋ Add</b> and <b>－ Reduce</b> (change the wait that is left).</p>
+    ${durationPickerHTML("tc",1440)}
+    <div id="tcMsg" class="note"></div>
+    <div id="tcBody"></div>`;
+  (async()=>{
+    const res=await apiPost("adminCooldownList",{...controlAuth_(),includeUsers:true},30000);
+    if(ccDenied(res))return;
+    if(!res?.ok){const u=document.getElementById("tcUser");if(u)u.innerHTML="";const m=document.getElementById("tcMsg");if(m)m.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not load students. Check your connection and try again.")}</span>`;return;}
     _tcUsers=res.users||[];tcFilterUsers();
-  });
+  })();
+}
+async function ccSaveDefault(){
+  const msg=document.getElementById("ccDefaultMsg"),m=readDuration("dw");
+  if(m===null){msg.innerHTML='<span class="wronganswer">Enter a valid wait (0 or more) first.</span>';return;}
+  if(!confirm(`Lock every subject for ${fmtMinutes(m)} after a student finishes it?`))return;
+  msg.textContent="Saving…";
+  const res=await apiPost("setDefaultCooldown",{...controlAuth_(),minutes:m},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
+  _ccData.cooldownMinutes=res.cooldownMinutes;_defaultCooldownMin=res.cooldownMinutes;
+  document.getElementById("ccDefaultLabel").textContent=fmtMinutes(res.cooldownMinutes);
+  msg.innerHTML=`<span class="correct">Saved — subjects now lock for ${esc(fmtMinutes(res.cooldownMinutes))} after an exam.</span>`;
+  if(document.getElementById("tcUser")?.value)tcLoadStatus();
 }
 function tcFilterUsers(){
-  const q=(document.getElementById('tcFilter')?.value||'').trim().toLowerCase(),sel=document.getElementById('tcUser');
+  const q=(document.getElementById("tcFilter")?.value||"").trim().toLowerCase(),sel=document.getElementById("tcUser");
   if(!sel)return;
   const keep=sel.value;
   const list=_tcUsers.filter(u=>!q||u.name.toLowerCase().includes(q)||u.email.includes(q));
-  sel.innerHTML=list.length?list.map(u=>`<option value="${esc(u.email)}" ${u.email===keep?'selected':''}>${esc(u.name||'(no name)')} — ${esc(u.email)}</option>`).join(''):'<option disabled>No student found</option>';
+  sel.innerHTML=list.length?list.map(u=>`<option value="${esc(u.email)}" ${u.email===keep?"selected":""}>${esc(u.name||"(no name)")} — ${esc(u.email)}</option>`).join(""):"<option disabled>No student found</option>";
 }
 async function tcLoadStatus(){
-  const email=document.getElementById('tcUser')?.value,body=document.getElementById('tcBody');
+  const email=document.getElementById("tcUser")?.value,body=document.getElementById("tcBody");
   if(!email||!body)return;
+  const keepFilter=document.getElementById("tcSubFilter")?.value||""; // the list reloads after every Lock/Unlock — keep what was typed
   body.innerHTML='<p class="note">Loading…</p>';
-  const res=await apiPost('adminCooldownList',{...adminAuth_(),targetEmail:email,subjects:_tcSubjects},30000);
-  if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||'Could not load this student.')}</p>`;return;}
-  const btns=i=>`<button onclick="tcAct(${i},'unlock')">Unlock now</button><button onclick="tcAct(${i},'set')">Set wait</button><button onclick="tcAct(${i},'add')">+ Add</button><button onclick="tcAct(${i},'sub')">− Reduce</button><button onclick="tcAct(${i},'default')">Normal 24h</button>`;
-  const rows=(res.statuses||[]).map((s,i)=>`<tr><td><b>${esc(s.subject)}</b><br><span class="note">${s.lastAttempt?'Last attempt '+esc(formatDateTime(s.lastAttempt)):'Never attempted'}</span></td><td>${s.locked?`<span class="cooldown-badge">Locked — ${formatCooldown(s.remainingMinutes*60000)}</span>`:'<span class="correct">Available</span>'}${s.overridden?'<br><span class="note">adjusted by admin</span>':''}</td><td><div class="tc-btns">${btns(i)}</div></td></tr>`).join('');
-  body.innerHTML=`<h2>Amount</h2><div class="tc-amount"><input id="tcAmount" type="number" min="0" step="1" placeholder="e.g. 30"><select id="tcUnit"><option value="1">minutes</option><option value="60">hours</option><option value="1440">days</option></select></div>
-    <p class="note">“Unlock now” and “Normal 24h” need no amount. “Set wait” = locked for exactly this long from now (0 = unlocked). “Add” / “Reduce” change the wait that is left.</p>
-    <div class="table-scroll"><table class="simple"><thead><tr><th>Subject</th><th>Status</th><th>Change</th></tr></thead><tbody>
-    <tr><td><b>All subjects</b></td><td>—</td><td><div class="tc-btns">${btns(-1)}</div></td></tr>${rows}</tbody></table></div>`;
+  const res=await apiPost("adminCooldownList",{...controlAuth_(),targetEmail:email,subjects:_tcSubjects},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||"Could not load this student.")}</p>`;return;}
+  const def=fmtMinutes(_ccData.cooldownMinutes);
+  const btns=i=>`<button class="lock" onclick="tcAct(${i},'set')">🔒 Lock</button><button onclick="tcAct(${i},'unlock')">🔓 Unlock now</button><button class="ghost" onclick="tcAct(${i},'add')">＋ Add</button><button class="ghost" onclick="tcAct(${i},'sub')">－ Reduce</button><button class="ghost" onclick="tcAct(${i},'default')" title="Remove admin changes — back to the default wait">Normal (${esc(def)})</button>`;
+  const rows=(res.statuses||[]).map((s,i)=>`<div class="cc-row" data-name="${esc(s.subject.toLowerCase())}"><div class="cc-row-main"><b>${esc(s.subject)}</b><small>${s.lastAttempt?"Last attempt "+esc(formatDateTime(s.lastAttempt)):"Never attempted"}</small><div>${s.locked?`<span class="cooldown-badge">Locked — ${formatCooldown(s.remainingMinutes*60000)}</span>`:'<span class="correct">Available</span>'}${s.overridden?' <span class="note">adjusted by admin</span>':""}</div></div><div class="tc-btns">${btns(i)}</div></div>`).join("");
+  body.innerHTML=`<h2 style="margin-top:22px">Subjects</h2><input id="tcSubFilter" placeholder="Filter subjects or topic tests…" oninput="tcFilterSubjects()" autocomplete="off"><div class="cc-list" id="tcRows"><div class="cc-row all"><div class="cc-row-main"><b>All subjects</b><small>Applies to every subject at once</small></div><div class="tc-btns">${btns(-1)}</div></div>${rows}</div>`;
+  const f=document.getElementById("tcSubFilter");
+  if(f&&keepFilter){f.value=keepFilter;tcFilterSubjects();}
+}
+function tcFilterSubjects(){
+  const q=(document.getElementById("tcSubFilter")?.value||"").trim().toLowerCase();
+  document.querySelectorAll("#tcRows .cc-row[data-name]").forEach(r=>{r.style.display=!q||r.dataset.name.includes(q)?"":"none";});
 }
 async function tcAct(i,mode){
-  const email=document.getElementById('tcUser')?.value,msg=document.getElementById('tcMsg');
+  const email=document.getElementById("tcUser")?.value,msg=document.getElementById("tcMsg");
   if(!email){msg.innerHTML='<span class="wronganswer">Select a student first.</span>';return;}
-  const subject=i<0?'*':_tcSubjects[i];
+  const subject=i<0?"*":_tcSubjects[i];
   let minutes=0,apiMode=mode;
-  if(mode==='set'||mode==='add'||mode==='sub'){
-    const raw=document.getElementById('tcAmount').value,val=Number(raw);
-    if(raw===''||!isFinite(val)||val<0){msg.innerHTML='<span class="wronganswer">Enter an amount (0 or more) first.</span>';return;}
-    minutes=val*Number(document.getElementById('tcUnit').value);
-    if(mode==='sub'){minutes=-minutes;apiMode='add';}
+  if(mode==="set"||mode==="add"||mode==="sub"){
+    const m=readDuration("tc");
+    if(m===null){msg.innerHTML='<span class="wronganswer">Choose how long first (or enter a valid custom amount).</span>';return;}
+    minutes=m;
+    if(mode==="sub"){minutes=-minutes;apiMode="add";}
   }
   msg.innerHTML='<span class="note">Saving…</span>';
-  const res=await apiPost('adminCooldownAdjust',{...adminAuth_(),targetEmail:email,subject,mode:apiMode,minutes},30000);
-  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save. Please try again.')}</span>`;return;}
-  msg.innerHTML=`<span class="correct">${esc(res.message||'Saved.')}</span>`;
+  const res=await apiPost("adminCooldownAdjust",{...controlAuth_(),targetEmail:email,subject,mode:apiMode,minutes},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
+  const what=mode==="set"?`Locked for ${fmtMinutes(minutes)}.`:res.message||"Saved.";
+  msg.innerHTML=`<span class="correct">${esc(what)}</span>`;
   tcLoadStatus();
+}
+
+/* ---------- 🔑 Passwords ---------- */
+function ccTogglePw(){_ccShowPw=!_ccShowPw;ccPasswordsTab();}
+function ccPasswordsTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  const show=v=>_ccShowPw?`<code>${esc(v)}</code>`:"••••••";
+  const all=[...subjects.map(s=>({name:s.name,exam:examLabel(s),pw:s.password,kind:s.available?"Built-in":"Built-in (coming soon)"})),..._ccData.subjects.map(s=>({name:s.name,exam:examLabel(s),pw:s.password,kind:"Custom"}))];
+  body.innerHTML=`<p class="note">These are the passwords students type to open a subject, plus the admin passwords. They stay hidden until you press the button.</p>
+    <div class="buttons"><button onclick="ccTogglePw()">${_ccShowPw?"🙈 Hide passwords":"👁 Show passwords"}</button></div>
+    <h2>Subject passwords</h2>
+    <div class="table-scroll"><table class="simple"><thead><tr><th>#</th><th>Subject</th><th>Exam</th><th>Type</th><th>Password</th></tr></thead><tbody>${all.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td>${r.exam?esc(r.exam):"—"}</td><td>${esc(r.kind)}</td><td>${show(r.pw)}</td></tr>`).join("")}</tbody></table></div>
+    <h2>Admin</h2>
+    <div class="table-scroll"><table class="simple"><tbody>
+      <tr><td><b>Admin panel password</b></td><td>${show(_ccData.adminPanelPassword)}</td></tr>
+      <tr><td><b>Control Centre password</b></td><td>${show(_ccData.controlPassword)}</td></tr>
+      <tr><td><b>Admin email${(_ccData.adminEmails||[]).length===1?"":"s"}</b></td><td>${(_ccData.adminEmails||[]).length?_ccData.adminEmails.map(esc).join("<br>"):"—"}</td></tr>
+    </tbody></table></div>`;
+}
+
+/* ---------- 🗂 Subjects (exam label + multi-delete) ---------- */
+function ccSubjectsTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  const custom=_ccData.subjects,n=_ccSel.size;
+  body.innerHTML=`<datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
+    <p class="note">Tick the custom subjects you want to remove, then press Delete. A subject is deleted <b>together with all of its questions</b>; students' past results stay. Built-in subjects come from <code>subjects.json</code>, so they can't be deleted here. The Exam box sets the GATE / ECET label shown on the subject and its topic tests.</p>
+    <div class="buttons"><button class="ghost" onclick="ccSelectAll(true)">Select all</button><button class="ghost" onclick="ccSelectAll(false)">Clear</button><button class="danger" id="ccDelBtn" onclick="ccDeleteSelected()">🗑 Delete selected (${n})</button></div>
+    <div id="ccDelMsg" class="note"></div>
+    <div class="cc-list">${custom.length?custom.map((s,i)=>`<div class="cc-row"><input type="checkbox" class="cc-check" ${_ccSel.has(s.id)?"checked":""} onchange="ccToggle('${esc(s.id)}',this.checked)" aria-label="Select ${esc(s.name)}"><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.questionCount||0} questions • ${subjectTopicInfo(s).topics.length} topic test${subjectTopicInfo(s).topics.length===1?"":"s"}</small></div><input class="cc-exam" list="examChoices" value="${esc(s.exam||"")}" placeholder="Exam" maxlength="40" autocomplete="off" onchange="ccSetExam('${esc(s.id)}',this.value)" title="Exam label (GATE, ECET, …)"></div>`).join(""):'<p class="note">No custom subjects yet.</p>'}
+    ${subjects.length?`<h2 style="margin-top:22px">Built-in subjects</h2>${subjects.map((s,i)=>`<div class="cc-row builtin"><input type="checkbox" class="cc-check" disabled><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.available?(s.questionCount||0)+" questions":"coming soon"} • ${subjectTopicInfo(s).topics.length} topic tests • ${esc(examLabel(s)||"—")}</small></div></div>`).join("")}`:""}</div>`;
+}
+function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const b=document.getElementById("ccDelBtn");if(b)b.textContent=`🗑 Delete selected (${_ccSel.size})`;}
+function ccSelectAll(on){_ccSel=new Set(on?_ccData.subjects.map(s=>s.id):[]);ccSubjectsTab();}
+async function ccSetExam(id,val){
+  const msg=document.getElementById("ccDelMsg");
+  const res=await apiPost("setSubjectExam",{...controlAuth_(),subjectId:id,exam:val.trim()},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){if(msg)msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save the exam.")}</span>`;return;}
+  [_ccData.subjects.find(s=>s.id===id),customSubjects.find(s=>s.id===id)].forEach(s=>{if(s)s.exam=res.exam;});
+  store.setCustomSubjectsCache(customSubjects);
+  if(msg)msg.innerHTML=`<span class="correct">${esc(res.message||"Saved.")}</span>`;
+}
+async function ccDeleteSelected(){
+  const msg=document.getElementById("ccDelMsg"),ids=[..._ccSel];
+  if(!ids.length){msg.innerHTML='<span class="wronganswer">Tick at least one subject first.</span>';return;}
+  const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean);
+  const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
+  if(!confirm(`Delete ${list.length} subject${list.length===1?"":"s"}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${qs} question${qs===1?"":"s"}. Students' past results are kept. This cannot be undone.`))return;
+  msg.textContent="Deleting…";
+  const res=await apiPost("deleteSubjects",{...controlAuth_(),subjectIds:ids},120000);
+  if(ccDenied(res))return;
+  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not delete. Please try again.")}</span>`;return;}
+  const gone=new Set(res.deletedIds||ids);
+  _ccData.subjects=_ccData.subjects.filter(s=>!gone.has(s.id));
+  customSubjects=customSubjects.filter(s=>!gone.has(s.id));
+  store.setCustomSubjectsCache(customSubjects);
+  gone.forEach(id=>{_expandedSubjects.delete(id);_unlockedSubjects.delete(id);delete _serverTopics[id];
+    try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});
+  setServerTopics(_serverTopics);
+  _ccSel=new Set();
+  ccSubjectsTab();
+  document.getElementById("ccDelMsg").innerHTML=`<span class="correct">${esc(res.message||"Deleted.")}</span>`;
 }
 
 /* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */
@@ -1133,14 +1328,15 @@ async function createNewSubject(){
   const name=document.getElementById("newSubjectName").value.trim();
   const password=document.getElementById("newSubjectPassword").value.trim();
   const description=document.getElementById("newSubjectDesc").value.trim();
+  const exam=document.getElementById("newSubjectExam").value.trim();
   const statusEl=document.getElementById("newSubjectStatus");
   if(!name||!password){statusEl.innerHTML='<span class="wronganswer">Subject name and password are both required.</span>';return;}
   statusEl.textContent="Creating…";
-  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description});
+  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description,exam});
   if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
   customSubjects.push(res.subject);
   statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
-  document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";
+  document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";document.getElementById("newSubjectExam").value="";
   const sel=document.getElementById("adminSubject");
   if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
 }
@@ -1158,7 +1354,7 @@ function buildAiPrompt(){
   const count=document.getElementById("aiCount")?.value||20;
   const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
   const extra=document.getElementById("aiExtra")?.value?.trim();
-  const examName=document.getElementById("aiExamName")?.value?.trim()||subjName;
+  const examName=document.getElementById("aiExamName")?.value?.trim()||examLabel(findSubjectById(sel?.value))||subjName;
   const topicSel=readTopicField("at"); // the topic-wise test these questions will be filed under (may be empty)
 
   const subtopicsLine=scope==='topic'&&topic
@@ -1508,7 +1704,7 @@ function toggleReview(){marked[current]=!marked[current];persist();render();}
 function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
 function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
 function confirmSubmit(){const u=answers.filter(x=>x===null).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
-function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>ECET ${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
+function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>${esc(examLabel(activeSubject)||"ECET")} ${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
 
 /* ===================== RESULT ===================== */
 async function submit(){

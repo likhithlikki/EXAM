@@ -24,3 +24,11 @@ TOPIC-WISE TESTS (new)
 - Questions saved with a topic appear on Home inside their subject. The full-subject test still contains every question.
 - Old questions: Admin -> Edit Questions -> tick questions -> "Move the ticked questions to a topic".
 - Built-in subjects (JSON files): add a "topic" field to a question, e.g. "topic": "Boolean Algebra".
+
+CONTROL CENTRE (new)
+- Admin page -> "Control Centre" (password is set in Code.gs: CONTROL_CENTRE_PASSWORD).
+- Locks & Timers: default wait 24 hours / 3 days / 7 days / 1 month / custom; lock or unlock a subject for one student.
+- Passwords: show all subject and admin passwords.
+- Subjects: set GATE / ECET / other exam per subject; tick several custom subjects and delete them.
+- Home: every subject card shows its exam and how many topic tests it has; topic tests open as a numbered list.
+

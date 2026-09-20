@@ -85,7 +85,7 @@ const SHEETS = {
   ],
 
   Subjects: [
-    'SubjectId', 'Name', 'Password', 'Description', 'CreatedBy', 'CreatedAt'
+    'SubjectId', 'Name', 'Password', 'Description', 'CreatedBy', 'CreatedAt', 'Exam'
   ],
 
   Notifications: [
@@ -568,6 +568,7 @@ function doGet(e) {
             isAdmin: e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false,
             customSubjects: customSubjects_(stats),
             topicSummary: topicSummary_(stats),
+            cooldownMinutes: Math.round(subjectCooldownMs_() / 60000),
             dashboard: e.parameter.email ? cached_('dash_' + email_(e.parameter.email), 30, function () {
               return dashboard_(e.parameter.email);
             }) : null
@@ -707,6 +708,21 @@ function doPost(e) {
 
       case 'adminCooldownAdjust':
         return out_(adminCooldownAdjust_(body));
+
+      case 'controlLogin':
+        return out_(controlLogin_(body));
+
+      case 'controlData':
+        return out_(controlData_(body));
+
+      case 'setDefaultCooldown':
+        return out_(setDefaultCooldown_(body));
+
+      case 'setSubjectExam':
+        return out_(setSubjectExam_(body));
+
+      case 'deleteSubjects':
+        return out_(deleteSubjects_(body));
 
       case 'createSubject':
         return out_(createSubject_(body));
@@ -944,6 +960,22 @@ const ADMIN_EMAILS = [
 // ADMIN_PANEL_PASSWORD in app.js. Change it here (and in app.js) any time.
 const ADMIN_PANEL_PASSWORD = '123';
 
+// Second password that opens the admin "Control Centre" (student locks, default
+// wait, password list, subject deletion). Kept ONLY here on the server — the
+// website never contains it, it just asks this script whether what was typed is
+// right. Change it here any time (then Save + redeploy a new version).
+const CONTROL_CENTRE_PASSWORD = '5798';
+
+function controlGuard_(body) {
+  if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+  if (String(body.controlPassword || '') !== CONTROL_CENTRE_PASSWORD) {
+    return { ok: false, error: 'Incorrect Control Centre password.' };
+  }
+  return null;
+}
+
 function isAdmin_(email, password) {
   if (password && String(password) === ADMIN_PANEL_PASSWORD) return true;
   var normalized = email_(email);
@@ -993,6 +1025,18 @@ function ensureQuestionsSchema_() {
   var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
   if (headers.indexOf('Topic') === -1) {
     sheet.getRange(1, lastCol + 1).setValue('Topic').setFontWeight('bold');
+  }
+  return sheet;
+}
+
+// Same idea for the Subjects sheet's Exam column.
+function ensureSubjectsSchema_() {
+  var sheet = sh_('Subjects');
+  if (!sheet) return null;
+  var lastCol = Math.max(1, sheet.getLastColumn());
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  if (headers.indexOf('Exam') === -1) {
+    sheet.getRange(1, lastCol + 1).setValue('Exam').setFontWeight('bold');
   }
   return sheet;
 }
@@ -1071,6 +1115,7 @@ function customSubjects_(stats) {
       password: row.Password,
       description: row.Description || '',
       createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : '',
+      exam: cleanTopic_(row.Exam).slice(0, 40),
       questionCount: counts[String(row.SubjectId)] || 0
     };
   });
@@ -1085,6 +1130,7 @@ function createSubject_(body) {
   var name = String(body.name || '').trim();
   var password = String(body.password || '').trim();
   var description = String(body.description || '').trim();
+  var exam = cleanTopic_(body.exam).slice(0, 40); // GATE, ECET, or anything else the admin typed
 
   if (!name) {
     return { ok: false, error: 'Subject name is required.' };
@@ -1093,7 +1139,7 @@ function createSubject_(body) {
     return { ok: false, error: 'A password for this subject is required.' };
   }
 
-  var sheet = sh_('Subjects');
+  var sheet = ensureSubjectsSchema_();
   var existing = objs_(sheet);
 
   var nameLower = name.toLowerCase();
@@ -1114,18 +1160,19 @@ function createSubject_(body) {
     id = base + '-' + suffix;
   }
 
-  append_(sheet, SHEETS.Subjects, {
+  appendManyByHeader_(sheet, [{
     SubjectId: id,
     Name: name,
     Password: password,
     Description: description,
     CreatedBy: adminEmail,
-    CreatedAt: new Date()
-  });
+    CreatedAt: new Date(),
+    Exam: exam
+  }]);
 
   return {
     ok: true,
-    subject: { id: id, name: name, password: password, description: description }
+    subject: { id: id, name: name, password: password, description: description, exam: exam }
   };
 }
 
@@ -1297,9 +1344,8 @@ function clearUserCaches_(email) {
 // Lists registered users, and (when an email is given) the timer state of each
 // subject the browser passes in, so the admin sees exactly what the student sees.
 function adminCooldownList_(body) {
-  if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
-  }
+  var denied = controlGuard_(body);
+  if (denied) return denied;
 
   var out = { ok: true };
 
@@ -1339,12 +1385,11 @@ function adminCooldownList_(body) {
 // mode: 'unlock'  -> open right now (zero the wait)
 //       'set'     -> wait exactly `minutes` from now (0 = unlock)
 //       'add'     -> add `minutes` to the current wait (negative = shorten)
-//       'default' -> remove admin overrides, back to the normal 24-hour rule
+//       'default' -> remove admin overrides, back to the normal (default) wait
 function adminCooldownAdjust_(body) {
   var adminEmail = email_(body.adminEmail);
-  if (!isAdmin_(adminEmail, body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
-  }
+  var denied = controlGuard_(body);
+  if (denied) return denied;
 
   var target = email_(body.targetEmail);
   if (!validEmail_(target)) return { ok: false, error: 'Choose a valid student.' };
@@ -1385,7 +1430,7 @@ function adminCooldownAdjust_(body) {
       }
     }
     clearUserCaches_(target);
-    return { ok: true, message: 'Back to the normal 24-hour rule.' };
+    return { ok: true, message: 'Back to the normal wait.' };
   }
 
   var targets = [subject];
@@ -1650,6 +1695,176 @@ function setQuestionTopic_(body) {
     changed: changes.length,
     topic: topic,
     message: updatedCount + ' question(s) ' + (topic ? 'filed under "' + topic + '".' : 'moved out of their topic.')
+  };
+}
+
+// ------------------------------------------------------------
+// CONTROL CENTRE (every action needs the admin AND the Control Centre password)
+// ------------------------------------------------------------
+function controlLogin_(body) {
+  var denied = controlGuard_(body);
+  return denied || { ok: true };
+}
+
+// Everything the Control Centre needs in one call: the default wait, every
+// admin password, and the custom subjects with their passwords.
+function controlData_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var stats = questionStats_();
+  return {
+    ok: true,
+    cooldownMinutes: Math.round(subjectCooldownMs_() / 60000),
+    adminPanelPassword: ADMIN_PANEL_PASSWORD,
+    controlPassword: CONTROL_CENTRE_PASSWORD,
+    adminEmails: ADMIN_EMAILS.filter(function (e) { return e !== 'admin@example.com'; }),
+    subjects: customSubjects_(stats),
+    topicSummary: topicSummary_(stats)
+  };
+}
+
+// Drops the cached dashboards so every student sees the new wait straight away.
+function clearAllUserCaches_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    var keys = [];
+    objs_(sh_('Users')).forEach(function (u) {
+      var e = email_(u.Email);
+      if (e) { keys.push('dash_' + e); keys.push('mist_' + e); }
+    });
+    for (var i = 0; i < keys.length; i += 100) cache.removeAll(keys.slice(i, i + 100));
+  } catch (ignore) {}
+}
+
+// Changes how long a subject stays locked after a student finishes it
+// (24 hours by default; 3 days, 7 days, 1 month or any custom value).
+function setDefaultCooldown_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var minutes = Number(body.minutes);
+  if (!isFinite(minutes) || minutes < 0) {
+    return { ok: false, error: 'Enter the wait as 0 or more.' };
+  }
+  if (minutes > 60 * 24 * 365) {
+    return { ok: false, error: 'That is more than a year — please enter a smaller value.' };
+  }
+  minutes = Math.round(minutes);
+  PropertiesService.getScriptProperties().setProperty('COOLDOWN_MINUTES', String(minutes));
+  _cooldownMsMemo = null;
+  clearAllUserCaches_();
+  return { ok: true, cooldownMinutes: minutes, message: 'Default wait saved.' };
+}
+
+// Sets the exam label (GATE, ECET, ...) of a custom subject.
+function setSubjectExam_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var subjectId = String(body.subjectId || '').trim();
+  var exam = cleanTopic_(body.exam);
+  if (!subjectId) return { ok: false, error: 'Subject is required.' };
+  if (exam.length > 40) return { ok: false, error: 'Exam name is longer than 40 characters.' };
+
+  var sheet = ensureSubjectsSchema_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { ok: false, error: 'Subject not found.' };
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var idCol = headers.indexOf('SubjectId'), examCol = headers.indexOf('Exam');
+  var ids = sheet.getRange(2, idCol + 1, lastRow - 1, 1).getValues();
+  for (var i = 0; i < ids.length; i++) {
+    if (String(ids[i][0]) === subjectId) {
+      sheet.getRange(i + 2, examCol + 1).setValue(exam);
+      return { ok: true, exam: exam, message: exam ? 'Exam set to ' + exam + '.' : 'Exam label removed.' };
+    }
+  }
+  return { ok: false, error: 'Subject not found.' };
+}
+
+// Deletes custom subjects together with all of their questions. Student
+// results and history are NOT touched. Each deletion is written to ChangeLog.
+function deleteSubjects_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var wanted = {};
+  var ids = (Array.isArray(body.subjectIds) ? body.subjectIds : []).map(String).filter(function (id) {
+    if (!id || wanted[id]) return false;
+    wanted[id] = true;
+    return true;
+  });
+  if (!ids.length) return { ok: false, error: 'Select at least one subject.' };
+  if (ids.length > 50) return { ok: false, error: 'Maximum 50 subjects can be deleted at once.' };
+
+  var subjectSheet = ensureSubjectsSchema_();
+  var subjectLastRow = subjectSheet.getLastRow();
+  if (subjectLastRow < 2) return { ok: false, error: 'No subjects found.' };
+  var sCols = subjectSheet.getLastColumn();
+  var sHeaders = subjectSheet.getRange(1, 1, 1, sCols).getValues()[0].map(String);
+  var sValues = subjectSheet.getRange(2, 1, subjectLastRow - 1, sCols).getValues();
+  var sIdCol = sHeaders.indexOf('SubjectId'), sNameCol = sHeaders.indexOf('Name'), sExamCol = sHeaders.indexOf('Exam');
+
+  var found = {};        // id -> { name, exam, row }
+  sValues.forEach(function (row, index) {
+    var id = String(row[sIdCol]);
+    if (wanted[id]) found[id] = { name: String(row[sNameCol] || ''), exam: sExamCol === -1 ? '' : String(row[sExamCol] || ''), row: index + 2 };
+  });
+  var foundIds = Object.keys(found);
+  if (!foundIds.length) return { ok: false, error: 'None of the selected subjects were found.' };
+
+  // 1) their questions — removed in contiguous blocks, bottom first, so it stays fast
+  var questionSheet = ensureQuestionsSchema_();
+  var qLastRow = questionSheet.getLastRow();
+  var perSubject = {};
+  var deletedQuestions = 0;
+  if (qLastRow >= 2) {
+    var qHeaders = questionSheet.getRange(1, 1, 1, questionSheet.getLastColumn()).getValues()[0].map(String);
+    var qSubjectCol = qHeaders.indexOf('SubjectId');
+    var qIds = questionSheet.getRange(2, qSubjectCol + 1, qLastRow - 1, 1).getValues();
+    var blocks = [];
+    qIds.forEach(function (cell, index) {
+      var id = String(cell[0]);
+      if (!found[id]) return;
+      perSubject[id] = (perSubject[id] || 0) + 1;
+      deletedQuestions++;
+      var rowNumber = index + 2;
+      var last = blocks[blocks.length - 1];
+      if (last && last.start + last.count === rowNumber) last.count++;
+      else blocks.push({ start: rowNumber, count: 1 });
+    });
+    for (var b = blocks.length - 1; b >= 0; b--) {
+      questionSheet.deleteRows(blocks[b].start, blocks[b].count);
+    }
+  }
+
+  // 2) the subject rows themselves, bottom first
+  foundIds
+    .map(function (id) { return found[id].row; })
+    .sort(function (a, b) { return b - a; })
+    .forEach(function (rowNumber) { subjectSheet.deleteRow(rowNumber); });
+
+  // 3) audit trail
+  var now = new Date();
+  appendMany_(sh_('ChangeLog'), SHEETS.ChangeLog, foundIds.map(function (id) {
+    return {
+      ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+      Timestamp: now,
+      EditedBy: adminEmail,
+      Subject: found[id].name,
+      SubjectId: id,
+      QuestionId: '',
+      QuestionSnippet: '',
+      BeforeJSON: JSON.stringify({ subject: found[id].name, exam: found[id].exam, questions: perSubject[id] || 0 }),
+      AfterJSON: '',
+      Summary: 'Subject deleted (' + (perSubject[id] || 0) + ' questions)'
+    };
+  }));
+
+  return {
+    ok: true,
+    deletedSubjects: foundIds.length,
+    deletedQuestions: deletedQuestions,
+    deletedIds: foundIds,
+    message: foundIds.length + ' subject(s) and ' + deletedQuestions + ' question(s) deleted.'
   };
 }
 
@@ -2265,7 +2480,26 @@ function getSubjectLastAttempt_(email, subject) {
 // rule — it never queues or sends any email/reminder about it, and it never
 // blocks resuming an exam that was already in progress before the cooldown
 // started (see subjectStatus_ callers on the frontend for that distinction).
-var SUBJECT_COOLDOWN_MS = 1 * 24 * 60 * 60 * 1000;
+var SUBJECT_COOLDOWN_MS = 1 * 24 * 60 * 60 * 1000; // factory default: 24 hours
+
+// The wait after finishing a subject can be changed from the Control Centre
+// (24 hours / 3 days / 7 days / 1 month / custom). It is stored as a script
+// property, so it survives redeploys and needs no extra sheet. Anything missing
+// or invalid falls back to the 24-hour default.
+var _cooldownMsMemo = null;
+function subjectCooldownMs_() {
+  if (_cooldownMsMemo !== null) return _cooldownMsMemo;
+  var ms = SUBJECT_COOLDOWN_MS;
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty('COOLDOWN_MINUTES');
+    var minutes = Number(raw);
+    if (raw !== null && raw !== '' && isFinite(minutes) && minutes >= 0 && minutes <= 60 * 24 * 365) {
+      ms = minutes * 60000;
+    }
+  } catch (ignore) {}
+  _cooldownMsMemo = ms;
+  return ms;
+}
 
 // Admin overrides for the exam timer. Read once per call and filtered in
 // memory (the sheet is tiny compared with Results/Answers).
@@ -2294,7 +2528,7 @@ function pickOverride_(list, subject) {
 }
 
 // The one place that decides when a subject unlocks for a user:
-//  - default: last completed attempt + 24 hours
+//  - default: last completed attempt + the default wait (24 hours unless changed in the Control Centre)
 //  - an admin override wins, but only until the user completes a NEW attempt
 //    (a newer attempt restarts the normal 24-hour rule).
 // Returns { unlockAt: Date|null, since: Date|null, overridden: bool }.
@@ -2307,7 +2541,7 @@ function effectiveUnlock_(lastAttempt, overrideList, subject) {
   }
   if (lastAttempt) {
     return {
-      unlockAt: new Date(lastAttempt.getTime() + SUBJECT_COOLDOWN_MS),
+      unlockAt: new Date(lastAttempt.getTime() + subjectCooldownMs_()),
       since: lastAttempt,
       overridden: false
     };
