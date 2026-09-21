@@ -37,3 +37,8 @@ EXAMS + TOPIC TESTS (updated)
 - Admin -> Add Questions: choose Exam and Topic. Control Centre -> Subjects / Topic Tests: rename, merge, move.
 - about.html: an About page (warm, non-blue colours) linked from the Home menu.
 
+SUBJECT <-> TOPIC TEST MOVES + UNDO (new)
+- Control Centre -> Subjects: move subjects into another subject as topic tests (merge still works).
+- Control Centre -> Topic Tests: move / combine topic tests, join another subject's topic test, make a topic test a main subject.
+- Every change is noted in Control Centre -> History; Undo / Redo buttons sit at the top of the Control Centre.
+

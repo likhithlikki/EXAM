@@ -53,6 +53,15 @@ const SHEETS = {
   // One row per user. Kept up to date incrementally at submit-time so the
   // dashboard is a single-row lookup instead of a full Results/WrongAnswers
   // scan on every load (see dashboard_ and userStats_*).
+  // Journal of Control Centre changes (rename / merge / move / delete ...). Every
+  // change that can be undone stores what it changed in OperationData.
+  Operations: [
+    'OpId', 'Timestamp', 'Admin', 'Type', 'Title', 'Status', 'Undoable', 'Parts'
+  ],
+  OperationData: [
+    'OpId', 'Part', 'Json'
+  ],
+
   UserStats: [
     'Email', 'Attempts', 'SumPercentage', 'BestPercentage',
     'MistakesCount', 'SubjectStatsJSON', 'UpdatedAt'
@@ -736,6 +745,21 @@ function doPost(e) {
       case 'renameTopicTest':
         return out_(renameTopicTest_(body));
 
+      case 'nestSubjects':
+        return out_(nestSubjects_(body));
+
+      case 'promoteTopicTest':
+        return out_(promoteTopicTest_(body));
+
+      case 'controlHistory':
+        return out_(controlHistory_(body));
+
+      case 'undoOperation':
+        return out_(undoOperation_(body));
+
+      case 'redoOperation':
+        return out_(redoOperation_(body));
+
       case 'createSubject':
         return out_(createSubject_(body));
 
@@ -1161,7 +1185,7 @@ function customSubjects_(stats) {
   });
 }
 
-function createSubject_(body) {
+function createSubjectImpl_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
     return { ok: false, error: 'Admin access is required.' };
@@ -1444,7 +1468,7 @@ function adminCooldownList_(body) {
 //       'set'     -> wait exactly `minutes` from now (0 = unlock)
 //       'add'     -> add `minutes` to the current wait (negative = shorten)
 //       'default' -> remove admin overrides, back to the normal (default) wait
-function adminCooldownAdjust_(body) {
+function adminCooldownAdjustImpl_(body) {
   var adminEmail = email_(body.adminEmail);
   var denied = controlGuard_(body);
   if (denied) return denied;
@@ -1688,7 +1712,7 @@ function updateQuestion_(body) {
 // `exam` is sent, under an exam) in a single call. An empty topic takes them out
 // of their topic. This is how questions imported before topics/exams existed get
 // sorted into topic-wise tests. Every changed question is written to ChangeLog.
-function setQuestionTopic_(body) {
+function setQuestionTopicImpl_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
     return { ok: false, error: 'Admin access is required.' };
@@ -1805,7 +1829,8 @@ function controlData_(body) {
     controlPassword: CONTROL_CENTRE_PASSWORD,
     adminEmails: ADMIN_EMAILS.filter(function (e) { return e !== 'admin@example.com'; }),
     subjects: customSubjects_(stats),
-    topicSummary: topicSummary_(stats)
+    topicSummary: topicSummary_(stats),
+    history: historyMeta_()
   };
 }
 
@@ -1824,7 +1849,7 @@ function clearAllUserCaches_() {
 
 // Changes how long a subject stays locked after a student finishes it
 // (24 hours by default; 3 days, 7 days, 1 month or any custom value).
-function setDefaultCooldown_(body) {
+function setDefaultCooldownImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var minutes = Number(body.minutes);
@@ -1842,7 +1867,7 @@ function setDefaultCooldown_(body) {
 }
 
 // Sets the exam label (GATE, ECET, ...) of a custom subject.
-function setSubjectExam_(body) {
+function setSubjectExamImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var subjectId = String(body.subjectId || '').trim();
@@ -1868,7 +1893,7 @@ function setSubjectExam_(body) {
 
 // Deletes custom subjects together with all of their questions. Student
 // results and history are NOT touched. Each deletion is written to ChangeLog.
-function deleteSubjects_(body) {
+function deleteSubjectsImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var adminEmail = email_(body.adminEmail);
@@ -2030,7 +2055,7 @@ function resolveTargetSubject_(targetId, targetName) {
   return null;
 }
 
-function renameSubject_(body) {
+function renameSubjectImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var adminEmail = email_(body.adminEmail);
@@ -2069,7 +2094,7 @@ function renameSubject_(body) {
 // removes the (now empty) source subjects. Each question keeps its topic, and
 // keeps its exam: a question with no exam of its own takes its source subject's
 // exam, so it does not silently switch to the target's.
-function mergeSubjects_(body) {
+function mergeSubjectsImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var adminEmail = email_(body.adminEmail);
@@ -2153,16 +2178,26 @@ function cleanItems_(raw) {
 }
 
 // Moves whole topic tests (all their questions) from one subject to another.
-function moveTopicTests_(body) {
+// By default each keeps its own name. With `toTopic` every moved test is merged
+// into that topic test of the target subject instead (an existing one, or a new
+// name), and `toExam` (when sent) is the exam those questions take — pass the
+// exam of the existing topic test to join it. This also works inside the same
+// subject, which combines several topic tests into one.
+function moveTopicTestsImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var adminEmail = email_(body.adminEmail);
   var fromId = String(body.fromSubjectId || '').trim();
   var toId = String(body.toSubjectId || '').trim();
   var items = cleanItems_(body.items);
+  var toTopic = cleanTopic_(body.toTopic);
+  var examProvided = body.toExam !== undefined && body.toExam !== null;
+  var toExam = examProvided ? cleanTopic_(body.toExam) : '';
   if (!fromId || !toId) return { ok: false, error: 'Choose the subject to move to.' };
-  if (fromId === toId) return { ok: false, error: 'Those tests are already in that subject.' };
+  if (fromId === toId && !toTopic) return { ok: false, error: 'Those tests are already in that subject.' };
   if (!items.length) return { ok: false, error: 'Select at least one topic test.' };
+  if (toTopic.length > MAX_TOPIC_LENGTH) return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  if (toExam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
   var target = resolveTargetSubject_(toId, body.toSubjectName);
   if (!target) return { ok: false, error: 'The subject to move to was not found.' };
 
@@ -2171,31 +2206,40 @@ function moveTopicTests_(body) {
   if (!picked.length) return { ok: false, error: 'None of the selected topic tests were found.' };
 
   var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
-  // spell each topic the way the target subject already spells it
+  var homes = subjectHomeExams_();
+  var targetHome = homeExamOf_(homes, toId);
+  var pickedRows = picked.map(function (p) { return p.row; });
+  // spell each topic (per exam) the way the target subject already spells it
   var canon = {};
   table.values.forEach(function (r) {
-    if (String(r[cSid]) !== toId) return;
+    if (String(r[cSid]) !== toId || pickedRows.indexOf(r) !== -1) return;
     var t = cleanTopic_(r[cTopic]);
-    if (t && !canon['k:' + topicKey_(t)]) canon['k:' + topicKey_(t)] = t;
+    if (!t) return;
+    var slot = 'k:' + topicKey_(cleanTopic_(r[cExam]) || targetHome) + '|' + topicKey_(t);
+    if (!canon[slot]) canon[slot] = t;
   });
   var fromName = '';
   picked.forEach(function (p) {
     fromName = fromName || String(p.row[cSubject] || '');
-    var slot = 'k:' + topicKey_(p.row[cTopic]);
-    if (canon[slot]) p.row[cTopic] = canon[slot]; else canon[slot] = cleanTopic_(p.row[cTopic]);
-    p.row[cExam] = p.exam;         // the exam becomes explicit, so it survives the move
+    var exam = examProvided ? toExam : p.exam;
+    var topic = toTopic || cleanTopic_(p.row[cTopic]);
+    var slot = 'k:' + topicKey_(exam || targetHome) + '|' + topicKey_(topic);
+    if (canon[slot]) topic = canon[slot]; else canon[slot] = topic;
+    p.row[cTopic] = topic;
+    p.row[cExam] = exam;            // the exam becomes explicit, so it survives the move
     p.row[cSid] = toId;
     p.row[cSubject] = target.name;
   });
   writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
-  logSubjectChange_(adminEmail, fromName, fromId, 'Moved ' + items.length + ' topic test(s) to ' + target.name + ' (' + picked.length + ' questions)',
-    { from: fromName, tests: items }, { to: target.name });
-  return { ok: true, moved: picked.length, tests: items.length, message: items.length + ' topic test(s) moved to "' + target.name + '" (' + picked.length + ' questions).' };
+  logSubjectChange_(adminEmail, fromName, fromId, 'Moved ' + items.length + ' topic test(s) to ' + target.name + (toTopic ? ' → ' + toTopic : '') + ' (' + picked.length + ' questions)',
+    { from: fromName, tests: items }, { to: target.name, topic: toTopic });
+  return { ok: true, moved: picked.length, tests: items.length,
+    message: items.length + ' topic test(s) moved to "' + target.name + '"' + (toTopic ? ' as "' + toTopic + '"' : '') + ' (' + picked.length + ' questions).' };
 }
 
 // Renames a topic test and/or changes the exam it belongs to. Renaming it to the
 // name of an existing topic test of the same exam combines the two.
-function renameTopicTest_(body) {
+function renameTopicTestImpl_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
   var adminEmail = email_(body.adminEmail);
@@ -2237,6 +2281,569 @@ function renameTopicTest_(body) {
   return { ok: true, changed: picked.length, topic: topicSpelling, exam: examProvided ? newExam : exam,
     message: 'Topic test renamed to "' + topicSpelling + '"' + (newExam ? ' (' + newExam + ')' : '') + '.' };
 }
+
+// ------------------------------------------------------------
+// CONTROL CENTRE — subject → topic test, topic test → subject
+// ------------------------------------------------------------
+// Turns whole subjects into topic tests of another subject. Every question of a
+// source subject moves into the target subject; each source becomes one topic
+// test named after it (mode 'single'), or keeps its own topic tests with only
+// the questions that have no topic going under that name (mode 'keep').
+// `targetTopic` puts everything into that one topic test instead (an existing
+// one, or a new name), and `targetExam` (when sent) is the exam the moved
+// questions take — otherwise each keeps its own. The emptied source subjects
+// are removed.
+function nestSubjectsImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var targetId = String(body.targetId || '').trim();
+  var mode = body.mode === 'keep' ? 'keep' : 'single';
+  var targetTopic = cleanTopic_(body.targetTopic);
+  var examProvided = body.targetExam !== undefined && body.targetExam !== null;
+  var targetExam = examProvided ? cleanTopic_(body.targetExam) : '';
+  var sources = (Array.isArray(body.sourceIds) ? body.sourceIds : []).map(String).filter(function (id, i, all) {
+    return id && all.indexOf(id) === i;
+  });
+  if (!targetId) return { ok: false, error: 'Choose the subject to move into.' };
+  if (!sources.length) return { ok: false, error: 'Select at least one subject to move.' };
+  if (sources.indexOf(targetId) !== -1) return { ok: false, error: 'A subject cannot be moved into itself.' };
+  if (sources.length > 50) return { ok: false, error: 'Maximum 50 subjects can be moved at once.' };
+  if (targetTopic.length > MAX_TOPIC_LENGTH) return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  if (targetExam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
+  var target = resolveTargetSubject_(targetId, body.targetName);
+  if (!target) return { ok: false, error: 'The subject to move into was not found.' };
+
+  var found = {};
+  for (var i = 0; i < sources.length; i++) {
+    var row = findSubjectRow_(sources[i]);
+    if (!row) return { ok: false, error: 'Only custom subjects can be moved away (' + sources[i] + ' is not one).' };
+    found[sources[i]] = row;
+  }
+
+  var table = readQuestionTable_();
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  var homes = subjectHomeExams_();
+  var targetHome = homeExamOf_(homes, targetId);
+  // topic spellings the target already uses (per exam)
+  var canon = {};
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== targetId) return;
+    var t = cleanTopic_(r[cTopic]);
+    if (!t) return;
+    var slot = 'k:' + topicKey_(cleanTopic_(r[cExam]) || targetHome) + '|' + topicKey_(t);
+    if (!canon[slot]) canon[slot] = t;
+  });
+  var perSource = {}, moved = 0;
+  table.values.forEach(function (r) {
+    var sid = String(r[cSid]);
+    var src = found[sid];
+    if (!src) return;
+    var exam = examProvided ? targetExam : (cleanTopic_(r[cExam]) || src.exam);
+    var own = cleanTopic_(r[cTopic]);
+    var topic = (mode === 'keep' && own) ? own : (targetTopic || cleanTopic_(src.name).slice(0, MAX_TOPIC_LENGTH));
+    var slot = 'k:' + topicKey_(exam || targetHome) + '|' + topicKey_(topic);
+    if (canon[slot]) topic = canon[slot]; else canon[slot] = topic;
+    r[cTopic] = topic;
+    r[cExam] = exam;
+    r[cSid] = targetId;
+    r[cSubject] = target.name;
+    perSource[sid] = (perSource[sid] || 0) + 1;
+    moved++;
+  });
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
+
+  Object.keys(found)
+    .map(function (id) { return found[id].rowNumber; })
+    .sort(function (a, b) { return b - a; })
+    .forEach(function (rowNumber) { ensureSubjectsSchema_().deleteRow(rowNumber); });
+
+  Object.keys(found).forEach(function (id) {
+    logSubjectChange_(adminEmail, found[id].name, id, 'Moved into ' + target.name + ' as a topic test (' + (perSource[id] || 0) + ' questions)',
+      { subject: found[id].name, exam: found[id].exam }, { movedInto: target.name, topic: targetTopic || found[id].name, mode: mode });
+  });
+  return {
+    ok: true,
+    movedSubjects: Object.keys(found).length,
+    movedQuestions: moved,
+    movedIds: Object.keys(found),
+    message: Object.keys(found).length + ' subject(s) moved into "' + target.name + '" as topic test(s) (' + moved + ' questions).'
+  };
+}
+
+// Turns a topic test into a main subject of its own. Its questions leave their
+// topic (they are now simply the new subject's questions) but keep their exam.
+function promoteTopicTestImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var fromId = String(body.fromSubjectId || '').trim();
+  var topic = cleanTopic_(body.topic), exam = cleanTopic_(body.exam);
+  var newName = cleanTopic_(body.newName);
+  var password = String(body.password || '').trim();
+  if (!fromId || !topic) return { ok: false, error: 'Topic test not specified.' };
+  if (!newName) return { ok: false, error: 'Enter a name for the new subject.' };
+  if (newName.length > 80) return { ok: false, error: 'Subject name is longer than 80 characters.' };
+  if (!password) return { ok: false, error: 'A password for the new subject is required.' };
+
+  var sheet = ensureSubjectsSchema_();
+  var existing = objs_(sheet);
+  var lower = newName.toLowerCase();
+  var taken = STATIC_SUBJECT_NAMES.some(function (n) { return n.toLowerCase() === lower; });
+  existing.forEach(function (r) { if (String(r.Name || '').trim().toLowerCase() === lower) taken = true; });
+  if (taken) return { ok: false, error: 'A subject with this name already exists.' };
+
+  var table = readQuestionTable_();
+  var picked = selectTopicTestRows_(table, fromId, [{ topic: topic, exam: exam }]);
+  if (!picked.length) return { ok: false, error: 'That topic test was not found.' };
+
+  var base = slugify_(newName) || 'subject';
+  var id = base, ids = {};
+  existing.forEach(function (r) { ids[String(r.SubjectId || '')] = true; });
+  var suffix = 1;
+  while (ids[id]) { suffix++; id = base + '-' + suffix; }
+
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  var fromName = '';
+  picked.forEach(function (p) {
+    fromName = fromName || String(p.row[cSubject] || '');
+    p.row[cSid] = id;
+    p.row[cSubject] = newName;
+    p.row[cTopic] = '';
+    p.row[cExam] = p.exam;
+  });
+  appendManyByHeader_(sheet, [{
+    SubjectId: id, Name: newName, Password: password, Description: '',
+    CreatedBy: adminEmail, CreatedAt: new Date(), Exam: exam
+  }]);
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
+  logSubjectChange_(adminEmail, newName, id, 'Created from topic test "' + topic + '" of ' + fromName + ' (' + picked.length + ' questions)',
+    { from: fromName, topic: topic, exam: exam }, { subject: newName });
+  return {
+    ok: true, moved: picked.length,
+    subject: { id: id, name: newName, password: password, exam: exam },
+    message: 'Topic test "' + topic + '" is now the subject "' + newName + '" (' + picked.length + ' questions).'
+  };
+}
+
+// ------------------------------------------------------------
+// CHANGE JOURNAL + UNDO / REDO
+// ------------------------------------------------------------
+// Every structural change (rename, merge, move, delete, default wait ...) is
+// recorded in `Operations` together with exactly what it changed, kept in
+// `OperationData`. The Control Centre shows the list, and Undo / Redo walk
+// through it one change at a time (newest first, like any editor). Doing a new
+// change after an undo clears the redo list. Only the newest 30 changes keep
+// their undo data.
+var UNDO_KEEP = 30;
+var OP_CHUNK = 40000;
+var QUESTION_TRACKED_ = ['SubjectId', 'Subject', 'Topic', 'Exam'];
+var SUBJECT_TRACKED_ = ['Name', 'Password', 'Description', 'Exam'];
+
+function ensureOpSheets_() {
+  var book = ss_();
+  ['Operations', 'OperationData'].forEach(function (name) {
+    var sheet = book.getSheetByName(name);
+    if (!sheet) sheet = book.insertSheet(name);
+    if (sheet.getLastRow() === 0) {
+      sheet.getRange(1, 1, 1, SHEETS[name].length).setValues([SHEETS[name]]).setFontWeight('bold');
+    }
+  });
+}
+
+function readSubjectTable_() {
+  var sheet = ensureSubjectsSchema_();
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = lastRow >= 2 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
+  return { sheet: sheet, headers: headers, values: values, col: function (n) { return headers.indexOf(n); } };
+}
+
+function opJson_(value) {
+  return JSON.stringify(value, function (key, val) {
+    var original = this[key];
+    if (original instanceof Date) return { '$d': original.getTime() };
+    return val;
+  });
+}
+
+function opParse_(text) {
+  return JSON.parse(text, function (key, val) {
+    return val && typeof val === 'object' && val['$d'] !== undefined ? new Date(val['$d']) : val;
+  });
+}
+
+function rowObj_(headers, row) {
+  var out = {};
+  headers.forEach(function (h, i) { out[h] = row[i]; });
+  return out;
+}
+
+function snapshotState_() {
+  var qt = readQuestionTable_();
+  var qId = qt.col('QuestionId');
+  var qrows = {};
+  qt.values.forEach(function (row, i) {
+    var id = String(row[qId] || '');
+    if (id) qrows[id] = { index: i + 2, row: row };
+  });
+  var st = readSubjectTable_();
+  var sId = st.col('SubjectId');
+  var srows = {};
+  st.values.forEach(function (row, i) {
+    var id = String(row[sId] || '');
+    if (id) srows[id] = { index: i + 2, row: row };
+  });
+  var prop = null;
+  try { prop = PropertiesService.getScriptProperties().getProperty('COOLDOWN_MINUTES'); } catch (ignore) {}
+  return { qHeaders: qt.headers, qrows: qrows, sHeaders: st.headers, srows: srows, cooldown: prop };
+}
+
+function diffTable_(headers, before, after, tracked) {
+  var out = { changed: [], removed: [], added: [] };
+  Object.keys(before).forEach(function (id) {
+    var a = before[id], b = after[id];
+    if (!b) { out.removed.push({ id: id, index: a.index, values: rowObj_(headers.a, a.row) }); return; }
+    var beforeVals = {}, afterVals = {}, any = false;
+    tracked.forEach(function (name) {
+      var ia = headers.a.indexOf(name), ib = headers.b.indexOf(name);
+      var va = ia === -1 ? '' : a.row[ia], vb = ib === -1 ? '' : b.row[ib];
+      if (String(va) !== String(vb)) { beforeVals[name] = va; afterVals[name] = vb; any = true; }
+    });
+    if (any) out.changed.push({ id: id, before: beforeVals, after: afterVals });
+  });
+  Object.keys(after).forEach(function (id) {
+    if (!before[id]) out.added.push({ id: id, index: after[id].index, values: rowObj_(headers.b, after[id].row) });
+  });
+  var byIndex = function (x, y) { return x.index - y.index; };
+  out.removed.sort(byIndex);
+  out.added.sort(byIndex);
+  return out;
+}
+
+function diffState_(a, b) {
+  var diff = {
+    questions: diffTable_({ a: a.qHeaders, b: b.qHeaders }, a.qrows, b.qrows, QUESTION_TRACKED_),
+    subjects: diffTable_({ a: a.sHeaders, b: b.sHeaders }, a.srows, b.srows, SUBJECT_TRACKED_)
+  };
+  if (String(a.cooldown) !== String(b.cooldown)) diff.cooldown = { before: a.cooldown, after: b.cooldown };
+  return diff;
+}
+
+function diffIsEmpty_(diff) {
+  var t = function (d) { return !d.changed.length && !d.removed.length && !d.added.length; };
+  return t(diff.questions) && t(diff.subjects) && !diff.cooldown;
+}
+
+function diffTablesFor_(kind) {
+  if (kind === 'questions') return { read: readQuestionTable_, idName: 'QuestionId' };
+  return { read: readSubjectTable_, idName: 'SubjectId' };
+}
+
+// Returns '' when the diff can be applied, otherwise the reason it cannot.
+function checkDiffApplicable_(diff, direction) {
+  var forward = direction === 'forward';
+  var problem = '';
+  ['questions', 'subjects'].forEach(function (kind) {
+    if (problem) return;
+    var toAdd = forward ? diff[kind].added : diff[kind].removed;
+    if (!toAdd.length) return;
+    var api = diffTablesFor_(kind);
+    var table = api.read();
+    var idCol = table.col(api.idName);
+    var have = {};
+    table.values.forEach(function (r) { have[String(r[idCol])] = true; });
+    toAdd.forEach(function (x) {
+      if (!problem && have[x.id]) problem = 'Cannot ' + (forward ? 'redo' : 'undo') + ': "' + x.id + '" exists again.';
+    });
+  });
+  return problem;
+}
+
+function applyTableDiff_(kind, diff, direction) {
+  var api = diffTablesFor_(kind);
+  var forward = direction === 'forward';
+  var toRemove = forward ? diff.removed : diff.added;
+  var toAdd = forward ? diff.added : diff.removed;
+  var key = forward ? 'after' : 'before';
+  var table = api.read();
+  var idCol = table.col(api.idName);
+
+  // 1) rows that must not exist afterwards — removed in contiguous blocks, bottom first
+  if (toRemove.length) {
+    var removeIds = {};
+    toRemove.forEach(function (x) { removeIds[x.id] = true; });
+    var blocks = [];
+    table.values.forEach(function (r, i) {
+      if (!removeIds[String(r[idCol])]) return;
+      var rowNumber = i + 2, last = blocks[blocks.length - 1];
+      if (last && last.start + last.count === rowNumber) last.count++;
+      else blocks.push({ start: rowNumber, count: 1 });
+    });
+    for (var b = blocks.length - 1; b >= 0; b--) table.sheet.deleteRows(blocks[b].start, blocks[b].count);
+  }
+
+  // 2) rows that must exist afterwards — put back at their old positions, block by block
+  if (toAdd.length) {
+    var sheet = table.sheet, headers = table.headers;
+    var sorted = toAdd.slice().sort(function (x, y) { return x.index - y.index; });
+    var i = 0;
+    while (i < sorted.length) {
+      var start = sorted[i].index, count = 1;
+      while (i + count < sorted.length && sorted[i + count].index === start + count) count++;
+      var rows = sorted.slice(i, i + count).map(function (x) {
+        return headers.map(function (h) { return x.values[h] !== undefined ? x.values[h] : ''; });
+      });
+      var lastRow = sheet.getLastRow();
+      var position = Math.min(start, lastRow + 1);
+      if (position <= lastRow) sheet.insertRowsBefore(position, count);
+      sheet.getRange(position, 1, count, headers.length).setValues(rows);
+      i += count;
+    }
+  }
+
+  // 3) changed cells
+  if (diff.changed.length) {
+    var current = api.read();
+    var currentId = current.col(api.idName);
+    var byId = {};
+    current.values.forEach(function (r) { byId[String(r[currentId])] = r; });
+    var touched = {};
+    diff.changed.forEach(function (c) {
+      var row = byId[c.id];
+      if (!row) return;
+      Object.keys(c[key]).forEach(function (name) {
+        var ci = current.col(name);
+        if (ci === -1) return;
+        row[ci] = c[key][name];
+        touched[name] = true;
+      });
+    });
+    writeQuestionColumns_(current, Object.keys(touched));
+  }
+}
+
+function applyDiff_(diff, direction) {
+  var problem = checkDiffApplicable_(diff, direction);
+  if (problem) return problem;
+  applyTableDiff_('questions', diff.questions, direction);
+  applyTableDiff_('subjects', diff.subjects, direction);
+  if (diff.cooldown) {
+    var value = direction === 'forward' ? diff.cooldown.after : diff.cooldown.before;
+    var props = PropertiesService.getScriptProperties();
+    if (value === null || value === undefined) props.deleteProperty('COOLDOWN_MINUTES');
+    else props.setProperty('COOLDOWN_MINUTES', String(value));
+    _cooldownMsMemo = null;
+    clearAllUserCaches_();
+  }
+  return '';
+}
+
+function readOps_() {
+  ensureOpSheets_();
+  var sheet = sh_('Operations');
+  var values = sheet.getLastRow() >= 1 ? sheet.getDataRange().getValues() : [];
+  var headers = values.length ? values[0].map(String) : SHEETS.Operations;
+  var rows = [];
+  for (var i = 1; i < values.length; i++) {
+    var obj = rowObj_(headers, values[i]);
+    if (!obj.OpId) continue;
+    obj.rowNumber = i + 1;
+    obj.isUndoable = obj.Undoable === true || String(obj.Undoable).toLowerCase() === 'true';
+    rows.push(obj);
+  }
+  return { sheet: sheet, headers: headers, rows: rows };
+}
+
+function setOpStatus_(ops, op, status) {
+  ops.sheet.getRange(op.rowNumber, ops.headers.indexOf('Status') + 1).setValue(status);
+  op.Status = status;
+}
+
+function dropOpData_(opIds) {
+  var sheet = sh_('OperationData');
+  var last = sheet.getLastRow();
+  if (last < 2 || !opIds.length) return;
+  var ids = sheet.getRange(2, 1, last - 1, 1).getValues();
+  var wanted = {};
+  opIds.forEach(function (id) { wanted[id] = true; });
+  var blocks = [];
+  ids.forEach(function (cell, i) {
+    if (!wanted[String(cell[0])]) return;
+    var rowNumber = i + 2, prev = blocks[blocks.length - 1];
+    if (prev && prev.start + prev.count === rowNumber) prev.count++;
+    else blocks.push({ start: rowNumber, count: 1 });
+  });
+  for (var b = blocks.length - 1; b >= 0; b--) sheet.deleteRows(blocks[b].start, blocks[b].count);
+}
+
+// Records one change. `diff` null = an info-only entry (cannot be undone).
+function journalRecord_(adminEmail, type, title, diff) {
+  var ops = readOps_();
+  var undoable = !!diff;
+  var opId = 'OP-' + Utilities.getUuid().replace(/-/g, '').slice(0, 14);
+  var chunks = [];
+  if (diff) {
+    var json = opJson_(diff);
+    for (var i = 0; i < json.length; i += OP_CHUNK) chunks.push(json.slice(i, i + OP_CHUNK));
+    // a new undoable change ends the redo list (and their undo data is no longer needed)
+    var discarded = [];
+    ops.rows.forEach(function (op) {
+      if (op.isUndoable && op.Status === 'undone') { setOpStatus_(ops, op, 'discarded'); discarded.push(op.OpId); }
+    });
+    dropOpData_(discarded);
+  }
+  appendMany_(sh_('Operations'), SHEETS.Operations, [{
+    OpId: opId, Timestamp: new Date(), Admin: adminEmail, Type: type,
+    Title: title, Status: diff ? 'done' : 'info', Undoable: undoable, Parts: chunks.length
+  }]);
+  if (chunks.length) {
+    appendMany_(sh_('OperationData'), SHEETS.OperationData, chunks.map(function (c, i) {
+      return { OpId: opId, Part: i, Json: c };
+    }));
+  }
+  if (diff) {
+    // only the newest UNDO_KEEP changes keep their undo data
+    var live = readOps_().rows.filter(function (op) { return op.isUndoable && (op.Status === 'done' || op.Status === 'undone'); });
+    if (live.length > UNDO_KEEP) {
+      var fresh = readOps_();
+      var expire = live.slice(0, live.length - UNDO_KEEP);
+      expire.forEach(function (op) {
+        var again = fresh.rows.filter(function (x) { return x.OpId === op.OpId; })[0];
+        if (again) {
+          fresh.sheet.getRange(again.rowNumber, fresh.headers.indexOf('Status') + 1).setValue('expired');
+          fresh.sheet.getRange(again.rowNumber, fresh.headers.indexOf('Undoable') + 1).setValue(false);
+        }
+      });
+      dropOpData_(expire.map(function (op) { return op.OpId; }));
+    }
+  }
+  return opId;
+}
+
+function journalInfo_(adminEmail, type, title) {
+  try { journalRecord_(adminEmail, type, title, null); } catch (ignore) {}
+}
+
+// Runs a change and, when it succeeded, records what it changed.
+function recordOp_(body, type, impl) {
+  var before = snapshotState_();
+  var result = impl(body);
+  if (result && result.ok) {
+    try {
+      var diff = diffState_(before, snapshotState_());
+      if (!diffIsEmpty_(diff)) {
+        journalRecord_(email_(body.adminEmail), type, result.message || type, diff);
+        result.journaled = true;
+      }
+    } catch (ignore) {
+      result.journaled = false;
+    }
+  }
+  return result;
+}
+
+function loadOpDiff_(opId) {
+  var sheet = sh_('OperationData');
+  var last = sheet.getLastRow();
+  if (last < 2) return null;
+  var parts = sheet.getRange(2, 1, last - 1, 3).getValues()
+    .filter(function (r) { return String(r[0]) === opId; })
+    .sort(function (a, b) { return Number(a[1]) - Number(b[1]); })
+    .map(function (r) { return String(r[2]); });
+  return parts.length ? opParse_(parts.join('')) : null;
+}
+
+function historyMeta_() {
+  var ops = readOps_().rows.filter(function (op) { return op.isUndoable; });
+  var undo = null, redo = null;
+  for (var i = ops.length - 1; i >= 0; i--) {
+    if (ops[i].Status === 'done') { undo = { id: ops[i].OpId, title: String(ops[i].Title) }; break; }
+  }
+  for (var j = 0; j < ops.length; j++) {
+    if (ops[j].Status === 'undone') { redo = { id: ops[j].OpId, title: String(ops[j].Title) }; break; }
+  }
+  return { undo: undo, redo: redo };
+}
+
+function controlHistory_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var ops = readOps_().rows;
+  var meta = historyMeta_();
+  var entries = ops.slice(-150).reverse().map(function (op) {
+    return {
+      id: op.OpId,
+      time: op.Timestamp ? toDate_(op.Timestamp).toISOString() : '',
+      admin: String(op.Admin || ''),
+      type: String(op.Type || ''),
+      title: String(op.Title || ''),
+      status: String(op.Status || ''),
+      undoable: op.isUndoable
+    };
+  });
+  return { ok: true, entries: entries, undo: meta.undo, redo: meta.redo };
+}
+
+function undoOperation_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var meta = historyMeta_();
+  if (!meta.undo) return { ok: false, error: 'There is nothing to undo.' };
+  var ops = readOps_();
+  var op = ops.rows.filter(function (x) { return x.OpId === meta.undo.id; })[0];
+  var diff = loadOpDiff_(op.OpId);
+  if (!diff) return { ok: false, error: 'This change is too old to undo.' };
+  var problem = applyDiff_(diff, 'reverse');
+  if (problem) return { ok: false, error: problem };
+  setOpStatus_(ops, op, 'undone');
+  return { ok: true, message: 'Undone: ' + op.Title, title: String(op.Title) };
+}
+
+function redoOperation_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var meta = historyMeta_();
+  if (!meta.redo) return { ok: false, error: 'There is nothing to redo.' };
+  var ops = readOps_();
+  var op = ops.rows.filter(function (x) { return x.OpId === meta.redo.id; })[0];
+  var diff = loadOpDiff_(op.OpId);
+  if (!diff) return { ok: false, error: 'This change is too old to redo.' };
+  var problem = applyDiff_(diff, 'forward');
+  if (problem) return { ok: false, error: problem };
+  setOpStatus_(ops, op, 'done');
+  return { ok: true, message: 'Redone: ' + op.Title, title: String(op.Title) };
+}
+
+function createSubject_(body) {
+  var result = createSubjectImpl_(body);
+  if (result && result.ok) journalInfo_(email_(body.adminEmail), 'createSubject', 'Created subject "' + result.subject.name + '"');
+  return result;
+}
+
+function adminCooldownAdjust_(body) {
+  var result = adminCooldownAdjustImpl_(body);
+  if (result && result.ok) {
+    var what = { unlock: 'Unlocked', set: 'Locked', add: 'Changed the wait of', 'default': 'Reset the wait of' }[String(body.mode)] || 'Changed';
+    var minutes = (String(body.mode) === 'set' || String(body.mode) === 'add') ? ' (' + Number(body.minutes) + ' min)' : '';
+    journalInfo_(email_(body.adminEmail), 'studentLock',
+      what + ' ' + (String(body.subject) === '*' ? 'all subjects' : '"' + String(body.subject) + '"') + ' for ' + email_(body.targetEmail) + minutes);
+  }
+  return result;
+}
+
+// The public names: each structural change runs through the journal.
+function renameSubject_(body) { return recordOp_(body, 'renameSubject', renameSubjectImpl_); }
+function mergeSubjects_(body) { return recordOp_(body, 'mergeSubjects', mergeSubjectsImpl_); }
+function moveTopicTests_(body) { return recordOp_(body, 'moveTopicTests', moveTopicTestsImpl_); }
+function renameTopicTest_(body) { return recordOp_(body, 'renameTopicTest', renameTopicTestImpl_); }
+function deleteSubjects_(body) { return recordOp_(body, 'deleteSubjects', deleteSubjectsImpl_); }
+function setSubjectExam_(body) { return recordOp_(body, 'setSubjectExam', setSubjectExamImpl_); }
+function setDefaultCooldown_(body) { return recordOp_(body, 'setDefaultCooldown', setDefaultCooldownImpl_); }
+function setQuestionTopic_(body) { return recordOp_(body, 'setQuestionTopic', setQuestionTopicImpl_); }
+function nestSubjects_(body) { return recordOp_(body, 'nestSubjects', nestSubjectsImpl_); }
+function promoteTopicTest_(body) { return recordOp_(body, 'promoteTopicTest', promoteTopicTestImpl_); }
 
 // Returns the most recent ~50 ChangeLog entries, newest first.
 function questionChangeLog_() {

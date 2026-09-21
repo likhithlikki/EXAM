@@ -69,3 +69,12 @@ The script adds missing columns to existing sheets. It does not intentionally de
 - New backend actions: `renameSubject`, `mergeSubjects`, `moveTopicTests`, `renameTopicTest` (all need the admin and Control Centre passwords). After pasting the new `Code.gs`, deploy a **new version**.
 - **About page:** `about.html` (linked from the Home menu) explains the site in a warm, non-blue colour scheme.
 
+## Update: subjects ⇄ topic tests, change history, Undo / Redo
+
+- **Move a subject into another subject as topic tests** (Control Centre → Subjects). Each ticked subject becomes a topic test named after it, or its own topic tests are kept, or (for one subject) its questions join an *existing* topic test of the target. The emptied subject disappears. Merge (combining two subjects' questions) is still there, unchanged.
+- **Make a topic test a main subject** (Control Centre → Topic Tests): it becomes a new subject with its own name and password; its questions lose their topic but keep their exam.
+- **Move a topic test into another subject's topic test**, or combine several topic tests into one (also inside one subject): choose *As* → an existing topic test, or a new name.
+- **History and Undo / Redo.** Every Control Centre change (rename, merge, move, delete, default wait, exam label, bulk topic changes) is written to a new `Operations` sheet with who and when, and exactly what it changed is kept in `OperationData`. The 🕘 History tab lists them; ↶ Undo / ↷ Redo at the top of the Control Centre step back and forward one change at a time (a new change after an undo clears Redo). Undo puts subject rows and deleted questions back in their original positions. Undo refuses, with a reason, if it would collide with something created since (for example a subject with the same id). The newest 30 changes keep their undo data. Student locks and new subjects are noted as records only.
+- Both sheets are created automatically. Nothing needs to be changed in the spreadsheet.
+- New backend actions: `nestSubjects`, `promoteTopicTest`, `controlHistory`, `undoOperation`, `redoOperation`; `moveTopicTests` accepts `toTopic` / `toExam`. After pasting the new `Code.gs`, deploy a **new version**.
+
