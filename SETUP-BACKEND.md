@@ -78,3 +78,11 @@ The script adds missing columns to existing sheets. It does not intentionally de
 - Both sheets are created automatically. Nothing needs to be changed in the spreadsheet.
 - New backend actions: `nestSubjects`, `promoteTopicTest`, `controlHistory`, `undoOperation`, `redoOperation`; `moveTopicTests` accepts `toTopic` / `toExam`. After pasting the new `Code.gs`, deploy a **new version**.
 
+## Update: clearer Subjects / Topic Tests pages
+
+- **Subjects tab:** every subject of yours has **✏️ Rename** and **➡️ Move…**. Move opens a dialog that reads like a sentence — *Move [subject] into [subject]* — where you pick both subjects, then choose **Make it a topic test** (with its name, e.g. "Chapter 1", and the exam) or **Merge its questions in**. A plain-English preview shows exactly what will happen before you press Move.
+- **Built-in subjects** (from `subjects.json`) each have **📥 Move a subject in…**, so a practice-test subject such as "Data Structures through C chapter 1" can become a topic test of the built-in "Data Structures through C". You can also drag a subject and drop it on another subject (on a computer).
+- **Topic Tests tab:** each topic test has **✏️ Rename**, **➡️ Move…** (keep its name / add to one of the other subject's topic tests / a new name) and **⬆️ Make it a subject**.
+- Built-in move targets are now accepted without any server-side name list, so subjects you add to `subjects.json` later work immediately.
+- All of these are recorded in History and can be undone from the top of the Control Centre.
+

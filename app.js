@@ -1212,208 +1212,338 @@ function ccPasswordsTab(){
     </tbody></table></div>`;
 }
 
-/* ---------- 🗂 Subjects: rename, merge, delete, default exam ---------- */
-let _ccFlash="",_ccTests=[],_ccTestSel=new Set();
+/* ---------- shared: a small dialog ---------- */
+const byId_=id=>document.getElementById(id);
+function ccModalKey_(e){if(e.key==="Escape")ccModalClose();}
+function ccModal(html){
+  ccModalClose();
+  const d=document.createElement("div");d.className="cc-modal-back";d.id="ccModal";
+  d.innerHTML=`<div class="cc-modal" role="dialog" aria-modal="true">${html}</div>`;
+  d.addEventListener("mousedown",e=>{if(e.target===d)ccModalClose();});
+  document.body.appendChild(d);
+  document.addEventListener("keydown",ccModalKey_);
+}
+function ccModalClose(){const d=byId_("ccModal");if(d)d.remove();document.removeEventListener("keydown",ccModalKey_);}
+
+let _ccFlash="",_ccTests=[],_ccTestSel=new Set(),_ccDragId="";
 function ccFlashHTML(){const m=_ccFlash;_ccFlash="";return m;}
 function ccTargets_(){return [...subjects.map(s=>({id:s.id,name:s.name,builtin:true})),..._ccData.subjects.map(s=>({id:s.id,name:s.name}))];}
-function ccTargetOptions_(){return ccTargets_().map(t=>`<option value="${esc(t.id)}">${esc(t.name)}${t.builtin?" (built-in)":""}</option>`).join("");}
-function ccMsg_(html){const m=document.getElementById("ccDelMsg");if(m)m.innerHTML=html;}
+// <option>s of every subject, grouped so it is obvious which are built-in
+function ccTargetOptions_(selected,exceptId){
+  const opt=t=>`<option value="${esc(t.id)}" ${t.id===selected?"selected":""}>${esc(t.name)}</option>`;
+  const all=ccTargets_().filter(t=>t.id!==exceptId);
+  return `<optgroup label="Built-in subjects">${all.filter(t=>t.builtin).map(opt).join("")}</optgroup><optgroup label="Your practice-test subjects">${all.filter(t=>!t.builtin).map(opt).join("")}</optgroup>`;
+}
+function ccMsg_(html){const m=byId_("ccDelMsg");if(m)m.innerHTML=html;}
 // reload everything from the server, then show a message on the tab that is open
-async function ccReload(flashHTML){_ccFlash=flashHTML||"";_ccData=null;_ccSel=new Set();_ccTestSel=new Set();await ccTab(_ccTab);}
+async function ccReload(flashHTML){_ccFlash=flashHTML||"";_ccData=null;_ccSel=new Set();await ccTab(_ccTab);}
 function ccForget_(ids){ids.forEach(id=>{_expandedSubjects.delete(id);_unlockedSubjects.delete(id);});}
+function ccOk_(m){return `<span class="correct">${esc(m)}</span>`;}
+function ccBad_(m){return `<span class="wronganswer">${esc(m)}</span>`;}
+function ccCount_(n,word){return `${n} ${word}${n===1?"":"s"}`;}
+
+/* ---------- 🗂 Subjects ---------- */
 function ccSubjectsTab(){
-  const body=document.getElementById("ccBody");if(!body)return;
+  const body=byId_("ccBody");if(!body)return;
   const custom=_ccData.subjects,n=_ccSel.size;
+  const info=s=>{const t=subjectTopicInfo(s).topicCount;return `${ccCount_(s.questionCount||0,"question")} • ${ccCount_(t,"topic test")}`;};
+  const drop=id=>`ondragover="ccDragOver(event,this)" ondragleave="ccDragLeave(this)" ondrop="ccDrop(event,'${esc(id)}')"`;
   body.innerHTML=`<datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
-    <p class="note">Tick custom subjects to <b>merge</b> them into another subject, or to <b>delete</b> them. Merging moves all their questions (with their topics and exams) into the chosen subject and removes the merged subjects. Deleting removes a subject <b>with all its questions</b>. Past results stay under the old names either way. Built-in subjects come from <code>subjects.json</code> and can be merged <i>into</i>, but not renamed, merged away or deleted here.</p>
-    <div class="buttons"><button class="ghost" onclick="ccSelectAll(true)">Select all</button><button class="ghost" onclick="ccSelectAll(false)">Clear</button></div>
-    <div class="cc-tools"><label>Merge the ticked subjects into</label><select id="ccMergeTarget">${ccTargetOptions_()}</select>
-      <div class="buttons"><button id="ccMergeBtn" onclick="ccMergeSelected()">🔗 Merge selected (${n})</button><button class="danger" id="ccDelBtn" onclick="ccDeleteSelected()">🗑 Delete selected (${n})</button></div></div>
-    <div class="cc-tools"><label>Move the ticked subjects into another subject as topic tests</label>
-      <select id="ccNestTarget" onchange="ccNestTargetChanged()">${ccTargetOptions_()}</select>
-      <label>Place them in</label>
-      <select id="ccNestTopic">${ccNestTopicOptions_((ccTargets_()[0]||{}).id)}</select>
-      <label>If a subject already has topic tests</label>
-      <select id="ccNestMode"><option value="single">Put all its questions under one topic test named after it</option><option value="keep">Keep its own topic tests (only questions without a topic go under the new one)</option></select>
-      <div class="buttons"><button id="ccNestBtn" onclick="ccNestSelected()">📥 Move selected as topic tests (${n})</button></div></div>
+    <div class="cc-help"><b>What can I do here?</b>
+      <ul><li><b>➡️ Move…</b> puts one of your subjects <i>inside</i> another subject — as a topic test (a chapter), or merged into its questions. The other subject can be one of the <b>built-in</b> subjects below.</li>
+      <li>You can also <b>drag a subject and drop it on another subject</b> (on a computer).</li>
+      <li><b>✏️ Rename</b> changes a subject's name. <b>🗑 Delete</b> removes subjects for good (you can undo it at the top).</li></ul></div>
+    <input id="ccSubSearch" placeholder="Find a subject…" oninput="ccSubFilter(this.value)" autocomplete="off">
     <div id="ccDelMsg" class="note">${ccFlashHTML()}</div>
-    <div class="cc-list">${custom.length?custom.map((s,i)=>{const ti=subjectTopicInfo(s).topicCount;return `<div class="cc-row"><input type="checkbox" class="cc-check" ${_ccSel.has(s.id)?"checked":""} onchange="ccToggle('${esc(s.id)}',this.checked)" aria-label="Select ${esc(s.name)}"><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.questionCount||0} questions • ${ti} topic test${ti===1?"":"s"}</small></div><button class="ghost" onclick="ccRenameSubject('${esc(s.id)}')">✏️ Rename</button><input class="cc-exam" list="examChoices" value="${esc(s.exam||"")}" placeholder="Default exam" maxlength="40" autocomplete="off" onchange="ccSetExam('${esc(s.id)}',this.value)" title="Default exam — the exam of this subject's questions that have none of their own"></div>`;}).join(""):'<p class="note">No custom subjects yet.</p>'}
-    ${subjects.length?`<h2 style="margin-top:22px">Built-in subjects</h2>${subjects.map((s,i)=>`<div class="cc-row builtin"><input type="checkbox" class="cc-check" disabled><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.available?(s.questionCount||0)+" questions":"coming soon"} • ${subjectTopicInfo(s).topicCount} topic tests</small></div></div>`).join("")}`:""}</div>`;
+    <h2>Your practice-test subjects</h2>
+    <div class="cc-delbar"><button class="danger" id="ccDelBtn" onclick="ccDeleteSelected()">🗑 Delete ticked (${n})</button><button class="ghost" onclick="ccSelectAll(true)">Tick all</button><button class="ghost" onclick="ccSelectAll(false)">Clear</button></div>
+    <div class="cc-list">${custom.length?custom.map((s,i)=>`<div class="cc-row cc-sub" draggable="true" data-name="${esc(s.name.toLowerCase())}" data-sid="${esc(s.id)}" ondragstart="ccDragStart(event,'${esc(s.id)}')" ondragend="ccDragEnd()" ${drop(s.id)}><input type="checkbox" class="cc-check" ${_ccSel.has(s.id)?"checked":""} onchange="ccToggle('${esc(s.id)}',this.checked)" aria-label="Tick ${esc(s.name)}"><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${info(s)}</small></div><div class="cc-actions"><button class="ghost" onclick="ccOpenRenameSubject('${esc(s.id)}')">✏️ Rename</button><button class="mv" onclick="ccOpenMove('${esc(s.id)}','')">➡️ Move…</button></div><input class="cc-exam" list="examChoices" value="${esc(s.exam||"")}" placeholder="Default exam" maxlength="40" autocomplete="off" onchange="ccSetExam('${esc(s.id)}',this.value)" title="Default exam — the exam of this subject's questions that have none of their own"></div>`).join(""):'<p class="note">You have no practice-test subjects yet.</p>'}</div>
+    <h2>Built-in subjects</h2>
+    <p class="note">These come with the website. You can't rename or delete them here, but you <b>can move your subjects into them</b> — for example as a chapter (topic test).</p>
+    <div class="cc-list">${subjects.map((s,i)=>`<div class="cc-row cc-sub builtin" data-name="${esc(s.name.toLowerCase())}" data-sid="${esc(s.id)}" ${drop(s.id)}><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.available?info(s):"coming soon"}</small></div><div class="cc-actions"><button class="mv" onclick="ccOpenMove('','${esc(s.id)}')" ${custom.length?"":"disabled"}>📥 Move a subject in…</button></div></div>`).join("")}</div>`;
 }
-function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const d=document.getElementById("ccDelBtn"),m=document.getElementById("ccMergeBtn"),nb=document.getElementById("ccNestBtn");if(d)d.textContent=`🗑 Delete selected (${_ccSel.size})`;if(m)m.textContent=`🔗 Merge selected (${_ccSel.size})`;if(nb)nb.textContent=`📥 Move selected as topic tests (${_ccSel.size})`;}
-// the topic tests of a subject (from the sheet and from subjects.json) as <option>s: value "group:test"
-function ccNestTopicOptions_(subjectId,newLabel){
-  const s=subjectId&&findSubjectById(subjectId);
-  const opts=[`<option value="">${esc(newLabel||"A new topic test named after each subject")}</option>`];
-  if(s)subjectGroups(s).forEach((g,gi)=>g.topics.forEach((t,ti)=>opts.push(`<option value="${gi}:${ti}">${esc(t.name)}${g.exam?" ("+esc(g.exam)+")":""} — existing (${t.count} question${t.count===1?"":"s"})</option>`)));
-  return opts.join("");
-}
-function ccNestTargetChanged(){const t=document.getElementById("ccNestTarget"),o=document.getElementById("ccNestTopic");if(t&&o)o.innerHTML=ccNestTopicOptions_(t.value);}
-async function ccNestSelected(){
-  const ids=[..._ccSel],targetId=document.getElementById("ccNestTarget")?.value,pick=document.getElementById("ccNestTopic")?.value||"",mode=document.getElementById("ccNestMode")?.value||"single";
-  if(!ids.length){ccMsg_('<span class="wronganswer">Tick at least one subject to move first.</span>');return;}
-  if(ids.includes(targetId)){ccMsg_('<span class="wronganswer">The subject you move into cannot also be ticked — untick it or pick another target.</span>');return;}
-  const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean),tgt=ccTargets_().find(t=>t.id===targetId);
-  if(!tgt)return;
-  let extra={},where="Each becomes a topic test named after it.";
-  if(pick){
-    if(ids.length>1){ccMsg_('<span class="wronganswer">To move into an existing topic test, tick just one subject.</span>');return;}
-    const [gi,ti]=pick.split(":").map(Number),g=subjectGroups(findSubjectById(targetId))[gi],t=g&&g.topics[ti];
-    if(!t)return;
-    extra={targetTopic:t.name,targetExam:g.exam};
-    where=`Its questions join the existing topic test "${t.name}"${g.exam?" ("+g.exam+")":""}.`;
-  }
-  const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
-  if(!confirm(`Move ${list.length} subject${list.length===1?"":"s"} into "${tgt.name}" as topic tests?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\n${where} The moved subjects disappear. Past results stay under the old names. You can undo this from the top of the Control Centre.`))return;
-  ccMsg_('<span class="note">Moving…</span>');
-  const res=await apiPost("nestSubjects",{...controlAuth_(),targetId,targetName:tgt.name,sourceIds:ids,mode,...extra},120000);
-  if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not move. Please try again.")}</span>`);return;}
-  ccForget_(res.movedIds||ids);
-  await ccReload(`<span class="correct">${esc(res.message||"Moved.")}</span>`);
-}
+function ccSubFilter(v){const q=cleanTopic(v).toLowerCase();document.querySelectorAll("#ccBody .cc-sub").forEach(r=>{r.style.display=!q||r.dataset.name.includes(q)?"":"none";});}
+function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const d=byId_("ccDelBtn");if(d)d.textContent=`🗑 Delete ticked (${_ccSel.size})`;}
 function ccSelectAll(on){_ccSel=new Set(on?_ccData.subjects.map(s=>s.id):[]);ccSubjectsTab();}
 async function ccSetExam(id,val){
   const res=await apiPost("setSubjectExam",{...controlAuth_(),subjectId:id,exam:val.trim()},30000);
   if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not save the exam.")}</span>`);return;}
+  if(!res?.ok){ccMsg_(ccBad_(res?.error||"Could not save the exam."));return;}
   [_ccData.subjects.find(s=>s.id===id),customSubjects.find(s=>s.id===id)].forEach(s=>{if(s)s.exam=res.exam;});
   store.setCustomSubjectsCache(customSubjects);
-  ccMsg_(`<span class="correct">${esc(res.message||"Saved.")}</span>`);
-}
-async function ccRenameSubject(id){
-  const s=_ccData.subjects.find(x=>x.id===id);if(!s)return;
-  const nn=prompt("New name for this subject:",s.name);if(nn===null)return;
-  const name=cleanTopic(nn);if(!name||name===s.name)return;
-  if(!confirm(`Rename "${s.name}" to "${name}"?\n\nIts questions move with it. Past results stay under the old name, so students' wait for this subject starts fresh.`))return;
-  ccMsg_('<span class="note">Renaming…</span>');
-  const res=await apiPost("renameSubject",{...controlAuth_(),subjectId:id,newName:name},30000);
-  if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not rename. Please try again.")}</span>`);return;}
-  await ccReload(`<span class="correct">${esc(res.message||"Renamed.")}</span>`);
-}
-async function ccMergeSelected(){
-  const ids=[..._ccSel],targetId=document.getElementById("ccMergeTarget")?.value;
-  if(!ids.length){ccMsg_('<span class="wronganswer">Tick at least one subject to merge first.</span>');return;}
-  if(ids.includes(targetId)){ccMsg_('<span class="wronganswer">The subject you merge into cannot also be ticked — untick it or pick another target.</span>');return;}
-  const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean),tgt=ccTargets_().find(t=>t.id===targetId);
-  if(!tgt)return;
-  const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
-  if(!confirm(`Merge ${list.length} subject${list.length===1?"":"s"} into "${tgt.name}"?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nAll ${qs} question${qs===1?"":"s"} move into "${tgt.name}" and keep their topics and exams. The merged subjects disappear. Past results stay under the old names. You can undo this from the top of the Control Centre.`))return;
-  ccMsg_('<span class="note">Merging…</span>');
-  const res=await apiPost("mergeSubjects",{...controlAuth_(),targetId,targetName:tgt.name,sourceIds:ids},120000);
-  if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not merge. Please try again.")}</span>`);return;}
-  ccForget_(res.mergedIds||ids);
-  await ccReload(`<span class="correct">${esc(res.message||"Merged.")}</span>`);
+  ccMsg_(ccOk_(res.message||"Saved."));
 }
 async function ccDeleteSelected(){
   const ids=[..._ccSel];
-  if(!ids.length){ccMsg_('<span class="wronganswer">Tick at least one subject first.</span>');return;}
+  if(!ids.length){ccMsg_(ccBad_("Tick at least one subject first."));return;}
   const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean);
   const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
-  if(!confirm(`Delete ${list.length} subject${list.length===1?"":"s"}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${qs} question${qs===1?"":"s"}. Students' past results are kept. You can undo this from the top of the Control Centre.`))return;
+  if(!confirm(`Delete ${ccCount_(list.length,"subject")}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${ccCount_(qs,"question")}. Students' past results are kept. You can undo this from the top of the Control Centre.`))return;
   ccMsg_('<span class="note">Deleting…</span>');
   const res=await apiPost("deleteSubjects",{...controlAuth_(),subjectIds:ids},120000);
   if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not delete. Please try again.")}</span>`);return;}
+  if(!res?.ok){ccMsg_(ccBad_(res?.error||"Could not delete. Please try again."));return;}
   const gone=new Set(res.deletedIds||ids);
   ccForget_([...gone]);
   gone.forEach(id=>{delete _serverTopics[id];try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});
   setServerTopics(_serverTopics);
-  await ccReload(`<span class="correct">${esc(res.message||"Deleted.")}</span>`);
+  await ccReload(ccOk_(res.message||"Deleted."));
 }
 
-/* ---------- 🧩 Topic Tests: rename, change exam, move to another subject ---------- */
+/* ---------- drag a subject onto another subject ---------- */
+function ccDragStart(e,id){_ccDragId=id;try{e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="move";}catch(x){}}
+function ccDragEnd(){_ccDragId="";document.querySelectorAll(".cc-sub.drag-over").forEach(r=>r.classList.remove("drag-over"));}
+function ccDragOver(e,el){if(!_ccDragId||el.dataset.sid===_ccDragId)return;e.preventDefault();el.classList.add("drag-over");}
+function ccDragLeave(el){el.classList.remove("drag-over");}
+function ccDrop(e,targetId){
+  e.preventDefault();
+  const src=_ccDragId;ccDragEnd();
+  if(src&&src!==targetId)ccOpenMove(src,targetId);
+}
+
+/* ---------- exam choice used by the move dialogs ---------- */
+// <select> + "another exam" box. `keepLabel` is the first option (leave the questions' exam as it is).
+function ccExamPickHTML(pfx,tgt,keepLabel,refresh){
+  const seen=new Set(),opts=[];
+  [...(tgt?subjectGroups(tgt).map(g=>g.exam):[]),tgt?homeExam(tgt):"","GATE","ECET"].forEach(n=>{const k=topicKey(n);if(!k||seen.has(k))return;seen.add(k);opts.push(cleanTopic(n));});
+  return `<select id="${pfx}Exam" onchange="${refresh}()"><option value="__keep__">${esc(keepLabel)}</option>${opts.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("")}<option value="__new__">Another exam…</option></select><input id="${pfx}ExamNew" type="text" maxlength="40" placeholder="Exam name" style="display:none;margin-top:8px" oninput="${refresh}()">`;
+}
+// "__keep__", an exam name, or null when "Another exam…" is chosen but empty
+function ccExamValue_(pfx){
+  const sel=byId_(pfx+"Exam");if(!sel)return "__keep__";
+  if(sel.value==="__new__"){const v=cleanTopic(byId_(pfx+"ExamNew").value);return v||null;}
+  return sel.value;
+}
+function ccExamBox_(pfx){const sel=byId_(pfx+"Exam"),inp=byId_(pfx+"ExamNew");if(sel&&inp)inp.style.display=sel.value==="__new__"?"":"none";}
+// topic tests of a subject as <option value="group:test"> for joining one
+function ccTopicJoinOptions_(tgt){
+  const out=[];
+  if(tgt)subjectGroups(tgt).forEach((g,gi)=>g.topics.forEach((t,ti)=>out.push(`<option value="${gi}:${ti}">Add to the existing topic test “${esc(t.name)}”${g.exam?" ("+esc(g.exam)+")":""} — ${ccCount_(t.count,"question")}</option>`)));
+  return out.join("");
+}
+function ccJoinTarget_(tgt,pick){
+  if(!pick||!tgt)return null;
+  const [gi,ti]=pick.split(":").map(Number),g=subjectGroups(tgt)[gi],t=g&&g.topics[ti];
+  return t?{topic:t.name,exam:g.exam}:null;
+}
+
+/* ---------- ➡️ Move a subject into another subject ---------- */
+function ccOpenMove(sourceId,targetId){
+  const custom=_ccData.subjects;
+  if(!custom.length){ccMsg_(ccBad_("You have no practice-test subjects to move."));return;}
+  const src=custom.find(s=>s.id===sourceId)||custom[0];
+  const others=ccTargets_().filter(t=>t.id!==src.id);
+  const tgt=(targetId&&others.find(t=>t.id===targetId))||others[0];
+  ccModal(`<h2>Move a subject into another subject</h2>
+    <div class="mv-sentence"><span>Move</span><select id="mvSource" onchange="mvSourceChanged()">${custom.map(s=>`<option value="${esc(s.id)}" ${s.id===src.id?"selected":""}>${esc(s.name)}</option>`).join("")}</select><span>into</span><select id="mvTarget" onchange="mvRefresh(true)">${ccTargetOptions_(tgt&&tgt.id,src.id)}</select></div>
+    <p class="mv-q">What should happen to it?</p>
+    <label class="mv-opt"><input type="radio" name="mvKind" value="topic" checked onchange="mvRefresh()"><span><b>Make it a topic test</b><small>It stays a separate test, listed inside that subject (Choose Test), numbered like the other topic tests. Best for chapters.</small></span></label>
+    <div id="mvTopicBox" class="mv-box">
+      <label>Topic test</label><select id="mvTopicPick" onchange="mvRefresh()"></select>
+      <input id="mvTopicName" type="text" maxlength="80" placeholder="Name of the topic test, e.g. Chapter 1" oninput="this.dataset.touched=1;mvRefresh()">
+      <div id="mvExamRow"><label>Exam</label><span id="mvExamSlot"></span></div>
+      <label id="mvKeepWrap" class="mv-check"><input type="checkbox" id="mvKeepTopics" onchange="mvRefresh()"> It already has topic tests — keep them (only questions without a topic go under the name above)</label>
+    </div>
+    <label class="mv-opt"><input type="radio" name="mvKind" value="merge" onchange="mvRefresh()"><span><b>Merge its questions in</b><small>Its questions simply become part of that subject's questions. No separate topic test is made.</small></span></label>
+    <div id="mvPreview" class="mv-preview"></div><div id="mvMsg" class="note"></div>
+    <div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="mvGo" onclick="ccDoMove()">Move</button></div>`);
+  byId_("mvTopicName").value=src.name;
+  mvRefresh(true);
+}
+function mvSourceChanged(){
+  const srcId=byId_("mvSource").value,cur=byId_("mvTarget").value;
+  byId_("mvTarget").innerHTML=ccTargetOptions_(cur===srcId?"":cur,srcId);
+  const nm=byId_("mvTopicName");
+  if(!nm.dataset.touched){const s=_ccData.subjects.find(x=>x.id===srcId);if(s)nm.value=s.name;}
+  mvRefresh(true);
+}
+function mvState_(){
+  const src=_ccData.subjects.find(s=>s.id===byId_("mvSource").value),tgt=findSubjectById(byId_("mvTarget").value);
+  const kind=document.querySelector('input[name="mvKind"]:checked').value;
+  const join=ccJoinTarget_(tgt,byId_("mvTopicPick").value);
+  return {src,tgt,kind,join,name:cleanTopic(byId_("mvTopicName").value),exam:ccExamValue_("mv"),keep:byId_("mvKeepTopics").checked};
+}
+function mvRefresh(targetChanged){
+  const srcId=byId_("mvSource").value,src=_ccData.subjects.find(s=>s.id===srcId),tgt=findSubjectById(byId_("mvTarget").value);
+  if(!src||!tgt)return;
+  if(targetChanged){
+    byId_("mvTopicPick").innerHTML=`<option value="">A new topic test (type its name)</option>${ccTopicJoinOptions_(tgt)}`;
+    byId_("mvExamSlot").innerHTML=ccExamPickHTML("mv",tgt,`Keep the exam its questions have now${cleanTopic(src.exam)?" ("+cleanTopic(src.exam)+")":" ("+(homeExam(tgt)||"none")+")"}`,"mvRefresh");
+  }
+  ccExamBox_("mv");
+  const st=mvState_(),topicKind=st.kind==="topic";
+  byId_("mvTopicBox").style.display=topicKind?"":"none";
+  byId_("mvTopicName").style.display=st.join?"none":"";
+  byId_("mvExamRow").style.display=st.join?"none":"";
+  byId_("mvKeepWrap").style.display=subjectTopicInfo(src).topicCount>0?"":"none";
+  const n=src.questionCount||0,qs=ccCount_(n,"question");
+  let text;
+  if(!topicKind)text=`The ${qs} of “${src.name}” become part of “${st.tgt.name}”'s own questions. “${src.name}” disappears from your practice-test subjects. No topic test is made.`;
+  else{
+    const ex=st.join?st.join.exam:(st.exam==="__keep__"?(cleanTopic(src.exam)||homeExam(st.tgt)):(st.exam||""));
+    text=`“${src.name}” (${qs}) will appear inside “${st.tgt.name}” as ${st.join?`part of the existing topic test “${st.join.topic}”`:`the new topic test “${st.name||"…"}”`}${ex?` for ${ex}`:""}. Students will find it under “${st.tgt.name}” → Choose Test. “${src.name}” disappears from your practice-test subjects.`;
+  }
+  byId_("mvPreview").innerHTML=text.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+async function ccDoMove(){
+  const st=mvState_(),msg=byId_("mvMsg");
+  if(!st.src||!st.tgt)return;
+  if(st.kind==="topic"){
+    if(!st.join&&!st.name){msg.innerHTML=ccBad_("Type a name for the topic test first.");return;}
+    if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
+  }
+  msg.innerHTML='<span class="note">Moving…</span>';byId_("mvGo").disabled=true;
+  const base={...controlAuth_(),targetId:st.tgt.id,targetName:st.tgt.name,sourceIds:[st.src.id]};
+  let res;
+  if(st.kind==="merge")res=await apiPost("mergeSubjects",base,120000);
+  else{
+    const payload={...base,mode:st.keep?"keep":"single",targetTopic:st.join?st.join.topic:st.name};
+    if(st.join)payload.targetExam=st.join.exam;else if(st.exam!=="__keep__")payload.targetExam=st.exam;
+    res=await apiPost("nestSubjects",payload,120000);
+  }
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not move. Please try again.");byId_("mvGo").disabled=false;return;}
+  ccModalClose();
+  ccForget_(res.movedIds||res.mergedIds||[st.src.id]);
+  await ccReload(ccOk_(res.message||"Moved."));
+}
+
+/* ---------- ✏️ Rename a subject ---------- */
+function ccOpenRenameSubject(id){
+  const s=_ccData.subjects.find(x=>x.id===id);if(!s)return;
+  ccModal(`<h2>Rename subject</h2><label>New name</label><input id="rnName" type="text" maxlength="80" value="${esc(s.name)}" onkeydown="if(event.key==='Enter')ccDoRenameSubject('${esc(id)}')"><p class="note">Its questions move with it. Past results stay under the old name, so students' wait for this subject starts fresh.</p><div id="rnMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rnGo" onclick="ccDoRenameSubject('${esc(id)}')">Rename</button></div>`);
+  byId_("rnName").select();
+}
+async function ccDoRenameSubject(id){
+  const s=_ccData.subjects.find(x=>x.id===id),name=cleanTopic(byId_("rnName").value),msg=byId_("rnMsg");
+  if(!s)return;
+  if(!name||name===s.name){msg.innerHTML=ccBad_("Type a different name.");return;}
+  msg.innerHTML='<span class="note">Renaming…</span>';byId_("rnGo").disabled=true;
+  const res=await apiPost("renameSubject",{...controlAuth_(),subjectId:id,newName:name},30000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not rename. Please try again.");byId_("rnGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Renamed."));
+}
+
+/* ---------- 🧩 Topic Tests ---------- */
 function ccTestsTab(){
-  const body=document.getElementById("ccBody");if(!body)return;
+  const body=byId_("ccBody");if(!body)return;
   _ccTests=[];
   const sections=ccTargets_().map(sub=>{
     const list=(_serverTopics[sub.id]||{}).topics||[];
     if(!list.length)return "";
     const rows=list.map(t=>{
       const i=_ccTests.length;_ccTests.push({sid:sub.id,sname:sub.name,topic:t.name,exam:t.exam||"",count:t.count});
-      return `<div class="cc-row"><input type="checkbox" class="cc-check" ${_ccTestSel.has(i)?"checked":""} onchange="ccTestToggle(${i},this.checked)" aria-label="Select ${esc(t.name)}"><div class="cc-row-main"><b>${esc(t.name)}</b><small>${t.exam?`<span class="exam-badge sm">${esc(t.exam)}</span> `:""}${t.count} question${t.count===1?"":"s"}</small></div><button class="ghost" onclick="ccRenameTest(${i})">✏️ Rename</button></div>`;
+      return `<div class="cc-row"><div class="cc-row-main"><b>${esc(t.name)}</b><small>${t.exam?`<span class="exam-badge sm">${esc(t.exam)}</span> `:""}${ccCount_(t.count,"question")}</small></div><div class="cc-actions"><button class="ghost" onclick="ccOpenRenameTest(${i})">✏️ Rename</button><button class="mv" onclick="ccOpenMoveTest(${i})">➡️ Move…</button><button class="ghost" onclick="ccOpenPromote(${i})">⬆️ Make it a subject</button></div></div>`;
     }).join("");
-    return `<h2>${esc(sub.name)}</h2><div class="cc-list">${rows}</div>`;
+    return `<h2>${esc(sub.name)}${sub.builtin?' <span class="note">(built-in)</span>':""}</h2><div class="cc-list">${rows}</div>`;
   }).join("");
-  body.innerHTML=`<p class="note">Rename a topic test, change the exam it belongs to, or move whole topic tests to another subject. Renaming a test to the name of an existing one (in the same exam) combines them. Only tests made from questions stored in the sheet can be changed here — topics tagged inside <code>subjects.json</code> stay as they are. Past results stay under the old name, so the wait for a renamed or moved test starts fresh.</p>
-    <div class="cc-tools"><label>Move the ticked topic tests to subject</label><select id="ccMoveTarget" onchange="ccMoveTargetChanged()">${ccTargetOptions_()}</select>
-      <label>As</label><select id="ccMoveTopic">${ccMoveTopicOptions_((ccTargets_()[0]||{}).id)}</select>
-      <div class="buttons"><button id="ccMoveBtn" onclick="ccMoveTests()">➡️ Move ticked (${_ccTestSel.size})</button><button class="ghost" id="ccPromoteBtn" onclick="ccPromoteTests()">⬆️ Make ticked a main subject (${_ccTestSel.size})</button></div></div>
+  body.innerHTML=`<div class="cc-help"><b>What can I do here?</b>
+      <ul><li><b>✏️ Rename</b> a topic test, or change the exam it belongs to.</li>
+      <li><b>➡️ Move…</b> sends a topic test to another subject — keeping its name, adding it to one of that subject's topic tests, or under a new name.</li>
+      <li><b>⬆️ Make it a subject</b> turns a topic test into a subject of its own (in Practice Tests).</li></ul>
+      <span class="note">Only topic tests made from questions stored in the sheet can be changed here — topics tagged inside <code>subjects.json</code> stay as they are.</span></div>
     <div id="ccDelMsg" class="note">${ccFlashHTML()}</div>
-    ${sections||'<p class="note">No topic tests yet. Add questions with a topic in Admin → Add Questions.</p>'}`;
+    ${sections||'<p class="note">No topic tests yet. Move a subject into another one from the Subjects tab, or add questions with a topic in Admin → Add Questions.</p>'}`;
 }
-function ccTestToggle(i,on){if(on)_ccTestSel.add(i);else _ccTestSel.delete(i);const b=document.getElementById("ccMoveBtn"),p=document.getElementById("ccPromoteBtn");if(b)b.textContent=`➡️ Move ticked (${_ccTestSel.size})`;if(p)p.textContent=`⬆️ Make ticked a main subject (${_ccTestSel.size})`;}
-// options for "As": keep the names, join one of the target's topic tests, or a new name
-function ccMoveTopicOptions_(subjectId){
-  const s=subjectId&&findSubjectById(subjectId),opts=['<option value="">Keep their own names</option>'];
-  if(s)subjectGroups(s).forEach((g,gi)=>g.topics.forEach((t,ti)=>opts.push(`<option value="${gi}:${ti}">Join "${esc(t.name)}"${g.exam?" ("+esc(g.exam)+")":""} (${t.count} question${t.count===1?"":"s"})</option>`)));
-  opts.push('<option value="__new__">Combine into a new topic test (name asked next)…</option>');
-  return opts.join("");
-}
-function ccMoveTargetChanged(){const t=document.getElementById("ccMoveTarget"),o=document.getElementById("ccMoveTopic");if(t&&o)o.innerHTML=ccMoveTopicOptions_(t.value);}
-async function ccPromoteTests(){
-  const picks=[..._ccTestSel].map(i=>_ccTests[i]).filter(Boolean);
-  if(!picks.length){ccMsg_('<span class="wronganswer">Tick at least one topic test first.</span>');return;}
-  const done=[];let failed="";
-  for(const p of picks){
-    const src=findSubjectById(p.sid);
-    const nn=prompt(`Name of the new subject made from "${p.topic}"${p.exam?" ("+p.exam+")":""}:`,p.topic);if(nn===null)continue;
-    const name=cleanTopic(nn);if(!name)continue;
-    const pw=prompt(`Password for the new subject "${name}":`,src&&src.password?src.password:"");if(pw===null)continue;
-    if(!pw.trim()){failed="A password is required for the new subject.";break;}
-    if(!confirm(`Make "${p.topic}"${p.exam?" ("+p.exam+")":""} (${p.count} question${p.count===1?"":"s"}) a main subject called "${name}"?\n\nIts questions leave "${p.sname}" and lose their topic. Past results stay under the old name. You can undo this from the top of the Control Centre.`))continue;
-    ccMsg_('<span class="note">Working…</span>');
-    const res=await apiPost("promoteTopicTest",{...controlAuth_(),fromSubjectId:p.sid,topic:p.topic,exam:p.exam,newName:name,password:pw.trim()},60000);
-    if(ccDenied(res))return;
-    if(!res?.ok){failed=res?.error||"Could not do that. Please try again.";break;}
-    done.push(res.message);
-  }
-  if(!done.length&&!failed)return;
-  await ccReload(`${done.map(m=>`<span class="correct">${esc(m)}</span>`).join("<br>")}${failed?`${done.length?"<br>":""}<span class="wronganswer">${esc(failed)}</span>`:""}`);
-}
-async function ccRenameTest(i){
+function ccExamSlot_(pfx,tgt,keepLabel,refresh){return ccExamPickHTML(pfx,tgt,keepLabel,refresh);}
+function ccOpenRenameTest(i){
   const t=_ccTests[i];if(!t)return;
-  const nt=prompt(`Name of this topic test (in ${t.sname}):`,t.topic);if(nt===null)return;
-  const newTopic=cleanTopic(nt);if(!newTopic)return;
-  const ne=prompt("Exam for this topic test (GATE, ECET or another exam). Leave empty for the subject's default exam:",t.exam);if(ne===null)return;
-  const newExam=cleanTopic(ne);
-  if(newTopic===t.topic&&newExam===t.exam)return;
-  if(!confirm(`Change "${t.topic}"${t.exam?" ("+t.exam+")":""} to "${newTopic}"${newExam?" ("+newExam+")":""}?\n\nPast results stay under the old name, so the wait for this test starts fresh.`))return;
-  ccMsg_('<span class="note">Saving…</span>');
-  const res=await apiPost("renameTopicTest",{...controlAuth_(),subjectId:t.sid,topic:t.topic,exam:t.exam,newTopic,newExam},30000);
-  if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`);return;}
-  await ccReload(`<span class="correct">${esc(res.message||"Saved.")}</span>`);
+  ccModal(`<h2>Rename topic test</h2><p class="note">In “${esc(t.sname)}”</p><label>Name</label><input id="rtName" type="text" maxlength="80" value="${esc(t.topic)}"><label>Exam</label><input id="rtExam" list="examChoices" type="text" maxlength="40" value="${esc(t.exam)}" placeholder="GATE, ECET or another (empty = the subject's default)"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist><p class="note">If a topic test with this name already exists in the same exam, the two are combined. Past results stay under the old name, so the wait for this test starts fresh.</p><div id="rtMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rtGo" onclick="ccDoRenameTest(${i})">Save</button></div>`);
+  byId_("rtName").select();
 }
-async function ccMoveTests(){
-  const picks=[..._ccTestSel].map(i=>_ccTests[i]).filter(Boolean),toId=document.getElementById("ccMoveTarget")?.value,pick=document.getElementById("ccMoveTopic")?.value||"";
-  if(!picks.length){ccMsg_('<span class="wronganswer">Tick at least one topic test first.</span>');return;}
-  const tgt=ccTargets_().find(t=>t.id===toId);if(!tgt)return;
-  let extra={},as="keeping their own names";
-  if(pick==="__new__"){
-    const nn=prompt(`Name of the new topic test (in "${tgt.name}") to combine them into:`);if(nn===null)return;
-    const name=cleanTopic(nn);if(!name)return;
-    extra={toTopic:name};as=`combined into a topic test named "${name}"`;
-  }else if(pick){
-    const [gi,ti]=pick.split(":").map(Number),g=subjectGroups(findSubjectById(toId))[gi],t=g&&g.topics[ti];
-    if(!t)return;
-    extra={toTopic:t.name,toExam:g.exam};as=`joining the topic test "${t.name}"${g.exam?" ("+g.exam+")":""}`;
-  }else if(picks.some(p=>p.sid===toId)){ccMsg_('<span class="wronganswer">Some ticked tests are already in that subject — untick them, pick another subject, or choose a topic test to join.</span>');return;}
-  const qs=picks.reduce((n,p)=>n+p.count,0);
-  if(!confirm(`Move ${picks.length} topic test${picks.length===1?"":"s"} to "${tgt.name}", ${as}?\n\n${picks.map(p=>"• "+p.topic+(p.exam?" ("+p.exam+")":"")+" — from "+p.sname).join("\n")}\n\n${qs} question${qs===1?"":"s"} move with them${extra.toExam===undefined?" and keep their exam":""}. Past results stay under the old names, so the wait for these tests starts fresh. You can undo this from the top of the Control Centre.`))return;
-  ccMsg_('<span class="note">Moving…</span>');
-  const bySubject=new Map();
-  picks.forEach(p=>{const l=bySubject.get(p.sid)||[];l.push({topic:p.topic,exam:p.exam});bySubject.set(p.sid,l);});
-  const done=[];let failed="";
-  for(const [sid,items] of bySubject){
-    const res=await apiPost("moveTopicTests",{...controlAuth_(),fromSubjectId:sid,items,toSubjectId:toId,toSubjectName:tgt.name,...extra},60000);
-    if(ccDenied(res))return;
-    if(!res?.ok){failed=res?.error||"Could not move. Please try again.";break;}
-    done.push(res.message);
+async function ccDoRenameTest(i){
+  const t=_ccTests[i],newTopic=cleanTopic(byId_("rtName").value),newExam=cleanTopic(byId_("rtExam").value),msg=byId_("rtMsg");
+  if(!t)return;
+  if(!newTopic){msg.innerHTML=ccBad_("Type a name.");return;}
+  if(newTopic===t.topic&&newExam===t.exam){msg.innerHTML=ccBad_("Nothing changed.");return;}
+  msg.innerHTML='<span class="note">Saving…</span>';byId_("rtGo").disabled=true;
+  const res=await apiPost("renameTopicTest",{...controlAuth_(),subjectId:t.sid,topic:t.topic,exam:t.exam,newTopic,newExam},30000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not save. Please try again.");byId_("rtGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Saved."));
+}
+
+/* ---------- ➡️ Move a topic test to another subject ---------- */
+function ccOpenMoveTest(i,targetId){
+  const t=_ccTests[i];if(!t)return;
+  const all=ccTargets_(),tgt=(targetId&&all.find(x=>x.id===targetId))||all.find(x=>x.id!==t.sid)||all[0];
+  ccModal(`<h2>Move a topic test</h2>
+    <p class="mv-line">“<b>${esc(t.topic)}</b>”${t.exam?` <span class="exam-badge sm">${esc(t.exam)}</span>`:""} — now in “${esc(t.sname)}” (${ccCount_(t.count,"question")})</p>
+    <div class="mv-sentence"><span>Move it to</span><select id="mtTarget" onchange="mtRefresh(true)">${ccTargetOptions_(tgt.id,"")}</select></div>
+    <p class="mv-q">What should it be called there?</p>
+    <select id="mtPick" onchange="mtRefresh()"></select>
+    <input id="mtName" type="text" maxlength="80" placeholder="New name of the topic test" style="display:none;margin-top:8px" oninput="mtRefresh()">
+    <div id="mtExamRow"><label>Exam</label><span id="mtExamSlot"></span></div>
+    <div id="mtPreview" class="mv-preview"></div><div id="mtMsg" class="note"></div>
+    <div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="mtGo" onclick="ccDoMoveTest(${i})">Move</button></div>`);
+  mtRefresh(true,i);
+  window._mtIndex=i;
+}
+function mtState_(){
+  const i=window._mtIndex,t=_ccTests[i],tgt=findSubjectById(byId_("mtTarget").value),pick=byId_("mtPick").value;
+  const join=pick&&pick!=="__keep__"&&pick!=="__new__"?ccJoinTarget_(tgt,pick):null;
+  return {t,tgt,pick,join,name:cleanTopic(byId_("mtName").value),exam:ccExamValue_("mt")};
+}
+function mtRefresh(targetChanged,i){
+  if(i!==undefined)window._mtIndex=i;
+  const t=_ccTests[window._mtIndex],tgt=findSubjectById(byId_("mtTarget").value);
+  if(!t||!tgt)return;
+  if(targetChanged){
+    byId_("mtPick").innerHTML=`<option value="__keep__">Keep the name “${esc(t.topic)}”</option>${ccTopicJoinOptions_(tgt)}<option value="__new__">A new name…</option>`;
+    byId_("mtExamSlot").innerHTML=ccExamPickHTML("mt",tgt,`Keep its exam${t.exam?" ("+t.exam+")":""}`,"mtRefresh");
   }
-  await ccReload(`${done.map(m=>`<span class="correct">${esc(m)}</span>`).join("<br>")}${failed?`${done.length?"<br>":""}<span class="wronganswer">${esc(failed)}</span>`:""}`);
+  ccExamBox_("mt");
+  const st=mtState_();
+  byId_("mtName").style.display=st.pick==="__new__"?"":"none";
+  byId_("mtExamRow").style.display=st.join?"none":"";
+  const ex=st.join?st.join.exam:(st.exam==="__keep__"?t.exam:(st.exam||""));
+  const called=st.join?`part of the existing topic test “${st.join.topic}”`:st.pick==="__new__"?`the topic test “${st.name||"…"}”`:`the topic test “${t.topic}”`;
+  const same=st.tgt.id===t.sid&&st.pick==="__keep__";
+  byId_("mtPreview").innerHTML=(same?"It is already in that subject — choose another subject, or a topic test to add it to.":`Its ${ccCount_(t.count,"question")} will appear in “${st.tgt.name}” as ${called}${ex?` for ${ex}`:""}.`).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+async function ccDoMoveTest(i){
+  const st=mtState_(),msg=byId_("mtMsg");
+  if(!st.t||!st.tgt)return;
+  if(st.tgt.id===st.t.sid&&st.pick==="__keep__"){msg.innerHTML=ccBad_("It is already in that subject — choose another subject, or a topic test to add it to.");return;}
+  if(st.pick==="__new__"&&!st.name){msg.innerHTML=ccBad_("Type the new name first.");return;}
+  if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
+  const payload={...controlAuth_(),fromSubjectId:st.t.sid,items:[{topic:st.t.topic,exam:st.t.exam}],toSubjectId:st.tgt.id,toSubjectName:st.tgt.name};
+  if(st.join){payload.toTopic=st.join.topic;payload.toExam=st.join.exam;}
+  else{if(st.pick==="__new__")payload.toTopic=st.name;if(st.exam!=="__keep__")payload.toExam=st.exam;}
+  msg.innerHTML='<span class="note">Moving…</span>';byId_("mtGo").disabled=true;
+  const res=await apiPost("moveTopicTests",payload,60000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not move. Please try again.");byId_("mtGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Moved."));
+}
+
+/* ---------- ⬆️ Make a topic test a subject ---------- */
+function ccOpenPromote(i){
+  const t=_ccTests[i];if(!t)return;
+  const src=findSubjectById(t.sid);
+  ccModal(`<h2>Make a topic test a subject</h2>
+    <p class="mv-line">“<b>${esc(t.topic)}</b>”${t.exam?` <span class="exam-badge sm">${esc(t.exam)}</span>`:""} in “${esc(t.sname)}” (${ccCount_(t.count,"question")}) becomes a subject of its own.</p>
+    <label>Name of the new subject</label><input id="pmName" type="text" maxlength="80" value="${esc(t.topic)}">
+    <label>Password for the new subject</label><input id="pmPass" type="text" value="${esc(src&&src.password?src.password:"")}" autocomplete="off">
+    <p class="note">The new subject appears in Practice Tests. Its questions leave “${esc(t.sname)}” and lose their topic (they keep their exam). Past results stay under the old name.</p>
+    <div id="pmMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="pmGo" onclick="ccDoPromote(${i})">Make it a subject</button></div>`);
+  byId_("pmName").select();
+}
+async function ccDoPromote(i){
+  const t=_ccTests[i],name=cleanTopic(byId_("pmName").value),pw=byId_("pmPass").value.trim(),msg=byId_("pmMsg");
+  if(!t)return;
+  if(!name){msg.innerHTML=ccBad_("Type a name for the new subject.");return;}
+  if(!pw){msg.innerHTML=ccBad_("A password is required for the new subject.");return;}
+  msg.innerHTML='<span class="note">Working…</span>';byId_("pmGo").disabled=true;
+  const res=await apiPost("promoteTopicTest",{...controlAuth_(),fromSubjectId:t.sid,topic:t.topic,exam:t.exam,newName:name,password:pw},60000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not do that. Please try again.");byId_("pmGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Done."));
 }
 
 /* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */

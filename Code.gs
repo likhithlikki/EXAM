@@ -2043,16 +2043,18 @@ function findSubjectRow_(subjectId) {
 }
 
 // A move/merge target can be a custom subject or one of the built-in subjects.
+// Built-in subjects live in subjects.json (not in the sheet), so the website sends
+// their id and name; the id must look like a subject id and the name must be there.
 function resolveTargetSubject_(targetId, targetName) {
   var custom = findSubjectRow_(targetId);
   if (custom) return { id: targetId, name: custom.name, custom: true };
-  var wanted = cleanTopic_(targetName).toLowerCase();
+  var name = cleanTopic_(targetName);
+  if (!name || name.length > 80 || !/^[a-z0-9][a-z0-9-]*$/.test(String(targetId))) return null;
+  var lower = name.toLowerCase();
   for (var i = 0; i < STATIC_SUBJECT_NAMES.length; i++) {
-    if (STATIC_SUBJECT_NAMES[i].toLowerCase() === wanted) {
-      return { id: targetId, name: STATIC_SUBJECT_NAMES[i], custom: false };
-    }
+    if (STATIC_SUBJECT_NAMES[i].toLowerCase() === lower) name = STATIC_SUBJECT_NAMES[i];
   }
-  return null;
+  return { id: targetId, name: name, custom: false };
 }
 
 function renameSubjectImpl_(body) {
