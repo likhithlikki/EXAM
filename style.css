@@ -5,11 +5,21 @@
   --primary-light:#eef1ff;
   --accent:#ff8a00;
   --accent-dark:#e07600;
-  --success:#16a34a;
+  /* ACCESSIBILITY FIX: the original --success/--warning/--danger shades below
+     measured under WCAG 2.1 AA (4.5:1 minimum for normal text) when used as
+     TEXT color on white/card backgrounds, as they are in .correct,
+     .review-toggle, .wronganswer, .server-status text, etc:
+       --success #16a34a on white  -> 3.30:1 (fail)
+       --warning #d97706 on white  -> 3.19:1 (fail)
+       --danger  #dc2626 on #fdeaea -> 4.17:1 (fail, just under)
+     The values below are darkened just enough to clear 4.5:1 everywhere
+     they're used as text, while staying visually "green/orange/red" and
+     changing nothing about layout, spacing, or which elements use them. */
+  --success:#15803d;
   --success-bg:#e8f9ee;
-  --danger:#dc2626;
+  --danger:#b91c1c;
   --danger-bg:#fdeaea;
-  --warning:#d97706;
+  --warning:#b45309;
   --warning-bg:#fff4e0;
   --ink:#161e3a;
   --muted:#65708a;
@@ -21,6 +31,12 @@
   --shadow-lg:0 10px 30px rgba(30,50,120,.14);
 }
 *{box-sizing:border-box}
+/* ACCESSIBILITY: a consistent, visible keyboard-focus ring on every
+   interactive element. Uses :focus-visible so it only appears for
+   keyboard/switch-device navigation (not on mouse clicks), and is added
+   globally rather than per-component so nothing can be tabbed to without a
+   visible indicator — a WCAG 2.4.7 requirement for "keyboard friendly". */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #2952e3;outline-offset:2px;border-radius:4px}
 html,body{overflow-x:hidden;max-width:100%}
 body{margin:0;background:linear-gradient(180deg,#eef2fc 0%,#f6f8fd 320px,#f2f5fc 100%);color:var(--ink);font-family:'Inter',Arial,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
@@ -46,7 +62,11 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 }
 .home-nav button{background:#fff;color:var(--primary-dark);border:1.5px solid var(--primary);box-shadow:none}
 .home-nav button:hover{background:var(--primary-light)}
-.subject-card button:disabled,.buttons button:disabled{background:#dfe3ee;color:#9aa2b8;cursor:not-allowed;box-shadow:none}
+/* Hardened from #9aa2b8 (1.99:1 on this background) to #5c6477 (4.62:1).
+   Native `disabled` controls are WCAG/axe-exempt from contrast checks, so
+   this likely wasn't the flagged element — but it costs nothing to fix and
+   removes any ambiguity for assistive tech that doesn't apply the exemption. */
+.subject-card button:disabled,.buttons button:disabled{background:#dfe3ee;color:#5c6477;cursor:not-allowed;box-shadow:none}
 .buttons button:hover:not(:disabled),.examfoot button:hover:not(:disabled),.subject-card button:hover:not(:disabled),.card>button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px rgba(41,82,227,.3)}
 
 /* While an API call is in flight (see loadingShow/loadingHide in app.js),
@@ -189,8 +209,20 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 /* ---------- Top loading progress bar ---------- */
 #loadBar{position:fixed;top:0;left:0;width:100%;height:3px;z-index:2000;background:transparent;overflow:hidden;opacity:0;transition:opacity .2s ease}
 #loadBar.active{opacity:1}
-#loadBarFill{position:absolute;top:0;left:0;height:100%;width:35%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:0 4px 4px 0;animation:loadSlide 1.1s ease-in-out infinite}
-@keyframes loadSlide{0%{left:-35%}50%{left:60%}100%{left:100%}}
+/* PERFORMANCE FIX (Lighthouse: "Avoid non-composited animations", 1 element
+   found — this was it). The old @keyframes animated `left`, which forces a
+   layout+paint recalculation on every single frame of this infinite-loop
+   animation, run on every API call via loadingShow()/loadingHide(). Same
+   visual motion (slides from just-off-left to just-off-right), but now
+   animates `transform: translateX()` instead, which the browser can run
+   entirely on the compositor thread — no layout, no paint, no main-thread
+   cost per frame. `left:0` is now static (set once), not animated. Percent
+   values are translateX()'s own-width-relative equivalents of the old
+   parent-width-relative left values (element width = 35% of parent: -100%
+   own-widths = -35% parent width; 171% own-widths ≈ 60% parent width; 286%
+   own-widths ≈ 100% parent width). */
+#loadBarFill{position:absolute;top:0;left:0;height:100%;width:35%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:0 4px 4px 0;animation:loadSlide 1.1s ease-in-out infinite;will-change:transform}
+@keyframes loadSlide{0%{transform:translateX(-100%)}50%{transform:translateX(171%)}100%{transform:translateX(286%)}}
 
 /* ---------- Server status pill ---------- */
 .server-status{display:inline-flex;align-items:center;gap:8px;margin:10px 0 18px;padding:7px 12px;border-radius:999px;font-size:13px;border:1px solid var(--line);background:#fff;font-weight:600}
@@ -212,7 +244,13 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 /* Home subject search */
 .subject-jump{position:relative;max-width:640px;margin:22px auto 26px}
 .subject-jump input{width:100%;box-sizing:border-box;height:54px;padding:0 60px 0 52px;font-size:16px;color:var(--ink);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%232952e3' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 18px center;border:2px solid var(--line);border-radius:999px;box-shadow:0 6px 20px rgba(30,50,120,.10);transition:border-color .15s ease,box-shadow .15s ease}
-.subject-jump input::placeholder{color:#8a94ad}
+/* ACCESSIBILITY FIX (Lighthouse): placeholder text in the subject-search
+   box measured 3.03:1 against the white input background — fails WCAG AA's
+   4.5:1 minimum for normal text, and is real rendered text axe-core/
+   Lighthouse's color-contrast check does evaluate (unlike disabled
+   controls, which are exempt). Reusing --muted here instead of a new value
+   since --muted already passes at 4.96:1 on white everywhere else it's used. */
+.subject-jump input::placeholder{color:var(--muted)}
 .subject-jump input:hover{border-color:#cdd6f3}
 .subject-jump input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(41,82,227,.16),0 8px 24px rgba(30,50,120,.14)}
 .jump-toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:40px;height:40px;padding:0;min-width:0;border:0;border-radius:50%;font-size:15px;line-height:1;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 3px 10px rgba(41,82,227,.3)}
@@ -328,7 +366,7 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .st-done{background:#dcfce7;color:#166534}
 .st-undone{background:#fef3c7;color:#92400e}
 .st-info{background:#eef0f7;color:#5b6480}
-.st-expired,.st-discarded{background:#f1f1f1;color:#8a8a8a}
+.st-expired,.st-discarded{background:#f1f1f1;color:#666666}
 
 /* ---------- Control Centre: help box, dialogs, drag & drop ---------- */
 .cc-help{background:var(--primary-light);border:1px solid #d7ddfb;border-radius:12px;padding:12px 16px;margin:6px 0 14px;font-size:14.5px;color:var(--ink)}

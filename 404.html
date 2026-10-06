@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Page not found — Online Mock Test</title>
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3b1c3f">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="legal.css">
+<style>
+  /* Page-specific layout only — palette/typography/focus-ring all come from legal.css */
+  .notfound{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+  .notfound .code{font-family:Poppins,sans-serif;font-weight:800;font-size:clamp(64px,14vw,120px);color:var(--coral);line-height:1;margin:0}
+  .notfound h1{margin:6px 0 10px}
+  .notfound p{color:var(--muted);max-width:460px;margin:0 0 26px}
+  .notfound .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .btn{display:inline-block;padding:12px 22px;border-radius:999px;font-weight:700;text-decoration:none;font-family:Poppins,sans-serif;font-size:15px}
+  .btn.primary{background:linear-gradient(135deg,var(--coral),var(--amber));color:#fff}
+  .btn.ghost{background:var(--paper);color:var(--plum);border:1.5px solid var(--line)}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><i>✎</i> Online Mock Test</a>
+    <nav>
+      <a href="about.html">About</a>
+      <a href="index.html">Open the tests</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="notfound">
+    <p class="code" aria-hidden="true">404</p>
+    <h1>Page not found</h1>
+    <p>The page you're looking for doesn't exist, may have moved, or the link might be mistyped. Your exam progress and saved data are safe either way — they live in your account, not in this URL.</p>
+    <div class="actions">
+      <a class="btn primary" href="index.html">Go to Home</a>
+      <a class="btn ghost" href="about.html">About this site</a>
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap">Online Mock Test · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="index.html">Open the tests</a></div></footer>
+</body>
+</html>

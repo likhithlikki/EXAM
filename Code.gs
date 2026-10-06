@@ -21,8 +21,30 @@ const SPREADSHEET_ID = '1QDu7YTv-MWm9jRuVsmRBGjwuBD6WFtj_4bRqj5B8hds';
 const SITE_URL = ''; // Optional fallback website URL. Prefer frontend-supplied testUrl.
 
 const SHEETS = {
+  // ConsentGiven/ConsentAt: durable, timestamped record that this user
+  // ticked the Privacy Policy / Terms consent checkbox in the frontend
+  // (see consentFieldsHTML_ in app.js) — required for the DPDP Act's
+  // "notice + consent before collecting personal data" requirement to be
+  // demonstrable, not just a client-side box with no server-side trace.
+  // ensureSheets_() auto-adds these two columns to an existing sheet on
+  // next deploy, so no manual spreadsheet edit is needed.
+  // Uid: the Firebase UID for this user, set the first time they register
+  // through the native app (or, for existing web-only users, left blank
+  // until they first sign in natively — email remains how the website
+  // looks up a user, exactly as before; Uid is additive, not a
+  // replacement column the website needs to know about).
   Users: [
-    'Timestamp', 'Name', 'Email', 'LastSubject', 'LastTestUrl'
+    'Timestamp', 'Name', 'Email', 'LastSubject', 'LastTestUrl',
+    'ConsentGiven', 'ConsentAt', 'Uid'
+  ],
+
+  // Server-side admin allowlist for the native app's Firebase-UID-based
+  // admin gate (see requireAdminUser_ in section 3B) — add/remove a row
+  // here to grant/revoke native admin access, no redeploy needed. This is
+  // separate from the website's legacy password-based admin/Control Centre
+  // gate, which still exists unchanged for the website.
+  AdminUsers: [
+    'Uid', 'Name', 'AddedAt'
   ],
 
   Results: [
@@ -408,6 +430,172 @@ function appendMany_(sheet, headers, objects) {
 
 
 // ============================================================
+// 3B. FIREBASE AUTHENTICATION BRIDGE (native Android app)
+// ============================================================
+// Added to support the native Android app, which authenticates students
+// with Firebase Authentication (Google + Email/Password) instead of the
+// website's old "an email typed into a form IS the identity" model. This
+// section verifies a Firebase ID token SERVER-SIDE before trusting any
+// UID it claims, and never trusts a client-supplied UID or email as proof
+// of identity on its own.
+//
+// DUAL-MODE BY DESIGN: the existing website (index.html/app.js) keeps
+// working completely unchanged — every action below still accepts calls
+// with no idToken at all, exactly as before. idToken is only checked WHEN
+// PRESENT. This is deliberate: forcing every website visitor onto Firebase
+// Auth in one shot was explicitly out of scope ("the existing GitHub
+// website must remain functional"), so the migration path is additive,
+// not a breaking cutover. Once the native app is the primary client, the
+// legacy email-only path can be retired action-by-action.
+//
+// REQUIRED SETUP (see IMPLEMENTATION_REPORT.md "Manual setup"):
+//   1. Firebase Console -> Project Settings -> General -> "Web API Key".
+//   2. In this Apps Script project: Project Settings (gear icon) -> Script
+//      Properties -> add a property named FIREBASE_WEB_API_KEY with that
+//      value. NEVER hard-code it in this file or commit it to GitHub.
+//   3. Add admin UIDs to the AdminUsers sheet (auto-created by
+//      ensureSheets_) — see adminUidAllowlist_() below.
+
+function firebaseWebApiKey_() {
+  var key = PropertiesService.getScriptProperties().getProperty('FIREBASE_WEB_API_KEY');
+  if (!key) {
+    throw new Error('FIREBASE_WEB_API_KEY is not set in Script Properties. See Code.gs section 3B for setup steps.');
+  }
+  return key;
+}
+
+// Structured error shape for the NEW auth-gated failures, matching the
+// Master Prompt's requested {code, message} shape. Every PRE-EXISTING
+// action's errors are untouched (still plain strings via friendlyError_),
+// so the website's error handling never has to change.
+function authError_(code, message) {
+  return { ok: false, error: { code: code, message: message } };
+}
+
+/**
+ * Verifies a Firebase ID token by calling the official Identity Toolkit
+ * REST API (accounts:lookup) — the same approach Firebase's own server-side
+ * verification guidance describes for platforms without the Firebase Admin
+ * SDK (Apps Script has no Admin SDK). Returns the authenticated user's
+ * {uid, email, emailVerified} on success, or null on any failure — callers
+ * must treat null as "reject the request", never as "fall back to
+ * anonymous/legacy behavior" for a NEW protected action.
+ *
+ * SECURITY NOTE: this call itself never sees or needs the student's
+ * password — Firebase already validated credentials when it issued the ID
+ * token client-side. This function's only job is confirming the token is
+ * genuine, current, and reading who it belongs to, so the backend never has
+ * to trust a client-asserted UID/email.
+ */
+function verifyFirebaseIdToken_(idToken) {
+  if (!idToken) return null;
+
+  // Short-lived verification cache. Every native request carries a token, and
+  // each verification is a UrlFetch call (~20,000/day quota on consumer
+  // accounts, plus latency). The token's SHA-256 (never the token itself) is
+  // the cache key, and 120s is short enough that a revoked/expired token is
+  // rejected within two minutes at most.
+  var cacheKey = null;
+  try {
+    var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(idToken));
+    cacheKey = 'fbtok_' + digest.map(function (b) { return ('0' + (b & 0xff).toString(16)).slice(-2); }).join('');
+    var hit = CacheService.getScriptCache().get(cacheKey);
+    if (hit) return JSON.parse(hit);
+  } catch (ignore) {}
+
+  var url = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + encodeURIComponent(firebaseWebApiKey_());
+
+  try {
+    var response = UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify({ idToken: idToken }),
+      muteHttpExceptions: true
+    });
+
+    var status = response.getResponseCode();
+    var body = JSON.parse(response.getContentText() || '{}');
+
+    if (status !== 200 || !body.users || !body.users.length) {
+      return null; // invalid, expired, or malformed token — caller returns AUTH_INVALID/AUTH_EXPIRED
+    }
+
+    var user = body.users[0];
+    var verified = {
+      uid: user.localId,
+      email: email_(user.email || ''),
+      emailVerified: !!user.emailVerified
+    };
+    try {
+      if (cacheKey) CacheService.getScriptCache().put(cacheKey, JSON.stringify(verified), 120);
+    } catch (ignore) {}
+    return verified;
+  } catch (e) {
+    // Network/parse failure talking to Google's own endpoint — treat as
+    // "could not verify", never as "assume valid".
+    return null;
+  }
+}
+
+/**
+ * The single gate every NEW protected native-app action calls at the top.
+ * Returns {uid, email, emailVerified} on success. Returns a ready-to-send
+ * authError_() response on failure — callers do:
+ *
+ *   var auth = requireAuthenticatedUser_(body);
+ *   if (auth.error) return auth.error;
+ *   // ...use auth.uid / auth.email from here on, never body.email alone...
+ *
+ * `request` may be a doPost body object OR a doGet e.parameter object —
+ * both are plain objects with an idToken field by convention (Kotlin's
+ * ApiService sends it as a query param on GET, a JSON body field on POST).
+ */
+function requireAuthenticatedUser_(request) {
+  var idToken = request && request.idToken;
+  if (!idToken) {
+    return { error: authError_('AUTH_REQUIRED', 'Authentication required.') };
+  }
+  var verified = verifyFirebaseIdToken_(idToken);
+  if (!verified) {
+    return { error: authError_('AUTH_INVALID', 'Your session has expired or is invalid. Please sign in again.') };
+  }
+  return { uid: verified.uid, email: verified.email, emailVerified: verified.emailVerified };
+}
+
+// ---- Admin authorization for the native app: UID allowlist, not a password ----
+// "Hiding an admin button is not security" — this is the actual server-side
+// gate: even a manually-crafted request to an admin action is rejected
+// unless the AUTHENTICATED UID (verified above, never a client-claimed one)
+// is on this list. Kept in its own sheet (not a hard-coded array) so admins
+// can be added/removed by editing a spreadsheet row, no redeploy needed.
+function adminUidAllowlist_() {
+  return objs_(sh_('AdminUsers')).map(function (row) { return String(row.Uid || '').trim(); }).filter(Boolean);
+}
+
+function isAdminUid_(uid) {
+  if (!uid) return false;
+  return adminUidAllowlist_().indexOf(uid) !== -1;
+}
+
+/**
+ * Gate for a NEW native-app admin action: requires both a valid Firebase
+ * session AND that UID being on the AdminUsers allowlist. Distinct from the
+ * legacy isAdmin_(email, password) used by pre-existing website actions,
+ * which is left in place for backward compatibility only — see the
+ * "Security fixes" section of IMPLEMENTATION_REPORT.md for why the legacy
+ * password path should be rotated and eventually retired now that this
+ * exists.
+ */
+function requireAdminUser_(request) {
+  var auth = requireAuthenticatedUser_(request);
+  if (auth.error) return auth;
+  if (!isAdminUid_(auth.uid)) {
+    return { error: authError_('AUTH_FORBIDDEN', 'Admin access is required.') };
+  }
+  return auth;
+}
+
+// ============================================================
 // 4. WEB APP ENTRY POINTS
 // ============================================================
 
@@ -561,6 +749,20 @@ function doGet(e) {
   try {
     ensureSheetsCached_();
 
+    // NATIVE APP PATH (all read actions at once): when an idToken is sent,
+    // verify it and force e.parameter.email to the VERIFIED email so a
+    // modified client can't read another student's dashboard/mistakes/
+    // history by typing their email. No idToken -> unchanged website
+    // behavior.
+    if (e.parameter && e.parameter.idToken) {
+      var getAuth = requireAuthenticatedUser_(e.parameter);
+      if (getAuth.error) return out_(getAuth.error);
+      if (getAuth.email) e.parameter.email = getAuth.email;
+      e.parameter.__verifiedUid = getAuth.uid; // internal marker, never read from a client (a client-sent value is overwritten here)
+    } else if (e.parameter) {
+      delete e.parameter.__verifiedUid; // a website caller must never be able to smuggle this marker in
+    }
+
     switch (action) {
       case 'homeBundle':
         var stats = questionStats_(); // one scan of the Questions sheet serves both lists
@@ -574,8 +776,13 @@ function doGet(e) {
           ok: true,
           data: {
             online: true,
-            isAdmin: e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false,
-            customSubjects: customSubjects_(stats),
+            isAdmin: e.parameter.__verifiedUid ? isAdminUid_(e.parameter.__verifiedUid) : (e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false),
+            // Native callers (verified idToken) never receive per-subject exam
+            // passwords — not needed there, and previously shipped to every
+            // client. The website path is unchanged.
+            customSubjects: e.parameter.__verifiedUid
+              ? customSubjects_(stats).map(function (s) { var copy = {}; Object.keys(s).forEach(function (k) { if (k !== 'password') copy[k] = s[k]; }); return copy; })
+              : customSubjects_(stats),
             topicSummary: topicSummary_(stats),
             cooldownMinutes: Math.round(subjectCooldownMs_() / 60000),
             dashboard: e.parameter.email ? cached_('dash_' + email_(e.parameter.email), 30, function () {
@@ -692,6 +899,24 @@ function doPost(e) {
 
     if (e && e.postData && e.postData.contents) {
       body = JSON.parse(e.postData.contents);
+    }
+
+    // NATIVE APP PATH (every POST action at once): verify idToken ONCE here
+    // rather than per-action, then force body.email to the VERIFIED email so
+    // no downstream function (deleteAccount_, submitRevision_, reminder
+    // actions, etc.) can be tricked by a client-supplied email. This closes
+    // the gap noted in IMPLEMENTATION_REPORT.md — previously only
+    // register_/submitExam_ did this themselves. body.__verifiedUid is an
+    // internal marker; a client-sent value is always overwritten below, and
+    // deleted entirely on the legacy (no idToken) website path so it can
+    // never be smuggled in.
+    if (body.idToken) {
+      var postAuth = requireAuthenticatedUser_(body);
+      if (postAuth.error) return out_(postAuth.error);
+      if (postAuth.email) body.email = postAuth.email;
+      body.__verifiedUid = postAuth.uid;
+    } else {
+      delete body.__verifiedUid;
     }
 
     var action = String(body.action || '').trim();
@@ -861,6 +1086,13 @@ function register_(body) {
   var email = email_(body.email);
   var name = String(body.name || '').trim();
 
+  // NATIVE APP PATH: doPost() already verified the idToken (once, for every
+  // POST action) and overwrote body.email with the VERIFIED email before
+  // this function ran — email above already reflects that. verifiedUid is
+  // read from that same central check, never re-verified here.
+  // WEBSITE PATH: no idToken -> body.__verifiedUid is absent -> unchanged.
+  var verifiedUid = body.__verifiedUid || '';
+
   if (!validEmail_(email)) {
     return {
       ok: false,
@@ -881,16 +1113,41 @@ function register_(body) {
   var emailIndex = headers.indexOf('Email');
   var found = false;
 
+  // Consent is only ever recorded when the frontend explicitly says it was
+  // given (body.consent === true, sent right after the checkbox is
+  // ticked) — a missing/false value here never CLEARS a previously
+  // recorded consent, it just leaves the existing record untouched. This
+  // means re-logging in or editing a profile can't accidentally erase
+  // proof that consent was given earlier.
+  var consentGivenNow = body.consent === true || String(body.consent) === 'true';
+
   for (var i = 1; i < values.length; i++) {
     if (email_(values[i][emailIndex]) === email) {
       var nameIndex = headers.indexOf('Name');
       var subjectIndex = headers.indexOf('LastSubject');
       var urlIndex = headers.indexOf('LastTestUrl');
+      var consentGivenIndex = headers.indexOf('ConsentGiven');
+      var consentAtIndex = headers.indexOf('ConsentAt');
       if (nameIndex >= 0) values[i][nameIndex] = name;
       // Timestamp is left untouched here on purpose: it records account
       // creation date and must not be overwritten on later logins.
       if (subjectIndex >= 0) values[i][subjectIndex] = body.subject || values[i][subjectIndex];
       if (urlIndex >= 0) values[i][urlIndex] = body.testUrl || values[i][urlIndex];
+      if (consentGivenNow) {
+        if (consentGivenIndex >= 0) values[i][consentGivenIndex] = true;
+        if (consentAtIndex >= 0) values[i][consentAtIndex] = new Date();
+      }
+      var uidIndex = headers.indexOf('Uid');
+      if (verifiedUid && uidIndex >= 0) {
+        // Never silently re-point an email that is already linked to a
+        // DIFFERENT Firebase UID — that would let a second Firebase account
+        // claim an existing student's history.
+        var existingUid = String(values[i][uidIndex] || '').trim();
+        if (existingUid && existingUid !== verifiedUid) {
+          return authError_('AUTH_FORBIDDEN', 'This email is already linked to a different account.');
+        }
+        values[i][uidIndex] = verifiedUid;
+      }
       sheet.getRange(i + 1, 1, 1, headers.length).setValues([values[i]]);
       found = true;
       break;
@@ -903,7 +1160,10 @@ function register_(body) {
       Name: name,
       Email: email,
       LastSubject: body.subject || '',
-      LastTestUrl: body.testUrl || ''
+      LastTestUrl: body.testUrl || '',
+      ConsentGiven: consentGivenNow,
+      ConsentAt: consentGivenNow ? new Date() : '',
+      Uid: verifiedUid
     });
   }
 
@@ -991,29 +1251,65 @@ const ADMIN_EMAILS = [
   'admin@example.com'
 ];
 
-// A simple shared password that unlocks the admin panel from the site itself,
-// without needing to register an email above. Keep this in sync with
-// ADMIN_PANEL_PASSWORD in app.js. Change it here (and in app.js) any time.
-const ADMIN_PANEL_PASSWORD = '123';
+// ---------------------------------------------------------------------------
+// LEGACY WEBSITE ADMIN SECRETS — moved out of source (SECURITY FIX)
+// ---------------------------------------------------------------------------
+// These used to be hard-coded constants ('123' and '5798') here AND, for the
+// admin panel one, in the public config.js/app.js — so anyone who could read
+// the GitHub repo had full write access to the question bank. They are now
+// read from Apps Script *Script Properties* (Project Settings -> Script
+// Properties), which are not part of the source and never appear in Git:
+//
+//     ADMIN_PANEL_PASSWORD      unlocks the website admin panel
+//     CONTROL_CENTRE_PASSWORD   unlocks the Control Centre
+//
+// FAIL CLOSED: if a property is not set, that legacy gate is DISABLED
+// entirely (nobody gets in) rather than falling back to a default. After
+// deploying this version, set both properties to NEW strong values (12+
+// characters) — the old values '123' / '5798' must be treated as compromised
+// and never reused. The native app does not use these at all: it uses
+// Firebase-UID-based admin authorization (see requireAdminUser_, section 3B).
+function scriptSecret_(name) {
+  return String(PropertiesService.getScriptProperties().getProperty(name) || '');
+}
 
-// Second password that opens the admin "Control Centre" (student locks, default
-// wait, password list, subject deletion). Kept ONLY here on the server — the
-// website never contains it, it just asks this script whether what was typed is
-// right. Change it here any time (then Save + redeploy a new version).
-const CONTROL_CENTRE_PASSWORD = '5798';
+// Brute-force throttle for the legacy password gates. Counts wrong attempts in
+// CacheService (15-minute window) and refuses further attempts once the limit
+// is hit. Global rather than per-IP because Apps Script cannot see client IPs
+// — trade-off: an attacker can temporarily lock the real admin out (15 min),
+// which is preferable to letting a short password be guessed.
+var ADMIN_FAIL_LIMIT = 8;
+function adminLockedOut_() {
+  try { return Number(CacheService.getScriptCache().get('admin_fail_count') || 0) >= ADMIN_FAIL_LIMIT; }
+  catch (e) { return false; }
+}
+function recordAdminFailure_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    var n = Number(cache.get('admin_fail_count') || 0) + 1;
+    cache.put('admin_fail_count', String(n), 900);
+  } catch (ignore) {}
+}
+function secretMatches_(supplied, expected) {
+  if (!expected) return false; // property not set -> gate disabled
+  if (adminLockedOut_()) return false;
+  var ok = String(supplied || '') === expected;
+  if (!ok && supplied) recordAdminFailure_();
+  return ok;
+}
 
 function controlGuard_(body) {
   if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) {
     return { ok: false, error: 'Admin access is required.' };
   }
-  if (String(body.controlPassword || '') !== CONTROL_CENTRE_PASSWORD) {
+  if (!secretMatches_(body.controlPassword, scriptSecret_('CONTROL_CENTRE_PASSWORD'))) {
     return { ok: false, error: 'Incorrect Control Centre password.' };
   }
   return null;
 }
 
 function isAdmin_(email, password) {
-  if (password && String(password) === ADMIN_PANEL_PASSWORD) return true;
+  if (password && secretMatches_(password, scriptSecret_('ADMIN_PANEL_PASSWORD'))) return true;
   var normalized = email_(email);
   return validEmail_(normalized) && ADMIN_EMAILS.indexOf(normalized) !== -1 && normalized !== 'admin@example.com';
 }
@@ -1825,8 +2121,9 @@ function controlData_(body) {
   return {
     ok: true,
     cooldownMinutes: Math.round(subjectCooldownMs_() / 60000),
-    adminPanelPassword: ADMIN_PANEL_PASSWORD,
-    controlPassword: CONTROL_CENTRE_PASSWORD,
+    // Secrets are no longer echoed back to the browser — they live only in Script Properties.
+    adminPanelPassword: scriptSecret_('ADMIN_PANEL_PASSWORD') ? '(set in Script Properties)' : '(NOT SET — admin panel is disabled)',
+    controlPassword: scriptSecret_('CONTROL_CENTRE_PASSWORD') ? '(set in Script Properties)' : '(NOT SET — Control Centre is disabled)',
     adminEmails: ADMIN_EMAILS.filter(function (e) { return e !== 'admin@example.com'; }),
     subjects: customSubjects_(stats),
     topicSummary: topicSummary_(stats),
@@ -2981,6 +3278,12 @@ function submitExam_(body) {
   var email = email_(body.email);
   var subject = String(body.subject || '').trim();
   var name = String(body.name || '').trim();
+
+  // NATIVE APP PATH: doPost() already verified the idToken and overwrote
+  // body.email with the VERIFIED email before this function ran — the
+  // `email` var above (read from body.email) already reflects that, so a
+  // tampered client can never write an exam result into another student's
+  // record. WEBSITE PATH: no idToken -> unchanged legacy behavior.
 
   if (!validEmail_(email)) {
     return {

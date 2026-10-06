@@ -1,0 +1,14 @@
+{
+  "appId": "com.ecet.mocktest",
+  "appName": "Online Mock Test",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#3b1c3f",
+  "android": {
+    "backgroundColor": "#3b1c3f",
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

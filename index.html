@@ -2,11 +2,63 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ECET Quiz</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ECET Quiz — Free Subject-wise Mock Tests</title>
+
+<!-- SEO FIX (Lighthouse: "Document does not have a meta description.")
+     Copy is based on the site's own existing About page wording ("Practise
+     the way the real exam feels" / topic-wise tests / mistakes tracker) —
+     not invented marketing claims. -->
+<meta name="description" content="Free subject-wise and topic-wise ECET-style mock tests with a live timer, instant scoring, and a mistakes tracker — practise the way the real exam feels.">
+
+<!-- Canonical URL: PLACEHOLDER — the production domain was not provided.
+     Replace YOUR-PRODUCTION-DOMAIN below with the real deployed URL before
+     launch; a canonical link pointing at the wrong domain is worse than
+     none at all. Same placeholder is used in og:url, sitemap.xml and
+     robots.txt — search those files for the same marker. -->
+<link rel="canonical" href="https://YOUR-PRODUCTION-DOMAIN/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="ECET Quiz — Free Subject-wise Mock Tests">
+<meta property="og:description" content="Free subject-wise and topic-wise ECET-style mock tests with a live timer, instant scoring, and a mistakes tracker.">
+<meta property="og:url" content="https://YOUR-PRODUCTION-DOMAIN/">
+<!-- og:image: PLACEHOLDER — no social-share image exists in this project yet.
+     A 1200x630 PNG/JPG is recommended; until one is supplied, this tag is
+     left out rather than pointing at a non-existent file. -->
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ECET Quiz — Free Subject-wise Mock Tests">
+<meta name="twitter:description" content="Free subject-wise and topic-wise ECET-style mock tests with a live timer, instant scoring, and a mistakes tracker.">
+
+<!-- ===== PWA: installable, standalone, works offline =====
+     manifest.json + these tags are what let the browser offer
+     "Install app" / "Add to Home Screen" and open with no address bar,
+     like a normal app instead of a website. The service worker that
+     makes it actually WORK offline is registered from app.js. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3b1c3f">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mock Test">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- PERFORMANCE FIX (Lighthouse: render-blocking requests, ~2650ms estimated
+     savings): the Google Fonts stylesheet was a plain blocking <link
+     rel="stylesheet">, so the browser couldn't paint anything until it
+     fetched and parsed that CSS. This is the standard non-blocking pattern:
+     fetch it with low priority via rel="preload", then swap it to an active
+     stylesheet once loaded; the <noscript> tag keeps fonts working exactly
+     as before for the (rare) no-JS case. Same fonts, same weights, same
+     display=swap behavior — only the loading priority changed. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,7 +67,13 @@
 <main class="wrap"><div id="app"></div></main>
 <button id="homeFab" onclick="safeGoHome()" title="Home" aria-label="Home">🏠</button>
 <script src="config.js"></script>
-<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<!-- PERFORMANCE FIX (Lighthouse: ~963 KiB unused JS / ~2650ms render-blocking /
+     main-thread work / long tasks): xlsx.full.min.js is a large library used
+     by exactly two admin-only functions (downloadQuestionTemplate,
+     previewQuestionFile — see app.js). It was previously loaded eagerly here
+     for EVERY visitor, including the ~99% who are students and never open
+     the Admin panel. It's now loaded on-demand only when an admin actually
+     uses those two features — see ensureXLSX() in app.js. -->
 <script src="app.js"></script>
 </body>
 </html>

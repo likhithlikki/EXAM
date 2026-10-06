@@ -10,7 +10,18 @@ const formatCooldown = ms => { ms=Math.max(0,ms); const d=Math.floor(ms/86400000
 const addDays = (v,n) => { const d=new Date(v); d.setDate(d.getDate()+n); return d; };
 const dueDate = m => new Date(m.revisionDueIso || m.revisionDueDate);
 const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
-const imgHTML = (url,cls) => url ? `<img src="${esc(url)}" class="${cls||"q-img"}" loading="lazy" onerror="this.style.display='none'">` : "";
+/* ACCESSIBILITY FIX: every question/option/admin-preview image on the site
+ * is rendered through this one helper, so giving it a real `alt` here fixes
+ * missing alt text everywhere at once instead of touching each call site.
+ * Default alt is short and generic on purpose — these are exam content
+ * images (diagrams, circuits, code snippets) supplied by admins via a URL
+ * field with no separate "describe this image" field, so a truly
+ * descriptive alt isn't available; an explicit `altText` can be passed by
+ * any caller that does have better context (see reviewListHTML/mistakes_).
+ * A non-empty, non-generic alt is still far better for screen-reader users
+ * than the previous alt="" (which caused the filename/URL to be read aloud
+ * as a fallback in several browsers) or the missing attribute entirely. */
+const imgHTML = (url,cls,altText) => url ? `<img src="${esc(url)}" class="${cls||"q-img"}" alt="${esc(altText||"Question image")}" loading="lazy" onerror="this.style.display='none'">` : "";
 const connBannerHTML = () => '<div id="connBanner" class="note" style="margin-bottom:10px">🔄 Connecting… showing your last saved data.</div>';
 
 const store = {
@@ -122,6 +133,76 @@ async function apiPost(action,payload={},timeoutMs=15000){
   });
 }
 
+/* ===================== OFFLINE QUESTION BANK CACHE =====================
+ * Saves a subject's full question set to localStorage the first time it's
+ * loaded while online, so the SAME device can open that exam again later
+ * with zero connectivity. This is separate from the in-progress-exam
+ * autosave (store.getProgress/setProgress) — that one saves answers, this
+ * one saves the questions themselves, which is what's actually missing
+ * when you're offline and haven't attempted the subject before. */
+function bankCacheKey_(subjectId){ return "ecet_bankcache_"+subjectId; }
+function cacheBankForOffline_(subjectId,bankData){
+  try{ localStorage.setItem(bankCacheKey_(subjectId), JSON.stringify({bank:bankData,cachedAt:Date.now()})); }
+  catch(e){ console.warn("Offline bank cache failed (storage full?)",e); }
+}
+function getCachedBank_(subjectId){
+  try{ const raw=localStorage.getItem(bankCacheKey_(subjectId)); return raw?(JSON.parse(raw).bank||null):null; }
+  catch(e){ return null; }
+}
+
+/* ===================== OFFLINE SUBMISSION OUTBOX =====================
+ * Holds COMPLETED exam payloads that couldn't reach the backend yet
+ * (no internet, or the request failed). This is distinct from persist()'s
+ * in-progress-exam autosave: an outbox entry is a fully finished exam that
+ * is just waiting to be uploaded. It survives closing the app entirely and
+ * is flushed automatically the instant connectivity returns, on every app
+ * launch, and on a 60s safety-net interval in case the 'online' browser
+ * event doesn't fire reliably on some devices. Nothing about scoring,
+ * submission logic, or existing online behavior changes — this only adds
+ * a place for a finished exam to wait when submitExam_ can't be reached. */
+function getOutbox_(){ try{return JSON.parse(localStorage.getItem("ecet_outbox")||"[]");}catch(e){return [];} }
+function setOutbox_(items){ try{localStorage.setItem("ecet_outbox",JSON.stringify(items));}catch(e){console.warn("Outbox save failed",e);} }
+function outboxCount_(){ return getOutbox_().length; }
+function queueForOfflineSubmit_(payload){
+  const items=getOutbox_();
+  items.push({localId:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(16).slice(2)),payload,queuedAt:Date.now()});
+  setOutbox_(items);
+  refreshOutboxBadge_();
+}
+let _flushingOutbox=false;
+async function flushOutbox_(){
+  if(_flushingOutbox||!navigator.onLine||!API)return;
+  const items=getOutbox_();
+  if(!items.length)return;
+  _flushingOutbox=true;
+  const remaining=[];
+  for(const item of items){
+    const resp=await apiPost("submitExam",item.payload);
+    // A rejected-for-cooldown submission (someone attempted the same
+    // locked subject twice while offline) can never succeed by retrying —
+    // drop it instead of retrying it forever, same as it would have been
+    // handled live.
+    if(!resp?.ok && !resp?.cooldown?.locked){ remaining.push(item); continue; }
+  }
+  setOutbox_(remaining);
+  _flushingOutbox=false;
+  refreshOutboxBadge_();
+  if(remaining.length<items.length){
+    store.setDashboardCache(null); // stats just changed server-side — force a fresh fetch next dashboard visit
+  }
+}
+function refreshOutboxBadge_(){
+  const el=document.getElementById("outboxBadge");
+  if(!el)return;
+  const n=outboxCount_();
+  el.innerHTML=n?`<div class="note" style="background:#fff3cd;padding:8px;border-radius:7px">📡 ${n} result${n>1?"s":""} saved offline — will upload automatically when you're back online.</div>`:"";
+}
+function armOutboxAutoSync_(){
+  window.addEventListener("online",flushOutbox_);
+  flushOutbox_();
+  setInterval(flushOutbox_,60000);
+}
+
 /* ===================== BACK NAVIGATION STACK =====================
    Every top-level "page" function pushes itself here as it renders. The
    top-left Back button pops the current page, then re-renders whatever
@@ -179,8 +260,16 @@ let revisionMode=false, revisionItems=[];
  */
 let examActive=false;
 let _afterProfile=null;
-let isAdminUnlocked=localStorage.getItem("ecet_admin_unlocked")==="1";
-const ADMIN_PANEL_PASSWORD=(window.APP_CONFIG&&window.APP_CONFIG.ADMIN_PANEL_PASSWORD)||"123";
+/* SECURITY FIX: the admin password used to be a hard-coded constant ("123")
+ * in this public file and in config.js, compared locally in the browser —
+ * anyone reading the repo had full admin access. It is now typed by the
+ * admin, verified by the SERVER (Code.gs isAdmin_, secret kept in Apps
+ * Script Properties, never in source), and held only in sessionStorage so
+ * it disappears when the tab closes. Nothing secret is embedded here. */
+function adminPw_(){try{return sessionStorage.getItem("ecet_admin_pw")||"";}catch(e){return "";}}
+let isAdminUnlocked=!!adminPw_();
+localStorage.removeItem("ecet_admin_unlocked"); // old persistent flag from the insecure version
+
 
 function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
 function clearExam(){
@@ -557,18 +646,26 @@ async function home(){
   const p=store.profile();
   app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload"><span class="rf-ico" aria-hidden="true">⟳</span><span>Refresh Data</span></button></div>
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
+    <div id="outboxBadge"></div>
     <p class="subtitle">${homeSubtitle()}</p>
     <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
     <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
-    <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests">↻</button></h2>
+    <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
     <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
+    <div class="app-legal-footer" style="margin-top:36px;padding-top:16px;border-top:1px solid #e3e8f5;font-size:13px;color:#65708a">
+      <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> ·
+      <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> ·
+      <a href="cookies.html" target="_blank" rel="noopener">Cookies</a> ·
+      <a href="refund.html" target="_blank" rel="noopener">Refunds</a>
+    </div>
   </div>`;
   checkServerStatusAndBundle();
   handleRevisionLink();
   armCooldownTicker();
   ensureStaticTopics();
+  refreshOutboxBadge_();
 }
 function homeSubtitle(){
   const total=subjects.length+customSubjects.length;
@@ -763,7 +860,7 @@ function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",em
   // silently letting someone edit it here would look up (or create) a different
   // account and make all their existing data appear to vanish — like a brand new
   // account. Name is just a display label and is always safe to change freely.
-  app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label>Name</label><input id="pname" value="${esc(p.name)}"><label>Email</label><input id="pemail" type="email" value="${esc(p.email)}" disabled title="To change your email, log out and sign in with the new email."><p class="note">Your data (results, mistakes, reminders, history) is tied to your email. To switch to a different email, log out and sign in again with the new one — it will start as a separate account.</p><div id="pErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
+  app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label for="pname">Name</label><input id="pname" name="name" autocomplete="name" required value="${esc(p.name)}"><label for="pemail">Email</label><input id="pemail" name="email" type="email" autocomplete="email" value="${esc(p.email)}" disabled aria-disabled="true" title="To change your email, log out and sign in with the new email."><p class="note">Your data (results, mistakes, reminders, history) is tied to your email. To switch to a different email, log out and sign in again with the new one — it will start as a separate account.</p><div id="pErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
 async function saveProfileEdit(){
   const n=document.getElementById("pname").value.trim();
   const p=store.profile()||{name:"",email:""};
@@ -778,7 +875,7 @@ async function saveProfileEdit(){
   // (dashboard, rankings, result emails, admin views). Email is always the
   // existing one, so this always updates the SAME account row, never creates
   // a new one.
-  const res=API?await apiPost("register",{name:n,email:e}):null;
+  const res=API?await apiPost("register",{name:n,email:e,consent:!!(store.profile()&&store.profile().consent)}):null;
   if(API&&!res?.ok){
     errEl.textContent=res?.error||"Could not save your details. Please try again.";
     if(btn){btn.disabled=false;btn.textContent="Save";}
@@ -936,6 +1033,7 @@ async function adminQuestionsPage(){
       <div class="buttons"><button onclick="createNewSubject()">Create Subject</button></div>
     </div>
     <div class="card"><h1>Admin — Add Questions</h1>
+      <div class="callout" style="background:#fff4e0;border:1px solid #f4a62a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13.5px">⚠️ <b>Copyright reminder:</b> only add questions, text, and image URLs you have the right to use — your own material, licensed content, or genuine public domain. Do not paste content copied verbatim from a paid course, textbook, or another copyrighted question bank. See <a href="terms.html#admin" target="_blank" rel="noopener">Terms §6</a>.</div>
       <p class="note">Select an existing subject to add its questions, or pick "Create New Subject" to make a brand-new one above first.</p>
       <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAdminTopicField();refreshAiPrompt();renderImportPreview();">
         ${adminSubjectOptions()}
@@ -994,7 +1092,7 @@ async function adminQuestionsPage(){
  *   🔑 Passwords      — every subject password and the admin passwords
  *   🗂 Subjects       — set a subject's exam, select and delete several subjects at once */
 let _tcSubjects=[],_tcUsers=[],_controlPw="",_ccTab="locks",_ccData=null,_ccShowPw=false,_ccSel=new Set();
-function adminAuth_(){const p=store.profile();return{adminEmail:p?.email||"",adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:""};}
+function adminAuth_(){const p=store.profile();return{adminEmail:p?.email||"",adminPassword:adminPw_()};}
 function controlAuth_(){return{...adminAuth_(),controlPassword:_controlPw};}
 const DURATION_PRESETS=[["24 hours",1440],["3 days",4320],["7 days",10080],["1 month",43200]];
 function fmtMinutes(m){
@@ -1605,7 +1703,7 @@ async function saveManualQuestion(){
   if(topicFieldIncomplete('qf')||examFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   statusEl.textContent='Saving…';
   const p=store.profile();
-  const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:[row]});
+  const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:adminPw_(),subjectId:sel.value,subject:subject?.name||sel.value,questions:[row]});
   if(res?.ok){statusEl.innerHTML=`<span class="correct">Question saved successfully${row.topic?' under topic “'+esc(row.topic)+'”':''} — available immediately in Practice Tests.</span>`;['qfQuestion','qfA','qfB','qfC','qfD','qfQno','qfQImg','qfAImg','qfBImg','qfCImg','qfDImg'].forEach(id=>document.getElementById(id).value='');
     // Keep home/admin question counts and topic lists in sync right away. The topic just used stays
     // selected, so a run of questions for the same topic needs no re-picking.
@@ -1715,7 +1813,7 @@ async function saveQuestionEdit(id){
   if(topicFieldIncomplete('qf')||examFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
   statusEl.textContent='Saving…';
   const p=store.profile();
-  const res=await apiPost('updateQuestion',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",questionId:id,...row});
+  const res=await apiPost('updateQuestion',{adminEmail:p.email,adminPassword:adminPw_(),questionId:id,...row});
   if(res?.ok){
     statusEl.innerHTML='<span class="correct">Saved. Updating list…</span>';
     const idx=_editQuestionsCache.findIndex(x=>x.id===id);
@@ -1750,7 +1848,7 @@ async function createNewSubject(){
   const statusEl=document.getElementById("newSubjectStatus");
   if(!name||!password){statusEl.innerHTML='<span class="wronganswer">Subject name and password are both required.</span>';return;}
   statusEl.textContent="Creating…";
-  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",name,password,description,exam});
+  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:adminPw_(),name,password,description,exam});
   if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
   customSubjects.push(res.subject);
   statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
@@ -1869,10 +1967,39 @@ function copyAiPrompt(){
   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(box.value).then(announce).catch(fallback);}else{fallback();}
 }
 let _questionImportRows=[];
-function downloadQuestionTemplate(){
-  if(!window.XLSX){alert("Excel tools are still loading. Please try again.");return;}
-  const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic','Exam'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','','','']];
-  const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
+
+/* PERFORMANCE: lazy-loads the SheetJS (XLSX) library on first actual use
+ * instead of on every page load (see index.html for why). Concurrent calls
+ * share one in-flight load instead of injecting the script twice. Returns
+ * a rejected promise with a user-readable message on failure (e.g. offline)
+ * so callers can show a real error state instead of a silent break. */
+let _xlsxLoadPromise=null;
+function ensureXLSX(){
+  if(window.XLSX)return Promise.resolve();
+  if(_xlsxLoadPromise)return _xlsxLoadPromise;
+  _xlsxLoadPromise=new Promise((resolve,reject)=>{
+    const s=document.createElement("script");
+    s.src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+    s.onload=()=>resolve();
+    s.onerror=()=>{_xlsxLoadPromise=null;reject(new Error("Could not load Excel support. Check your internet connection and try again."));};
+    document.head.appendChild(s);
+  });
+  return _xlsxLoadPromise;
+}
+
+async function downloadQuestionTemplate(){
+  const btn=document.querySelector('button[onclick="downloadQuestionTemplate()"]');
+  const originalLabel=btn?btn.textContent:null;
+  if(btn){btn.disabled=true;btn.textContent="Loading Excel tools…";}
+  try{
+    await ensureXLSX();
+    const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic','Exam'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','','','']];
+    const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
+  }catch(err){
+    alert(err.message||"Could not load Excel support. Please try again.");
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=originalLabel;}
+  }
 }
 function normalizeQuestionRow(r,defaultYear){
   const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
@@ -1882,9 +2009,17 @@ function validateImportRows(rows){
   const errs=[],seen=new Set();
   rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('Exam longer than 40 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
 }
-function previewQuestionFile(ev){
+async function previewQuestionFile(ev){
   const file=ev.target.files?.[0];if(!file)return;
-  if(!window.XLSX){document.getElementById('importStatus').textContent='Excel tools are still loading. Please try again.';return;}
+  const statusEl=document.getElementById('importStatus');
+  if(statusEl)statusEl.textContent="Loading Excel support…";
+  try{
+    await ensureXLSX();
+  }catch(err){
+    if(statusEl)statusEl.textContent=err.message||"Could not load Excel support. Please try again.";
+    return;
+  }
+  if(statusEl)statusEl.textContent="Reading file…";
   const reader=new FileReader();
   reader.onload=e=>{
     try{
@@ -1933,7 +2068,7 @@ async function importPreviewedQuestions(){
     let res=null;
     for(let attempt=0;attempt<3&&!res;attempt++){
       if(attempt){status.innerHTML=`<span class="note">Server is slow — confirming the last batch was saved…</span>`;await sleep(4000*attempt);}
-      res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:isAdminUnlocked?ADMIN_PANEL_PASSWORD:"",subjectId:sel.value,subject:subject?.name||sel.value,questions:batch},90000);
+      res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:adminPw_(),subjectId:sel.value,subject:subject?.name||sel.value,questions:batch},90000);
     }
     lastRes=res;
     if(!res?.ok)break;
@@ -1962,11 +2097,17 @@ function openAdminPassword(){
   app.innerHTML=`<div class="card password-card"><h1>Admin Access</h1><p>Enter the admin password to manage subjects and questions.</p><input id="adminPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPassword()"><div id="adminPassErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkAdminPassword()">Continue</button></div></div>`;
   document.getElementById("adminPass").focus();
 }
-function checkAdminPassword(){
+async function checkAdminPassword(){
   const v=document.getElementById("adminPass").value;
-  if(v!==ADMIN_PANEL_PASSWORD){document.getElementById("adminPassErr").textContent="Incorrect password.";return;}
+  const errEl=document.getElementById("adminPassErr");
+  if(!v){errEl.textContent="Enter the admin password.";return;}
+  errEl.textContent="Checking…";
+  const p=store.profile();
+  // Verified by the server, not compared against anything in this file.
+  const res=API?await apiGet("isAdmin",{email:p?.email||"",password:v},15000,1):null;
+  if(!res?.ok||!res.isAdmin){errEl.textContent=res?"Incorrect password.":"Could not reach the server. Try again.";return;}
+  try{sessionStorage.setItem("ecet_admin_pw",v);}catch(e){}
   isAdminUnlocked=true;
-  localStorage.setItem("ecet_admin_unlocked","1");
   // Replace the password-screen stack entry so Back goes straight Home,
   // instead of pushing the admin page on top of the password screen.
   navStack.pop();
@@ -1997,8 +2138,34 @@ async function checkPassword(){const s=_pwSubject,v=document.getElementById("pas
   _unlockedSubjects.add(s.parentId||s.id);
   await loadBankAndEnroll_(s);
 }
+/* ===================== OFFLINE-AWARE BANK LOADING =====================
+ * Unchanged behavior when online: fetches the static file + backend
+ * questions exactly as before, then ADDITIONALLY caches the merged, final
+ * bank locally (see cacheBankForOffline_) so this exact subject can be
+ * opened again later with no connection at all. When there is genuinely no
+ * connection, this skips the network entirely and serves the last cached
+ * copy for this subject instead of failing — if nothing was ever cached
+ * for it, it says so plainly rather than pretending the bank is empty. */
 async function loadBankAndEnroll_(s){
   const parentId=s.parentId||s.id; // a topic test loads its parent subject's questions, then keeps only its topic
+  const cacheKey=parentId;
+
+  if(!navigator.onLine){
+    const cached=getCachedBank_(cacheKey);
+    if(!cached||!cached.length){
+      app.innerHTML=`<div class="card"><h2>This exam isn't available offline yet.</h2><p class="note">Open it once while connected to the internet so it's saved on this device for offline use.</p><div class="buttons"><button onclick="home()">Back</button></div></div>`;
+      return;
+    }
+    bank=cached;
+    const homeOffline=homeExam(s);
+    bank=bank.map(q=>({...q,exam:cleanTopic(q.exam)||homeOffline}));
+    if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
+    if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
+    if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available offline."}</h2><button onclick="home()">Back</button></div>`;return;}
+    activeSubject=s;enroll();
+    return;
+  }
+
   // These two are independent — the static question-bank file and the
   // admin-imported questions from the backend — so fetch them in parallel
   // instead of waiting on the file before even starting the API call.
@@ -2011,11 +2178,48 @@ async function loadBankAndEnroll_(s){
   // every question gets its effective exam (its own, else the subject's home exam) so a test can pick its exam
   const home=homeExam(s);
   bank.forEach(q=>{q.exam=cleanTopic(q.exam)||home;});
+  if(bank.length)cacheBankForOffline_(cacheKey,bank); // save the FULL merged bank (pre-filter) for offline reuse by any topic under this subject
   if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
   if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
   if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
-function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label>Name</label><input id="ename" placeholder="Full name"><label>Email</label><input id="eemail" type="email" placeholder="you@example.com"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
-function submitEnroll(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});confirmExamStart();}
+/* ===================== DATA-COLLECTION CONSENT (DPDP Act, 2023) =====================
+ * Name + email are the only personal data this app collects at account
+ * creation, and they're collected in exactly two places: here (enroll, for
+ * a first-time exam) and requireProfile() (for Dashboard/Mistakes/
+ * Reminders without taking an exam first). Before either form can submit,
+ * the student must explicitly tick a consent checkbox that links to the
+ * actual Privacy Policy and Terms — this is the "notice + explicit
+ * consent before collection" pattern the DPDP Act requires for personal
+ * data. The checkbox uses native `required` so it's enforced for keyboard
+ * users and announced by screen readers without any extra JS, and
+ * submitEnroll_()/submitProfileAndContinue_() additionally re-check it and
+ * show a specific, visible error rather than silently proceeding either
+ * way. Consent is also recorded SERVER-SIDE with a timestamp (see
+ * register_() in Code.gs) so there's a durable, auditable record — not
+ * just a client-side box that leaves no trace once localStorage clears. */
+function consentFieldsHTML_(idPrefix){
+  return `<label class="consent-row" for="${idPrefix}Consent" style="display:flex;gap:9px;align-items:flex-start;font-weight:400;cursor:pointer;margin:14px 0;text-align:left">
+    <input type="checkbox" id="${idPrefix}Consent" required style="margin-top:3px;width:16px;height:16px;flex:none">
+    <span>I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a>, and consent to my name and email being stored to provide this service.</span>
+  </label>`;
+}
+function readConsentOrShowError_(idPrefix,errElId){
+  const box=document.getElementById(idPrefix+"Consent");
+  if(box&&!box.checked){
+    document.getElementById(errElId).textContent="Please agree to the Privacy Policy and Terms to continue.";
+    box.focus();
+    return false;
+  }
+  return true;
+}
+function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label for="ename">Name</label><input id="ename" name="name" placeholder="Full name" autocomplete="name" required><label for="eemail">Email</label><input id="eemail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>${consentFieldsHTML_("enr")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
+function submitEnroll(){
+  const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();
+  if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}
+  if(!readConsentOrShowError_("enr","eErr"))return;
+  store.setProfile({name:n,email:e,consent:true});
+  confirmExamStart();
+}
 function confirmExamStart(){
   pushNav(confirmExamStart);
   const p=store.profile(),mins=bank.length;
@@ -2067,7 +2271,7 @@ function showSubjectLockedScreen_(name,unlockAtIso){
 async function beginExam(){
   const p=store.profile();
   if(!(await gateStartNewAttempt_(activeSubject)))return;
-  apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name});
+  apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name,consent:!!p.consent});
   start();
 }
 async function retryExam(){
@@ -2130,7 +2334,7 @@ function toggleReview(){marked[current]=!marked[current];persist();render();}
 function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
 function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
 function confirmSubmit(){const u=answers.filter(x=>x===null).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
-function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>${examLabel(activeSubject)&&!activeSubject.name.includes("("+examLabel(activeSubject)+")")?esc(examLabel(activeSubject))+" ":""}${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
+function render(){const q=test[current],answered=answers.filter(x=>x!==null).length,markedCount=marked.filter(Boolean).length;app.innerHTML=`<div class="top"><h1>${examLabel(activeSubject)&&!activeSubject.name.includes("("+examLabel(activeSubject)+")")?esc(examLabel(activeSubject))+" ":""}${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered ${answered}/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("")}<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answers[k]!==null?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
 
 /* ===================== RESULT ===================== */
 async function submit(){
@@ -2156,6 +2360,22 @@ async function submit(){
   test=[];answers=[];marked=[];qTime=[];left=0;current=0;
 
   const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
+
+  if(!navigator.onLine){
+    /* OFFLINE SUBMIT: don't even attempt the network call — queue it in the
+     * outbox (see armOutboxAutoSync_) and show the result screen from the
+     * LOCAL calculation. score/percentage/wrong/unanswered/detail are all
+     * already computed by submissionPayload() on-device, so the student
+     * sees their result immediately without needing the server. Only
+     * server-computed fields (practice rank, students count) are
+     * unavailable until it syncs, and are shown as "—" with a clear notice
+     * instead of silently failing or blocking the student from moving on. */
+    queueForOfflineSubmit_(payload);
+    isSubmitting=false;
+    renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
+    return;
+  }
+
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
   const resp=await apiPost("submitExam",payload);
   if(!resp?.ok){
@@ -2169,10 +2389,13 @@ async function submit(){
       app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
       return;
     }
-    // NOTE: since we already cleared test/answers/left above, this retry
-    // path can no longer restore progress from those globals — resubmit
-    // works off the payload we already built, so just retry sending it.
-    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    /* The connection genuinely dropped mid-request (was online a second
+     * ago, or the backend timed out) rather than being offline from the
+     * start. Rather than leaving the student stuck on a dead-end error
+     * screen, queue it the same as a true offline submit — it'll sync
+     * automatically — and still show them their result right away. */
+    queueForOfflineSubmit_(payload);
+    renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
     return;
   }
   // Reflect the new cooldown in the local cache immediately, so Home's
@@ -2191,6 +2414,11 @@ async function submit(){
   renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 async function retrySubmit(payload){
+  if(!navigator.onLine){
+    queueForOfflineSubmit_(payload);
+    renderResult({score:payload.score,total:payload.total,percentage:payload.percentage,wrong:payload.wrong,unanswered:payload.unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
+    return;
+  }
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Retrying…</p></div>`;
   const resp=await apiPost("submitExam",payload);
   if(!resp?.ok){
@@ -2211,15 +2439,21 @@ function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;
 function renderResult(r){
   window._lastResultDetail=r.detail;
   const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
-  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1><div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1>${r.offlinePending?'<div class="note" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">📡 No internet — this result is saved on your device and will upload automatically once you\'re back online. Rank and students-count will appear after it syncs.</div>':''}<div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
 }
 function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
 function reviewListHTML(detail,filter){return detail.map((d,n)=>{const iw=d.selected!==null&&d.selected!==d.correct,iu=d.selected===null;if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${iu?"Unanswered":"ABCD"[d.selected]+". "+esc(d.options[d.selected])}</span></div><div>Correct answer: <span class="correct">${"ABCD"[d.correct]}. ${esc(d.options[d.correct])}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
 
 /* ===================== PROFILE / DASHBOARD ===================== */
 function goDashboard(){requireProfile(dashboard);} function goMistakes(){requireProfile(mistakes);}
-function requireProfile(next){if(store.profile())return next();_afterProfile=next;pushNav(()=>requireProfile(next));app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label>Name</label><input id="ename"><label>Email</label><input id="eemail" type="email"><div id="eErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
-function submitProfileAndContinue(){const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}store.setProfile({name:n,email:e});const next=_afterProfile;_afterProfile=null;if(next)next();}
+function requireProfile(next){if(store.profile())return next();_afterProfile=next;pushNav(()=>requireProfile(next));app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label for="ename">Name</label><input id="ename" name="name" autocomplete="name" required><label for="eemail">Email</label><input id="eemail" name="email" type="email" autocomplete="email" required>${consentFieldsHTML_("req")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
+function submitProfileAndContinue(){
+  const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();
+  if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}
+  if(!readConsentOrShowError_("req","eErr"))return;
+  store.setProfile({name:n,email:e,consent:true});
+  const next=_afterProfile;_afterProfile=null;if(next)next();
+}
 function renderDashboardBody(d,p,connecting){
   app.innerHTML=`<div class="card"><h1>My Dashboard</h1>${connecting?connBannerHTML():""}<p class="meta">${esc(p.name)} • ${esc(p.email)}</p><div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Tests taken</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average %</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best %</span></div><div class="dash-tile"><b>${d.mistakes}</b><span>Active mistakes</span></div></div>
     ${d.subjects?.length?`<div class="advice"><b>Subject performance</b> is shown below.</div>`:""}
@@ -2340,19 +2574,19 @@ function reminderFormHTML(existing){
   const in1h=new Date(Date.now()+3600e3),in3h=new Date(Date.now()+3*3600e3),tomorrow=new Date(Date.now()+24*3600e3);
   const toLocal=d=>{const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;};
   return `<div class="card enroll-card"><h1>${existing?"Edit reminder":"New reminder"}</h1>
-  <label>Related task/name</label><input id="rName" value="${esc(r.name||"")}" placeholder="e.g. Revise Digital Electronics">
-  <label>Message</label><input id="rMessage" value="${esc(r.message||"")}" placeholder="What should the reminder say?">
-  <label>Related URL (optional)</label><input id="rUrl" value="${esc(r.relatedUrl||"")}" placeholder="https://…">
-  <label>When</label>
+  <label for="rName">Related task/name</label><input id="rName" name="reminderName" value="${esc(r.name||"")}" placeholder="e.g. Revise Digital Electronics" required>
+  <label for="rMessage">Message</label><input id="rMessage" name="reminderMessage" value="${esc(r.message||"")}" placeholder="What should the reminder say?" required>
+  <label for="rUrl">Related URL (optional)</label><input id="rUrl" name="reminderUrl" type="url" value="${esc(r.relatedUrl||"")}" placeholder="https://…">
+  <label for="rWhen">When</label>
   <div class="buttons" style="justify-content:flex-start">
     <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in1h)}'">In 1 hour</button>
     <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in3h)}'">In 3 hours</button>
     <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(tomorrow)}'">Tomorrow</button>
   </div>
-  <input id="rWhen" type="datetime-local" value="${r.nextRunAt?toLocal(new Date(r.nextRunAt)):""}">
-  <label>Repeat</label>
-  <select id="rFreq">${REMINDER_FREQUENCIES.map(([v,l])=>`<option value="${v}" ${((r.frequency||"once")===v)?"selected":""}>${l}</option>`).join("")}</select>
-  <div id="rErr" class="error"></div>
+  <input id="rWhen" name="reminderWhen" type="datetime-local" aria-label="Reminder date and time" value="${r.nextRunAt?toLocal(new Date(r.nextRunAt)):""}" required>
+  <label for="rFreq">Repeat</label>
+  <select id="rFreq" name="reminderFrequency">${REMINDER_FREQUENCIES.map(([v,l])=>`<option value="${v}" ${((r.frequency||"once")===v)?"selected":""}>${l}</option>`).join("")}</select>
+  <div id="rErr" class="error" role="alert"></div>
   <div class="buttons"><button onclick="remindersPage()">Cancel</button><button onclick="saveReminder(${existing?`'${existing.id}'`:"null"})">${existing?"Save changes":"Create reminder"}</button></div></div>`;
 }
 function openCreateReminder(){pushNav(openCreateReminder);clearExam();app.innerHTML=reminderFormHTML(null);}
@@ -2430,7 +2664,7 @@ function renderMistakes(items,connecting){
   const next=items.filter(m=>dueDate(m)>now).sort((a,b)=>dueDate(a)-dueDate(b))[0];
   let countdown="";
   if(next){const ms=Math.max(0,dueDate(next)-now);countdown=`<div class="countdown"><b>Next revision test:</b> ${formatCountdown(ms)}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small></div>`;}
-  app.innerHTML=`<div class="card"><h1>My Mistakes</h1>${connecting?connBannerHTML():""}<p class="meta">Active mistakes: <b>${items.length}</b> • Due now: <b>${due.length}</b>. A mistake stays here until you answer it correctly.</p>${items.length?`${countdown}<div class="buttons"><button ${due.length?"":"disabled"} onclick="startRevisionTest()">Start revision test ${due.length?`(${due.length})`:"(not due yet)"}</button></div>${items.map(m=>{const isDue=dueDate(m)<=now;return `<div class="mistake-card"><div><span class="mistake-tag">${esc(m.subject)}</span> <span class="mistake-tag ${isDue?"tag-due":"tag-wait"}">${isDue?"Due now":"Due "+formatDateTime(m.revisionDueIso||m.revisionDueDate)}</span></div><p><b>${esc(m.question)}</b></p>${imgHTML(m.image)}${m.options.map((o,k)=>`<div>${"ABCD"[k]}. ${esc(o)} ${imgHTML((m.optionImages||[])[k],"opt-img")} ${k===m.correctIndex?"<b class='correct'>(correct)</b>":""} ${k===m.selectedIndex?"<i>(last answer)</i>":""}</div>`).join("")}</div>`;}).join("")}`:'<p class="note">No active mistakes — excellent. 🎉</p>'}<div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
+  app.innerHTML=`<div class="card"><h1>My Mistakes</h1>${connecting?connBannerHTML():""}<p class="meta">Active mistakes: <b>${items.length}</b> • Due now: <b>${due.length}</b>. A mistake stays here until you answer it correctly.</p>${items.length?`${countdown}<div class="buttons"><button ${due.length?"":"disabled"} onclick="startRevisionTest()">Start revision test ${due.length?`(${due.length})`:"(not due yet)"}</button></div>${items.map(m=>{const isDue=dueDate(m)<=now;return `<div class="mistake-card"><div><span class="mistake-tag">${esc(m.subject)}</span> <span class="mistake-tag ${isDue?"tag-due":"tag-wait"}">${isDue?"Due now":"Due "+formatDateTime(m.revisionDueIso||m.revisionDueDate)}</span></div><p><b>${esc(m.question)}</b></p>${imgHTML(m.image)}${m.options.map((o,k)=>`<div>${"ABCD"[k]}. ${esc(o)} ${imgHTML((m.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")} ${k===m.correctIndex?"<b class='correct'>(correct)</b>":""} ${k===m.selectedIndex?"<i>(last answer)</i>":""}</div>`).join("")}</div>`;}).join("")}`:'<p class="note">No active mistakes — excellent. 🎉</p>'}<div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
   if(next)setTimeout(()=>mistakeCountdownLoop(),1000);
 }
 function formatCountdown(ms){let s=Math.ceil(ms/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60),sec=s%60;return `${d}d ${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(sec).padStart(2,"0")}s`;}
@@ -2458,7 +2692,7 @@ function handleRevisionBeforeUnload(e){
 }
 function handleRevisionPageHide(){if(examActive&&!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
 
-function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img")}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
+function renderRevision(){const q=test[current],answered=answers.filter(x=>x!==null).length;app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${q.options.map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
 function revisionChoose(v){answers[current]=v;renderRevision();}
 function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}
 async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);window.removeEventListener("beforeunload",handleRevisionBeforeUnload);window.removeEventListener("pagehide",handleRevisionPageHide);disarmBackGuard();commitTime();
@@ -2470,5 +2704,23 @@ async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;cle
   examActive=false;
   revisionMode=false;revisionItems=[];test=[];answers=[];marked=[];qTime=[];left=0;current=0;
   app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 1 day.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
+
+
+/* ===================== PWA: SERVICE WORKER + OFFLINE OUTBOX INIT =====================
+ * Registering the service worker is what lets the app open at all with no
+ * connection (cached app shell) and is required for "Add to Home Screen"
+ * to behave like a real installed app instead of a bookmark that fails
+ * offline. Guarded with a feature check so this is a no-op (not an error)
+ * in any environment that doesn't support it — nothing else in the app
+ * depends on it succeeding. armOutboxAutoSync_ starts the background loop
+ * that uploads any exam finished while offline as soon as a connection is
+ * available; see its definition near apiPost above for details.
+ */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(e=>console.warn("Service worker registration failed",e));
+  });
+}
+armOutboxAutoSync_();
 
 home();
