@@ -1,4 +1,0 @@
-{
-  "_README": "This is a PLACEHOLDER. Download the real google-services.json from Firebase Console > Project settings > Your apps > Android app (package com.ecet.mocktest, plus com.ecet.mocktest.debug for debug builds) and save it as app/google-services.json. Do NOT commit the real file if the repo is public.",
-  "project_info": { "project_number": "000000000000", "project_id": "your-project-id" }
-}
