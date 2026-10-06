@@ -232,7 +232,7 @@ function goBack(){
   (prev||home)();
 }
 
-let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
+let subjects=Array.isArray(window.INITIAL_SUBJECTS) ? window.INITIAL_SUBJECTS.map(s=>({...s})) : [],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
 let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
@@ -635,13 +635,24 @@ function customSubjectsHTML(){
     return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
-async function home(){
+function home(){
   pushNav(home);
   clearExam(); revisionMode=false;
-  // Render instantly from whatever we already know (static subject list + last cached
-  // custom subjects) instead of waiting on the network — the network refresh below then
-  // patches the page in place, so clicking Home never looks stuck or "broken".
-  if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
+  // IMPORTANT PERFORMANCE RULE:
+  // The Home screen must never wait for a network request. The small, static
+  // subject catalogue is injected by index.html as window.INITIAL_SUBJECTS.
+  // This lets the browser paint the complete Home UI immediately.
+  // subjects.json remains as a fallback only if the inline catalogue is missing.
+  if(!subjects.length){
+    fetch("subjects.json",{cache:"default"})
+      .then(r=>r.ok?r.json():[])
+      .then(list=>{
+        if(!Array.isArray(list)||!list.length)return;
+        subjects=list;
+        refreshSubjectCardStats();
+      })
+      .catch(()=>{});
+  }
   customSubjects=store.customSubjectsCache();
   const p=store.profile();
   app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload"><span class="rf-ico" aria-hidden="true">⟳</span><span>Refresh Data</span></button></div>
@@ -661,10 +672,12 @@ async function home(){
       <a href="refund.html" target="_blank" rel="noopener">Refunds</a>
     </div>
   </div>`;
-  checkServerStatusAndBundle();
-  handleRevisionLink();
-  armCooldownTicker();
-  ensureStaticTopics();
+  // Mark the initial Home DOM as painted before starting secondary work.
+  _homeInitialPaintComplete=true;
+  // Do not let backend requests, large question-bank JSON parsing, or topic
+  // aggregation compete with the first paint. All of this is secondary Home
+  // data and can safely happen after the initial UI is visible.
+  scheduleHomeBackgroundWork_();
   refreshOutboxBadge_();
 }
 function homeSubtitle(){
@@ -790,6 +803,7 @@ async function refreshCustomSubjects(manual){
 // repeatedly doesn't re-check the server (and re-flash "Checking server...")
 // on every single visit — only the first Home visit in a while pays for it.
 let _serverStatusCache=null; // {online,isAdmin,customSubjects,checkedAt}
+let _homeInitialPaintComplete=false;
 const SERVER_STATUS_TTL_MS=3*60*1000;
 // Cold Apps Script containers routinely take 10-11s to answer doGet (see
 // execution log), so the status check's timeout has to comfortably clear
@@ -800,7 +814,7 @@ let _offlineRetryTimer=null;
 // message — clicking it forces a fresh check instead of waiting for the
 // cache TTL or for the user to navigate Home again.
 function offlineStatusHTML_(){return 'Server offline — <span class="retry-link" onclick="checkServerStatusAndBundle(true)">retry</span>';}
-function applyServerStatus_(status,statusEl,slot){
+function applyServerStatus_(status,statusEl,slot,rerenderCards=true){
   if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
   if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   let changed=false;
@@ -810,7 +824,7 @@ function applyServerStatus_(status,statusEl,slot){
     store.setCustomSubjectsCache(customSubjects);
     changed=true;
   }
-  if(changed)refreshSubjectCardStats(); // re-renders both grids (built-in subjects can have topics too)
+  if(changed&&rerenderCards)refreshSubjectCardStats(); // re-renders both grids when explicitly requested
 }
 async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
@@ -818,7 +832,7 @@ async function checkServerStatusAndBundle(force){
   if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
   if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
   const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
-  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
+  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot,false);return;}
   if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';}
   if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   const p=store.profile();
@@ -826,7 +840,7 @@ async function checkServerStatusAndBundle(force){
   if(res?.ok){
     if(Number.isFinite(res.data?.cooldownMinutes))_defaultCooldownMin=res.data.cooldownMinutes;
     _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
-    applyServerStatus_(_serverStatusCache,statusEl,slot);
+    applyServerStatus_(_serverStatusCache,statusEl,slot,false);
     // homeBundle already carries the same pre-aggregated stats dashboard_()
     // would return (a single-row UserStats lookup, not a recompute) — cache
     // it here too so subject cards show real Best/Worst/cooldown data on
@@ -844,6 +858,30 @@ async function checkServerStatusAndBundle(force){
     },12000);
   }
 }
+function runWhenIdle_(fn,timeout=2000){
+  if("requestIdleCallback" in window){
+    window.requestIdleCallback(fn,{timeout});
+  }else{
+    setTimeout(fn,50);
+  }
+}
+function scheduleHomeBackgroundWork_(){
+  // Let the browser paint Home first. The server call and static topic-bank
+  // parsing are deliberately separated so a slow Apps Script response or
+  // large JSON parse cannot become the LCP bottleneck.
+  runWhenIdle_(()=>{
+    if(document.getElementById("serverStatus")) checkServerStatusAndBundle();
+    handleRevisionLink();
+    armCooldownTicker();
+  },1500);
+
+  // Static topic aggregation is the heaviest startup task. It is not needed
+  // to display the Home page, so run it only after the first idle opportunity.
+  runWhenIdle_(()=>{
+    if(document.getElementById("serverStatus")) ensureStaticTopics();
+  },3000);
+}
+
 function handleRevisionLink(){
   const params=new URLSearchParams(location.search);
   if(params.get('revision')!=='1')return;

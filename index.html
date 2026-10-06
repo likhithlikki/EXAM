@@ -67,6 +67,117 @@
 <main class="wrap"><div id="app"></div></main>
 <button id="homeFab" onclick="safeGoHome()" title="Home" aria-label="Home">🏠</button>
 <script src="config.js"></script>
+<script>
+// Critical startup data: keep the small subject catalogue inline so the Home
+// screen never waits for subjects.json before it can render. The full question
+// banks are still lazy-loaded only when needed.
+window.INITIAL_SUBJECTS = [
+  {
+    "id": "digital-electronics",
+    "name": "Digital Electronics",
+    "file": "digital-electronics.json",
+    "password": "18",
+    "available": true,
+    "questionCount": 153
+  },
+  {
+    "id": "software-engineering",
+    "name": "Software Engineering",
+    "file": "software-engineering.json",
+    "password": "19",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "computer-organisation-microprocessors",
+    "name": "Computer Organisation & Microprocessors",
+    "file": "computer-organisation-microprocessors.json",
+    "password": "20",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "data-structures-c",
+    "name": "Data Structures through C",
+    "file": "data-structures-c.json",
+    "password": "21",
+    "available": true,
+    "questionCount": 206
+  },
+  {
+    "id": "computer-networks-cyber-security",
+    "name": "Computer Networks & Cyber Security",
+    "file": "computer-networks-cyber-security.json",
+    "password": "22",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "operating-systems",
+    "name": "Operating Systems",
+    "file": "operating-systems.json",
+    "password": "23",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "dbms",
+    "name": "DBMS",
+    "file": "dbms.json",
+    "password": "24",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "java-programming",
+    "name": "Java Programming",
+    "file": "java-programming.json",
+    "password": "25",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "web-technologies",
+    "name": "Web Technologies",
+    "file": "web-technologies.json",
+    "password": "26",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "big-data-cloud-computing",
+    "name": "Big Data & Cloud Computing",
+    "file": "big-data-cloud-computing.json",
+    "password": "27",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "android-programming",
+    "name": "Android Programming",
+    "file": "android-programming.json",
+    "password": "28",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "internet-of-things",
+    "name": "Internet of Things (IoT)",
+    "file": "internet-of-things.json",
+    "password": "29",
+    "available": false,
+    "questionCount": 0
+  },
+  {
+    "id": "python-programming",
+    "name": "Python Programming",
+    "file": "python-programming.json",
+    "password": "30",
+    "available": false,
+    "questionCount": 0
+  }
+];
+</script>
 <!-- PERFORMANCE FIX (Lighthouse: ~963 KiB unused JS / ~2650ms render-blocking /
      main-thread work / long tasks): xlsx.full.min.js is a large library used
      by exactly two admin-only functions (downloadQuestionTemplate,
