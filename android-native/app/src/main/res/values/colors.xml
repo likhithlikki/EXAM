@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same palette as the website's about.html, so the native app and the
+         web/PWA versions feel like the same product, not two brands. -->
+    <color name="cream">#FFF6EA</color>
+    <color name="paper">#FFFFFF</color>
+    <color name="plum">#3B1C3F</color>
+    <color name="plum_soft">#5A3560</color>
+    <color name="coral">#E4572E</color>
+    <color name="coral_dark">#C4431C</color>
+    <color name="amber">#F4A62A</color>
+    <color name="amber_soft">#FDE8C0</color>
+    <color name="forest">#2F6B4F</color>
+    <color name="ink">#2A2230</color>
+</resources>
