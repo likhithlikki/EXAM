@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- cleartextTrafficPermitted defaults to "false" for targetSdk 28+ anyway,
+     but this makes the HTTPS-only requirement explicit and unconditional
+     for every domain, rather than relying on the platform default. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
