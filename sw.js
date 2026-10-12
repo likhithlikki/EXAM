@@ -23,7 +23,7 @@
  * (the outbox queue, cached dashboard/mistakes fallbacks, etc.) instead of
  * silently serving a stale cached API response.
  */
-const CACHE_VERSION = "v3"; // bump this string on every deploy to force a clean cache refresh
+const CACHE_VERSION = "v5"; // bump this string on every deploy to force a clean cache refresh
 const SHELL_CACHE = "ecet-shell-" + CACHE_VERSION;
 const RUNTIME_CACHE = "ecet-runtime-" + CACHE_VERSION;
 
@@ -32,6 +32,7 @@ const SHELL_FILES = [
   "./index.html",
   "./about.html",
   "./404.html",
+  "./gate.html",
   "./privacy.html",
   "./terms.html",
   "./cookies.html",
@@ -95,11 +96,25 @@ self.addEventListener("fetch", (event) => {
   // must always go straight to the network untouched.
   if (req.method !== "GET") return;
 
+  // GATE question data (manifest + papers) is edited by hand, so it must show up
+  // as soon as it's deployed: network-first, falling back to the cached copy offline.
+  // Images under /gate-pyq/assets stay cache-first (they never change under the same name).
+  const path = new URL(req.url).pathname;
+  if (/\/gate-pyq\/.*\.json$/i.test(path)) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res && res.ok) { const copy = res.clone(); caches.open(RUNTIME_CACHE).then((c) => c.put(req, copy)).catch(() => {}); }
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
   // NEVER intercept the Apps Script backend — see file header.
   if (req.url.includes("script.google.com")) return;
 
   event.respondWith(
-    caches.match(req).then((cached) => {
+    caches.match(req, { ignoreSearch: req.mode === "navigate" }).then((cached) => {
       const network = fetch(req)
         .then((res) => {
           // Cache a copy of anything that loads successfully (same-origin

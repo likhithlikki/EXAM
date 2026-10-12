@@ -112,7 +112,7 @@ const SHEETS = {
     'QuestionId', 'SubjectId', 'Subject', 'Year', 'State', 'QuestionNumber',
     'Question', 'OptionA', 'OptionB', 'OptionC', 'OptionD', 'CorrectAnswer',
     'CreatedAt', 'CreatedBy', 'QuestionImage', 'OptionAImage', 'OptionBImage',
-    'OptionCImage', 'OptionDImage', 'Topic', 'Exam'
+    'OptionCImage', 'OptionDImage', 'Topic', 'Exam', 'Marks', 'Type'
   ],
 
   Subjects: [
@@ -1641,6 +1641,11 @@ function importQuestions_(body) {
     options.forEach(function(o, i) { if (!o) rowErrors.push('Option ' + letters[i] + ' is empty'); });
     if (letters.indexOf(correct) === -1) rowErrors.push('Correct Answer must be A, B, C, or D');
     if (!year) rowErrors.push('Year is empty');
+    var marksRaw = String(row.marks == null ? '' : row.marks).trim();
+    var marks = Number(marksRaw);
+    var type = String(row.type || 'MCQ').trim().toUpperCase() || 'MCQ';
+    if (!marksRaw || !isFinite(marks) || marks <= 0) rowErrors.push('Marks must be a positive number');
+    if (['MCQ','MSQ','NAT'].indexOf(type) === -1) rowErrors.push('Type must be MCQ, MSQ, or NAT');
 
     var duplicateKey = [q.toLowerCase(), year, state, qno].join('|');
     if (seen[duplicateKey]) rowErrors.push('Duplicate question in this import');
@@ -1673,7 +1678,9 @@ function importQuestions_(body) {
       OptionCImage: String(row.optionCImage || '').trim(),
       OptionDImage: String(row.optionDImage || '').trim(),
       Topic: topic,
-      Exam: exam
+      Exam: exam,
+      Marks: marks,
+      Type: type
     });
   });
 
@@ -1865,6 +1872,8 @@ function questions_(subjectId) {
       answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase())),
       topic: cleanTopic_(row.Topic),
       exam: cleanTopic_(row.Exam),
+      marks: Number(row.Marks) > 0 ? Number(row.Marks) : 1,
+      type: String(row.Type || 'MCQ').trim().toUpperCase() || 'MCQ',
       image: String(row.QuestionImage || ''),
       optionImages: [row.OptionAImage, row.OptionBImage, row.OptionCImage, row.OptionDImage].map(function(v){return String(v||'');})
     };

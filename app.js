@@ -232,10 +232,18 @@ function goBack(){
   (prev||home)();
 }
 
-let subjects=Array.isArray(window.INITIAL_SUBJECTS) ? window.INITIAL_SUBJECTS.map(s=>({...s})) : [],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
+let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
 let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
 let examSessionId="";
 let revisionMode=false, revisionItems=[];
+/* ===================== GATE PREVIOUS YEAR TESTS =====================
+ * GATE is kept as a separate local exam mode so it does not interfere with
+ * the existing ECET/backend scoring flow. The uploaded GATE JSON files are
+ * loaded on demand from gate-pyq/source_json/.
+ */
+let gateActive=false, gateMode="", gateTitle="", gateQuestions=[], gateAnswers=[], gateMarked=[], gateQTime=[], gateCurrent=0, gateLeft=0, gateTimer=null, gateQuestionStartedAt=0, gateExamStartedAt=0, gateResult=null;
+/* GATE paper registry: see GATE PREVIOUS-YEAR TESTS block below (manifest-driven, no code edits needed to add papers). */
+
 /* ===================== STRICT EXAM-ACTIVE STATE =====================
  * BUG THIS FIXES: previously "is an exam running?" was recomputed from
  * activeSubject/test.length/left/isSubmitting/revisionMode every time a
@@ -291,7 +299,7 @@ function safeGoHome(){
   if(examActive){
     const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
     if(!leave)return;
-    if(revisionMode)submitRevisionTest();else submit();
+    if(gateActive)submitGateExam();else if(revisionMode)submitRevisionTest();else submit();
     return;
   }
   home();
@@ -308,7 +316,7 @@ function handleBackGuard(){
   const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
   if(leave){
     disarmBackGuard();
-    if(revisionMode)submitRevisionTest();else submit();
+    if(gateActive)submitGateExam();else if(revisionMode)submitRevisionTest();else submit();
   } else {
     try{ history.pushState({ecetGuard:true},""); }catch(e){}
   }
@@ -618,6 +626,385 @@ document.addEventListener('click',e=>{
   if(list&&wrap&&!wrap.contains(e.target))list.hidden=true;
 });
 
+
+/* ===================== GATE PREVIOUS YEAR TESTS ===================== */
+/* ===================== GATE PREVIOUS-YEAR TESTS — DATA-DRIVEN =====================
+ * Everything below is driven by the JSON you drop into /gate-pyq — no code edits
+ * are needed to add, replace or fix a paper.
+ *
+ *   gate-pyq/manifest.json       { "json_files": ["2026.json", "2017_set1.json", ...] }
+ *   gate-pyq/source_json/*.json  one file per paper (a bare list of questions; the
+ *                                older {"questions":[...]} wrapper is also accepted)
+ *   gate-pyq/assets/<paper>/...  images referenced by question_image / options
+ *
+ * If manifest.json is missing, GATE_FALLBACK_FILES below is used.
+ *
+ * QUESTION FIELDS READ (extra fields are ignored):
+ *   question_number, section ("GA"/"EC"), subject, marks, question_type (MCQ|MSQ|NAT),
+ *   question, question_image, options {A..D: {type:"text",text} | {type:"image",image} | "text"},
+ *   option_images, correct_answer ("B" | "A;C" | "0.9 to 1.1"),
+ *   negative_marks (used as-is per question), verification_status.
+ *
+ * EVERY question is validated at load time. A question that cannot be answered or
+ * graded reliably (missing/garbled options, blank answer key, unreadable symbols...)
+ * is SKIPPED and listed in the "Data check" panel with the reason — it is never
+ * shown to a student half-broken, and nothing is invented to fill the gap.
+ */
+const GATE_DATA_BASE="gate-pyq/";
+const GATE_MIN_PER_MARK=1.8;              // real GATE: 180 minutes for 100 marks
+const GATE_SUBJECT_TEST_SIZES=[15,30,45,0]; // choices on the subject page; 0 = whole pool
+const GATE_INCLUDE_GA_SUBJECT_TEST=true;  // offer "General Aptitude" as a subject test
+const GATE_YEAR_KEEP_PAPER_ORDER=true;    // year-wise: GA first, then core, in paper order (like the real exam)
+const GATE_SHUFFLE_OPTIONS=false;         // real GATE never reorders options; set true to shuffle A-D per attempt
+const GATE_FALLBACK_FILES=["2026.json","2025.json","2024.json","2023.json","2022.json","2021.json","2020.json","2019.json","2018.json","2017_set1.json","2016_set3.json","2016_set1.json"];
+let gateSubjectTestSize=30, gatePapers_=null, gateSubjects_=[], gatePending_=null;
+const gatePaperCache_=new Map();
+
+function gateFmt_(n){return Math.round((Number(n)||0)*100)/100;}
+function gateLabelFromKey_(key){
+  const m=String(key).match(/^(\d{4})(?:[_-]?set[_-]?(\d+))?(?:[_-](.+))?$/i);
+  if(!m)return String(key).replace(/_/g," ");
+  return `GATE ${m[1]}`+(m[2]?` — Set ${m[2]}`:"")+(m[3]?` (${m[3].replace(/[_-]/g," ")})`:"");
+}
+function gatePaperSort_(a,b){
+  const pa=String(a.key).match(/^(\d{4})(?:_set(\d+))?/i)||[],pb=String(b.key).match(/^(\d{4})(?:_set(\d+))?/i)||[];
+  const ya=+pa[1]||0,yb=+pb[1]||0;if(ya!==yb)return yb-ya;return (+pa[2]||0)-(+pb[2]||0);
+}
+async function gateLoadRegistry_(){
+  if(gatePapers_)return gatePapers_;
+  let files=null;
+  try{
+    const r=await fetch(GATE_DATA_BASE+"manifest.json",{cache:"no-cache"});
+    if(r.ok){const m=await r.json();files=Array.isArray(m)?m:(m.json_files||m.files||null);}
+  }catch(e){console.warn("GATE manifest not available — using the built-in file list",e);}
+  if(!Array.isArray(files)||!files.length)files=GATE_FALLBACK_FILES;
+  const seen=new Set();
+  gatePapers_=files.map(f=>typeof f==="string"?f:(f&&f.file)).filter(Boolean)
+    .map(f=>String(f).replace(/^.*[\\/]/,"")).filter(f=>/\.json$/i.test(f)&&!seen.has(f)&&seen.add(f))
+    .map(f=>{const key=f.replace(/\.json$/i,"");return {key,file:f,label:gateLabelFromKey_(key)};}).sort(gatePaperSort_);
+  return gatePapers_;
+}
+
+/* ---- GATE PDFs use the Adobe "Symbol" font; text extraction leaves its glyphs as
+ * private-use characters (U+F0xx = Symbol byte 0xXX, U+F8xx = Adobe extension pieces).
+ * This is a lossless decode using the published Symbol encoding — nothing is guessed.
+ * Any glyph not in this table stays as-is and the question is then skipped as unreadable. */
+const GATE_SYMBOLS_={
+"20":" ","22":"∀","24":"∃","27":"∋","2A":"∗","2B":"+","2D":"−","3D":"=","40":"≅","5C":"∴","5E":"⊥","7E":"∼",
+"41":"Α","42":"Β","43":"Χ","44":"Δ","45":"Ε","46":"Φ","47":"Γ","48":"Η","49":"Ι","4A":"ϑ","4B":"Κ","4C":"Λ","4D":"Μ","4E":"Ν","4F":"Ο",
+"50":"Π","51":"Θ","52":"Ρ","53":"Σ","54":"Τ","55":"Υ","56":"ς","57":"Ω","58":"Ξ","59":"Ψ","5A":"Ζ",
+"61":"α","62":"β","63":"χ","64":"δ","65":"ε","66":"φ","67":"γ","68":"η","69":"ι","6A":"ϕ","6B":"κ","6C":"λ","6D":"μ","6E":"ν","6F":"ο",
+"70":"π","71":"θ","72":"ρ","73":"σ","74":"τ","75":"υ","76":"ϖ","77":"ω","78":"ξ","79":"ψ","7A":"ζ",
+"A2":"′","A3":"≤","A5":"∞","AB":"↔","AC":"←","AD":"↑","AE":"→","AF":"↓",
+"B0":"°","B1":"±","B2":"″","B3":"≥","B4":"×","B5":"∝","B6":"∂","B7":"•","B8":"÷","B9":"≠","BA":"≡","BB":"≈","BC":"…",
+"C4":"⊗","C5":"⊕","C6":"∅","C7":"∩","C8":"∪","C9":"⊃","CA":"⊇","CB":"⊄","CC":"⊂","CD":"⊆","CE":"∈","CF":"∉",
+"D0":"∠","D1":"∇","D5":"∏","D6":"√","D7":"⋅","D8":"¬","D9":"∧","DA":"∨","DB":"⇔","DC":"⇐","DD":"⇑","DE":"⇒","DF":"⇓",
+"E1":"〈","E5":"∑","E6":"⎛","E7":"⎜","E8":"⎝","E9":"⎡","EA":"⎢","EB":"⎣","EC":"⎧","ED":"⎨","EE":"⎩","EF":"⎪",
+"F1":"〉","F2":"∫","F3":"⌠","F4":"⎮","F5":"⌡","F6":"⎞","F7":"⎟","F8":"⎠","F9":"⎤","FA":"⎥","FB":"⎦","FC":"⎫","FD":"⎬","FE":"⎭",
+"F8E5":"‾","F8E6":"⏐","F8E7":"⎯","F8EB":"⎛","F8EC":"⎜","F8ED":"⎝","F8EE":"⎡","F8EF":"⎢","F8F0":"⎣","F8F1":"⎧","F8F2":"⎨","F8F3":"⎩","F8F4":"⎪","F8F5":"⎮",
+"F8F6":"⎞","F8F7":"⎟","F8F8":"⎠","F8F9":"⎤","F8FA":"⎥","F8FB":"⎦","F8FC":"⎫","F8FD":"⎬","F8FE":"⎭"
+};
+function gateDecodeSymbols_(s){
+  s=String(s);
+  /* A run of the SAME private-use glyph (e.g. "<F072> <F072> <F072>") is extraction filler, not maths.
+   * It is collapsed to one undecodable marker so the text is flagged unreadable instead of showing
+   * confident-looking nonsense (the same glyph is a real "ρ" elsewhere, so a lookup alone can't tell). */
+  s=s.replace(/([\uf000-\uf8ff])(?:\s*\1)+/g,"\uf8ff");
+  return s.replace(/[\uf000-\uf8ff]/g,ch=>{
+    const c=ch.charCodeAt(0);
+    if(c>=0xF8E5&&c<=0xF8FE)return GATE_SYMBOLS_[c.toString(16).toUpperCase()]||ch;
+    if(c>=0xF020&&c<=0xF0FF){
+      const b=c&0xFF,hex=b.toString(16).toUpperCase().padStart(2,"0");
+      if(GATE_SYMBOLS_[hex])return GATE_SYMBOLS_[hex];
+      /* In the Symbol encoding digits and plain punctuation sit at their ASCII positions */
+      if((b>=0x21&&b<=0x3F)||b===0x5B||b===0x5D||b===0x5F||(b>=0x7B&&b<=0x7D))return String.fromCharCode(b);
+    }
+    return ch;
+  });
+}
+function gateCleanText_(v){
+  return gateDecodeSymbols_(String(v??"")).replace(/\bPage\s+\d+\b[\s\S]*$/i,"").replace(/\bGATE\s+\d{4}[\s\S]*$/i,"").replace(/[ \t]+\n/g,"\n").trim();
+}
+function gateAssetUrl_(p){
+  if(!p)return "";const s=String(p).trim();if(!s)return "";
+  if(/^[a-z][a-z0-9+.-]*:/i.test(s))return /^https:/i.test(s)?s:"";   // only https or relative paths are allowed
+  if(s.startsWith("//"))return "";
+  return GATE_DATA_BASE+s.replace(/^\.?\/+/,"");
+}
+/* Old string-only option format (kept so previously prepared files still load): the
+ * options of two-column PDFs were sometimes merged into one string, so this re-splits on "(A)/(B)..." markers. */
+function gateOptionsLegacy_(raw){
+  if(!raw)return [];
+  if(Array.isArray(raw))return raw.map(x=>gateCleanText_(x)).filter(Boolean);
+  if(typeof raw!=="object")return [];
+  const vals=Object.entries(raw).map(([k,v])=>`${k}. ${v||""}`).join("\n");
+  const matches=[];const re=/(?:^|\n|\s)\(?([ABCD])\)?[\).:]\s+/g;let m,last=0;
+  while((m=re.exec(vals))){
+    if(matches.length){matches[matches.length-1].text=gateCleanText_(vals.slice(last,m.index));}
+    matches.push({label:m[1],text:""});last=re.lastIndex;
+  }
+  if(matches.length){matches[matches.length-1].text=gateCleanText_(vals.slice(last));return matches.map(x=>x.text).filter(Boolean);}
+  return Object.keys(raw).sort().map(k=>gateCleanText_(raw[k])).filter(Boolean);
+}
+/* Returns {texts:[...], images:[...]} — always 4 slots for the object format so that a
+ * missing option is detected rather than silently shifting the others. */
+function gateParseOptions_(raw){
+  const out={texts:[],images:[]};
+  if(!raw)return out;
+  if(Array.isArray(raw)){raw.forEach(x=>{out.texts.push(typeof x==="string"?gateCleanText_(x):gateCleanText_(x&&x.text));out.images.push(x&&x.image?gateAssetUrl_(x.image):"");});return out;}
+  if(typeof raw!=="object")return out;
+  const hasObj=Object.values(raw).some(v=>v&&typeof v==="object");
+  if(!hasObj){gateOptionsLegacy_(raw).forEach(t=>{out.texts.push(t);out.images.push("");});return out;}
+  for(const L of ["A","B","C","D"]){
+    const v=raw[L];
+    if(v==null){out.texts.push("");out.images.push("");continue;}
+    if(typeof v==="string"){out.texts.push(gateCleanText_(v));out.images.push("");continue;}
+    out.texts.push(gateCleanText_(v.text));
+    out.images.push(v.image?gateAssetUrl_(v.image):"");
+  }
+  return out;
+}
+function gateAnswerIndices_(answer,options){
+  const letters=String(answer??"").toUpperCase().match(/[ABCD]/g)||[];
+  return [...new Set(letters.map(x=>"ABCD".indexOf(x)).filter(i=>i>=0&&i<options.length))];
+}
+/* Symptoms of the two-column-PDF damage: an option that is only a label like "(C)", or one that
+ * contains another option's marker inside it. (Wrong-but-well-formed options cannot be detected here.) */
+function gateLooksMerged_(t){
+  const s=String(t).trim();
+  return /^\(?[A-D]\)?[.):]?$/.test(s)||/(^|\s)\(\s*[A-D]\s*\)(\s|$)/.test(s);
+}
+function gateProblems_(n){
+  const p=[];
+  if(!n.question&&!n.image)p.push("no question text or image");
+  if(n.type==="NAT"){
+    if(!/\d/.test(n.correctRaw))p.push("numeric answer missing");
+  }else{
+    if(n.options.length!==4)p.push("fewer than 4 options");
+    n.options.forEach((t,i)=>{
+      const L="ABCD"[i];
+      if(!t&&!n.optionImages[i])p.push(`option ${L} empty`);
+      else if(t&&gateLooksMerged_(t))p.push("merged/garbled option text");
+    });
+    if(n.type==="MCQ"&&n.correctIndices.length!==1)p.push("answer key missing or invalid");
+    if(n.type==="MSQ"&&!n.correctIndices.length)p.push("answer key missing or invalid");
+    n.correctIndices.forEach(i=>{if(!n.options[i]&&!n.optionImages[i])p.push("answer points to an empty option");});
+  }
+  if(/[\uf000-\uf8ff]/.test(n.question+n.options.join("")))p.push("unreadable symbols");
+  if(/[\u239B-\u23AF]/.test(n.question+" "+n.options.join(" ")))p.push("matrix/brace layout lost in extraction");
+  return [...new Set(p)];
+}
+function gateNormalizeQuestion_(q,key,label){
+  const po=gateParseOptions_(q.options);
+  const options=po.texts.slice(),optionImages=po.images.slice();
+  if(q.option_images&&typeof q.option_images==="object"&&!Array.isArray(q.option_images)){
+    ["A","B","C","D"].forEach((L,i)=>{
+      if(q.option_images[L]&&!optionImages[i]){optionImages[i]=gateAssetUrl_(q.option_images[L]);while(options.length<=i)options.push("");}
+    });
+  }
+  while(optionImages.length<options.length)optionImages.push("");
+  const t=String(q.question_type||q.type||"").toUpperCase();
+  const type=(t.includes("NAT")||q.is_nat)?"NAT":((t.includes("MSQ")||q.is_msq)?"MSQ":(t.includes("MCQ")?"MCQ":(options.length?"MCQ":"NAT")));
+  const marks=Number(q.marks)||1;
+  const hasNeg=q.negative_marks!==undefined&&q.negative_marks!==null&&q.negative_marks!==""&&Number.isFinite(Number(q.negative_marks));
+  const noNegFlag=String(q.negative_marking??"").toLowerCase()==="false";
+  const negativeMarks=hasNeg?Math.max(0,Number(q.negative_marks)):((type==="MCQ"&&!noNegFlag)?(marks===2?2/3:1/3):0);
+  const section=String(q.section||"").toUpperCase()||"EC";
+  const n={
+    id:`gate-${key}-${q.question_number}`,year:label||gateLabelFromKey_(key),sourceYear:String(key),
+    questionNumber:q.question_number,section,
+    subject:(q.subject&&!/^\s*unknown/i.test(String(q.subject)))?String(q.subject).trim():(section==="GA"?"General Aptitude":"Electronics and Communication Engineering"),
+    question:gateCleanText_(q.question),image:gateAssetUrl_(q.question_image),
+    options,optionImages,correctRaw:String(q.correct_answer??"").trim(),type,marks,negativeMarks,
+    verification:q.verification_status||"",sourceStatus:q.source_status||""
+  };
+  n.correctIndices=type==="NAT"?[]:gateAnswerIndices_(q.correct_answer,options);
+  /* If a picture carries the real content, damaged text beside it is dropped (the image is authoritative). */
+  const BAD=/[\uf000-\uf8ff\u239B-\u23AF]/,BAD_G=/[\uf000-\uf8ff\u239B-\u23AF]/g;
+  if(n.image&&BAD.test(n.question))n.question=n.question.replace(BAD_G,"").replace(/[ \t]{2,}/g," ").trim();
+  n.options=n.options.map((t,i)=>(n.optionImages[i]&&BAD.test(t))?"":t);
+  n.problems=gateProblems_(n);n.playable=!n.problems.length;
+  return n;
+}
+
+async function gateLoadPaper_(meta){
+  if(gatePaperCache_.has(meta.key))return gatePaperCache_.get(meta.key);
+  const p=(async()=>{
+    const r=await fetch(`${GATE_DATA_BASE}source_json/${meta.file}`,{cache:"no-cache"});
+    if(!r.ok)throw new Error(`${meta.file}: HTTP ${r.status}`);
+    const raw=await r.json();
+    const list=Array.isArray(raw)?raw:(raw&&Array.isArray(raw.questions)?raw.questions:null);
+    if(!list)throw new Error(`${meta.file}: unrecognised format (expected a list of questions)`);
+    const questions=list.map(q=>gateNormalizeQuestion_(q,meta.key,meta.label));
+    const playable=questions.filter(q=>q.playable),skipped=questions.filter(q=>!q.playable);
+    return {meta,questions,playable,skipped,totalMarks:playable.reduce((a,q)=>a+q.marks,0),paperMarks:questions.reduce((a,q)=>a+q.marks,0)};
+  })();
+  gatePaperCache_.set(meta.key,p);p.catch(()=>gatePaperCache_.delete(meta.key));
+  return p;
+}
+async function gateLoadAll_(){
+  const reg=await gateLoadRegistry_();
+  const res=await Promise.allSettled(reg.map(m=>gateLoadPaper_(m)));
+  return res.map((r,i)=>r.status==="fulfilled"?r.value:{meta:reg[i],error:(r.reason&&r.reason.message)||"failed to load",questions:[],playable:[],skipped:[],totalMarks:0,paperMarks:0});
+}
+function gateReasonSummary_(skipped){
+  const c=new Map();skipped.forEach(q=>q.problems.forEach(p=>c.set(p,(c.get(p)||0)+1)));
+  return [...c.entries()].sort((a,b)=>b[1]-a[1]).map(([p,n])=>`${p} (${n})`).join("; ");
+}
+function gateBuildSubjects_(papers){
+  const m=new Map();
+  papers.forEach(p=>p.playable.forEach(q=>{
+    if(!GATE_INCLUDE_GA_SUBJECT_TEST&&q.section==="GA")return;
+    const e=m.get(q.subject)||{name:q.subject,count:0,marks:0};e.count++;e.marks+=q.marks;m.set(q.subject,e);
+  }));
+  return [...m.values()].sort((a,b)=>a.name.localeCompare(b.name));
+}
+function gateImgFail_(img){const s=document.createElement("span");s.className="note";s.textContent="⚠ Image could not be loaded";img.replaceWith(s);}
+function gateImgHTML_(url,alt,cls){return url?`<img class="${cls}" src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async" onerror="gateImgFail_(this)">`:"";}
+
+/* ---------- screens ---------- */
+async function gateOpenHome(){
+  pushNav(gateOpenHome);
+  app.innerHTML=`<div class="card"><h1>GATE Previous Year Tests</h1><p class="note">Practise GATE previous-year papers in the real exam pattern: paper order, per-question marks, negative marking taken from the data, and GATE pacing (${GATE_MIN_PER_MARK} minutes per mark — 180 minutes for a 100-mark paper). MCQ, MSQ and numerical (NAT) questions are all supported.</p><div class="buttons"><button onclick="gateSubjectTests()">📚 Subject-wise Tests</button><button onclick="gateYearTests()">📅 Full Year-wise Tests</button><button onclick="gateReload_()" aria-label="Reload GATE data from the JSON files">↻ Reload data</button><button onclick="home()">Back</button></div><p id="gateDataNote" class="note" role="status">Checking question data…</p><div id="gateDataCheck"></div></div>`;
+  try{gateRenderDataCheck_(await gateLoadAll_());}
+  catch(e){const n=document.getElementById("gateDataNote");if(n)n.textContent="Could not read the GATE data: "+e.message;}
+}
+function gateRenderDataCheck_(papers){
+  const note=document.getElementById("gateDataNote"),box=document.getElementById("gateDataCheck");
+  if(!note||!box)return;
+  const total=papers.reduce((a,p)=>a+p.questions.length,0),ok=papers.reduce((a,p)=>a+p.playable.length,0),failed=papers.filter(p=>p.error);
+  const status=papers.flatMap(p=>p.questions).map(q=>q.verification).find(v=>v&&!/^verified$/i.test(v));
+  note.innerHTML=`${papers.length} paper(s) • ${total} questions • <b>${ok}</b> ready to use`
+    +(total-ok?` • ${total-ok} skipped because the JSON for them is incomplete or garbled`:"")
+    +(failed.length?` • <span class="wronganswer">${failed.length} file(s) failed to load</span>`:"")
+    +(status?`<br><small>⚠ The data marks these questions as “${esc(status)}”. If an answer looks wrong, treat the official GATE answer key as final.</small>`:"");
+  box.innerHTML=`<details><summary>Data check (per paper)</summary><div class="table-scroll"><table class="simple"><thead><tr><th>Paper</th><th>Questions</th><th>Ready</th><th>Skipped — reason</th></tr></thead><tbody>${papers.map(p=>`<tr><td>${esc(p.meta.label)}</td><td>${p.questions.length}</td><td>${p.playable.length}</td><td>${p.error?`<span class="wronganswer">${esc(p.error)}</span>`:(p.skipped.length?`${p.skipped.length} — ${esc(gateReasonSummary_(p.skipped))}`:"—")}</td></tr>`).join("")}</tbody></table></div></details>`;
+}
+function gateReload_(){gatePapers_=null;gatePaperCache_.clear();gateSubjects_=[];gateOpenHome();}
+
+async function gateSubjectTests(){
+  pushNav(gateSubjectTests);
+  app.innerHTML=`<div class="card"><h1>GATE Subject-wise Tests</h1><p class="note" role="status">Loading questions…</p></div>`;
+  let papers;try{papers=await gateLoadAll_();}catch(e){app.innerHTML=`<div class="card"><h1>GATE Subject-wise Tests</h1><p class="note">Could not load the GATE data: ${esc(e.message)}</p><div class="buttons"><button onclick="gateOpenHome()">Back</button></div></div>`;return;}
+  gateSubjects_=gateBuildSubjects_(papers);
+  app.innerHTML=`<div class="card"><h1>GATE Subject-wise Tests</h1><p class="note">Each test draws a random set of questions on one subject from every paper loaded, then runs with GATE marking: negative marks come from the data (typically −1/3 for a wrong 1-mark MCQ, −2/3 for a wrong 2-mark MCQ; none for MSQ/NAT). Time allowed = ${GATE_MIN_PER_MARK} min per mark.</p><label for="gateSize">Questions per test</label><select id="gateSize" onchange="gateSetSize_(this.value)">${GATE_SUBJECT_TEST_SIZES.map(n=>`<option value="${n}" ${n===gateSubjectTestSize?"selected":""}>${n?n+" questions":"Entire pool (all questions)"}</option>`).join("")}</select>${gateSubjects_.length?`<div class="gate-list">${gateSubjects_.map((s,i)=>`<div class="topic-row"><span class="topic-num">${i+1}</span><div class="topic-info"><b>${esc(s.name)}</b><small>${s.count} questions • ${gateFmt_(s.marks)} marks available across ${papers.filter(p=>p.playable.some(q=>q.subject===s.name)).length} paper(s)</small></div><div class="topic-actions"><button onclick="startGateSubject(${i})">Start</button></div></div>`).join("")}</div>`:`<p class="note">No usable questions found. Check <code>gate-pyq/manifest.json</code> and <code>gate-pyq/source_json/</code>.</p>`}<div class="buttons"><button onclick="gateOpenHome()">Back</button></div></div>`;
+}
+function gateSetSize_(v){gateSubjectTestSize=Number(v)||0;}
+async function startGateSubject(i){
+  const s=gateSubjects_[i];if(!s)return;
+  pushNav(()=>startGateSubject(i));
+  try{
+    const papers=await gateLoadAll_();
+    const pool=papers.flatMap(p=>p.playable).filter(q=>q.subject===s.name);
+    const picked=(gateSubjectTestSize&&pool.length>gateSubjectTestSize)?shuffle(pool).slice(0,gateSubjectTestSize):pool;
+    gateShowInstructions_(picked,"subject",`${s.name} — Practice Test`,{note:`Drawn from a pool of ${pool.length} questions.`});
+  }catch(e){app.innerHTML=`<div class="card"><h2>Could not load the GATE subject test</h2><p class="note">${esc(e.message)}</p><button onclick="gateSubjectTests()">Back</button></div>`;}
+}
+async function gateYearTests(){
+  pushNav(gateYearTests);
+  app.innerHTML=`<div class="card"><h1>GATE Full Year-wise Tests</h1><p class="note" role="status">Loading papers…</p></div>`;
+  let papers;try{papers=await gateLoadAll_();}catch(e){app.innerHTML=`<div class="card"><h1>GATE Full Year-wise Tests</h1><p class="note">Could not load the GATE data: ${esc(e.message)}</p><div class="buttons"><button onclick="gateOpenHome()">Back</button></div></div>`;return;}
+  app.innerHTML=`<div class="card"><h1>GATE Full Year-wise Tests</h1><p class="note">Each paper runs in its original order — General Aptitude first, then the core subject — with the marks and negative marking recorded in the JSON. Time allowed = ${GATE_MIN_PER_MARK} min per mark (180 min for a full 100-mark paper). Questions the data cannot support reliably are left out and counted below, never invented.</p><div class="gate-list">${papers.map((p,i)=>{const ok=p.playable.length,all=p.questions.length;const detail=p.error?`<span class="wronganswer">Could not load: ${esc(p.error)}</span>`:`${ok} of ${all} questions ready • ${gateFmt_(p.totalMarks)} of ${gateFmt_(p.paperMarks)} marks • ${Math.round(p.totalMarks*GATE_MIN_PER_MARK)} min`+(all-ok?` • ${all-ok} skipped`:"");return `<div class="topic-row"><span class="topic-num">${i+1}</span><div class="topic-info"><b>${esc(p.meta.label)}</b><small>${detail}</small></div><div class="topic-actions"><button ${ok?"":"disabled"} onclick="startGateYear('${esc(p.meta.key)}')">${ok?"Start":"Unavailable"}</button></div></div>`;}).join("")}</div><div class="buttons"><button onclick="gateOpenHome()">Back</button></div></div>`;
+}
+async function startGateYear(key){
+  pushNav(()=>startGateYear(key));
+  try{
+    const papers=await gateLoadAll_();const p=papers.find(x=>x.meta.key===key);
+    if(!p||p.error||!p.playable.length){app.innerHTML=`<div class="card"><h2>${esc(p?p.meta.label:key)} is not available</h2><p class="note">${esc(p&&p.error?p.error:"No question in this file passed validation.")} Nothing was made up to fill the gap.</p><div class="buttons"><button onclick="gateYearTests()">Back</button></div></div>`;return;}
+    gateShowInstructions_(p.playable,"year",p.meta.label,{skipped:p.skipped,total:p.questions.length});
+  }catch(e){app.innerHTML=`<div class="card"><h2>Could not load this paper</h2><p class="note">${esc(e.message)}</p><button onclick="gateYearTests()">Back</button></div>`;}
+}
+function gateShowInstructions_(questions,mode,title,info={}){
+  if(!questions.length){app.innerHTML=`<div class="card"><h2>No GATE questions found</h2><button onclick="gateOpenHome()">Back</button></div>`;return;}
+  const marks=questions.reduce((a,q)=>a+q.marks,0),mins=Math.round(marks*GATE_MIN_PER_MARK);
+  const cnt=t=>questions.filter(q=>q.type===t).length;
+  const neg=[...new Set(questions.filter(q=>q.negativeMarks>0).map(q=>`${gateFmt_(q.marks)}-mark ${q.type}: −${gateFmt_(q.negativeMarks)} for a wrong answer`))];
+  const verified=questions.some(q=>q.verification&&!/^verified$/i.test(q.verification));
+  gatePending_={questions,mode,title};
+  app.innerHTML=`<div class="card enroll-card"><h1>${esc(title)}</h1><div class="dash-grid"><div class="dash-tile"><b>${questions.length}</b><span>Questions</span></div><div class="dash-tile"><b>${gateFmt_(marks)}</b><span>Total marks</span></div><div class="dash-tile"><b>${mins} min</b><span>Duration</span></div><div class="dash-tile"><b>${cnt("MCQ")}/${cnt("MSQ")}/${cnt("NAT")}</b><span>MCQ / MSQ / NAT</span></div></div><h2>Marking scheme (from the data)</h2><ul class="note"><li>Correct answer: full marks for that question.</li>${neg.length?neg.map(x=>`<li>${esc(x)}</li>`).join(""):"<li>No negative marking for this selection.</li>"}<li>MSQ: all correct options must be chosen, no partial credit. NAT: type the number; ranges are accepted as in the answer key.</li><li>Unanswered: 0 marks.</li></ul>${info.skipped&&info.skipped.length?`<p class="note">⚠ ${info.skipped.length} of ${info.total} questions in this paper were left out because the data for them is incomplete (${esc(gateReasonSummary_(info.skipped))}). Marks and time above are for the ${questions.length} included.</p>`:""}${info.note?`<p class="note">${esc(info.note)}</p>`:""}${verified?`<p class="note">⚠ Questions are extracted from source papers and not all are fully verified — if an answer looks wrong, the official GATE key is final.</p>`:""}<div class="buttons"><button onclick="${mode==="year"?"gateYearTests()":"gateSubjectTests()"}">Back</button><button onclick="gateStartPending_()">Start exam</button></div></div>`;
+}
+function gateStartPending_(){if(gatePending_)beginGateExam_(gatePending_.questions,gatePending_.mode,gatePending_.title);}
+
+/* ---------- exam engine ---------- */
+function gateRandomizeQuestion_(q){
+  if(!GATE_SHUFFLE_OPTIONS||q.type==="NAT"||q.options.length<2)return {...q,optionOrder:q.options.map((_,i)=>i)};
+  const pairs=shuffle(q.options.map((text,index)=>({text,index,img:(q.optionImages||[])[index]||""})));
+  const oldToNew=new Map(pairs.map((x,i)=>[x.index,i]));
+  return {...q,options:pairs.map(x=>x.text),optionImages:pairs.map(x=>x.img),correctIndices:q.correctIndices.map(i=>oldToNew.get(i)).filter(i=>i!==undefined),optionOrder:pairs.map(x=>x.index)};
+}
+function gateOrder_(questions,mode){
+  if(mode==="year"){
+    const byNo=(a,b)=>(Number(a.questionNumber)||0)-(Number(b.questionNumber)||0);
+    const ga=questions.filter(q=>q.section==="GA"),core=questions.filter(q=>q.section!=="GA");
+    const ordered=GATE_YEAR_KEEP_PAPER_ORDER?[...ga.sort(byNo),...core.sort(byNo)]:[...shuffle(ga),...shuffle(core)];
+    return ordered.map(gateRandomizeQuestion_);
+  }
+  return shuffle(questions).map(gateRandomizeQuestion_);
+}
+function beginGateExam_(questions,mode,title){
+  if(!questions.length){app.innerHTML=`<div class="card"><h2>No GATE questions found</h2><button onclick="gateOpenHome()">Back</button></div>`;return;}
+  clearInterval(gateTimer);clearExam();gateActive=true;gateMode=mode;gateTitle=title;gateQuestions=gateOrder_(questions,mode);
+  gateAnswers=Array(gateQuestions.length).fill(null);gateMarked=Array(gateQuestions.length).fill(false);gateQTime=Array(gateQuestions.length).fill(0);
+  gateCurrent=0;gateLeft=Math.round(gateQuestions.reduce((a,q)=>a+q.marks,0)*GATE_MIN_PER_MARK*60);
+  gateExamStartedAt=Date.now();gateQuestionStartedAt=Date.now();examActive=true;armBackGuard();renderGateExam();
+  gateTimer=setInterval(()=>{gateLeft--;const el=document.querySelector(".timer");if(el){el.textContent=clock(gateLeft);el.classList.toggle("low",gateLeft<=60);}if(gateLeft<=0){gateLeft=0;submitGateExam();}},1000);
+}
+function gateCommitTime_(){if(!gateQuestions.length)return;gateQTime[gateCurrent]=(gateQTime[gateCurrent]||0)+(Date.now()-gateQuestionStartedAt)/1000;gateQuestionStartedAt=Date.now();}
+function gateSelect_(v){gateAnswers[gateCurrent]=v;renderGateExam();}
+function gateToggleMark_(){gateMarked[gateCurrent]=!gateMarked[gateCurrent];renderGateExam();}
+function gateGo_(n){gateCommitTime_();gateCurrent=Math.max(0,Math.min(gateQuestions.length-1,n));gateQuestionStartedAt=Date.now();renderGateExam();}
+function gateOptionLabel_(i){return "ABCD"[i]||String(i+1);}
+function gateAnswerDisplay_(q){if(q.type==="NAT")return q.correctRaw||"—";return q.correctIndices.map(i=>gateOptionLabel_(i)).join(", ")||q.correctRaw||"—";}
+function gateOptionBody_(q,k){const t=q.options[k]||"",img=(q.optionImages||[])[k]||"";return (t?esc(t):"")+gateImgHTML_(img,`Option ${gateOptionLabel_(k)} (image)`,"gate-opt-img");}
+function renderGateExam(){
+  const q=gateQuestions[gateCurrent],ans=gateAnswers[gateCurrent],answered=gateAnswers.filter(x=>x!==null&&x!==""&&!(Array.isArray(x)&&!x.length)).length,marked=gateMarked.filter(Boolean).length;let controls="";
+  if(q.type==="NAT")controls=`<label for="gateNat" class="note">Enter your numerical answer</label><input class="gate-nat" id="gateNat" value="${esc(ans??"")}" inputmode="decimal" autocomplete="off" placeholder="Enter numerical answer" oninput="gateAnswers[gateCurrent]=this.value">`;
+  else if(q.type==="MSQ")controls=q.options.map((o,k)=>`<label class="option ${Array.isArray(ans)&&ans.includes(k)?"selected":""}"><input type="checkbox" ${Array.isArray(ans)&&ans.includes(k)?"checked":""} onchange="gateMsqChoose_(${k},this.checked)"><b>${gateOptionLabel_(k)}.</b> ${gateOptionBody_(q,k)}</label>`).join("");
+  else controls=q.options.map((o,k)=>`<label class="option ${ans===k?"selected":""}"><input type="radio" name="gateAnswer" ${ans===k?"checked":""} onchange="gateSelect_(${k})"><b>${gateOptionLabel_(k)}.</b> ${gateOptionBody_(q,k)}</label>`).join("");
+  const negTxt=(q.type==="MCQ"&&q.negativeMarks>0)?` • −${gateFmt_(q.negativeMarks)} if wrong`:"";
+  app.innerHTML=`<div class="top"><h1>${esc(gateTitle)}</h1><div class="timer ${gateLeft<=60?"low":""}">${clock(gateLeft)}</div></div><div class="card"><div class="meta"><span>Question ${gateCurrent+1} of ${gateQuestions.length} • ${esc(q.section)} • ${esc(q.subject)} • ${esc(q.year)} Q${esc(q.questionNumber)} • ${esc(q.type)} • ${gateFmt_(q.marks)} mark${q.marks==1?"":"s"}${negTxt}</span><span>Answered ${answered}/${gateQuestions.length} • Review ${marked}</span></div><div class="question">${esc(q.question)}</div>${gateImgHTML_(q.image,`Figure or diagram for question ${gateCurrent+1}`,"gate-img")}${controls}<button class="review-toggle ${gateMarked[gateCurrent]?"active":""}" onclick="gateToggleMark_()">${gateMarked[gateCurrent]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${gateQuestions.map((_,k)=>`<button class="num ${gateAnswers[k]!==null?"answered":""} ${gateMarked[k]?"review":""} ${k===gateCurrent?"current":""}" onclick="gateGo_(${k})" aria-label="Question ${k+1}">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="gateGo_(gateCurrent-1)" ${gateCurrent===0?"disabled":""}>◀ Previous</button><button onclick="gateToggleMark_()">${gateMarked[gateCurrent]?"Unmark":"Review"}</button><button onclick="gateGo_(gateCurrent+1)" ${gateCurrent===gateQuestions.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="gateConfirmSubmit_()">Submit</button></div></div>`;
+}
+function gateMsqChoose_(k,on){let a=Array.isArray(gateAnswers[gateCurrent])?[...gateAnswers[gateCurrent]]:[];if(on&&!a.includes(k))a.push(k);if(!on)a=a.filter(x=>x!==k);a.sort((x,y)=>x-y);gateAnswers[gateCurrent]=a;renderGateExam();}
+function gateConfirmSubmit_(){const u=gateAnswers.filter(x=>x===null||x===""||(Array.isArray(x)&&!x.length)).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submitGateExam();}
+function gateNatCorrect_(q,raw){
+  const norm=v=>String(v??"").replace(/\u2212/g,"-").replace(/,/g,"").trim();
+  const s=norm(raw);if(!s)return false;
+  const nums=s.match(/-?\d+(?:\.\d+)?/g)?.map(Number)||[];if(!nums.length)return false;
+  const target=norm(q.correctRaw);
+  const range=target.match(/(-?\d+(?:\.\d+)?)\s*(?:to|–|-)\s*(-?\d+(?:\.\d+)?)/i);
+  if(range){const x=nums[0],lo=Math.min(Number(range[1]),Number(range[2])),hi=Math.max(Number(range[1]),Number(range[2]));return x>=lo-1e-9&&x<=hi+1e-9;}
+  const expected=Number(target.match(/-?\d+(?:\.\d+)?/)?.[0]);
+  return Number.isFinite(expected)&&Math.abs(nums[0]-expected)<=1e-9;
+}
+function gateEvaluate_(q,ans){
+  if(ans===null||ans===""||(Array.isArray(ans)&&!ans.length))return {state:"unanswered",marks:0};
+  if(q.type==="NAT")return gateNatCorrect_(q,ans)?{state:"correct",marks:q.marks}:{state:"wrong",marks:0};
+  const correct=q.correctIndices||[];
+  if(q.type==="MSQ"){const a=[...(Array.isArray(ans)?ans:[])].sort((x,y)=>x-y);const c=[...correct].sort((x,y)=>x-y);return JSON.stringify(a)===JSON.stringify(c)?{state:"correct",marks:q.marks}:{state:"wrong",marks:0};}
+  if(Number(ans)===Number(correct[0]))return {state:"correct",marks:q.marks};
+  return {state:"wrong",marks:-(Number.isFinite(Number(q.negativeMarks))?Number(q.negativeMarks):(q.marks===2?2/3:1/3))};
+}
+function submitGateExam(){
+  if(!gateActive||isSubmitting)return;isSubmitting=true;clearInterval(gateTimer);gateCommitTime_();disarmBackGuard();examActive=false;gateActive=false;
+  const detail=gateQuestions.map((q,i)=>{const e=gateEvaluate_(q,gateAnswers[i]);return {...q,selected:gateAnswers[i],marked:gateMarked[i],time:Math.round(gateQTime[i]||0),state:e.state,earned:e.marks};});
+  const score=Math.round(detail.reduce((a,d)=>a+d.earned,0)*100)/100,max=detail.reduce((a,q)=>a+q.marks,0);
+  const gained=Math.round(detail.filter(d=>d.earned>0).reduce((a,d)=>a+d.earned,0)*100)/100,lost=Math.round(-detail.filter(d=>d.earned<0).reduce((a,d)=>a+d.earned,0)*100)/100;
+  const count=s=>detail.filter(d=>d.state===s).length;
+  const sections=[["GA","General Aptitude"],["CORE","Core subject"]].map(([k,name])=>{const g=detail.filter(d=>(d.section==="GA")===(k==="GA"));return {name,n:g.length,net:Math.round(g.reduce((a,d)=>a+d.earned,0)*100)/100,max:g.reduce((a,d)=>a+d.marks,0)};}).filter(s=>s.n);
+  gateResult={score,max,gained,lost,sections,correct:count("correct"),wrong:count("wrong"),unanswered:count("unanswered"),totalTime:Math.round((Date.now()-gateExamStartedAt)/1000),detail,title:gateTitle,mode:gateMode};
+  gateQuestions=[];gateAnswers=[];gateMarked=[];gateQTime=[];gateCurrent=0;gateLeft=0;renderGateResult_();isSubmitting=false;
+}
+function renderGateResult_(){
+  const r=gateResult,pct=r.max?Math.round(r.score/r.max*1000)/10:0;
+  const yourAnswer=d=>d.selected===null||d.selected===""||(Array.isArray(d.selected)&&!d.selected.length)?"Unanswered":Array.isArray(d.selected)?d.selected.map(gateOptionLabel_).join(", "):d.type==="NAT"?esc(d.selected):gateOptionLabel_(Number(d.selected))+". "+esc(d.options[Number(d.selected)]||((d.optionImages||[])[Number(d.selected)]?"(image option)":""));
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(r.title)}</h1><div class="stats"><div class="stat"><b>${gateFmt_(r.score)}/${gateFmt_(r.max)}</b>Net marks</div><div class="stat"><b>${pct}%</b>Percentage</div><div class="stat"><b>${r.correct}</b>Correct</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Marks gained <b>+${gateFmt_(r.gained)}</b> • Lost to negative marking <b>−${gateFmt_(r.lost)}</b> • Total time <b>${clock(r.totalTime)}</b></p>${r.sections.length>1?`<div class="table-scroll"><table class="simple"><thead><tr><th>Section</th><th>Questions</th><th>Net marks</th></tr></thead><tbody>${r.sections.map(s=>`<tr><td>${esc(s.name)}</td><td>${s.n}</td><td>${gateFmt_(s.net)} / ${gateFmt_(s.max)}</td></tr>`).join("")}</tbody></table></div>`:""}<p class="note">Marking used: each question's own <code>negative_marks</code> from the data; MSQ is all-or-nothing and NAT has no negative marking unless the data says otherwise.</p><div class="buttons"><button onclick="gateRetry_()">Retry Test</button><button onclick="gateOpenHome()">GATE Tests</button><button onclick="home()">Home</button></div><h2>Question review</h2>${r.detail.map((d,i)=>`<div class="review ${d.state!=="correct"?"wrong":""}"><b>Q${i+1} • ${esc(d.section)} • ${esc(d.year)} Q${esc(d.questionNumber)} • ${esc(d.type)} • ${d.earned>0?"+":""}${gateFmt_(d.earned)} / ${gateFmt_(d.marks)}</b><p>${esc(d.question)}</p>${gateImgHTML_(d.image,`Figure or diagram for question ${i+1}`,"gate-img")}<div>Your answer: <span class="${d.state==="correct"?"correct":d.state==="wrong"?"wronganswer":""}">${yourAnswer(d)}</span></div><div>Correct answer: <span class="correct">${esc(gateAnswerDisplay_(d))}</span></div></div>`).join("")}</div>`;
+}
+function gateRetry_(){
+  const d=gateResult?.detail||[];
+  const qs=d.map(({selected,marked,time,state,earned,...q})=>q);
+  beginGateExam_(qs,gateResult?.mode||gateMode,gateResult?.title||gateTitle);
+}
+
 /* ===================== HOME ===================== */
 function customSubjectsHTML(){
   return customSubjects.length?customSubjects.map((s,i)=>{
@@ -635,31 +1022,20 @@ function customSubjectsHTML(){
     return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
-function home(){
+async function home(){
   pushNav(home);
   clearExam(); revisionMode=false;
-  // IMPORTANT PERFORMANCE RULE:
-  // The Home screen must never wait for a network request. The small, static
-  // subject catalogue is injected by index.html as window.INITIAL_SUBJECTS.
-  // This lets the browser paint the complete Home UI immediately.
-  // subjects.json remains as a fallback only if the inline catalogue is missing.
-  if(!subjects.length){
-    fetch("subjects.json",{cache:"default"})
-      .then(r=>r.ok?r.json():[])
-      .then(list=>{
-        if(!Array.isArray(list)||!list.length)return;
-        subjects=list;
-        refreshSubjectCardStats();
-      })
-      .catch(()=>{});
-  }
+  // Render instantly from whatever we already know (static subject list + last cached
+  // custom subjects) instead of waiting on the network — the network refresh below then
+  // patches the page in place, so clicking Home never looks stuck or "broken".
+  if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
   customSubjects=store.customSubjectsCache();
   const p=store.profile();
   app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload"><span class="rf-ico" aria-hidden="true">⟳</span><span>Refresh Data</span></button></div>
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <div id="outboxBadge"></div>
     <p class="subtitle">${homeSubtitle()}</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
+    <div class="home-nav"><button onclick="location.href='gate.html'">🎓 GATE Previous Year Tests</button><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>Checking server…</span></div>
     <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Practice Tests Added by Admin <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
@@ -672,12 +1048,10 @@ function home(){
       <a href="refund.html" target="_blank" rel="noopener">Refunds</a>
     </div>
   </div>`;
-  // Mark the initial Home DOM as painted before starting secondary work.
-  _homeInitialPaintComplete=true;
-  // Do not let backend requests, large question-bank JSON parsing, or topic
-  // aggregation compete with the first paint. All of this is secondary Home
-  // data and can safely happen after the initial UI is visible.
-  scheduleHomeBackgroundWork_();
+  checkServerStatusAndBundle();
+  handleRevisionLink();
+  armCooldownTicker();
+  ensureStaticTopics();
   refreshOutboxBadge_();
 }
 function homeSubtitle(){
@@ -803,7 +1177,6 @@ async function refreshCustomSubjects(manual){
 // repeatedly doesn't re-check the server (and re-flash "Checking server...")
 // on every single visit — only the first Home visit in a while pays for it.
 let _serverStatusCache=null; // {online,isAdmin,customSubjects,checkedAt}
-let _homeInitialPaintComplete=false;
 const SERVER_STATUS_TTL_MS=3*60*1000;
 // Cold Apps Script containers routinely take 10-11s to answer doGet (see
 // execution log), so the status check's timeout has to comfortably clear
@@ -814,7 +1187,7 @@ let _offlineRetryTimer=null;
 // message — clicking it forces a fresh check instead of waiting for the
 // cache TTL or for the user to navigate Home again.
 function offlineStatusHTML_(){return 'Server offline — <span class="retry-link" onclick="checkServerStatusAndBundle(true)">retry</span>';}
-function applyServerStatus_(status,statusEl,slot,rerenderCards=true){
+function applyServerStatus_(status,statusEl,slot){
   if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
   if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   let changed=false;
@@ -824,7 +1197,7 @@ function applyServerStatus_(status,statusEl,slot,rerenderCards=true){
     store.setCustomSubjectsCache(customSubjects);
     changed=true;
   }
-  if(changed&&rerenderCards)refreshSubjectCardStats(); // re-renders both grids when explicitly requested
+  if(changed)refreshSubjectCardStats(); // re-renders both grids (built-in subjects can have topics too)
 }
 async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
@@ -832,7 +1205,7 @@ async function checkServerStatusAndBundle(force){
   if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
   if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
   const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
-  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot,false);return;}
+  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
   if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>Checking server…</span>';}
   if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
   const p=store.profile();
@@ -840,7 +1213,7 @@ async function checkServerStatusAndBundle(force){
   if(res?.ok){
     if(Number.isFinite(res.data?.cooldownMinutes))_defaultCooldownMin=res.data.cooldownMinutes;
     _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
-    applyServerStatus_(_serverStatusCache,statusEl,slot,false);
+    applyServerStatus_(_serverStatusCache,statusEl,slot);
     // homeBundle already carries the same pre-aggregated stats dashboard_()
     // would return (a single-row UserStats lookup, not a recompute) — cache
     // it here too so subject cards show real Best/Worst/cooldown data on
@@ -858,30 +1231,6 @@ async function checkServerStatusAndBundle(force){
     },12000);
   }
 }
-function runWhenIdle_(fn,timeout=2000){
-  if("requestIdleCallback" in window){
-    window.requestIdleCallback(fn,{timeout});
-  }else{
-    setTimeout(fn,50);
-  }
-}
-function scheduleHomeBackgroundWork_(){
-  // Let the browser paint Home first. The server call and static topic-bank
-  // parsing are deliberately separated so a slow Apps Script response or
-  // large JSON parse cannot become the LCP bottleneck.
-  runWhenIdle_(()=>{
-    if(document.getElementById("serverStatus")) checkServerStatusAndBundle();
-    handleRevisionLink();
-    armCooldownTicker();
-  },1500);
-
-  // Static topic aggregation is the heaviest startup task. It is not needed
-  // to display the Home page, so run it only after the first idle opportunity.
-  runWhenIdle_(()=>{
-    if(document.getElementById("serverStatus")) ensureStaticTopics();
-  },3000);
-}
-
 function handleRevisionLink(){
   const params=new URLSearchParams(location.search);
   if(params.get('revision')!=='1')return;
@@ -1086,7 +1435,7 @@ async function adminQuestionsPage(){
       <h2 style="margin-top:26px">Don't want to type questions by hand? Ask an AI</h2>
       <label>Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
       <p class="note">The prompt below now asks the AI to hand back a ready-to-upload Excel (.xlsx) file directly — no copy-pasting rows.</p>
-      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Year. &nbsp; <b>Optional:</b> Topic, State, Question Number, and all Image URL columns — leave blank if unused.</p>
+      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Marks, Type, Year. &nbsp; <b>Optional:</b> Topic, State, Question Number, and all Image URL columns — leave blank if unused.</p>
       <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
       <label>Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
         <option value="subject">Whole subject (broad coverage)</option>
@@ -1929,7 +2278,7 @@ function buildAiPrompt(){
   };
 
   return [
-    'You are creating practice questions for a competitive-exam-style mock test. Generate multiple-choice exam questions in an Excel (.xlsx) file.',
+    'You are creating practice questions for a competitive-exam-style mock test. Generate exam questions in an Excel (.xlsx) file.',
     '',
     'Topic: '+subjName,
     'Subtopics: '+subtopicsLine,
@@ -1942,7 +2291,7 @@ function buildAiPrompt(){
     '',
     'Excel format — mandatory',
     '',
-    'Create an Excel file with exactly 16 columns in this order:',
+    'Create an Excel file with exactly 18 columns in this order:',
     '',
     '1. Question',
     '2. Option A',
@@ -1950,37 +2299,41 @@ function buildAiPrompt(){
     '4. Option C',
     '5. Option D',
     '6. Correct Answer',
-    '7. Year',
-    '8. State',
-    '9. Question Number',
-    '10. Question Image URL',
-    '11. Option A Image URL',
-    '12. Option B Image URL',
-    '13. Option C Image URL',
-    '14. Option D Image URL',
-    '15. Topic',
-    '16. Exam',
+    '7. Marks',
+    '8. Type',
+    '9. Year',
+    '10. State',
+    '11. Question Number',
+    '12. Question Image URL',
+    '13. Option A Image URL',
+    '14. Option B Image URL',
+    '15. Option C Image URL',
+    '16. Option D Image URL',
+    '17. Topic',
+    '18. Exam',
     '',
-    'Each question must occupy one row. Include a header row with the 16 column names. Preserve this exact column order and structure.',
+    'Each question must occupy one row. Include a header row with the 18 column names. Preserve this exact column order and structure.',
     '',
     'Question requirements',
     '',
-    '1. Generate exactly '+count+' unique MCQs.',
+    '1. Generate exactly '+count+' unique questions using the requested Type format: '+(qtype==='Previous-year exam style'?'MCQ unless the requested exam explicitly requires MSQ/NAT':(qtype==='Mixed'?'MCQ by default unless MSQ/NAT are explicitly requested':qtype))+'.',
     '2. '+(qtypeLines[qtype]||qtypeLines['Mixed']),
     '3. Ensure the difficulty is '+difficulty+', suitable for competitive exams.',
     '4. Cover '+(scope==='topic'?'the specified subtopic(s)':'all specified subtopics')+' thoroughly.',
     '5. Do not create duplicate or near-duplicate questions.',
     '6. Every question must have exactly four options: A, B, C, and D.',
     '7. Correct Answer must contain exactly one letter: A, B, C, or D, matching the correct option.',
-    '8. Verify every numerical answer, formula, and correct option before finalizing.',
-    '9. Use '+year+' in the Year column for every question.',
-    '10. Fill Question Number sequentially from 1 to '+count+'.',
-    '11. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
-    '12. Leave all image URL columns empty unless image URLs are explicitly requested.',
-    '13. '+(topicSel?'Fill the Topic column with exactly "'+topicSel+'" for every question (same spelling and capitalization).':'Leave the Topic column empty.'),
-    '14. '+(examSel?'Fill the Exam column with exactly "'+examSel+'" for every question.':'Leave the Exam column empty.'),
-    '15. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
-    ...(extra?['16. Additional instructions: '+extra]:[]),
+    '8. Marks must be a numeric value: use 1 or 2 for GATE-style questions; use 1 for ordinary MCQs unless the requested exam specifies another scheme.',
+    '9. Type must be exactly one of MCQ, MSQ, or NAT. If Type is MCQ, Correct Answer is one letter (A/B/C/D). If Type is MSQ, Correct Answer may contain multiple letters such as A,C and the question may have multiple correct options. If Type is NAT, use a numeric Correct Answer and leave the option fields empty when appropriate.',
+    '10. Verify every numerical answer, formula, and correct option before finalizing.',
+    '11. Use '+year+' in the Year column for every question.',
+    '12. Fill Question Number sequentially from 1 to '+count+'.',
+    '13. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
+    '14. Leave all image URL columns empty unless image URLs are explicitly requested.',
+    '15. '+(topicSel?'Fill the Topic column with exactly "'+topicSel+'" for every question (same spelling and capitalization).':'Leave the Topic column empty.'),
+    '16. '+(examSel?'Fill the Exam column with exactly "'+examSel+'" for every question.':'Leave the Exam column empty.'),
+    '17. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
+    ...(extra?['18. Additional instructions: '+extra]:[]),
     '',
     'Output requirements',
     '',
@@ -1988,7 +2341,7 @@ function buildAiPrompt(){
     '- Do not output the questions as plain text, TSV, CSV, or Markdown.',
     '- Do not provide explanations, answers, or any other text outside the Excel file.',
     '- Ensure the file contains exactly '+count+' question rows plus the header row.',
-    '- Check that all 16 columns are present and in the correct order.',
+    '- Check that all 18 columns are present and in the correct order.',
     '- Ensure every mandatory field is filled for every question.',
     '- Make the Excel file ready to download and use directly.'
   ].join('\n');
@@ -2031,7 +2384,7 @@ async function downloadQuestionTemplate(){
   if(btn){btn.disabled=true;btn.textContent="Loading Excel tools…";}
   try{
     await ensureXLSX();
-    const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic','Exam'],['Example question?','Option 1','Option 2','Option 3','Option 4','A','2026','TS','101','','','','','','','']];
+    const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Marks','Type','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic','Exam'],['Example question?','Option 1','Option 2','Option 3','Option 4','A',1,'MCQ','2026','TS','101','','','','','','','']];
     const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
   }catch(err){
     alert(err.message||"Could not load Excel support. Please try again.");
@@ -2041,11 +2394,13 @@ async function downloadQuestionTemplate(){
 }
 function normalizeQuestionRow(r,defaultYear){
   const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
-  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name')),exam:cleanTopic(get('Exam','exam','Exam Name'))};
+  const marksRaw=get('Marks','marks','Mark','mark');const marks=String(marksRaw??'').trim();
+  const type=String(get('Type','type','Question Type','questionType')||'MCQ').trim().toUpperCase();
+  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),marks, type, year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name')),exam:cleanTopic(get('Exam','exam','Exam Name'))};
 }
 function validateImportRows(rows){
   const errs=[],seen=new Set();
-  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('Exam longer than 40 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
+  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');const mark=Number(r.marks);if(!Number.isFinite(mark)||mark<=0)e.push('Marks must be a positive number');if(!['MCQ','MSQ','NAT'].includes(r.type))e.push('Type must be MCQ/MSQ/NAT');if(r.type!=='MCQ'&&r.type!=='MSQ'&&r.type!=='NAT'){}if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('Exam longer than 40 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
 }
 async function previewQuestionFile(ev){
   const file=ev.target.files?.[0];if(!file)return;
@@ -2084,7 +2439,7 @@ function renderImportPreview(){
   rows.forEach(r=>{const k=topicKey(r.exam)+'|'+topicKey(r.topic),e=tally.get(k)||{name:r.topic,exam:r.exam,n:0};e.n++;tally.set(k,e);});
   const topicLine=[...tally.values()].map(e=>`${e.name?esc(e.name):'<i>no topic</i>'}${e.exam?' ('+esc(e.exam)+')':''} × ${e.n}`).join(' • ');
   statusEl.innerHTML=`<b>${rows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}<br><span class="note">Topic tests in this import: ${topicLine}</span>`;
-  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Topic</th><th>Exam</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${r.exam?esc(r.exam):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
+  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Marks</th><th>Type</th><th>Topic</th><th>Exam</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.marks)}</td><td>${esc(r.type)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${r.exam?esc(r.exam):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
   btn.disabled=errors.length>0||!rows.length||(topicFieldIncomplete('at')||examFieldIncomplete('at'));
 }
 async function importPreviewedQuestions(){
@@ -2761,4 +3116,6 @@ if("serviceWorker" in navigator){
 }
 armOutboxAutoSync_();
 
-home();
+/* gate.html redirects here with ?gate=1 so "GATE Previous Year Tests" has its own page/URL
+ * while reusing the same exam engine (timer, back-guard, result screen). */
+if(new URLSearchParams(location.search).get("gate")==="1"){gateOpenHome();}else{home();}
