@@ -1,0 +1,1971 @@
+[
+  {
+    "question_number": 1,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Mr. X speaks _________ Japanese _________ Chinese.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "neither / or"
+      },
+      "B": {
+        "type": "text",
+        "text": "either / nor"
+      },
+      "C": {
+        "type": "text",
+        "text": "neither / nor"
+      },
+      "D": {
+        "type": "text",
+        "text": "also / but"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 2,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A sum of money is to be distributed among P, Q, R, and S in the proportion 5 : 2 : 4 : 3, respectively. If R gets ₹ 1000 more than S, what is the share of Q (in ₹)?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "500"
+      },
+      "B": {
+        "type": "text",
+        "text": "1000"
+      },
+      "C": {
+        "type": "text",
+        "text": "1500"
+      },
+      "D": {
+        "type": "text",
+        "text": "2000"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 3,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A trapezium has vertices marked as P, Q, R and S (in that order anticlockwise). The side PQ is parallel to side SR. Further, it is given that, PQ = 11 cm, QR = 4 cm, RS = 6 cm and SP = 3 cm. What is the shortest distance between PQ and SR (in cm)?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1.80"
+      },
+      "B": {
+        "type": "text",
+        "text": "2.40"
+      },
+      "C": {
+        "type": "text",
+        "text": "4.20"
+      },
+      "D": {
+        "type": "text",
+        "text": "5.76"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 4,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The figure shows a grid formed by a collection of unit squares. The unshaded unit square in the grid represents a hole. What is the maximum number of squares without a “hole in the interior” that can be formed within the 4 × 4 grid using the unit squares as building blocks?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "15"
+      },
+      "B": {
+        "type": "text",
+        "text": "20"
+      },
+      "C": {
+        "type": "text",
+        "text": "21"
+      },
+      "D": {
+        "type": "text",
+        "text": "26"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q4_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 5,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "An art gallery engages a security guard to ensure that the items displayed are protected. The diagram below represents the plan of the gallery where the boundary walls are opaque. The location the security guard posted is identified such that all the inner space (shaded region in the plan) of the gallery is within the line of sight of the security guard. If the security guard does not move around the posted location and has a 360o view, which one of the following correctly represents the set of ALL possible locations among the locations P, Q, R and S, where the security guard can be posted to watch over the entire inner space of the gallery.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "P and Q"
+      },
+      "B": {
+        "type": "text",
+        "text": "Q"
+      },
+      "C": {
+        "type": "text",
+        "text": "Q and S"
+      },
+      "D": {
+        "type": "text",
+        "text": "R and S"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q5_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 6,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Mosquitoes pose a threat to human health. Controlling mosquitoes using chemicals may have undesired consequences. In Florida, authorities have used genetically modified mosquitoes to control the overall mosquito population. It remains to be seen if this novel approach has unforeseen consequences. Which one of the following is the correct logical inference based on the information in the above passage?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Using chemicals to kill mosquitoes is better than using genetically modified mosquitoes because genetic engineering is dangerous"
+      },
+      "B": {
+        "type": "text",
+        "text": "Using genetically modified mosquitoes is better than using chemicals to kill mosquitoes because they do not have any side effects"
+      },
+      "C": {
+        "type": "text",
+        "text": "Both using genetically modified mosquitoes and chemicals have undesired consequences and can be dangerous"
+      },
+      "D": {
+        "type": "text",
+        "text": "Using chemicals to kill mosquitoes may have undesired consequences but it is not clear if using genetically modified mosquitoes has any negative consequence"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 7,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider the following inequalities: (i) 2x − 1 > 7 (ii) 2x − 9 < 1. Which one of the following expressions below satisfies the above two inequalities?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑥 ≤ −4"
+      },
+      "B": {
+        "type": "text",
+        "text": "−4 < 𝑥 ≤ 4"
+      },
+      "C": {
+        "type": "text",
+        "text": "4 < 𝑥 < 5"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑥 ≥ 5"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 8,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Four points P(0, 1), Q(0, −3), R(−2, −1), and S(2, −1) represent the vertices of a quadrilateral. What is the area enclosed by the quadrilateral?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "4"
+      },
+      "B": {
+        "type": "text",
+        "text": "4 2"
+      },
+      "C": {
+        "type": "text",
+        "text": "8"
+      },
+      "D": {
+        "type": "text",
+        "text": "8√2"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 9,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "In a class of five students P, Q, R, S and T, only one student is known to have copied in the exam. The disciplinary committee has investigated the situation and recorded the statements from the students as given below. Statement of P: R has copied in the exam. Statement of Q: S has copied in the exam. Statement of R: P did not copy in the exam. Statement of S: Only one of us is telling the truth. Statement of T: R is telling the truth. The investigating team had authentic information that S never lies. Based on the information given above, the person who has copied in the exam is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "R"
+      },
+      "B": {
+        "type": "text",
+        "text": "P"
+      },
+      "C": {
+        "type": "text",
+        "text": "Q"
+      },
+      "D": {
+        "type": "text",
+        "text": "T"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 10,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Consider the following square with the four corners and the center marked as P, Q, R, S and T respectively. Let X, Y and Z represent the following operations: X: rotation of the square by 180 degree with respect to the S-Q axis. Y: rotation of the square by 180 degree with respect to the P-R axis. Z: rotation of the square by 90 degree clockwise with respect to the axis perpendicular, going into the screen and passing through the point T. Consider the following three distinct sequences of operation (which are applied in the left to right order). (1) XYZZ (2) XY (3) ZZZZ Which one of the following statements is correct as per the information provided above?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "The sequence of operations (1) and (2) are equivalent"
+      },
+      "B": {
+        "type": "text",
+        "text": "The sequence of operations (1) and (3) are equivalent"
+      },
+      "C": {
+        "type": "text",
+        "text": "The sequence of operations (2) and (3) are equivalent"
+      },
+      "D": {
+        "type": "text",
+        "text": "The sequence of operations (1), (2) and (3) are equivalent"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q10_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 11,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider the two-dimensional vector field 𝐹⃗ (𝑥, 𝑦) = 𝑥 𝚤⃗ + 𝑦 𝚥⃗, where 𝚤⃗ and 𝚥⃗ denote the unit vectors along the 𝑥-axis and the 𝑦-axis, respectively. A contour 𝐶 in the 𝑥- 𝑦 plane, as shown in the figure, is composed of two horizontal lines connected at the two ends by two semicircular arcs of unit radius. The contour is traversed in the counter-clockwise sense. The value of the closed path integral 𝐹⃗ (𝑥, 𝑦) ⋅ (𝑑𝑥 𝚤⃗ + 𝑑𝑦 𝚥⃗ ) is _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0"
+      },
+      "B": {
+        "type": "text",
+        "text": "1"
+      },
+      "C": {
+        "type": "text",
+        "text": "8 + 2𝜋"
+      },
+      "D": {
+        "type": "text",
+        "text": "−1"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q11_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 12,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider a system of linear equations 𝐴𝑥 = 𝑏, where 1 −√2 3 1 𝐴= , 𝑏= . −1 √2 −3 3 This system of equations admits _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "a unique solution for 𝑥"
+      },
+      "B": {
+        "type": "text",
+        "text": "infinitely many solutions for 𝑥"
+      },
+      "C": {
+        "type": "text",
+        "text": "no solutions for 𝑥"
+      },
+      "D": {
+        "type": "text",
+        "text": "exactly two solutions for 𝑥"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 13,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The current I in the circuit shown is ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1.25 × 10⁻³ A"
+      },
+      "B": {
+        "type": "text",
+        "text": "0.75 × 10⁻³ A"
+      },
+      "C": {
+        "type": "text",
+        "text": "−0.5 × 10⁻³ A"
+      },
+      "D": {
+        "type": "text",
+        "text": "1.16 × 10⁻³ A"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q13_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 14,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider the circuit shown in the figure. The current 𝐼 flowing through the 10 Ω resistor is _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1A"
+      },
+      "B": {
+        "type": "text",
+        "text": "0A"
+      },
+      "C": {
+        "type": "text",
+        "text": "0.1 A"
+      },
+      "D": {
+        "type": "text",
+        "text": "-0.1 A"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q14_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 15,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The Fourier transform X(jω) of the signal x(t) = t/(1+t²)² is _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "(π/(2j)) ω e^{−|ω|}"
+      },
+      "B": {
+        "type": "text",
+        "text": "(π/2) ω e^{−|ω|}"
+      },
+      "C": {
+        "type": "text",
+        "text": "(π/(2j)) e^{−|ω|}"
+      },
+      "D": {
+        "type": "text",
+        "text": "(π/2) e^{−|ω|}"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 16,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider a long rectangular bar of direct bandgap p-type semiconductor. The equilibrium hole density is 10¹⁷ cm⁻³ and the intrinsic carrier concentration is 10¹⁰ cm⁻³. Electron and hole diffusion lengths are 2 μm and 1 μm, respectively. The left side of the bar (x = 0) is uniformly illuminated with a laser having photon energy greater than the bandgap of the semiconductor. Excess electron-hole pairs are generated ONLY at x = 0 because of the laser. The steady state electron density at x = 0 is 10¹⁴ cm⁻³ due to laser illumination. Under these conditions and ignoring electric field, the closest approximation (among the given options) of the steady state electron density at x = 2 μm, is __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0.37 × 10¹⁴ cm⁻³"
+      },
+      "B": {
+        "type": "text",
+        "text": "0.63 × 10¹³ cm⁻³"
+      },
+      "C": {
+        "type": "text",
+        "text": "3.7 × 10¹⁴ cm⁻³"
+      },
+      "D": {
+        "type": "text",
+        "text": "10³ cm⁻³"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 17,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In a non-degenerate bulk semiconductor with electron density n = 10¹⁶ cm⁻³, the value of E_C − E_Fn = 200 meV, where E_C and E_Fn denote the bottom of the conduction band energy and electron Fermi level energy, respectively. Assume thermal voltage as 26 meV and the intrinsic carrier concentration is 10¹⁰ cm⁻³. For n = 0.5 × 10¹⁶ cm⁻³, the closest approximation of the value of (E_C − E_Fn), among the given options, is __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "226 meV"
+      },
+      "B": {
+        "type": "text",
+        "text": "174 meV"
+      },
+      "C": {
+        "type": "text",
+        "text": "218 meV"
+      },
+      "D": {
+        "type": "text",
+        "text": "182 meV"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 18,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider the CMOS circuit shown in the figure (substrates are connected to their respective sources). The gate width (𝑊) to gate length (𝐿) ratios of the transistors are as shown. Both the transistors have the same gate oxide capacitance per unit area. For the pMOSFET, the threshold voltage is 1 V and the mobility of cm2 holes is 40 . For the nMOSFET, the threshold voltage is 1 V and the mobility V.s cm2 of electrons is 300 . The steady state output voltage 𝑉 is ________. V.s",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "equal to 0 V"
+      },
+      "B": {
+        "type": "text",
+        "text": "more than 2 V"
+      },
+      "C": {
+        "type": "text",
+        "text": "less than 2 V"
+      },
+      "D": {
+        "type": "text",
+        "text": "equal to 2 V"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q18_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 19,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider the 2-bit multiplexer (MUX) shown in the figure. For OUTPUT to be the XOR of C and D, the values for 𝐴 , 𝐴 , 𝐴 , and 𝐴 are ____________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝐴 = 0, 𝐴 = 0, 𝐴 = 1, 𝐴 = 1"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝐴 = 1, 𝐴 = 0, 𝐴 = 1, 𝐴 = 0"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝐴 = 0, 𝐴 = 1, 𝐴 = 1, 𝐴 = 0"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝐴 = 1, 𝐴 = 1, 𝐴 = 0, 𝐴 = 0"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q19_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 20,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The ideal long channel nMOSFET and pMOSFET devices shown in the circuits have threshold voltages of 1 V and −1 V, respectively. The MOSFET substrates are connected to their respective sources. Ignore leakage currents and assume that the capacitors are initially discharged. For the applied voltages as shown, the steady state voltages are _______________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "V₁ = 5 V, V₂ = 5 V"
+      },
+      "B": {
+        "type": "text",
+        "text": "V₁ = 5 V, V₂ = 4 V"
+      },
+      "C": {
+        "type": "text",
+        "text": "V₁ = 4 V, V₂ = 5 V"
+      },
+      "D": {
+        "type": "text",
+        "text": "V₁ = 4 V, V₂ = −5 V"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q20_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 21,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider a closed-loop control system with unity negative feedback and KG(s) in the forward path, where the gain K = 2. The complete Nyquist plot of the transfer function G(s) is shown in the figure. Note that the Nyquist contour has been chosen to have the clockwise sense. Assume G(s) has no poles on the closed right-half of the complex plane. The number of poles of the closed-loop transfer function in the closed right-half of the complex plane is ___________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0"
+      },
+      "B": {
+        "type": "text",
+        "text": "1"
+      },
+      "C": {
+        "type": "text",
+        "text": "2"
+      },
+      "D": {
+        "type": "text",
+        "text": "3"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q21_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 22,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The root-locus plot of a closed-loop system with unity negative feedback and transfer function KG(s) in the forward path is shown in the figure. Note that K is varied from 0 to ∞. Select the transfer function G(s) that results in the root-locus plot of the closed-loop system as shown in the figure.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "G(s) = 1/(s+1)⁵"
+      },
+      "B": {
+        "type": "text",
+        "text": "G(s) = 1/(s⁵+1)"
+      },
+      "C": {
+        "type": "text",
+        "text": "G(s) = (s−1)/(s+1)⁶"
+      },
+      "D": {
+        "type": "text",
+        "text": "G(s) = (s+1)/(s⁶+1)"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q22_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 23,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The frequency response H(f) of a linear time-invariant system has magnitude as shown in the figure. Statement I: The system is necessarily a pure delay system for inputs which are bandlimited to −α ≤ f ≤ α. Statement II: For any wide-sense stationary input process with power spectral density S_X(f), the output power spectral density S_Y(f) obeys S_Y(f) = S_X(f) for −α ≤ f ≤ α. Which one of the following combinations is true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Statement I is correct, Statement II is correct"
+      },
+      "B": {
+        "type": "text",
+        "text": "Statement I is correct, Statement II is incorrect"
+      },
+      "C": {
+        "type": "text",
+        "text": "Statement I is incorrect, Statement II is correct"
+      },
+      "D": {
+        "type": "text",
+        "text": "Statement I is incorrect, Statement II is incorrect"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q23_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 24,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In a circuit, there is a series connection of an ideal resistor and an ideal capacitor. The conduction current (in Amperes) through the resistor is 2sin(𝑡 + 𝜋/2). The displacement current (in Amperes) through the capacitor is _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2sin(𝑡)"
+      },
+      "B": {
+        "type": "text",
+        "text": "2sin(𝑡 + 𝜋)"
+      },
+      "C": {
+        "type": "text",
+        "text": "2sin(𝑡 + 𝜋/2)"
+      },
+      "D": {
+        "type": "text",
+        "text": "0"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 25,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Consider the following partial differential equation (PDE) a ∂²f(x,y)/∂x² + b ∂²f(x,y)/∂y² = f(x,y), where a and b are distinct positive real numbers. Select the combination(s) of values of the real parameters ξ and η such that f(x,y) = e^(ξx+ηy) is a solution of the given PDE.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "ξ = 1/√(2a), η = 1/√(2b)"
+      },
+      "B": {
+        "type": "text",
+        "text": "ξ = 1/√a, η = 0"
+      },
+      "C": {
+        "type": "text",
+        "text": "ξ = 0, η = 0"
+      },
+      "D": {
+        "type": "text",
+        "text": "ξ = 1/√a, η = 1/√b"
+      }
+    },
+    "correct_answer": "A,B",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 26,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "An ideal OPAMP circuit with a sinusoidal input is shown in the figure. The 3 dB frequency is the frequency at which the magnitude of the voltage gain decreases by 3 dB from the maximum value. Which of the options is/are correct?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "The circuit is a low pass filter."
+      },
+      "B": {
+        "type": "text",
+        "text": "The circuit is a high pass filter."
+      },
+      "C": {
+        "type": "text",
+        "text": "The 3 dB frequency is 1000 rad/s."
+      },
+      "D": {
+        "type": "text",
+        "text": "The 3 dB frequency is 1000/3 rad/s."
+      }
+    },
+    "correct_answer": "B,C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q26_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 27,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Select the Boolean function(s) equivalent to 𝑥 + 𝑦𝑧, where 𝑥, 𝑦, and 𝑧 are Boolean variables, and + denotes logical OR operation.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑥 + 𝑧 + 𝑥𝑦"
+      },
+      "B": {
+        "type": "text",
+        "text": "(𝑥 + 𝑦)(𝑥 + 𝑧)"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑥 + 𝑥𝑦 + 𝑦𝑧"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑥 + 𝑥𝑧 + 𝑥𝑦"
+      }
+    },
+    "correct_answer": "B,C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 28,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Select the correct statement(s) regarding CMOS implementation of NOT gates.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Noise Margin High (𝑁𝑀 ) is always equal to the Noise Margin Low (𝑁𝑀 ), irrespective of the sizing of transistors."
+      },
+      "B": {
+        "type": "text",
+        "text": "Dynamic power consumption during switching is zero."
+      },
+      "C": {
+        "type": "text",
+        "text": "For a logical high input under steady state, the nMOSFET is in the linear regime of operation."
+      },
+      "D": {
+        "type": "text",
+        "text": "Mobility of electrons never influences the switching speed of the NOT gate."
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 29,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Let H(X) denote the entropy of a discrete random variable X taking K possible distinct real values. Which of the following statements is/are necessarily true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "H(X) ≤ log₂ K bits"
+      },
+      "B": {
+        "type": "text",
+        "text": "H(X) ≤ H(2X)"
+      },
+      "C": {
+        "type": "text",
+        "text": "H(X) ≤ H(X²)"
+      },
+      "D": {
+        "type": "text",
+        "text": "H(X) ≤ H(2^X)"
+      }
+    },
+    "correct_answer": "A,B,D",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 30,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Consider the following wave equation, ∂²f(x,t)/∂t² = 10000 ∂²f(x,t)/∂x². Which of the given options is/are solution(s) to the given wave equation?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "f(x,t) = e^{−(x−100t)²} + e^{−(x+100t)²}"
+      },
+      "B": {
+        "type": "text",
+        "text": "f(x,t) = e^{−(x−100t)} + 0.5e^{−(x+1000t)}"
+      },
+      "C": {
+        "type": "text",
+        "text": "f(x,t) = e^{−(x−100t)²} + sin(x+100t)"
+      },
+      "D": {
+        "type": "text",
+        "text": "f(x,t) = e^{j100π(−100x+t)} + e^{j100π(100x+t)}"
+      }
+    },
+    "correct_answer": "A,C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 31,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "The bar graph shows the frequency of the number of wickets taken in a match by a bowler in her career. For example, in 17 of her matches, the bowler has taken 5 wickets each. The median number of wickets taken by the bowler in a match is __________ (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "4.0 to 4.0",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q31_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 32,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "A simple closed path C in the complex plane is shown in the figure. If ∮_C [2z/(z² − 1)] dz = −iπA, where i = √−1, then the value of A is ______ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.50 to 0.50",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q32_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 33,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "Let x₁(t) = e^(−t)u(t) and x₂(t) = u(t) − u(t − 2), where u(·) denotes the unit step function. If y(t) denotes the convolution of x₁(t) and x₂(t), then lim_{t→∞} y(t) = _________ (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "0.0 to 0.0",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 34,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "An ideal MOS capacitor (p-type semiconductor) is shown in the figure. The MOS capacitor is under strong inversion with V_G = 2 V. The corresponding inversion charge density (Q_IN) is 2.2 μC/cm². Assume oxide capacitance per unit area as C_OX = 1.7 μF/cm². For V_G = 4 V, the value of Q_IN is ______ μC/cm² (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "5.5 to 5.7",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q34_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 35,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "A symbol stream contains alternate QPSK and 16-QAM symbols. If symbols from this stream are transmitted at the rate of 1 mega-symbols per second, the raw (uncoded) data rate is _______ mega-bits per second (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "2.99 to 3.01",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 36,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The function f(x) = 8 log_e x − x² + 3 attains its minimum over the interval [1,e] at x = _________. (Here log_e x is the natural logarithm of x.)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2"
+      },
+      "B": {
+        "type": "text",
+        "text": "1"
+      },
+      "C": {
+        "type": "text",
+        "text": "e"
+      },
+      "D": {
+        "type": "text",
+        "text": "(1+e)/2"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 37,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let α, β be two non-zero real numbers and v₁, v₂ be two non-zero real vectors of size 3 × 1. Suppose that v₁ᵀv₂ = 0, v₁ᵀv₁ = 1, and v₂ᵀv₂ = 1. Let A be the 3 × 3 matrix given by A = αv₁v₁ᵀ + βv₂v₂ᵀ. The eigenvalues of A are __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0, α, β"
+      },
+      "B": {
+        "type": "text",
+        "text": "0, α+β, α−β"
+      },
+      "C": {
+        "type": "text",
+        "text": "0, (α+β)/2, √(αβ)"
+      },
+      "D": {
+        "type": "text",
+        "text": "0, 0, √(α²+β²)"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 38,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the circuit shown, the locus of the impedance Z(jω) is plotted as ω increases from zero to infinity. The values of R₁ and R₂ are:",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "R₁ = 2 kΩ, R₂ = 3 kΩ"
+      },
+      "B": {
+        "type": "text",
+        "text": "R₁ = 5 kΩ, R₂ = 2 kΩ"
+      },
+      "C": {
+        "type": "text",
+        "text": "R₁ = 5 kΩ, R₂ = 2.5 kΩ"
+      },
+      "D": {
+        "type": "text",
+        "text": "R₁ = 2 kΩ, R₂ = 5 kΩ"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q38_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 39,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider the circuit shown in the figure with input 𝑉(𝑡) in volts. The sinusoidal steady state current 𝐼(𝑡) flowing through the circuit is shown graphically (where 𝑡 is in seconds). The circuit element 𝑍 can be ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "a capacitor of 1 F"
+      },
+      "B": {
+        "type": "text",
+        "text": "an inductor of 1 H"
+      },
+      "C": {
+        "type": "text",
+        "text": "a capacitor of √3 F"
+      },
+      "D": {
+        "type": "text",
+        "text": "an inductor of √3 H"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q39_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 40,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider an ideal long channel nMOSFET (enhancement-mode) with gate length 10 μm and width 100 μm. The product of electron mobility (μ_n) and oxide capacitance per unit area (C_ox) is μ_n C_ox = 1 mA/V². The threshold voltage of the transistor is 1 V. For a gate-to-source voltage V_GS = [2 − sin(2t)] V and drain-to-source voltage V_DS = 1 V (substrate connected to the source), the maximum value of the drain-to-source current is ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "40 mA"
+      },
+      "B": {
+        "type": "text",
+        "text": "20 mA"
+      },
+      "C": {
+        "type": "text",
+        "text": "15 mA"
+      },
+      "D": {
+        "type": "text",
+        "text": "5 mA"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 41,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the following circuit with an ideal OPAMP, the difference between the maximum and the minimum values of the capacitor voltage (V_C) is __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "15 V"
+      },
+      "B": {
+        "type": "text",
+        "text": "27 V"
+      },
+      "C": {
+        "type": "text",
+        "text": "13 V"
+      },
+      "D": {
+        "type": "text",
+        "text": "14 V"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q41_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 42,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A circuit with an ideal OPAMP is shown. The Bode plot for the magnitude (in dB) of the gain transfer function (A_V(jω) = V_out(jω)/V_in(jω)) of the circuit is also provided (here, ω is the angular frequency in rad/s). The values of R and C are ____________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑅 = 3 kΩ, 𝐶 = 1 𝜇F"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑅 = 1 kΩ, 𝐶 = 3 𝜇F"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑅 = 4 kΩ, 𝐶 = 1 𝜇F"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑅 = 3 kΩ, 𝐶 = 2 𝜇F"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q42_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 43,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the circuit shown, the clock frequency is 𝑓 and the duty cycle is 25%. For the signal at the Q output of the Flip-Flop, _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "frequency is f₀/4 and duty cycle is 50%"
+      },
+      "B": {
+        "type": "text",
+        "text": "frequency is f₀/4 and duty cycle is 25%"
+      },
+      "C": {
+        "type": "text",
+        "text": "frequency is f₀/2 and duty cycle is 50%"
+      },
+      "D": {
+        "type": "text",
+        "text": "frequency is f₀ and duty cycle is 25%"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q43_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 44,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider an even polynomial p(s) given by p(s) = s⁴ + 5s² + 4 + K, where K is an unknown real parameter. The complete range of K for which p(s) has all its roots on the imaginary axis is ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−4 ≤ K ≤ 9/4"
+      },
+      "B": {
+        "type": "text",
+        "text": "−3 ≤ K ≤ 9/2"
+      },
+      "C": {
+        "type": "text",
+        "text": "−6 ≤ K ≤ 5/4"
+      },
+      "D": {
+        "type": "text",
+        "text": "−5 ≤ K ≤ 0"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 45,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Consider the following series: Σ_{n=1}^∞ n^d/c^n. For which of the following combinations of c, d values does this series converge?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "c = 1, d = −1"
+      },
+      "B": {
+        "type": "text",
+        "text": "c = 2, d = 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "c = 0.5, d = −10"
+      },
+      "D": {
+        "type": "text",
+        "text": "c = 1, d = −2"
+      }
+    },
+    "correct_answer": "B,D",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 46,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "The outputs of four systems (𝑆 , 𝑆 , 𝑆 , and 𝑆 ) corresponding to the input signal sin(𝑡), for all time 𝑡, are shown in the figure. Based on the given information, which of the four systems is/are definitely NOT LTI (linear and time-invariant)?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "S₁"
+      },
+      "B": {
+        "type": "text",
+        "text": "S₂"
+      },
+      "C": {
+        "type": "text",
+        "text": "S₃"
+      },
+      "D": {
+        "type": "text",
+        "text": "S₄"
+      }
+    },
+    "correct_answer": "C,D",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q46_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 47,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Select the CORRECT statement(s) regarding semiconductor devices.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Electrons and holes are of equal density in an intrinsic semiconductor at equilibrium."
+      },
+      "B": {
+        "type": "text",
+        "text": "Collector region is generally more heavily doped than Base region in a BJT."
+      },
+      "C": {
+        "type": "text",
+        "text": "Total current is spatially constant in a two terminal electronic device in dark under steady state condition."
+      },
+      "D": {
+        "type": "text",
+        "text": "Mobility of electrons always increases with temperature in Silicon beyond 300 K."
+      }
+    },
+    "correct_answer": "A,C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 48,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "A state transition diagram with states A, B, and C, and transition probabilities p₁, p₂, …, p₇ is shown in the figure (e.g., p₁ denotes the probability of transition from state A to B). For this state diagram, select the statement(s) which is/are universally true.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "p₂ + p₃ = p₅ + p₆"
+      },
+      "B": {
+        "type": "text",
+        "text": "p₁ + p₃ = p₄ + p₆"
+      },
+      "C": {
+        "type": "text",
+        "text": "p₁ + p₄ + p₇ = 1"
+      },
+      "D": {
+        "type": "text",
+        "text": "p₂ + p₅ + p₇ = 1"
+      }
+    },
+    "correct_answer": "A,C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q48_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 49,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Consider a Boolean gate (D) where the output Y is related to the inputs A and B as, Y = A + B, where + denotes logical OR operation. The Boolean inputs ‘0’ and ‘1’ are also available separately. Using instances of only D gates and inputs ‘0’ and ‘1’, __________ (select the correct option(s)).",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "NAND logic can be implemented"
+      },
+      "B": {
+        "type": "text",
+        "text": "OR logic cannot be implemented"
+      },
+      "C": {
+        "type": "text",
+        "text": "NOR logic can be implemented"
+      },
+      "D": {
+        "type": "text",
+        "text": "AND logic cannot be implemented"
+      }
+    },
+    "correct_answer": "A,C",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 50,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Two linear time-invariant systems with transfer functions G₁(s) = 10/(s²+s+1) and G₂(s) = 10/(s²+s√10+10) have unit step responses y₁(t) and y₂(t), respectively. Which of the following statements is/are true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "y₁(t) and y₂(t) have the same percentage peak overshoot."
+      },
+      "B": {
+        "type": "text",
+        "text": "y₁(t) and y₂(t) have the same steady-state value."
+      },
+      "C": {
+        "type": "text",
+        "text": "y₁(t) and y₂(t) have the same damped frequency of oscillation."
+      },
+      "D": {
+        "type": "text",
+        "text": "y₁(t) and y₂(t) have the same 2% settling time."
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 51,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider an FM broadcast that employs the pre-emphasis filter with frequency response H_pe(ω) = 1 + jω/ω₀, where ω₀ = 10⁴ rad/sec. For the network shown in the figure to act as a corresponding de-emphasis filter, the appropriate pair(s) of (R, C) values is/are ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "R = 1 kΩ, C = 0.1 μF"
+      },
+      "B": {
+        "type": "text",
+        "text": "R = 2 kΩ, C = 1 μF"
+      },
+      "C": {
+        "type": "text",
+        "text": "R = 1 kΩ, C = 2 μF"
+      },
+      "D": {
+        "type": "text",
+        "text": "R = 2 kΩ, C = 0.5 μF"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": true,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q51_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 52,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "A waveguide consists of two infinite parallel plates (perfect conductors) at a separation of 10⁻⁴ cm, with air as the dielectric. Assume the speed of light in air to be 3 × 10⁸ m/s. The frequency/frequencies of TM waves which can propagate in this waveguide is/are _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "6 × 10¹⁵ Hz"
+      },
+      "B": {
+        "type": "text",
+        "text": "0.5 × 10¹² Hz"
+      },
+      "C": {
+        "type": "text",
+        "text": "8 × 10¹⁴ Hz"
+      },
+      "D": {
+        "type": "text",
+        "text": "1 × 10¹³ Hz"
+      }
+    },
+    "correct_answer": "A,B,C,D",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 53,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The value of the integral ∬_D 3(x² + y²) dx dy, where D is the shaded triangular region shown in the diagram, is _____ (rounded off to the nearest integer).",
+    "options": null,
+    "correct_answer": "512 to 512",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q53_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 54,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A linear 2-port network is shown in Fig. (a). An ideal DC voltage source of 10 V is connected across Port 1. A variable resistance R is connected across Port 2. As R is varied, the measured voltage and current at Port 2 is shown in Fig. (b) as a V₂ versus −I₂ plot. Note that for V₂ = 5 V, I₂ = 0 mA, and for V₂ = 4 V, I₂ = −4 mA. When the variable resistance R at Port 2 is replaced by the load shown in Fig. (c), the current I₂ is _______ mA (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "3.9 to 4.1",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q54_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 55,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "For a vector x = [x[0], x[1], …, x[7]], the 8-point discrete Fourier transform (DFT) is denoted by X = DFT(x) = [X[0], X[1], …, X[7]], where X[k] = Σ_{n=0}^7 x[n] exp(−j(2π/8)nk). Here, j = √−1. If x = [1, 0, 0, 0, 2, 0, 0, 0] and y = DFT(DFT(x)), then the value of y[0] is _________ (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "7.9 to 8.1",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 56,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A p-type semiconductor with zero electric field is under illumination (low level injection) in steady state condition. Excess minority carrier density is zero at x = ±2l_n, where l_n = 10⁻⁴ cm is the diffusion length of electrons. Assume electronic charge, q = −1.6 × 10⁻¹⁹ C. The profiles of photo-generation rate of carriers and the recombination rate of excess minority carriers (R) are shown. Under these conditions, the magnitude of the current density due to the photo-generated electrons at x = +2l_n is _________ mA/cm² (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.57 to 0.61",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q56_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 57,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A circuit and the characteristics of the diode (D) in it are shown. The ratio of the minimum to the maximum small signal voltage gain (∂V_out/∂V_in) is ________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.70 to 0.80",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q57_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 58,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider the circuit shown with an ideal OPAMP. The output voltage V₀ is __________V (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "-0.55 to -0.45",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q58_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 59,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider the circuit shown with an ideal long channel nMOSFET (enhancement-mode, substrate is connected to the source). The transistor is appropriately biased in the saturation region with V_GG and V_DD such that it acts as a linear amplifier. v_i is the small-signal ac input voltage. v_A and v_B represent the small-signal voltages at the nodes A and B, respectively. The value of v_A/v_B is ________ (rounded off to one decimal place).",
+    "options": null,
+    "correct_answer": "-2.1 to -1.9",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q59_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 60,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The block diagram of a closed-loop control system is shown in the figure. R(s), Y(s), and D(s) are the Laplace transforms of the time-domain signals r(t), y(t), and d(t), respectively. Let the error signal be defined as e(t) = r(t) − y(t). Assuming the reference input r(t) = 0 for all t, the steady-state error e(∞), due to a unit step disturbance d(t), is _________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "-0.11 to -0.09",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q60_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 61,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The transition diagram of a discrete memoryless channel with three input symbols and three output symbols is shown in the figure. The transition probabilities are as marked. The parameter α lies in the interval [0.25, 1]. The value of α for which the capacity of this channel is maximized, is ________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "1.00 to 1.00",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q61_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 62,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider communication over a memoryless binary symmetric channel using a (7, 4) Hamming code. Each transmitted bit is received correctly with probability (1 − 𝜖), and flipped with probability 𝜖. For each codeword transmission, the receiver performs minimum Hamming distance decoding, and correctly decodes the message bits if and only if the channel introduces at most one bit error. For 𝜖 = 0.1, the probability that a transmitted codeword is decoded correctly is _________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.84 to 0.86",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 63,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider a channel over which either symbol x_A or symbol x_B is transmitted. Let the output of the channel Y be the input to a maximum likelihood (ML) detector at the receiver. The conditional probability density functions for Y given x_A and x_B are: f_{Y|x_A}(y) = e^{-(y+1)}u(y+1), f_{Y|x_B}(y) = e^{(y-1)}[1-u(y-1)], where u(·) is the standard unit step function. The probability of symbol error for this system is _________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.22 to 0.25",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 64,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider a real valued source whose samples are independent and identically distributed random variables with the probability density function, f(x), as shown in the figure. Consider a 1 bit quantizer that maps positive samples to value α and others to value β. If α* and β* are the respective choices for α and β that minimize the mean square quantization error, then (α* − β*) = _________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "1.15 to 1.18",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2022/q64_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  },
+  {
+    "question_number": 65,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In an electrostatic field, the electric displacement density vector, D⃗, is given by D⃗(x,y,z) = (x³ î + y³ ĵ + xy² k̂) C/m², where î, ĵ, k̂ are the unit vectors along x-axis, y-axis, and z-axis, respectively. Consider a cubical region R centered at the origin with each side of length 1 m, and vertices at (±0.5 m, ±0.5 m, ±0.5 m). The electric charge enclosed within R is _________ C (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.48 to 0.52",
+    "negative_marks": 0.0,
+    "negative_marking": false,
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_clean_G_22_question_paper_and_supplied_solution_source"
+  }
+]

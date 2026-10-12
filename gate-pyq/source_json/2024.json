@@ -1,0 +1,1976 @@
+[
+  {
+    "question_number": 1,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "If ‘→’ denotes increasing order of intensity, then the meaning of the words\n[charm → enamor → bewitch] is analogous to [bored → _______ → weary].\nWhich one of the given options is appropriate to fill the blank?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "00 → 10 → 11 → 00"
+      },
+      "B": {
+        "type": "text",
+        "text": "11 → 00 → 10 → 01 → 00"
+      },
+      "C": {
+        "type": "text",
+        "text": "01 → 10 → 11 → 00 → 01"
+      },
+      "D": {
+        "type": "text",
+        "text": "00 → 01 → 10 → 00 sin( z )"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 2,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "P, Q, R, S, and T have launched a new startup. Two of them are siblings. The office\nof the startup has just three rooms. All of them agree that the siblings should not\nshare the same room.\nIf S and Q are single children, and the room allocations shown below are acceptable\nto all,\nPR       TS        Q                  PQ       RT           S\nthen, which one of the given options is the siblings?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "P and T"
+      },
+      "B": {
+        "type": "text",
+        "text": "P and S"
+      },
+      "C": {
+        "type": "text",
+        "text": "T and Q"
+      },
+      "D": {
+        "type": "text",
+        "text": "T and R"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q2_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 3,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Five years ago, the ratio of Aman’s age to his father’s age was 1:4, and five years\nfrom now, the ratio will be 2:5. What was his father’s age when Aman was born?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "28 years"
+      },
+      "B": {
+        "type": "text",
+        "text": "30 years"
+      },
+      "C": {
+        "type": "text",
+        "text": "35 years"
+      },
+      "D": {
+        "type": "text",
+        "text": "32 years"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 4,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For a real number 𝑥 > 1,\n1       1       1\n+       +        =1\nlog 2 𝑥 log 3 𝑥 log 4 𝑥\nThe value of 𝑥 is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "4"
+      },
+      "B": {
+        "type": "text",
+        "text": "12"
+      },
+      "C": {
+        "type": "text",
+        "text": "24"
+      },
+      "D": {
+        "type": "text",
+        "text": "36"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 5,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The greatest prime factor of (3199 − 3196 ) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "13"
+      },
+      "B": {
+        "type": "text",
+        "text": "17"
+      },
+      "C": {
+        "type": "text",
+        "text": "3"
+      },
+      "D": {
+        "type": "text",
+        "text": "11"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 6,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Sequence the following sentences (P, Q, R, S) in a coherent passage:\nP:   Shifu’s student exclaimed, “Why do you run since the bull is an illusion?”\nQ: Shifu said, “Surely my running away from the bull is also an illusion.”\nR: Shifu once proclaimed that all life is illusion.\nS:   One day, when a bull gave him chase, Shifu began running for his life.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "SPRQ"
+      },
+      "B": {
+        "type": "text",
+        "text": "SRPQ"
+      },
+      "C": {
+        "type": "text",
+        "text": "RSPQ"
+      },
+      "D": {
+        "type": "text",
+        "text": "RPQS"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 7,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Four identical cylindrical chalk-sticks, each of radius 𝑟 = 0.5 cm and length\n𝑙 = 10 cm, are bound tightly together using a duct tape as shown in the following\nfigure.\nThe width of the duct tape is equal to the length of the chalk-stick. The area (in cm2)\nof the duct tape required to wrap the bundle of chalk-sticks once, is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "20 (4 + 𝜋)"
+      },
+      "B": {
+        "type": "text",
+        "text": "20 (8 + 𝜋)"
+      },
+      "C": {
+        "type": "text",
+        "text": "10 (8 + 𝜋)"
+      },
+      "D": {
+        "type": "text",
+        "text": "10 (4 + 𝜋)"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q7_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 8,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "The bar chart shows the data for the percentage of population falling into different\ncategories based on Body Mass Index (BMI) in 2003 and 2023.\n2023    2003\nObese\nOverweight\nNormal\nUnderweight\n0% 5% 10% 15% 20% 25% 30% 35% 40% 45% 50% 55%\nPercentage of population\nBased on the data provided, which one of the following options is INCORRECT?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "The ratio of the percentage of population falling into overweight category to the percentage of population falling into normal category has increased in 20 years."
+      },
+      "B": {
+        "type": "text",
+        "text": "The ratio of the percentage of population falling into underweight category to the percentage of population falling into normal category has decreased in 20 years."
+      },
+      "C": {
+        "type": "text",
+        "text": "The ratio of the percentage of population falling into obese category to the percentage of population falling into normal category has decreased in 20 years."
+      },
+      "D": {
+        "type": "text",
+        "text": "The percentage of population falling into normal category has decreased in 20 years."
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 9,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Examples of mirror and water reflections are shown in the figures below:\nAn object appears as the following image after first reflecting in a mirror and then\nreflecting on water.\nThe original object is",
+    "options": {
+      "A": {
+        "type": "image",
+        "image": "assets/2024/q9_option_A.png"
+      },
+      "B": {
+        "type": "image",
+        "image": "assets/2024/q9_option_B.png"
+      },
+      "C": {
+        "type": "image",
+        "image": "assets/2024/q9_option_C.png"
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2024/q9_option_D.png"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q9_question.png",
+    "option_images": {
+      "A": "assets/2024/q9_option_A.png",
+      "B": "assets/2024/q9_option_B.png",
+      "C": "assets/2024/q9_option_C.png",
+      "D": "assets/2024/q9_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 10,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Two identical sheets A and B, of dimensions 24 cm × 16 cm, can be folded into\nhalf using two distinct operations, FO1 or FO2.\nIn FO1, the axis of folding remains parallel to the initial long edge, and in FO2, the\naxis of folding remains parallel to the initial short edge.\nIf sheet A is folded twice using FO1, and sheet B is folded twice using FO2, the\nratio of the perimeters of the final shapes of A and B is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "14:11"
+      },
+      "B": {
+        "type": "text",
+        "text": "11:14"
+      },
+      "C": {
+        "type": "text",
+        "text": "18:11"
+      },
+      "D": {
+        "type": "text",
+        "text": "11:18"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 11,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The general form of the complementary function of a differential equation is given\n−2 t\nby y (t ) = ( At + B) e , where A and B are real constants determined by the initial\ncondition. The corresponding differential equation is _____.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "00 → 10 → 11 → 00"
+      },
+      "B": {
+        "type": "text",
+        "text": "11 → 00 → 10 → 01 → 00"
+      },
+      "C": {
+        "type": "text",
+        "text": "01 → 10 → 11 → 00 → 01"
+      },
+      "D": {
+        "type": "text",
+        "text": "00 → 01 → 10 → 00 sin( z )"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 12,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the context of Bode magnitude plots, 40 dB/decade is the same as _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "12 dB/octave"
+      },
+      "B": {
+        "type": "text",
+        "text": "6 dB/octave"
+      },
+      "C": {
+        "type": "text",
+        "text": "20 dB/octave"
+      },
+      "D": {
+        "type": "text",
+        "text": "10 dB/octave"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q12_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 13,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the feedback control system shown in the figure below G ( s ) =                               .\ns ( s + 1)( s + 2)\nR (s)      +           E (s)                                  Y ( s)\n+                 G(s)\n-\nR(s), Y (s), and E ( s) are the Laplace transforms of r (t ), y(t ), and e(t ) , respectively.\nIf the input r (t ) is a unit step function, then __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "28 years"
+      },
+      "B": {
+        "type": "text",
+        "text": "30 years"
+      },
+      "C": {
+        "type": "text",
+        "text": "35 years"
+      },
+      "D": {
+        "type": "text",
+        "text": "32 years"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 14,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A digital communication system transmits through a noiseless bandlimited channel\n[−𝑊 𝑊]. The received signal z (t ) at the output of the receiving filter is given by\nz(t ) =  b[n]x(t − nT ) where b [n] are the symbols and x(t ) is the overall system\nn\nresponse to a single symbol. The received signal is sampled at 𝑡 = 𝑚𝑇. The Fourier\ntransform of x(t ) is X ( f ) . The Nyquist condition that X ( f ) must satisfy for zero\nintersymbol interference at the receiver is ______.\n",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "4"
+      },
+      "B": {
+        "type": "text",
+        "text": "12"
+      },
+      "C": {
+        "type": "text",
+        "text": "24"
+      },
+      "D": {
+        "type": "text",
+        "text": "36"
+      }
+    },
+    "correct_answer": "MTA",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 15,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider a lossless transmission line terminated with a short circuit as shown in the\nfigure below. As one moves towards the generator from the load, the normalized\nimpedances z inA , z inB , zinC , and zinD (indicated in the figure) are _______.\nλ/8                λ/8                   λ/8           λ/8\nzinD             zinC                 zinB             z inA\n-l                                                                 0      z",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "z = Ω , , , = 0 +1𝑗 = ∞ = −1𝑗 Ω inB inD inA inC z z"
+      },
+      "B": {
+        "type": "text",
+        "text": "z z = , = , = 0 , = ∞ +0.4𝑗 Ω +0.4𝑗 Ω inA inB inD inC z z"
+      },
+      "C": {
+        "type": "text",
+        "text": "z z = , = 0, = , = −1𝑗 Ω +1𝑗 Ω ∞ inB inD inA inC z z"
+      },
+      "D": {
+        "type": "text",
+        "text": "z z = , = ∞, = , = 0 +0.4𝑗 Ω −0.4𝑗 Ω inB inD inA inC"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q15_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 16,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Let iˆ and ĵ be the unit vectors along 𝑥 and 𝑦 axes, respectively and let A be a\npositive constant. Which one of the following statements is true for the vector fields\nˆ + ˆjx) and F2 = A(iy\nF1 = A(iy                   ˆ − ˆjx) ?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "SPRQ"
+      },
+      "B": {
+        "type": "text",
+        "text": "SRPQ"
+      },
+      "C": {
+        "type": "text",
+        "text": "RSPQ"
+      },
+      "D": {
+        "type": "text",
+        "text": "RPQS"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 17,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the circuit below, assume that the long channel NMOS transistor is biased in\nsaturation. The small signal trans-conductance of the transistor is g m . Neglect body\neffect, channel length modulation and intrinsic device capacitances. The small\nsignal input impedance Z in ( j ) is _______.\nC1\nZ in ( j )\nCL",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "g 1 1 + + m    2 C C j C j C 1 L 1 L"
+      },
+      "B": {
+        "type": "text",
+        "text": "g 1 1 + + m    2 C C j C j C 1 L 1 L"
+      },
+      "C": {
+        "type": "text",
+        "text": "1 1 +   j C j C 1 L −"
+      },
+      "D": {
+        "type": "text",
+        "text": "g 1 + m   +  2 C C j C j C 1 L 1 L"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q17_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 18,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For the closed loop amplifier circuit shown below, the magnitude of open loop low\nfrequency small signal voltage gain is 40. All the transistors are biased in saturation.\nThe current source ISS is ideal. Neglect body effect, channel length modulation and\nintrinsic device capacitances. The closed loop low frequency small signal voltage\n𝑣\ngain 𝑣𝑜𝑢𝑡 (rounded off to three decimal places) is ____.\n𝑖𝑛\nVDD\nvout\nvin\nISS",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0.976"
+      },
+      "B": {
+        "type": "text",
+        "text": "1.000"
+      },
+      "C": {
+        "type": "text",
+        "text": "1.025"
+      },
+      "D": {
+        "type": "text",
+        "text": "0.488"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q18_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 19,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For the Boolean function\n𝐹(𝐴, 𝐵, 𝐶, 𝐷) = ∑𝑚(0,2,5,7,8,10,12,13,14,15),\nthe essential prime implicants are __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝐵𝐷, 𝐵̅ 𝐷\n̅"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝐵𝐷, 𝐴𝐵"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝐴𝐵, 𝐵̅ 𝐷\n̅"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝐵𝐷, 𝐵̅ 𝐷\n̅ , 𝐴𝐵"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 20,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "N0\nA white Gaussian noise w(t ) with zero mean and power spectral density         ,\n2\nwhen applied to a first-order RC low pass filter produces an output 𝑛(𝑡). At a\nparticular time 𝑡 = 𝑡𝑘 , the variance of the random variable 𝑛(𝑡𝑘 ) is ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "14:11"
+      },
+      "B": {
+        "type": "text",
+        "text": "11:14"
+      },
+      "C": {
+        "type": "text",
+        "text": "18:11"
+      },
+      "D": {
+        "type": "text",
+        "text": "11:18"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 21,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A causal and stable LTI system with impulse response ℎ(𝑡) produces an output 𝑦(𝑡)\nfor an input signal 𝑥(𝑡). A signal 𝑥(0.5𝑡) is applied to another causal and stable\nLTI system with impulse response ℎ(0.5𝑡). The resulting output is _____.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "d2 y dy 2 + 4 + 4 y = f (t ) dt dt"
+      },
+      "B": {
+        "type": "text",
+        "text": "d2 y + 4 y = f (t ) dt 2"
+      },
+      "C": {
+        "type": "text",
+        "text": "d2 y dy 2 + 3 + 2 y = f (t ) dt dt"
+      },
+      "D": {
+        "type": "text",
+        "text": "d2 y dy 2 + 5 + 6 y = f (t ) dt dt"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 22,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For non-degenerately doped n-type silicon, which one of the following plots\nrepresents the temperature (𝑇) dependence of free electron concentration (𝑛)?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "12 dB/octave"
+      },
+      "B": {
+        "type": "text",
+        "text": "6 dB/octave"
+      },
+      "C": {
+        "type": "text",
+        "text": "20 dB/octave"
+      },
+      "D": {
+        "type": "text",
+        "text": "10 dB/octave 6"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 23,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the circuit shown, the 𝑛: 1 step-down transformer and the diodes are ideal.\nThe diodes have no voltage drop in forward biased condition. If the input voltage\n(in Volts) is 𝑉𝑠 (𝑡) = 10sin𝜔𝑡 and the average value of load voltage 𝑉𝐿 (𝑡) (in Volts)\nis 2.5/𝜋 , the value of 𝑛 is ______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "4"
+      },
+      "B": {
+        "type": "text",
+        "text": "8"
+      },
+      "C": {
+        "type": "text",
+        "text": "12"
+      },
+      "D": {
+        "type": "text",
+        "text": "16"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q23_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 24,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "For a causal discrete-time LTI system with transfer function\n2𝑧 2 +3\n𝐻 (𝑧) =             1        1\n(𝑧 + )(𝑧 − )\n3        3\nwhich of the following statements is/are true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": " m  X  f + T  = T m = − "
+      },
+      "B": {
+        "type": "text",
+        "text": " m 1  X  f + T  = T m = −"
+      },
+      "C": {
+        "type": "text",
+        "text": "  X ( f + mT ) = T m = −"
+      },
+      "D": {
+        "type": "text",
+        "text": " 1  X ( f + mT ) = T m = −"
+      }
+    },
+    "correct_answer": "A,C,D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 25,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "Let  ( x, y, z, t ) and u ( x, y, z, t ) represent density and velocity, respectively, at a\n\npoint ( x, y, z ) and time 𝑡. Assume            is continuous. Let V be an arbitrary volume\nt\nin space enclosed by the closed surface S and n̂ be the outward unit normal of S\n\nWhich of the following equations is/are equivalent to              +   ( u) = 0 ?\nt",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "zinA = +1𝑗 Ω , zinB = ∞ , zinC = −1𝑗 Ω , zinD = 0"
+      },
+      "B": {
+        "type": "text",
+        "text": "zinA = ∞ , zinB = +0.4𝑗 Ω , zinC = 0 , zinD = +0.4𝑗 Ω"
+      },
+      "C": {
+        "type": "text",
+        "text": "zinA = −1𝑗 Ω , zinB = 0, zinC = +1𝑗 Ω , zinD = ∞"
+      },
+      "D": {
+        "type": "text",
+        "text": "zinA = +0.4𝑗 Ω , zinB = ∞, zinC = −0.4𝑗 Ω , zinD = 0"
+      }
+    },
+    "correct_answer": "A,C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 26,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "The free electron concentration profile n(x) in a doped semiconductor at equilibrium\nis shown in the figure, where the points A, B, and C mark three different positions.\nWhich of the following statements is/are true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "For between B and C, the electron diffusion current is directed from C to B. 𝑥"
+      },
+      "B": {
+        "type": "text",
+        "text": "For between B and A, the electron drift current is directed from B to A. 𝑥"
+      },
+      "C": {
+        "type": "text",
+        "text": "For between B and C, the electric field is directed from B to C. 𝑥"
+      },
+      "D": {
+        "type": "text",
+        "text": "For between B and A, the electric field is directed from A to B. 𝑥"
+      }
+    },
+    "correct_answer": "A,B,C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q26_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 27,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "A machine has a 32-bit architecture with 1-word long instructions. It has 24 registers\nand supports an instruction set of size 40. Each instruction has five distinct fields,\nnamely opcode, two source register identifiers, one destination register identifier,\nand an immediate value. Assuming that the immediate operand is an unsigned\ninteger, its maximum value is ________.\nPage 23 of 46\nOrganizing Institute: IISc, Bengaluru\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "2047 to 2047",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 28,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "An amplitude modulator has output (in Volts)\ns(t ) = A cos(400 t ) + B cos(360 t ) + B cos(440 t ) .\nThe carrier power normalized to 1  resistance is 50 Watts. The ratio of the total\nsideband power to the total power is 1/9. The value of 𝐵 (in Volts, rounded off to\ntwo decimal places) is _______ .",
+    "options": null,
+    "correct_answer": "2.49 to 2.51",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 29,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In a number system of base 𝑟, the equation 𝑥 2 − 12𝑥 + 37 = 0 has 𝑥 = 8 as one\nof its solutions. The value of 𝑟 is _______.",
+    "options": null,
+    "correct_answer": "11 to 11",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 30,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "Let ℝ and ℝ3 denote the set of real numbers and the three dimensional vector space\nover it, respectively. The value of 𝛼 for which the set of vectors\n{[2 −3 𝛼 ], [3         −1 3],       [1 −5 7]}\ndoes not form a basis of ℝ3 is _______.\nPage 24 of 46\nOrganizing Institute: IISc, Bengaluru\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "5 to 5",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 31,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In the given circuit, the current Ix (in mA) is ______.\n1000 I0\n- +\n1k                       1k             1k\n5 mA\nI0                                      Ix\n2 mA",
+    "options": null,
+    "correct_answer": "2 to 2",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q31_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 32,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In the circuit given below, the switch S was kept open for a sufficiently long time\nand is closed at time 𝑡 = 0. The time constant (in seconds) of the circuit for 𝑡 > 0\nis _______.\nt=0\n3H                S\n2                    4              4\n5A",
+    "options": null,
+    "correct_answer": "0.75 to 0.75",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q32_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 33,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "Suppose X and Y are independent and identically distributed random variables that\nare distributed uniformly in the interval [0,1] . The probability that X  Y\nis _______ .\nPage 25 of 46\nOrganizing Institute: IISc, Bengaluru\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "0.50 to 0.50",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 34,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "A source transmits symbols from an alphabet of size 16. The value of maximum\nachievable entropy (in bits) is _______ .",
+    "options": null,
+    "correct_answer": "4 to 4",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 35,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "As shown in the circuit, the initial voltage across the capacitor is 10 V, with the\nswitch being open. The switch is then closed at 𝑡 = 0. The total energy dissipated\nin the ideal Zener diode (𝑉𝑍 = 5 𝑉) after the switch is closed (in mJ, rounded off to\nthree decimal places) is __________.\n𝑡=0\n+\n10 kΩ                                  𝑉(0− ) = 10 V\n10 μF\n𝑉𝑍 = 5 V                                      −\nPage 26 of 46\nOrganizing Institute: IISc, Bengaluru\nElectronics and Communication Engineering (EC)\nQ.36 – Q.65 Carry TWO marks Each",
+    "options": null,
+    "correct_answer": "0.250 to 0.250",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q35_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 36,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider the Earth to be a perfect sphere of radius R. Then the surface area of the\nregion, enclosed by the 60°N latitude circle, that contains the north pole in its\ninterior is _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "For 𝑥 between B and C, the electron diffusion current is directed from C to B."
+      },
+      "B": {
+        "type": "text",
+        "text": "For 𝑥 between B and A, the electron drift current is directed from B to A."
+      },
+      "C": {
+        "type": "text",
+        "text": "For 𝑥 between B and C, the electric field is directed from B to C."
+      },
+      "D": {
+        "type": "text",
+        "text": "For 𝑥 between B and A, the electric field is directed from A to B."
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 37,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider a unity negative feedback control system with forward path gain\nK\nG (s) =                          as shown.\n( s + 1)( s + 2)( s + 3)\nR( s ) +                                                 Y ( s)\n+                 G(s)\n-\nThe impulse response of the closed-loop system decays faster than e−t if _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1 K 5  "
+      },
+      "B": {
+        "type": "text",
+        "text": "7 K 21 − −"
+      },
+      "C": {
+        "type": "text",
+        "text": "4 K 1 −  −"
+      },
+      "D": {
+        "type": "text",
+        "text": "24 K 6"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q37_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 38,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A satellite attitude control system, as shown below, has a plant with transfer\n1                                       K (s +  )\nfunction G ( s ) = 2 cascaded with a compensator C ( s ) =            , where 𝐾 and 𝛼\ns                                          s+4\nare positive real constants.\nR (s)     +                                                     Y ( s)\n+           C ( s)              G(s)\n-\nIn order for the closed-loop system to have poles at −1  j 3 , the value of  must\nbe _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0"
+      },
+      "B": {
+        "type": "text",
+        "text": "1"
+      },
+      "C": {
+        "type": "text",
+        "text": "2"
+      },
+      "D": {
+        "type": "text",
+        "text": "3"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q38_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 39,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A uniform plane wave with electric field E ( x) = Ay aˆ y e         3\nV/m is travelling in the\nair (relative permittivity, òr = 1 and relative permeability,  r = 1 ) in the\n+𝑥 direction ( Ay is a positive constant, aˆ y is the unit vector along the 𝑦 axis). It is\nincident normally on an ideal electric conductor (conductivity,  =  ) at 𝑥 = 0.\nThe position of the first null of the total magnetic field in the air (measured from\n𝑥 = 0, in metres) is _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "3\n−\n4"
+      },
+      "B": {
+        "type": "text",
+        "text": "3\n−\n2"
+      },
+      "C": {
+        "type": "text",
+        "text": "−6"
+      },
+      "D": {
+        "type": "text",
+        "text": "−3"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 40,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A 4-bit priority encoder has inputs 𝐷3 , 𝐷2 , 𝐷1 , and 𝐷0 in descending order of\npriority. The two-bit output 𝐴𝐵 is generated as 00, 01, 10, and 11 corresponding to\ninputs 𝐷3 , 𝐷2 , 𝐷1 , and 𝐷0 , respectively. The Boolean expression of the output bit 𝐵\nis _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "̅̅̅3 𝐷\n𝐷    ̅̅̅2"
+      },
+      "B": {
+        "type": "text",
+        "text": "̅̅̅\n𝐷3 𝐷2 + ̅̅̅\n𝐷3 ̅̅̅\n𝐷1"
+      },
+      "C": {
+        "type": "text",
+        "text": "̅̅̅2 + 𝐷\n𝐷3 𝐷      ̅̅̅3 𝐷1"
+      },
+      "D": {
+        "type": "text",
+        "text": "̅̅̅\n𝐷3 ̅̅̅\n𝐷1"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 41,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The propagation delay of the 2 × 1 MUX shown in the circuit is 10 ns.\nConsider the propagation delay of the inverter as 0 ns.\n0\n2X1\nMUX       Y\n1\nS\nIf S is set to 1 then the output Y is _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "a square wave of frequency 100 MHz"
+      },
+      "B": {
+        "type": "text",
+        "text": "a square wave of frequency 50 MHz"
+      },
+      "C": {
+        "type": "text",
+        "text": "constant at 0"
+      },
+      "D": {
+        "type": "text",
+        "text": "constant at 1"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q41_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 42,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The sequence of states (𝑄1 𝑄0 ) of the given synchronous sequential circuit is\n_______.\nT1   Q1                        T0     Q0\nQ1                               Q0\nCLK",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "00 → 10 → 11 → 00"
+      },
+      "B": {
+        "type": "text",
+        "text": "11 → 00 → 10 → 01 → 00"
+      },
+      "C": {
+        "type": "text",
+        "text": "01 → 10 → 11 → 00 → 01"
+      },
+      "D": {
+        "type": "text",
+        "text": "00 → 01 → 10 → 00"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q42_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 43,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let z be a complex variable. If f ( z ) =                and C is the circle in the complex\nz 2 ( z − 2)\nplane with z = 3 then  f ( z )dz is _______.\nC",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2j"
+      },
+      "B": {
+        "type": "text",
+        "text": "1    \nj  −  \n2    "
+      },
+      "C": {
+        "type": "text",
+        "text": "1    \nj  +  \n2    "
+      },
+      "D": {
+        "type": "text",
+        "text": "− 2 j"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 44,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider two continuous time signals 𝑥(𝑡) and 𝑦(𝑡) as shown below\n𝑥(𝑡)                                𝑦(𝑡)\n1\n-1       0.5         0\n𝑡                                       𝑡\n-2       0          2\n-1\nIf 𝑋(𝑓) denotes the Fourier transform of 𝑥(𝑡), then the Fourier transform of 𝑦(𝑡)\nis _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−4𝑋(4𝑓)𝑒 −𝑗𝜋𝑓"
+      },
+      "B": {
+        "type": "text",
+        "text": "−4𝑋(4𝑓)𝑒 −𝑗4𝜋𝑓"
+      },
+      "C": {
+        "type": "text",
+        "text": "1\n− 𝑋(𝑓/4)𝑒 −𝑗𝜋𝑓\n4"
+      },
+      "D": {
+        "type": "text",
+        "text": "1\n− 𝑋(𝑓/4)𝑒 −𝑗4𝜋𝑓\n4"
+      }
+    },
+    "correct_answer": "MTA",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 45,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A source transmits a symbol s, taken from {−4,0, 4} with equal probability, over an\nadditive white Gaussian noise channel. The received noisy symbol r is given by\nr = s + w, where the noise w is zero mean with variance 4 and is independent of s.\n∞      −𝑡2\n1\nUsing 𝑄(𝑥) =       ∫ 𝑒 2 𝑑𝑡, the optimum symbol error probability is _______.\n√2𝜋 𝑥",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−4𝑋(4𝑓)𝑒−𝑗𝜋𝑓"
+      },
+      "B": {
+        "type": "text",
+        "text": "−4𝑋(4𝑓)𝑒−𝑗4𝜋𝑓"
+      },
+      "C": {
+        "type": "text",
+        "text": "−1 𝑋(𝑓/4)𝑒−𝑗𝜋𝑓 4"
+      },
+      "D": {
+        "type": "text",
+        "text": "−1 𝑋(𝑓/4)𝑒−𝑗4𝜋𝑓 4"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q45_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 46,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A full scale sinusoidal signal is applied to a 10-bit ADC. The fundamental signal\ncomponent in the ADC output has a normalized power of 1 W, and the total noise\nand distortion normalized power is 10 μW. The effective number of bits (rounded\noff to the nearest integer) of the ADC is _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "(2 − 3) R2"
+      },
+      "B": {
+        "type": "text",
+        "text": "( 2 − 1) R2 2"
+      },
+      "C": {
+        "type": "text",
+        "text": "2 R 2 3"
+      },
+      "D": {
+        "type": "text",
+        "text": "(2 + 3) R 2 8 2"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 47,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The information bit sequence {1 1 1 0 1 0 1 0 1} is to be transmitted by encoding\nwith Cyclic Redundancy Check 4 (CRC-4) code, for which the generator\npolynomial is 𝐶(𝑥) = 𝑥 4 + 𝑥 + 1. The encoded sequence of bits is ________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1 K  5"
+      },
+      "B": {
+        "type": "text",
+        "text": "7  K  21"
+      },
+      "C": {
+        "type": "text",
+        "text": "−4  K  −1"
+      },
+      "D": {
+        "type": "text",
+        "text": "−24  K  −6"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 48,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A continuous time signal 𝑥(𝑡) = 2 cos(8𝜋𝑡 + 𝜋/3) is sampled at a rate of 15 Hz.\nThe sampled signal 𝑥𝑠 (𝑡) when passed through an LTI system with impulse\nresponse\nsin 2𝜋𝑡\nℎ(𝑡) = (             ) cos(38𝜋𝑡 − 𝜋/2)\n𝜋𝑡\nproduces an output 𝑥𝑜 (𝑡). The expression for 𝑥𝑜 (𝑡) is _____.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0"
+      },
+      "B": {
+        "type": "text",
+        "text": "1"
+      },
+      "C": {
+        "type": "text",
+        "text": "2"
+      },
+      "D": {
+        "type": "text",
+        "text": "3 2 x −j"
+      }
+    },
+    "correct_answer": "MTA",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 49,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "The opamps in the circuit shown are ideal, but have saturation voltages of ±10 V.\nAssume that the initial inductor current is 0 A. The input voltage (Vi) is a triangular\nsignal with peak voltages of ±2 V and time period of 8 µs. Which one of the\nfollowing statements is true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "3 − 4"
+      },
+      "B": {
+        "type": "text",
+        "text": "3 − 2"
+      },
+      "C": {
+        "type": "text",
+        "text": "−6"
+      },
+      "D": {
+        "type": "text",
+        "text": "−3"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 50,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "In the circuit below, the opamp is ideal.\nR1\n_                    C           R\nR\n+                      R                   C\nIf the circuit is to show sustained oscillations, the respective values of 𝑅1 and the\ncorresponding frequency of oscillation are _____.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "V01 is delayed by 2 µs relative to Vi, and V02 is a triangular waveform."
+      },
+      "B": {
+        "type": "text",
+        "text": "V01 is not delayed relative to Vi, and V02 is a trapezoidal waveform."
+      },
+      "C": {
+        "type": "text",
+        "text": "V01 is not delayed relative to Vi, and V02 is a triangular waveform."
+      },
+      "D": {
+        "type": "text",
+        "text": "V01 is delayed by 1 µs relative to Vi, and V02 is a trapezoidal waveform."
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q50_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 51,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "In the circuit shown below, the transistors M 1 and M 2 are biased in saturation.\nTheir small signal transconductances are g m1 and g m 2 respectively. Neglect body\neffect, channel length modulation and intrinsic device capacitances.\nVDD\nIref\nVDD\nM1                 RD\nRB    vout\nRS\nM2\nC1\nvin\nAssuming that capacitor C1 is a short circuit for AC analysis, the exact magnitude\n𝑣\nof small signal voltage gain | 𝑣𝑜𝑢𝑡 | is ______.\n𝑖𝑛",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "and ⁄ 29𝑅 1 (2𝜋√6𝑅𝐶)"
+      },
+      "B": {
+        "type": "text",
+        "text": "and ⁄ 2𝑅 1 (2𝜋𝑅𝐶)"
+      },
+      "C": {
+        "type": "text",
+        "text": "and ⁄ 29𝑅 1 (2𝜋𝑅𝐶)"
+      },
+      "D": {
+        "type": "text",
+        "text": "and ⁄ 2𝑅 1 (2𝜋√6𝑅𝐶)"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q51_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 52,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Which of the following statements is/are true for a BJT with respect to its\nDC current gain β?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "g R m 2 D"
+      },
+      "B": {
+        "type": "text",
+        "text": "  1 + g R R   m 2 D B g   m 1 1 + + R R B s g m 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "  1 + + g R R R   m 2 D B s g   m 1 1 + R B g m 1"
+      },
+      "D": {
+        "type": "text",
+        "text": "  1 g R   m 2 D g   m 1 1 + R s g m 1"
+      }
+    },
+    "correct_answer": "A,C,D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q52_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 53,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Consider a system S represented in state space as\ndx 0 −2 1\n=        x+     r , y =  2 −5 x .\ndt 1 −3 0\nWhich of the state space representations given below has/have the same transfer\nfunction as that of S ?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2j"
+      },
+      "B": {
+        "type": "text",
+        "text": "1  j  −   2 "
+      },
+      "C": {
+        "type": "text",
+        "text": "1  j  +   2 "
+      },
+      "D": {
+        "type": "text",
+        "text": "− 2 j"
+      }
+    },
+    "correct_answer": "A,C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 54,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Let F1 , F2 , and F3 be functions of ( x, y, z ) . Suppose that for every given pair of\npoints 𝐴 and 𝐵 in space, the line integral  ( F1dx + F2 dy + F3dz ) evaluates to the\nC\nsame value along any path C that starts at 𝐴 and ends at B . Then which of the\nfollowing is/are true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−4𝑋(4𝑓)𝑒 −𝑗𝜋𝑓"
+      },
+      "B": {
+        "type": "text",
+        "text": "−4𝑋(4𝑓)𝑒 −𝑗4𝜋𝑓"
+      },
+      "C": {
+        "type": "text",
+        "text": "1 − 𝑋(𝑓/4)𝑒 −𝑗𝜋𝑓 4"
+      },
+      "D": {
+        "type": "text",
+        "text": "1 − 𝑋(𝑓/4)𝑒 −𝑗4𝜋𝑓 4"
+      }
+    },
+    "correct_answer": "A,B,D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 55,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "Consider the matrix          , where 𝑘 is a positive real number. Which of the\n2 1 \nfollowing vectors is/are eigenvector(s) of this matrix?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2 Q (2) 3"
+      },
+      "B": {
+        "type": "text",
+        "text": "4 Q(1) 3"
+      },
+      "C": {
+        "type": "text",
+        "text": "2 Q(1) 3"
+      },
+      "D": {
+        "type": "text",
+        "text": "4 Q (2) 3"
+      }
+    },
+    "correct_answer": "A,B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 56,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The radian frequency value(s) for which the discrete time sinusoidal signal\n𝑥[𝑛] = 𝐴 cos(Ω𝑛 + 𝜋/3) has a period of 40 is/are ______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "7"
+      },
+      "B": {
+        "type": "text",
+        "text": "8"
+      },
+      "C": {
+        "type": "text",
+        "text": "9"
+      },
+      "D": {
+        "type": "text",
+        "text": "10"
+      }
+    },
+    "correct_answer": "A,D OR A,C,D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 57,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Let X (t ) = A cos(2 f 0t +  ) be a random process, where amplitude A and phase \nare independent of each other, and are uniformly distributed in the intervals [−2, 2]\nand [0, 2 ] , respectively. X (t ) is fed to an 8-bit uniform mid-rise type quantizer.\n2\nGiven that the autocorrelation of X (t ) is RX ( ) = cos(2 f 0 ) , the signal to\n3\nquantization noise ratio (in dB, rounded off to two decimal places) at the output of\nthe quantizer is __________.",
+    "options": null,
+    "correct_answer": "45.00 to 45.30",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 58,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A lossless transmission line with characteristic impedance Z0 = 50 Ω is terminated\nwith an unknown load. The magnitude of the reflection co-efficient is |  | = 0.6.\nAs one moves towards the generator from the load, the maximum value of the input\nimpedance magnitude looking towards the load (in Ω) is _______.",
+    "options": null,
+    "correct_answer": "200 to 200",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 59,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The relationship between any N-length sequence 𝑥[𝑛] and its corresponding\nN-point discrete Fourier transform 𝑋[𝑘] is defined as\n𝑋[𝑘] = ℱ{𝑥[𝑛]}.\nAnother sequence 𝑦[𝑛] is formed as below\n𝑦[𝑛] = ℱ {ℱ {ℱ{ℱ{𝑥[𝑛]}}}} .\nFor the sequence 𝑥[𝑛] = {1, 2, 1, 3}, the value of 𝑌[0] is _______.\nPage 44 of 46\nOrganizing Institute: IISc, Bengaluru\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "112 to 112",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q59_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 60,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "For the two port network shown below, the value of the Y21 parameter (in Siemens)\nis ______.\nI1                           I2\n1                                               2\n+                                      +\n2\n4\nV1                   -                 V2\n8V1\n+\n1' -                                          - 2'",
+    "options": null,
+    "correct_answer": "1.5 to 1.5",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 61,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider a MOS capacitor made with p-type silicon. It has an oxide thickness of\n100 nm, a fixed positive oxide charge of 10−8 C/cm2 at the oxide-silicon interface,\nand a metal work function of 4.6 eV. Assume that the relative permittivity of the\noxide is 4 and the absolute permittivity of free space is 8.85 × 10−14 F/cm.\nIf the flatband voltage is 0 V, the work function of the p-type silicon (in eV, rounded\noff to two decimal places) is ______.",
+    "options": null,
+    "correct_answer": "4.10 to 4.50",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q61_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 62,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In the network shown below, maximum power is to be transferred to the load 𝑅𝐿 .\n2                 3\n- vx +\n- +\nvx          2\n50 V                                                     RL\nThe value of 𝑅𝐿 (in Ω) is ________ .\nPage 45 of 46\nOrganizing Institute: IISc, Bengaluru\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "2.5 to 2.5",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 63,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A non-degenerate n-type semiconductor has 5 % neutral dopant atoms.\nIts Fermi level is located at 0.25 eV below the conduction band (𝐸𝐶 ) and the donor\nenergy level (𝐸𝐷 ) has a degeneracy of 2. Assuming the thermal voltage to be 20 mV,\nthe difference between 𝐸𝐶 and 𝐸𝐷 (in eV, rounded off to two decimal places)\nis _________.",
+    "options": null,
+    "correct_answer": "0.17 to 0.19",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2024/q63_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 64,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "An NMOS transistor operating in the linear region has 𝐼𝐷𝑆 of 5 μA at 𝑉𝐷𝑆 of 0.1 V.\nKeeping 𝑉𝐺𝑆 constant, the 𝑉𝐷𝑆 is increased to 1.5 V.\n𝑊\nGiven that 𝜇𝑛 𝐶𝑜𝑥 𝐿 = 50 μA/V 2 , the transconductance at the new operating point\n(in μA/V, rounded off to two decimal places) is ______.",
+    "options": null,
+    "correct_answer": "52.40 to 52.60",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 65,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The photocurrent of a PN junction diode solar cell is 1 mA. The voltage\ncorresponding to its maximum power point is 0.3 V. If the thermal voltage is\n30 mV, the reverse saturation current of the diode (in nA, rounded off to two decimal\nplaces) is _____.\nPage 46 of 46\nOrganizing Institute: IISc, Bengaluru",
+    "options": null,
+    "correct_answer": "4.00 to 4.26",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  }
+]

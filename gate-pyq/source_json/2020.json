@@ -1,0 +1,1861 @@
+[
+  {
+    "question_number": 1,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The Canadian constitution requires that equal importance be given to English and French. Last year, Air Canada lost a lawsuit, and had to pay a six-figure fine to a French-speaking couple after they filed complaints about formal in-flight announcements in English lasting 15 seconds, as opposed to informal 5 second messages in French. The French-speaking couple were upset at __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "equal importance being given to English and French."
+      },
+      "B": {
+        "type": "text",
+        "text": "the in-flight announcements being made in English."
+      },
+      "C": {
+        "type": "text",
+        "text": "the English announcements being longer than the French ones."
+      },
+      "D": {
+        "type": "text",
+        "text": "the English announcements being clearer than the French ones."
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q1_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 2,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A superadditive function f (⋅) satisfies the following property f (x1 + x2) ≥ f(x1) +f (x2) Which of the following functions is a superadditive function for x > 1?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "x (b) e –x"
+      },
+      "C": {
+        "type": "text",
+        "text": "ex (d) 1/x"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q2_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 3,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Select the word that fits the analogy: Explicit : Implicit : : Express : _________",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Repress (b) Suppress"
+      },
+      "C": {
+        "type": "text",
+        "text": "Compress (d) Impress"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q3_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 4,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The following figure shows the data of students enrolled in 5 years (2014 to 2018) for two schools P and Q. During this period, the ratio of the average number of the students enrolled in school P to the average of the difference of the number of students enrolled in schools P and Q is _________. Number of students (in thousands) 9 School P 8 School Q 7 6 5 4 3 2 1 0 2014 2015 2016 2017 2018 Year",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "8 : 23 (b) 23 : 8"
+      },
+      "C": {
+        "type": "text",
+        "text": "23 : 31 (d) 31 : 23"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q4_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 5,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "a, b, c are real numbers. The quadratic equation ax2 – bx + c = 0 has equal roots, which is β, then",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "β2 = ac (b) β3 = bc/(2a2)"
+      },
+      "C": {
+        "type": "text",
+        "text": "β = b/a (d) b2 ≠ 4ac"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q5_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 6,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The untimely loss of life is a cause of serious global concern as thousands of people get killed _______ accidents every year while many other die _______ diseases like cardio vascular disease, cancer, etc.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "during, from (b) in, of"
+      },
+      "C": {
+        "type": "text",
+        "text": "from, from (d) from, of"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q6_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 7,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "It is quarter past three in your watch. The angle between the hour hand and the minute hand is __________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "22.5° (b) 7.5°"
+      },
+      "C": {
+        "type": "text",
+        "text": "0° (d) 15°"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q7_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 8,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A circle with centre O is shown in the figure. A rectangle PQRS of maximum possible area is inscribed in the circle. If the radius of the circle is a, then the area of the shaded portion is ___________. P Q O a S R",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "πa2 – 2a2 (b) πa2 – 3a2"
+      },
+      "C": {
+        "type": "text",
+        "text": "πa 2 − 2a 2 (d) πa2 – a2"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q8_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 9,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The global financial crisis in 2008 is considered to be the most serious world-wide financial crisis, which started with the sub-prime lending crisis in USA in 2007. The sub- prime lending crisis led to the banking crisis in 2008 with the collapse of Lehman Brothers in 2008. The sub-prime lending refers to the provision of loans to those borrowers who may have difficulties in repaying loans, and it arises because of excess liquidity following the East Asian crisis. Which one of the following sequences shows the correct precedence as per the given passage?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Subprime lending crisis → global financial crisis → banking crisis → East Asian crisis."
+      },
+      "B": {
+        "type": "text",
+        "text": "Banking crisis → subprime lending crisis → global financial crisis → East Asian crisis."
+      },
+      "C": {
+        "type": "text",
+        "text": "East Asian crisis → subprime lending crisis → banking crisis → global financial crisis."
+      },
+      "D": {
+        "type": "text",
+        "text": "Global financial crisis → East Asian crisis → banking crisis → subprime lending crisis."
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q9_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 10,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "He was not only accused of theft ________ of conspiracy.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "rather (b) rather than"
+      },
+      "C": {
+        "type": "text",
+        "text": "but also (d) but even"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q10_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 11,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The current in the RL-circuit shown below is i(t) = 10 cos (5t – π/4)A. The value of the inductor (rounded off to two decimal places) is _________ H. R i(t) + 200 cos(5t)V L –",
+    "options": {
+      "A": {
+        "type": "image",
+        "image": "assets/2020/q11_option_A.png"
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "image",
+        "image": "assets/2020/q11_option_C.png"
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q11_option_D.png"
+      }
+    },
+    "correct_answer": "2.828",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q11_question.png",
+    "option_images": {
+      "A": "assets/2020/q11_option_A.png",
+      "C": "assets/2020/q11_option_C.png",
+      "D": "assets/2020/q11_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 12,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the given circuit, the two-port network has the impedance matrix [Z] = 60 120  .   The value of ZL for which maximum power is transferred to the load is _________ Ω. 10 Ω I1 I2 + + 120 V V1 [Z] V2 ZL – –",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q12_option_D.png"
+      }
+    },
+    "correct_answer": "48",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q12_question.png",
+    "option_images": {
+      "D": "assets/2020/q12_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 13,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "If v1, v2, ...., v6 are six vectors in R 4, which one of the following statements is False?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "If {v1, v3, v5, v6} spans R4, then it forms a basis for R4."
+      },
+      "B": {
+        "type": "text",
+        "text": "These vectors are not linearly independent."
+      },
+      "C": {
+        "type": "text",
+        "text": "It is not necessary that these vectors span R4."
+      },
+      "D": {
+        "type": "text",
+        "text": "Any four of these vectors form a basis for R4."
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q13_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 14,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The loop transfer function of a negative feedback system is K(s + 11) G(s)H(s) = s(s + 2)(s + 8) The value of K, for which the system is marginally stable, is ________.",
+    "options": {
+      "A": {
+        "type": "image",
+        "image": "assets/2020/q14_option_A.png"
+      },
+      "B": {
+        "type": "image",
+        "image": "assets/2020/q14_option_B.png"
+      },
+      "C": {
+        "type": "image",
+        "image": "assets/2020/q14_option_C.png"
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q14_option_D.png"
+      }
+    },
+    "correct_answer": "160",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q14_question.png",
+    "option_images": {
+      "A": "assets/2020/q14_option_A.png",
+      "B": "assets/2020/q14_option_B.png",
+      "C": "assets/2020/q14_option_C.png",
+      "D": "assets/2020/q14_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 15,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The partial derivative of the function 2 f (x,y,z) = e1− x cos y + xze−1/(1+ y ) with respect to x at the point (1, 0, e) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "–1 (b) 1 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "0 (d) e"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q15_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 16,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The random variable ∞ 1; 5≤t ≤7 Y = ∫ W(t )φ(t )dt, where φ(t ) = 0; otherwise −∞  and W(t) is a real white Gaussian noise process with two-sided power spectral density SW(f ) = 3 W/Hz, for all f. The variance of Y is _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q16_option_D.png"
+      }
+    },
+    "correct_answer": "6",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q16_question.png",
+    "option_images": {
+      "D": "assets/2020/q16_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 17,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For a vector field A , which one of the following is False? \u0001\u0002 \u0001\u0002 \u0001\u0002",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "∇ × A is another vector field. (b) A is solenoidal if ∇ ⋅ A = 0. \u0001\u0002 \u0001\u0002 \u0001\u0002 \u0001\u0002 \u0001\u0002"
+      },
+      "C": {
+        "type": "text",
+        "text": "A is irrotational if ∇2 A = 0. (d) ∇ × (∇ × A) = ∇(∇ ⋅ A) − ∇2 A"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q17_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 18,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A transmission line of length 3λ/4 and having a characteristic impedance of 50 Ω is terminated with a load of 400 Ω. The impedance (rounded off to two decimal places) seen at the input end of the transmission line is __________ Ω.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q18_option_D.png"
+      }
+    },
+    "correct_answer": "6.25",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q18_question.png",
+    "option_images": {
+      "D": "assets/2020/q18_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 19,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A 10-bit D/A converter is calibrated over the full range from 0 to 10 V. If the input to the D/A converter is 13A (in hex), the output (rounded off to three decimal places) is _________ V.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q19_option_D.png"
+      }
+    },
+    "correct_answer": "3.069",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q19_question.png",
+    "option_images": {
+      "D": "assets/2020/q19_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 20,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The pole-zero map of a rational function G(s) is shown below. When the closed counter Γ is mapped into the G(s)-plane, then the mapping encircles. Im s-plane Re Γ",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "the point –1 + j0 of the G(s)-plane once in the counter-clockwise direction."
+      },
+      "B": {
+        "type": "text",
+        "text": "the origin of the G(s)-plane once in the clockwise direction."
+      },
+      "C": {
+        "type": "text",
+        "text": "the origin of the G(s)-plane once in the counter-clockwise direction."
+      },
+      "D": {
+        "type": "text",
+        "text": "the point –1 + j0 of the G(s)-plane once in the clockwise direction. Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 9 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q20_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 21,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the circuit shown below, all the components are ideal. If Vi is +2 V, the current I0 sourced by the op-amp is __________ mA. 1 kΩ 5V 1 kΩ I0 Vi 1 kΩ –5 V",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q21_option_D.png"
+      }
+    },
+    "correct_answer": "6",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q21_question.png",
+    "option_images": {
+      "D": "assets/2020/q21_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 22,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The two sides of a fair coin are labelled as 0 and 1. The coin is tossed two times independently. Let M and N denote the labels corresponding to the outcomes of those tosses. For a random variable X, defined as X = min(M, N), the expected value E(X) (rounded off to two decimal places) is _________.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q22_option_D.png"
+      }
+    },
+    "correct_answer": "0.25",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q22_question.png",
+    "option_images": {
+      "D": "assets/2020/q22_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 23,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A single crystal intrinsic semiconductor is at a temperature of 300 K with effective density of states for holes twice that of electrons. The thermal voltage is 26 mV. The intrinsic Fermi level is shifted from mid-bandgap energy level by",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "13.45 meV (b) 18.02 meV"
+      },
+      "C": {
+        "type": "text",
+        "text": "26.90 meV (d) 9.01 meV"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q23_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 24,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The output y[n] of a discrete-time system for an input x[n] is y [n] = max x[k ] −∞ ≤ k ≤ n The unit impulse response of the system is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0 for all n. (b) 1 for all n."
+      },
+      "C": {
+        "type": "text",
+        "text": "unit step signal u[n]. (d) unit impulse signal δ[n]."
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q24_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 25,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "A binary random variable X takes the value +2 or –2. The probability P(X = +2) = α. The value of α (rounded off to one decimal place), for which the entropy of X is maximum, is __________.",
+    "options": null,
+    "correct_answer": "0.5",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q25_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 26,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In the circuit shown below, all the components are ideal and the input voltage is sinusoidal. The magnitude of the steady-state output V0 (rounded off to two decimal places) is _________ V. C1 = 0.1 µF D2 + 230 V (rms) D1 C2 = 0.1 µF V0 –",
+    "options": null,
+    "correct_answer": "650.40",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q26_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 27,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "Consider the recombination process via bulk traps in a forward biased pn homojunction diode. The maximum recombination rate is Umax. If the electron and the hole capture cross-section are equal, which one of the following is False?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "With all other parameters unchanged, Umax decreases if the intrinsic carrier density is reduced."
+      },
+      "B": {
+        "type": "text",
+        "text": "With all other parameters unchanged, Umax increases if the thermal velocity of the carriers increases."
+      },
+      "C": {
+        "type": "text",
+        "text": "Umax occurs at the edges of the depletion region in the device."
+      },
+      "D": {
+        "type": "text",
+        "text": "Umax depends exponentially on the applied bias."
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q27_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 28,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "The general solution of −6 + 9y = 0 is dx 2 dx",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "y = C1e3x + C2e–3x (b) y = (C1 + C2 x)e3x"
+      },
+      "C": {
+        "type": "text",
+        "text": "y = C1e3x (d) y = (C1 + C2 x)e–3x"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q28_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 29,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In an 8085 microprocessor, the number of address lines required to access a 16 K byte memory bank is __________.",
+    "options": null,
+    "correct_answer": "14",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q29_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 30,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "The impedances Z = jX, for all X in the range (–∞, ∞), map to the Smith chart as",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "a circle of radius 0.5 with centre at (0.5, 0)."
+      },
+      "B": {
+        "type": "text",
+        "text": "a point at the centre of the chart."
+      },
+      "C": {
+        "type": "text",
+        "text": "a line passing through the centre of the chart."
+      },
+      "D": {
+        "type": "text",
+        "text": "a circle of radius 1 with centre at (0, 0),"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q30_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 31,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "A digital communication system transmits a block of N bits. The probability of error in decoding a bit is α. The error event of each bit is independent of the error events of the other bits. The received block is declared erroneous if at least one of the its bits is decoded wrongly. The probability that the received block is erroneous is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "N(1 – α) (b) 1 – (1 – α)N"
+      },
+      "C": {
+        "type": "text",
+        "text": "1 – α N (d) αN Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 13 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q31_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 32,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "The figure below shows a multiplexer where S1 and S0 are the select lines. I0 to I3 are the input data lines, EN is the enable line, and F(P, Q, R) is the output. F is 0 EN R I0 0 I1 MUX F R I2 1 I3 S1 S0 P Q",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Q + PR . (b) P + QR."
+      },
+      "C": {
+        "type": "text",
+        "text": "PQ + QR . (d) PQR + PQ."
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q32_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 33,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In the circuit shown below, the Thevenin voltage VTh is 2V 2Ω 4Ω + 1A 1Ω 2A 2Ω VTh –",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2.8 V (b) 3.6 V"
+      },
+      "C": {
+        "type": "text",
+        "text": "2.4 V (d) 4.5 V Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 14 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q33_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 34,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "Which one of the following pole-zero corresponds to the transfer function of an LTI system characterized by the input-output difference equation given below? 3 y [n] = ∑ (−1)k x[n − k ] k=0 Im Im 1 1 4th order pole 3rd order pole –1 1 –1 1",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Re (b) Re –1 –1 Im Im 1 1 3rd order pole 3rd order pole –1 1 –1 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "Re (d) Re –1 –1 Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 15 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q34_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 35,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "The components in the circuit shown below are ideal. If the op-amp is in positive feedback and the input voltage Vi is a sine wave of amplitude 1 V, the output voltage Vo is 1 kΩ +5 V 1V 1 kΩ 0 Vi –1 V V0 –5 V",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "a square wave of 5 V amplitude"
+      },
+      "B": {
+        "type": "text",
+        "text": "an inverted sine wave of 1 V amplitude"
+      },
+      "C": {
+        "type": "text",
+        "text": "a non-inverted sine wave of 2 V amplitude"
+      },
+      "D": {
+        "type": "text",
+        "text": "a constant of either +5 or –5 V"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q35_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 36,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "An enhancement MOSFET of threshold voltage 3 V is being used in the sample and hold circuit given below. Assume that the substrate of the MOS device is connected to –10 V. If the input voltage Vi lies between ±10 V. the minimum and the maximum values of VG required for proper sampling and holding respectively, are Vi Vo VG",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "10 V and –13 V (b) 13 V and –7 V"
+      },
+      "C": {
+        "type": "text",
+        "text": "10 V and –10 V (d) 3 V and –3 V"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q36_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 37,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "P, Q, and R are the decimal integers corresponding to the 4-bit binary number 1100 considered in signed magnitude, 1’s complement, and 2’s complement representations, respectively. The 6-bit 2’s complement representation of (P + Q + R ) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "111101 (b) 110101"
+      },
+      "C": {
+        "type": "text",
+        "text": "110010 (d) 111001"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q37_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 38,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The band diagram of a p-type semiconductor with a band-gap of 1 eV is shown. Using this semiconductor, a MOS capacitor having VTh of –0.16 V, Co′ x of 100 nF/cm2 and a metal work function of 3.87 eV is fabricated. There is no charge within the oxide. If the voltage across the capacitor is VTh. the magnitude of depletion charge per unit area (in C/cm2) is Vacuum level 4 eV EC 0.5 eV Ei EFs 0.2 eV EV",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0.52 × 10–8 (b) 0.93 × 10–8"
+      },
+      "C": {
+        "type": "text",
+        "text": "1.41 × 10–8 (d) 1.70 × 10–8"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q38_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 39,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the solid S shown below, the value of ∫∫∫ x d x dy dz (rounded off to two decimal S places) is ______. z 1 0 1 y 3 x",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q39_option_D.png"
+      }
+    },
+    "correct_answer": "2.25",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q39_question.png",
+    "option_images": {
+      "D": "assets/2020/q39_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 40,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "SPM (t ) and SFM (t ) as defined below, are the phase modulated and the frequency modulated waveforms, respectively, corresponding to the message signal m (t ) shown in the figure. SPM (t ) = cos(1000πt + Kp m (t ))  t  and SFM(t ) = cos  1000πt + Kf ∫ m(τ) dτ     −∞  where Kp is the phase deviation constant in radians/volt and Kf is the frequency deviation constant in radians/second/volt. If the highest instantaneous frequencies of SPM (t ) and Kp SFM (t ) are same, then the value of the ratio is ______ seconds. Kf V m(t) 10 0 1 3 6 7 t (sec) Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 19 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020",
+    "options": {
+      "A": {
+        "type": "image",
+        "image": "assets/2020/q40_option_A.png"
+      },
+      "B": {
+        "type": "image",
+        "image": "assets/2020/q40_option_B.png"
+      },
+      "C": {
+        "type": "image",
+        "image": "assets/2020/q40_option_C.png"
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q40_option_D.png"
+      }
+    },
+    "correct_answer": "2",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q40_question.png",
+    "option_images": {
+      "A": "assets/2020/q40_option_A.png",
+      "B": "assets/2020/q40_option_B.png",
+      "C": "assets/2020/q40_option_C.png",
+      "D": "assets/2020/q40_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 41,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Which one of the following options contains two solutions of the differential equation dy = (y − 1) x ? dx",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "ln y − 1 = 0.5 x2 + C and y = − 1 (b) ln y − 1 = 2 x2 + C and y = 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "ln y − 1 = 2 x2 + C and y = − 1 (d) ln y − 1 = 0.5 x2 + C and y = 1"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q41_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 42,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "In the voltage regulator shown below, Vt is the unregulated at 15 V. Assume VBE = 0.7 V and the base current is negligible for both the BJTs. If the regulated output Vo is 9 V, the value of R2 is ________ Ω. V1 = 15 V V0 = 9 V R3 = 1 kΩ R1 = 1 kΩ R2 VZ = 3.3 V",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q42_option_D.png"
+      }
+    },
+    "correct_answer": "800",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q42_question.png",
+    "option_images": {
+      "D": "assets/2020/q42_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 43,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the modulated signal x( t ) = m ( t ) cos{2 nf ct ) , the message signal m(t) = 4cos(1000πt) and the carrier frequency fc is 1 MHz. The signal x(t) is passed through a demodulator, as shown in the figure below. The output y(t) of the demodulator is Ideal LPF with cut-off 510 Hz 1 y (t) x(t) f(Hz) –510 510 cos(2π(fc + 40)t)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "cos(1000πt ) (b) cos(540πt )"
+      },
+      "C": {
+        "type": "text",
+        "text": "cos(920πt ) (d) cos(460πt )"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q43_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 44,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the given circuit, which one of the following is the correct state equation? 0.5 H i + 0.25 F i1 2Ω V 1Ω i2 – d v   −4 4  v   0 4   i1  d v   −4 −4  v   4 0   i1  = + = +",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "      i  (b) dt  i   −2 −4   i   0 4  i2  dt  i   −2 −4   i   4 0   2  d v   −4 −4  v   4 4   i1  d v   4 −4  v  0 4   i1 "
+      },
+      "C": {
+        "type": "text",
+        "text": "  =    +  i  (d) dt  i  =  −2 −4   i  +  4 4  i  dt  i   −2 4   i   4 0   2          2"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q44_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 45,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The state diagram of a sequence detector is shown below. State S0 is the initial state of the sequence detector. If the output is 1, then 0/0 1/0 0/0 s0 s1 s2 s3 0/0 1/0 0/0 1/0 s4 1/0 0/1 1/0",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "the sequence 01010 is detected (b) the sequence 01011 is detected"
+      },
+      "C": {
+        "type": "text",
+        "text": "the sequence 01001 is detected (d) the sequence 01110 is detected"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q45_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 46,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For a 2-port network consisting of an ideal lossless transformer, the parameter S21 (rounded off to two decimal places) for a reference impedance of 10 Ω, is _____. 2 Port Network 2:1 Port 1 Port 2",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q46_option_D.png"
+      }
+    },
+    "correct_answer": "0.8",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q46_question.png",
+    "option_images": {
+      "D": "assets/2020/q46_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 47,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The characteristic equation of a system is s 3 + 3s 2 + (K + 2)s + 3K = 0 In the root locus plot for the given system, as K varies from 0 to ∞, the break-away or break-in point(s) lie within",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "(–2, –1) (b) (–1, 0)"
+      },
+      "C": {
+        "type": "text",
+        "text": "(–3, –2) (d) (–∞, –3) Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 23 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q47_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 48,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The base of an npn BJT T1 has a linear doping profile NB (x) as shown below. The base of another npn BJT T2 has a uniform doping NB of 1017 cm–3. All other parameters are identical for both the devices. Assuming that the hole density profile is the same as that of doping, the common-emitter current gain of T2 is 17 10 (cm–3) NB(x) 14 10 (cm–3 ) Emitter Base Collector 0 W",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "approximately 0.3 times that of T1 (b) approximately 0.7 times that of T1"
+      },
+      "C": {
+        "type": "text",
+        "text": "approximately 2.5 times that of T1 (d) approximately 2.0 times that of T1"
+      }
+    },
+    "correct_answer": "∗",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q48_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 49,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider the following system of linear equation. x1 + 2x2 = b1 ; 2x1 + 4x2 = b2 ; 3x1 + 7x2 = b3 ; 3x1 + 9x2 = b4 Which one of the following conditions ensures that a solution exists for the above system?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "b3 = 2b1 and 3b1 – 6b3 + b4 = 0 (b) b2 = 2b1 and 3b1 – 6b3 + b4 = 0"
+      },
+      "C": {
+        "type": "text",
+        "text": "b2 = 2b1 and 6b1 – 3b3 + b4 = 0 (d) b3 = 2b1 and 3b1 – 3b3 + b4 = 0"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q49_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 50,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For the BJT in the amplifier shown below. VBE = 0.7 V, kT/q = 26 mV. Assume the BJT output resistance (ro) is very high and the base current is negligible. The capacitors are also assumed to be short circuited at signal frequencies. The input vi is direct coupled. The low frequency gain vo /vi of the amplifier is VCC = 10 V RC 10 kΩ vo C1 RL 1 µF 10 kΩ vi RE CE 20 kΩ 100 µF VEE = –10 V",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "–178.85 (b) –256.42"
+      },
+      "C": {
+        "type": "text",
+        "text": "–128.21 (d) –89.42 Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 25 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q50_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 51,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "For an infinitesimally small dipole in free space, the electric field Eθ in the far field is proportional to (e –jkr/r )sinθ, where k = 2π/λ. A vertical infinitesimally small electric dipole (δl << λ) is placed at a distance h (h > 0) above an infinite ideal conducting plane, as shown in the figure. The minimum value of h, for which one of the maxima in the far field radiation pattern occurs at θ = 60°. is z I dl h θ y 0 Infinite conduction plane",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "0.75λ (b) λ"
+      },
+      "C": {
+        "type": "text",
+        "text": "0.25λ (d) 0.5λ"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q51_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 52,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The current I in the given network is 120∠–90° V + Z – I Z = (80 – j35) Ω 120∠–30° V – Z +",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2.38 ∠–23.63° A (b) 0 A"
+      },
+      "C": {
+        "type": "text",
+        "text": "2.38 ∠–96.37° A (d) 2.38 ∠143.63° A"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q52_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 53,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A system with transfer function G(s) = , a > 0 is subjected an input 5cos3t. (s + 1) (s + a) 1 The steady state output of the system is cos(3t − 1.892). The value of a is ____. 10",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": ""
+      },
+      "B": {
+        "type": "text",
+        "text": ""
+      },
+      "C": {
+        "type": "text",
+        "text": ""
+      },
+      "D": {
+        "type": "image",
+        "image": "assets/2020/q53_option_D.png"
+      }
+    },
+    "correct_answer": "4",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q53_question.png",
+    "option_images": {
+      "D": "assets/2020/q53_option_D.png"
+    },
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 54,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A finite duration discrete-time signal x[n ] is obtained by sampling the continuous-time signal x(t ) = cos(200πt ) at sampling instants t = n/400, n = 0,1, ... , 7. The 8-point discrete Fourier transform (DFT) of x[n ] is defined as 7 nkn −j , X [k ] = ∑ x[n ] e 4 k = 0, 1, ... , 7 n=0 Which one of the following statements is true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Only X [2] and X [6] are non-zero (b) Only X [3] and X [5] are non-zero"
+      },
+      "C": {
+        "type": "text",
+        "text": "All X [k ] are non-zero (d) Only X [4] is non-zero"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q54_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 55,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The components in the circuit given below are ideal. If R = 2 kΩ and C = 1 µF, the –3 dB cut-off frequency of the circuit in Hz is R C R Vi( jω) – Vo( jω) + 2C 2R",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "34.46 (b) 79.58"
+      },
+      "C": {
+        "type": "text",
+        "text": "59.68 (d) 14.92"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q55_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 56,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A one-sided abrupt pn junction diode has a depletion capacitance CD of 50 pF at a reverse bias of 0.2 V. The plot of 1/ CD2 versus the applied voltage V for this diode is a straight line as shown in the figure below. The slope of the plot is ____ × 1020 F –2 V–1. 2 1/CD 0 V",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "–1.2 (b) – 5.7"
+      },
+      "C": {
+        "type": "text",
+        "text": "– 3.8 (d) – 0.4 Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 29 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020"
+      }
+    },
+    "correct_answer": "∗",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q56_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 57,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A pn junction solar cell of area 1.0 cm2, illuminated uniformly with 100 mW cm–2, has the following parameters: Efficiency = 15%, open circuit voltage = 0.7 V, fill factor = 0.8, and thickness = 200 µm, The charge of an electron is 1.6 × 10–19 C. The average optical generation rate (in cm–3 S–1) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1.04 × 1019 (b) 83.60 × 1019"
+      },
+      "C": {
+        "type": "text",
+        "text": "0.84 × 10 19 (d) 5.57 × 1019"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q57_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 58,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In a digital communication system, a symbol S randomly chosen from the set (s1, s2, s3, s4) is transmitted. It is given that s1 = –3, s2 = –1, s3 = +1 and s4 = +2. The received symbol is Y = S + W. W is a zero-mean unit-variance Gaussian random variable and is independent of S. Pi is the conditional probability of symbol error for the maximum likelihood (ML) decoding when the transmitted symbol S = si. The index i for which the conditional symbol error probability Pi is the highest is ______. .",
+    "options": null,
+    "correct_answer": "3",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q58_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 59,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Using the incremental low frequency small-signal model of the MOS device, the Norton equivalent resistance of the following circuit is VDD R gm, rds 1",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "rds + R + gm rds R (b) rds + +R gm rds + R"
+      },
+      "C": {
+        "type": "text",
+        "text": "rds + R (d) 1 + gm rds"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q59_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 60,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Consider the following closed loop control system R(s ) + C(s) G(s) Y(s) – 1 s +1 where G(s) = and C(s) = K . If the steady state error for a unit ramp input s(s + 1) s+3 is 0.1, then the value of K is _______.",
+    "options": null,
+    "correct_answer": "30",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q60_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 61,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "X is a random variable with uniform probability density function in the interval [–2,10]. For Y = 2X– 6, the conditional probability P (Y ≤ 7 | X ≥ 5) (rounded off to three decimal places) is _____.",
+    "options": null,
+    "correct_answer": "0.3",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q61_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 62,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "X (ω) is the Fourier transform of x(t ) shown below. The value of −∞ off to two decimal places) is ______. x(t) 3 2 1 –3 –2 –1 0 1 2 3 4 t Corporate Office: 44-A/1, Kalu Sarai, New Delhi-110016 | info@madeeasy.in | ß www.madeeasy.in Page 33 Detailed Solutions of GATE 2020 : Electronics and Comm. Engg. Date of Test : 02-02-2020",
+    "options": null,
+    "correct_answer": "58.61",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q62_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 63,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The transfer function of a stable discrete-time LTI system is H (z ) = . where K z + 0.5 and α are real numbers. The value of α (rounded off to one decimal place) with α > 1, for which the magnitude response of the system is constant over all frequencies, is _____.",
+    "options": null,
+    "correct_answer": "–2",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q63_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 64,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "For the components in the sequential circuit shown below, tpd is the propagation delay, tsetup is the setup time, and thold is the hold time. The maximum clock frequency (rounded off to the nearest integer), at which the given circuit can operate reliably, is ____ MHz. Flip Flop 1 tpd = 2 ns tpd = 2 ns tpd = 3 ns tsetup = 5 ns CLK thold = 1 ns IN Flip Flop 2 tpd = 8 ns tsetup = 4 ns thold = 3 ns",
+    "options": null,
+    "correct_answer": "76.92",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q64_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 65,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The magnetic field of a uniform plane wave in vacuum is given by \u0001\u0002 H ( x, y , z, t ) = (aˆ x + 2aˆ y + baˆ z ) cos(ωt + 3 x − y − z ). The value of b is ____.",
+    "options": null,
+    "correct_answer": "1",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2020/q65_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  }
+]

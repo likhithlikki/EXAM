@@ -1,0 +1,21 @@
+GATE EC FINAL SOURCE-BACKED DATASET AUDIT
+=============================================
+
+JSON files: 12
+Question records: 780
+PNG files: 432
+
+2016_set1.json: 65 questions; 22 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2016_set3.json: 65 questions; 29 PNGs; missing refs=0; orphan PNGs=0; blank answers=[65]
+2017_set1.json: 65 questions; 65 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2018.json: 65 questions; 24 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2019.json: 65 questions; 36 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2020.json: 65 questions; 86 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2021.json: 65 questions; 25 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2022.json: 65 questions; 33 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2023.json: 65 questions; 23 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2024.json: 65 questions; 27 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2025.json: 65 questions; 34 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+2026.json: 65 questions; 28 PNGs; missing refs=0; orphan PNGs=0; blank answers=[]
+
+2017 Set 2 EC: source unavailable / intentionally not fabricated.

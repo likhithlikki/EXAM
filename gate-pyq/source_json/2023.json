@@ -1,0 +1,2039 @@
+[
+  {
+    "question_number": 1,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "“I cannot support this proposal. My ________ will not permit it.”",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "conscious"
+      },
+      "B": {
+        "type": "text",
+        "text": "consensus"
+      },
+      "C": {
+        "type": "text",
+        "text": "conscience"
+      },
+      "D": {
+        "type": "text",
+        "text": "consent"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 2,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Courts : _______ : : Parliament : Legislature\n(By word meaning)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Judiciary"
+      },
+      "B": {
+        "type": "text",
+        "text": "Executive"
+      },
+      "C": {
+        "type": "text",
+        "text": "Governmental"
+      },
+      "D": {
+        "type": "text",
+        "text": "Legal"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 3,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "What is the smallest number with distinct digits whose digits add up to 45?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "123555789"
+      },
+      "B": {
+        "type": "text",
+        "text": "123457869"
+      },
+      "C": {
+        "type": "text",
+        "text": "123456789"
+      },
+      "D": {
+        "type": "text",
+        "text": "99999"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 4,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In a class of 100 students,\n(i)    there are 30 students who neither like romantic movies nor comedy movies,\n(ii)    the number of students who like romantic movies is twice the number of\nstudents who like comedy movies, and\n(iii)   the number of students who like both romantic movies and comedy movies\nis 20.\nHow many students in the class like romantic movies?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "40"
+      },
+      "B": {
+        "type": "text",
+        "text": "20"
+      },
+      "C": {
+        "type": "text",
+        "text": "60"
+      },
+      "D": {
+        "type": "text",
+        "text": "30"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 5,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "How many rectangles are present in the given figure?\n.                                .",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "8"
+      },
+      "B": {
+        "type": "text",
+        "text": "9"
+      },
+      "C": {
+        "type": "text",
+        "text": "10"
+      },
+      "D": {
+        "type": "text",
+        "text": "12"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q5_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 6,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Forestland is a planet inhabited by different kinds of creatures. Among other\ncreatures, it is populated by animals all of whom are ferocious. There are also\ncreatures that have claws, and some that do not. All creatures that have claws are\nferocious.\nBased only on the information provided above, which one of the following options\ncan be logically inferred with certainty?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "All creatures with claws are animals."
+      },
+      "B": {
+        "type": "text",
+        "text": "Some creatures with claws are non-ferocious."
+      },
+      "C": {
+        "type": "text",
+        "text": "Some non-ferocious creatures have claws."
+      },
+      "D": {
+        "type": "text",
+        "text": "Some ferocious creatures are creatures with claws."
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 7,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Which one of the following options represents the given graph?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "x − ( ) 22 f x = x x"
+      },
+      "B": {
+        "type": "text",
+        "text": "− ( ) f x = .2 x x − ( )"
+      },
+      "C": {
+        "type": "text",
+        "text": "f x = x 2 x − ( )"
+      },
+      "D": {
+        "type": "text",
+        "text": "f x = .2 x"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q7_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 8,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Which one of the following options can be inferred from the given passage alone?\nWhen I was a kid, I was partial to stories about other worlds and\ninterplanetary travel. I used to imagine that I could just gaze off into space\nand be whisked to another planet.\n[Excerpt from The Truth about Stories by T. King]",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "It is a child’s description of what he or she likes."
+      },
+      "B": {
+        "type": "text",
+        "text": "It is an adult’s memory of what he or she liked as a child."
+      },
+      "C": {
+        "type": "text",
+        "text": "The child in the passage read stories about interplanetary travel only in parts."
+      },
+      "D": {
+        "type": "text",
+        "text": "It teaches us that stories are good for children."
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 9,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Out of 1000 individuals in a town, 100 unidentified individuals are covid positive.\nDue to lack of adequate covid-testing kits, the health authorities of the town devised\na strategy to identify these covid-positive individuals. The strategy is to:\n(i)     Collect saliva samples from all 1000 individuals and randomly group\nthem into sets of 5.\n(ii)    Mix the samples within each set and test the mixed sample for covid.\n(iii)   If the test done in (ii) gives a negative result, then declare all the 5\nindividuals to be covid negative.\n(iv)    If the test done in (ii) gives a positive result, then all the 5 individuals\nare separately tested for covid.\nGiven this strategy, no more than _______ testing kits will be required to identify\nall the 100 covid positive individuals irrespective of how they are grouped.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "700"
+      },
+      "B": {
+        "type": "text",
+        "text": "600"
+      },
+      "C": {
+        "type": "text",
+        "text": "800"
+      },
+      "D": {
+        "type": "text",
+        "text": "1000"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 10,
+    "section": "GA",
+    "subject": "General Aptitude",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A 100 cm × 32 cm rectangular sheet is folded 5 times. Each time the sheet is folded,\nthe long edge aligns with its opposite side. Eventually, the folded sheet is a rectangle\nof dimensions 100 cm × 1 cm.\nThe total number of creases visible when the sheet is unfolded is _______.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "32"
+      },
+      "B": {
+        "type": "text",
+        "text": "5"
+      },
+      "C": {
+        "type": "text",
+        "text": "31"
+      },
+      "D": {
+        "type": "text",
+        "text": "63"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 11,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "1           2\nLet 𝒗𝟏 = [2] and 𝒗𝟐 = [1] be two vectors. The value of the coefficient 𝛼 in the\n0           3\nexpression 𝒗𝟏 = 𝛼𝒗𝟐 + 𝒆, which minimizes the length of the error vector 𝒆, is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "7\n2"
+      },
+      "B": {
+        "type": "text",
+        "text": "−2\n7"
+      },
+      "C": {
+        "type": "text",
+        "text": "2\n7"
+      },
+      "D": {
+        "type": "text",
+        "text": "−7\n2"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 12,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The rate of increase, of a scalar field 𝑓(𝑥, 𝑦, 𝑧) = 𝑥𝑦𝑧, in the direction 𝒗 = (2,1,2)\nat a point (0,2,1) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Judiciary"
+      },
+      "B": {
+        "type": "text",
+        "text": "Executive"
+      },
+      "C": {
+        "type": "text",
+        "text": "Governmental"
+      },
+      "D": {
+        "type": "text",
+        "text": "Legal"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 13,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Let 𝑤 4 = 16𝑗. Which of the following cannot be a value of 𝑤?\n𝑗2𝜋",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "123555789"
+      },
+      "B": {
+        "type": "text",
+        "text": "123457869"
+      },
+      "C": {
+        "type": "text",
+        "text": "123456789"
+      },
+      "D": {
+        "type": "text",
+        "text": "99999"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 14,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "𝑧+2\nThe value of the contour integral, ∮𝐶 (𝑧 2 +2𝑧+2) 𝑑𝑧 , where the contour C is\n3\n{𝑧: |𝑧 + 1 − 2 𝑗| = 1}, taken in the counter clockwise direction, is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "40"
+      },
+      "B": {
+        "type": "text",
+        "text": "20"
+      },
+      "C": {
+        "type": "text",
+        "text": "60"
+      },
+      "D": {
+        "type": "text",
+        "text": "30"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 15,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Let the sets of eigenvalues and eigenvectors of a matrix 𝐵 be {𝜆𝑘 | 1 ≤ 𝑘 ≤ 𝑛} and\n{𝒗𝑘 | 1 ≤ 𝑘 ≤ 𝑛}, respectively. For any invertible matrix 𝑃, the sets of eigenvalues\nand eigenvectors of the matrix 𝐴, where 𝐵 = 𝑃 −1 𝐴𝑃, respectively, are",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "8"
+      },
+      "B": {
+        "type": "text",
+        "text": "9"
+      },
+      "C": {
+        "type": "text",
+        "text": "10"
+      },
+      "D": {
+        "type": "text",
+        "text": "12"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 16,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In a semiconductor, if the Fermi energy level lies in the conduction band, then the\nsemiconductor is known as",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "All creatures with claws are animals."
+      },
+      "B": {
+        "type": "text",
+        "text": "Some creatures with claws are non-ferocious."
+      },
+      "C": {
+        "type": "text",
+        "text": "Some non-ferocious creatures have claws."
+      },
+      "D": {
+        "type": "text",
+        "text": "Some ferocious creatures are creatures with claws."
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 17,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For an intrinsic semiconductor at temperature 𝑇 = 0 𝐾, which of the following\nstatement is true?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−x f ( x ) = x2 2"
+      },
+      "B": {
+        "type": "text",
+        "text": "−x f ( x ) = x. 2"
+      },
+      "C": {
+        "type": "text",
+        "text": "f ( x ) = x 2− x"
+      },
+      "D": {
+        "type": "text",
+        "text": "f ( x ) = x. 2− x"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 18,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A series 𝑅𝐿𝐶 circuit has a quality factor 𝑄 of 1000 at a center frequency of\n106 rad/s. The possible values of 𝑅, 𝐿 and C are",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑅= 1 Ω, 𝐿= 1 𝜇𝐻 and 𝐶= 1 𝜇𝐹"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑅= 0.1 Ω, 𝐿= 1 𝜇𝐻 and 𝐶= 1 𝜇𝐹"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑅= 0.01 Ω, 𝐿= 1 𝜇𝐻 and 𝐶= 1 𝜇𝐹"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑅= 0.001 Ω, 𝐿= 1 𝜇𝐻 and 𝐶= 1 𝜇𝐹"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q18_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 19,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "For a MOS capacitor, Vfb and Vt are the flat-band voltage and the threshold voltage,\nrespectively. The variation of the depletion width (Wdep ) for varying gate voltage\n(Vg ) is best represented by",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "700"
+      },
+      "B": {
+        "type": "text",
+        "text": "600"
+      },
+      "C": {
+        "type": "text",
+        "text": "800"
+      },
+      "D": {
+        "type": "text",
+        "text": "1000"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 20,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider a narrow band signal, propagating in a lossless dielectric medium\n(𝜀𝑟 = 4, 𝜇𝑟 = 1), with phase velocity 𝑣𝑝 and group velocity 𝑣𝑔 . Which of the\nfollowing statement is true? (𝑐 is the velocity of light in vacuum.)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "32"
+      },
+      "B": {
+        "type": "text",
+        "text": "5"
+      },
+      "C": {
+        "type": "text",
+        "text": "31"
+      },
+      "D": {
+        "type": "text",
+        "text": "63"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 21,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the circuit shown below, V1 and V2 are bias voltages. Based on input and output\nimpedances, the circuit behaves as a\nVDD\nV1\nvOUT\nV2\nR1\nvIN",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "voltage controlled voltage source."
+      },
+      "B": {
+        "type": "text",
+        "text": "voltage controlled current source."
+      },
+      "C": {
+        "type": "text",
+        "text": "current controlled voltage source."
+      },
+      "D": {
+        "type": "text",
+        "text": "current controlled current source."
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q21_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 22,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "A cascade of common-source amplifiers in a unity gain feedback configuration\noscillates when",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2 3"
+      },
+      "B": {
+        "type": "text",
+        "text": "4 3"
+      },
+      "C": {
+        "type": "text",
+        "text": "2"
+      },
+      "D": {
+        "type": "text",
+        "text": "4"
+      }
+    },
+    "correct_answer": "MTA",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 23,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the circuit shown below, P and Q are the inputs. The logical function realized by\nthe circuit shown below is\nI0\n2×1              Y\nMUX\nP        I1\nSel\nQ",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Y = PQ"
+      },
+      "B": {
+        "type": "text",
+        "text": "Y = P + Q"
+      },
+      "C": {
+        "type": "text",
+        "text": "̅̅̅̅ Y = PQ"
+      },
+      "D": {
+        "type": "text",
+        "text": "̅̅̅̅̅̅̅ Y = P + Q"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q23_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 24,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The synchronous sequential circuit shown below works at a clock frequency of\n1 GHz. The throughput, in Mbits/s, and the latency, in ns, respectively, are\nInput                                                                             Output\nD0               Q0          D1               Q1   D2               Q2\nD                            D                     D\nFlip Flop                    Flip Flop             Flip Flop\nCLK = 1 GHz",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−𝜋(1 + 𝑗)"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝜋(1 + 𝑗)"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝜋(1 − 𝑗)"
+      },
+      "D": {
+        "type": "text",
+        "text": "−𝜋(1 − 𝑗)"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 25,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The open loop transfer function of a unity negative feedback system is\n𝑘\n𝐺(𝑠) = 𝑠(1+𝑠𝑇 )(1+𝑠𝑇 ) , where 𝑘, 𝑇1 and 𝑇2 are positive constants. The phase cross-\n1       2\nover frequency, in rad/s, is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "{𝜆𝑘 det(𝐴) | 1 ≤ 𝑘 ≤ 𝑛} and {𝑃𝒗𝑘 | 1 ≤ 𝑘 ≤ 𝑛}"
+      },
+      "B": {
+        "type": "text",
+        "text": "{𝜆𝑘 | 1 ≤ 𝑘 ≤ 𝑛} and {𝒗𝑘 | 1 ≤ 𝑘 ≤ 𝑛}"
+      },
+      "C": {
+        "type": "text",
+        "text": "{𝜆𝑘 | 1 ≤ 𝑘 ≤ 𝑛} and {𝑃𝒗𝑘 | 1 ≤ 𝑘 ≤ 𝑛}"
+      },
+      "D": {
+        "type": "text",
+        "text": "{𝜆𝑘 | 1 ≤ 𝑘 ≤ 𝑛} and {𝑃−1 𝒗𝑘 | 1 ≤ 𝑘 ≤ 𝑛}"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 26,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Consider a system with input 𝑥(𝑡) and output 𝑦(𝑡) = 𝑥(𝑒 𝑡 ). The system is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "degenerate n-type."
+      },
+      "B": {
+        "type": "text",
+        "text": "degenerate p-type."
+      },
+      "C": {
+        "type": "text",
+        "text": "non-degenerate n-type."
+      },
+      "D": {
+        "type": "text",
+        "text": "non-degenerate p-type."
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 27,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "Let 𝑚(𝑡) be a strictly band-limited signal with bandwidth 𝐵 and energy 𝐸.\nAssuming 𝜔0 = 10𝐵, the energy in the signal 𝑚(𝑡) cos 𝜔0 𝑡 is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "All energy states in the valence band are filled with electrons and all energy states in the conduction band are empty of electrons."
+      },
+      "B": {
+        "type": "text",
+        "text": "All energy states in the valence band are empty of electrons and all energy states in the conduction band are filled with electrons."
+      },
+      "C": {
+        "type": "text",
+        "text": "All energy states in the valence and conduction band are filled with holes."
+      },
+      "D": {
+        "type": "text",
+        "text": "All energy states in the valence and conduction band are filled with electrons."
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 28,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "The Fourier transform 𝑋(𝜔) of 𝑥(𝑡) = 𝑒 −𝑡 is\n∞   2\nNote: ∫−∞ 𝑒 −𝑦 𝑑𝑦 = √𝜋",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑅 = 1 Ω, 𝐿 = 1 𝜇𝐻 and 𝐶 = 1 𝜇𝐹"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑅 = 0.1 Ω, 𝐿 = 1 𝜇𝐻 and 𝐶 = 1 𝜇𝐹"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑅 = 0.01 Ω, 𝐿 = 1 𝜇𝐻 and 𝐶 = 1 𝜇𝐹"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑅 = 0.001 Ω, 𝐿 = 1 𝜇𝐻 and 𝐶 = 1 𝜇𝐹"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 29,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MCQ",
+    "question": "In the table shown below, match the signal type with its spectral characteristics.\nSignal type                          Spectral characteristics\n(i)     Continuous, aperiodic            (a) Continuous, aperiodic\n(ii)    Continuous, periodic             (b) Continuous, periodic\n(iii)   Discrete, aperiodic              (c) Discrete, aperiodic\n(iv)    Discrete, periodic               (d) Discrete, periodic\n.",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "wdep vfb vt vg accumulation depletion inversion"
+      },
+      "B": {
+        "type": "text",
+        "text": "wdep vfb vt vg accumulation depletion inversion"
+      },
+      "C": {
+        "type": "text",
+        "text": "wdep vfb vt vg accumulation depletion inversion"
+      },
+      "D": {
+        "type": "text",
+        "text": "wdep vfb vt vg accumulation depletion inversion"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.3333333333333333,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 30,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "MSQ",
+    "question": "For a real signal, which of the following is/are valid power spectral\ndensity/densities?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑣𝑝 > 𝑐, 𝑣𝑔 > 𝑐"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑣𝑝 < 𝑐, 𝑣𝑔 > 𝑐"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑣𝑝 > 𝑐, 𝑣𝑔 < 𝑐"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑣𝑝 < 𝑐, 𝑣𝑔 < 𝑐"
+      }
+    },
+    "correct_answer": "A,B",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 31,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "The signal-to-noise ratio (SNR) of an ADC with a full-scale sinusoidal input is\ngiven to be 61.96 dB. The resolution of the ADC is ________ bits (rounded off to\nthe nearest integer).\nPage 21 of 44\nOrganizing Institute: IIT Kanpur\nElectronics and Communication Engineering (EC)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "(𝑎), →(𝑏), →(𝑐), (𝑖𝑖) (𝑖) → (𝑖𝑖𝑖) (𝑖𝑣) →(𝑑)"
+      },
+      "B": {
+        "type": "text",
+        "text": "(𝑖) →(𝑎), (𝑖𝑖) →(𝑐), (𝑖𝑖𝑖) →(𝑏), (𝑖𝑣) →(𝑑)"
+      },
+      "C": {
+        "type": "text",
+        "text": "(𝑖) →(𝑑), (𝑖𝑖) →(𝑏), (𝑖𝑖𝑖) →(𝑐), (𝑖𝑣) →(𝑎)"
+      },
+      "D": {
+        "type": "text",
+        "text": "(𝑖) →(𝑎), (𝑖𝑖) →(𝑐), (𝑖𝑖𝑖) →(𝑑), (𝑖𝑣) →(𝑏)"
+      }
+    },
+    "correct_answer": "10 to 10",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q31_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 32,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In the circuit shown below, the current i flowing through 200 Ω resistor is ______\nmA (rounded off to two decimal places).\n1 mA\ni\n1 kΩ\n2V\n1 mA\n2 kΩ                                 200 Ω\n2 kΩ",
+    "options": null,
+    "correct_answer": "1.30 to 1.40",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 33,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "For the two port network shown below, the [Y]-parameters is given as\n1 2     −1\n[𝑌] =       [       ]𝑆\n100   −1 4/3\nThe value of load impedance ZL, in Ω, for maximum power transfer will be _______\n(rounded off to the nearest integer).\n10 Ω\n120 V   +_                     [Y]\nPage 22 of 44\nOrganizing Institute: IIT Kanpur\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "80 to 80",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 34,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "For the circuit shown below, the propagation delay of each NAND gate is 1 ns. The\ncritical path delay, in ns, is __________ (rounded off to the nearest integer).\nA              Q\nQ\nB",
+    "options": null,
+    "correct_answer": "02 to 02",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q34_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 35,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 1.0,
+    "question_type": "NAT",
+    "question": "In the circuit shown below, switch S was closed for a long time. If the switch is\nopened at 𝑡 = 0, the maximum magnitude of the voltage VR, in volts, is _________\n(rounded off to the nearest integer).\n2Ω\nS\n1Ω       VR\n1H\nVs = 2 V\nPage 23 of 44\nOrganizing Institute: IIT Kanpur\nElectronics and Communication Engineering (EC)\nQ.36 – Q.65 Carry TWO marks Each",
+    "options": null,
+    "correct_answer": "04 to 04",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q35_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 36,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A random variable X, distributed normally as 𝑁(0,1), undergoes the transformation\nY = h(X), given in the figure. The form of the probability density function of 𝑌 is\n(In the options given below, 𝑎, 𝑏, 𝑐 are non-zero constants and 𝑔(𝑦) is piece-wise\ncontinuous function)\ny = h(x)\n1\nx\n-2    -1              1   2\n-1",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "Causal and time invariant."
+      },
+      "B": {
+        "type": "text",
+        "text": "Non-causal and time varying."
+      },
+      "C": {
+        "type": "text",
+        "text": "Causal and time varying."
+      },
+      "D": {
+        "type": "text",
+        "text": "Non-causal and time invariant."
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q36_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 37,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "𝑄\nThe value of the line integral ∫𝑃 (𝑧 2 𝑑𝑥 + 3𝑦 2 𝑑𝑦 + 2𝑥𝑧 𝑑𝑧) along the straight line\njoining the points 𝑃 (1,1,2) and 𝑄 (2,3,1) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝐸 4"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝐸 2"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝐸"
+      },
+      "D": {
+        "type": "text",
+        "text": "2𝐸 2"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q37_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 38,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let 𝒙 be an 𝑛 × 1 real column vector with length 𝑙 = √𝒙𝑇 𝒙. The trace of the matrix\n𝑃 = 𝒙𝒙𝑇 is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦−1) 𝑏𝛿(𝑦+ 1) + + 𝑔(𝑦)"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦+ 1) 𝑏𝛿(𝑦) + + 𝑐𝛿(𝑦−1) + 𝑔(𝑦)"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦+ 2) 𝑏𝛿(𝑦) + + 𝑐𝛿(𝑦−2) + 𝑔(𝑦)"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦+ 2) 𝑏𝛿(𝑦−2) + + 𝑔(𝑦)"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q38_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 39,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "V\nThe VOUT of the circuit shown below is\nIN\nR2\nVCC\nR1                         R4\n_\nvIN\n+\nVCC\nR3   _\n-VEE\n+        vOUT\nVCC    R3\n+\n-VEE\n_\nR1\n-VEE\nR2",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "(𝑖) → (𝑎), (𝑖𝑖) → (𝑏), (𝑖𝑖𝑖) → (𝑐), (𝑖𝑣) → (𝑑)"
+      },
+      "B": {
+        "type": "text",
+        "text": "(𝑖) → (𝑎), (𝑖𝑖) → (𝑐), (𝑖𝑖𝑖) → (𝑏), (𝑖𝑣) → (𝑑)"
+      },
+      "C": {
+        "type": "text",
+        "text": "(𝑖) → (𝑑), (𝑖𝑖) → (𝑏), (𝑖𝑖𝑖) → (𝑐), (𝑖𝑣) → (𝑎)"
+      },
+      "D": {
+        "type": "text",
+        "text": "(𝑖) → (𝑎), (𝑖𝑖) → (𝑐), (𝑖𝑖𝑖) → (𝑑), (𝑖𝑣) → (𝑏)"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 40,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "In the circuit shown below, D1 and D2 are silicon diodes with cut-in voltage of 0.7 V.\nVIN and VOUT are input and output voltages in volts. The transfer characteristic is\nD1\nVIN             VOUT\n1 kΩ\nD2\n+\n_    1V",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2 𝑆𝑋 (𝜔) = 9 + 𝜔2 2"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑆𝑋 (𝜔) = 𝑒 −𝜔 cos2 𝜔"
+      },
+      "C": {
+        "type": "text",
+        "text": "SX(ω ) 1 0 ω -1"
+      },
+      "D": {
+        "type": "text",
+        "text": "SX(ω ) 1 0 ω"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 41,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "A closed loop system is shown in the figure where k > 0 and α > 0. The steady state\nerror due to a ramp input (R(s) = α/s2 ) is given by\nk                 Y(s)\n2                E(s)\nR(s) = α /s                                         s(s+2)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "−R4 R3"
+      },
+      "B": {
+        "type": "text",
+        "text": "R4 R3"
+      },
+      "C": {
+        "type": "text",
+        "text": "R4 1 + R3"
+      },
+      "D": {
+        "type": "text",
+        "text": "−R4 1 R3"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q41_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 42,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "In the following block diagram, R(s) and D(s) are two inputs. The output Y(s) is\nexpressed as Y(s) = G1 (s)R(s) + G2 (s)D(s).\nG1 (s) and G2 (s) are given by\nD(s)\nY(s)\nG(s)\nR(s)\nH(s)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "VOUT 1 1 VIN 0.3 1.7 1"
+      },
+      "B": {
+        "type": "text",
+        "text": "VOUT 1 - 0.7 VIN 0.7 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "VOUT 1 1 VIN -1.7 1.7 1"
+      },
+      "D": {
+        "type": "text",
+        "text": "VOUT 1 VIN 0.3 1.7 1"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q42_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 43,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The state equation of a second order system is\n𝒙̇ (𝑡) = A𝒙(𝑡),     𝒙(0) is the initial condition.\nSuppose λ1 and λ2 are two distinct eigenvalues of A and 𝒗1 and 𝒗2 are the\ncorresponding eigenvectors. For constants 𝛼1 and 𝛼2 , the solution, 𝒙(𝑡), of the state\nequation is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2α k α"
+      },
+      "B": {
+        "type": "text",
+        "text": "k α"
+      },
+      "C": {
+        "type": "text",
+        "text": "2k α"
+      },
+      "D": {
+        "type": "text",
+        "text": "4k"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q43_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 44,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The switch S1 was closed and S2 was open for a long time. At 𝑡 = 0, switch S1 is\nopened and S2 is closed, simultaneously. The value of ic (0+ ), in amperes, is\nS1    ic    100 Ω          S2\n1A             0.01 F                           25 Ω\n1H",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "G(s) G(s) G1(s) G2(s) = and = G(s) G(s)H(s) G(s) G(s)H(s) 1 + + 1 + +"
+      },
+      "B": {
+        "type": "text",
+        "text": "G(s) G(s) G1(s) G2(s) = and = G(s) H(s) G(s) H(s) 1 + + 1 + +"
+      },
+      "C": {
+        "type": "text",
+        "text": "G(s) G(s) G1(s) G2(s) = and = G(s) H(s) G(s) G(s)H(s) 1 + + 1 + +"
+      },
+      "D": {
+        "type": "text",
+        "text": "G(s) G(s) G1(s) G2(s) = and = G(s) G(s)H(s) G(s) H(s) 1 + + 1 + +"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q44_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 45,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let a frequency modulated (FM) signal\n𝑡\n𝑥(𝑡) = 𝐴 cos(𝜔𝑐 𝑡 + 𝑘𝑓 ∫−∞ 𝑚(𝜆)𝑑𝜆) , where 𝑚(𝑡) is a message signal of bandwidth\nW. It is passed through a non-linear system with output 𝑦(𝑡) = 2𝑥(𝑡) + 5(𝑥(𝑡))2 .\nLet 𝐵𝑇 denote the FM bandwidth. The minimum value of 𝜔𝑐 required to recover\n𝑥(𝑡) from 𝑦(𝑡) is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝐵𝑇 + 𝑊"
+      },
+      "B": {
+        "type": "text",
+        "text": "3\n𝐵\n2 𝑇"
+      },
+      "C": {
+        "type": "text",
+        "text": "2𝐵𝑇 + 𝑊"
+      },
+      "D": {
+        "type": "text",
+        "text": "5\n𝐵\n2 𝑇"
+      }
+    },
+    "correct_answer": "B",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 46,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The h-parameters of a two port network are shown below. The condition for the\nV\nmaximum small signal voltage gain Vout is\ns\ni1        h11                             i2\nv1                                 h22         RL\nh12v2                          v2\nh21v1                       Vout\nVs",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦 − 1) + 𝑏𝛿(𝑦 + 1) + 𝑔(𝑦)"
+      },
+      "B": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦 + 1) + 𝑏𝛿(𝑦) + 𝑐𝛿(𝑦 − 1) + 𝑔(𝑦)"
+      },
+      "C": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦 + 2) + 𝑏𝛿(𝑦) + 𝑐𝛿(𝑦 − 2) + 𝑔(𝑦)"
+      },
+      "D": {
+        "type": "text",
+        "text": "𝑎𝛿(𝑦 + 2) + 𝑏𝛿(𝑦 − 2) + 𝑔(𝑦)"
+      }
+    },
+    "correct_answer": "MTA",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 47,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Consider a discrete-time periodic signal with period 𝑁 = 5. Let the discrete-time\n𝑗𝑘2𝜋𝑛\nFourier series (DTFS) representation be 𝑥[𝑛] = ∑4𝑘=0 𝑎𝑘 𝑒 5 , where 𝑎0 = 1, 𝑎1 =\n4𝜋𝑛\n3𝑗, 𝑎2 = 2𝑗, 𝑎3 = −2𝑗 and 𝑎4 = −3𝑗. The value of the sum ∑4𝑛=0 𝑥[𝑛] sin 5 is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "20"
+      },
+      "B": {
+        "type": "text",
+        "text": "24"
+      },
+      "C": {
+        "type": "text",
+        "text": "29"
+      },
+      "D": {
+        "type": "text",
+        "text": "-5"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 48,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let an input 𝑥[𝑛] having discrete time Fourier transform\n𝑋(𝑒 𝑗𝛺 ) = 1 − 𝑒 −𝑗𝛺 + 2𝑒 −3𝑗𝛺 be passed through an LTI system. The frequency\n1\nresponse of the LTI system is 𝐻(𝑒 𝑗𝛺 ) = 1 − 2 𝑒 −𝑗2𝛺 . The output 𝑦[𝑛] of the system\nis",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "h11 = 0, h12 = 0, h21 = very high and h22 = 0"
+      },
+      "B": {
+        "type": "text",
+        "text": "h11 = very high, h12 = 0, h21 = very high and h22 = 0"
+      },
+      "C": {
+        "type": "text",
+        "text": "h11 = 0, h12 = very high, h21 = very high and h22 = 0"
+      },
+      "D": {
+        "type": "text",
+        "text": "h11 = 0, h12 = 0, h21 = very high and h22 = very high"
+      }
+    },
+    "correct_answer": "C",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q48_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 49,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let 𝑥(𝑡) = 10 cos(10.5𝑊𝑡) be passed through an LTI system having impulse\nsin 𝑊𝑡 2\nresponse ℎ(𝑡) = 𝜋 ( 𝜋𝑡 ) cos 10𝑊𝑡 . The output of the system is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "R4 − R3"
+      },
+      "B": {
+        "type": "text",
+        "text": "R4 R3"
+      },
+      "C": {
+        "type": "text",
+        "text": "R4 1+ R3"
+      },
+      "D": {
+        "type": "text",
+        "text": "R4 1− R3"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 50,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "Let x1 (t) and x2 (t) be two band-limited signals having bandwidth\n𝐵 = 4𝜋 × 103 rad/s each. In the figure below, the Nyquist sampling frequency, in\nrad/s, required to sample y(t), is\ncos(4π×103t)\nx1(t)\ncos(12π×103t)                        y(t)\nx2(t)",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "VOUT 1 1 VIN 0.3 1.7 1"
+      },
+      "B": {
+        "type": "text",
+        "text": "VOUT 1 - 0.7 VIN 0.7 1"
+      },
+      "C": {
+        "type": "text",
+        "text": "VOUT 1 1 VIN 1 -1.7 1.7"
+      },
+      "D": {
+        "type": "text",
+        "text": "VOUT 1 VIN 0.3 1.7 1"
+      }
+    },
+    "correct_answer": "D",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 51,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MCQ",
+    "question": "The S-parameters of a two port network is given as\n𝑆     𝑆12\n[𝑆] = [ 11       ]\n𝑆21   𝑆22\nwith reference to 𝑍0 . Two lossless transmission line sections of electrical lengths\n𝜃1 = 𝛽𝑙1 and 𝜃2 = 𝛽𝑙2 are added to the input and output ports for measurement\npurposes, respectively. The S-parameters [𝑆′] of the resultant two port network is",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2α k"
+      },
+      "B": {
+        "type": "text",
+        "text": "α k"
+      },
+      "C": {
+        "type": "text",
+        "text": "α 2k"
+      },
+      "D": {
+        "type": "text",
+        "text": "α 4k"
+      }
+    },
+    "correct_answer": "A",
+    "negative_marks": 0.6666666666666666,
+    "negative_marking": "true",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 52,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "The standing wave ratio on a 50 Ω lossless transmission line terminated in an\nunknown load impedance is found to be 2.0. The distance between successive\nvoltage minima is 30 cm and the first minimum is located at 10 cm from the load.\n𝑍𝐿 can be replaced by an equivalent length 𝑙𝑚 and terminating resistance 𝑅𝑚 of the\nsame line. The value of 𝑅𝑚 and 𝑙𝑚 , respectively, are",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "103 20𝜋×"
+      },
+      "B": {
+        "type": "text",
+        "text": "103 40𝜋×"
+      },
+      "C": {
+        "type": "text",
+        "text": "103 8𝜋×"
+      },
+      "D": {
+        "type": "text",
+        "text": "103 32𝜋×"
+      }
+    },
+    "correct_answer": "B,C",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q52_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 53,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "The electric field of a plane electromagnetic wave is\n𝑬 = 𝒂𝒙 𝐶1𝑥 cos(𝜔𝑡 − 𝛽𝑧) + 𝒂𝒚 𝐶1𝑦 cos(𝜔𝑡 − 𝛽𝑧 + 𝜃)       V/m.\nWhich of the following combination(s) will give rise to a left handed elliptically\npolarized (LHEP) wave?",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "2 ∑ 𝛼𝑖 𝑒 λ𝑖 t 𝒗𝑖 𝑖=1"
+      },
+      "B": {
+        "type": "text",
+        "text": "2 ∑ 𝛼𝑖 𝑒 2λ𝑖 t 𝒗𝑖 𝑖=1"
+      },
+      "C": {
+        "type": "text",
+        "text": "2 ∑ 𝛼𝑖 𝑒 3λ𝑖 t 𝒗𝑖 𝑖=1"
+      },
+      "D": {
+        "type": "text",
+        "text": "2 ∑ 𝛼𝑖 𝑒 4λ𝑖 t 𝒗𝑖 𝑖=1"
+      }
+    },
+    "correct_answer": "A,B,D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 54,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "MSQ",
+    "question": "The following circuit(s) representing a lumped element equivalent of an\ninfinitesimal section of a transmission line is/are",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "1"
+      },
+      "B": {
+        "type": "text",
+        "text": "−1"
+      },
+      "C": {
+        "type": "text",
+        "text": "0.2"
+      },
+      "D": {
+        "type": "text",
+        "text": "0.8"
+      }
+    },
+    "correct_answer": "B,C,D",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 55,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The value of the integral ∬R xy dx dy over the region R, given in the figure, is\n_______ (rounded off to the nearest integer).\ny\n2\ny = x+2                        y = -x+2\n1            R\ny = -x                         y=x\nO                                 x",
+    "options": null,
+    "correct_answer": "0 to 0",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 56,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In an extrinsic semiconductor, the hole concentration is given to be 1.5𝑛𝑖 where 𝑛𝑖\nis the intrinsic carrier concentration of 1 × 1010 𝑐𝑚−3. The ratio of electron to hole\nmobility for equal hole and electron drift current is given as __________ (rounded\noff to two decimal places).",
+    "options": {
+      "A": {
+        "type": "text",
+        "text": "LΔz RΔz GΔz/2 CΔz/2"
+      },
+      "B": {
+        "type": "text",
+        "text": "LΔz RΔz CΔz GΔz"
+      },
+      "C": {
+        "type": "text",
+        "text": "LΔz RΔz GΔz/2 GΔz/2 CΔz/2 CΔz/2"
+      },
+      "D": {
+        "type": "text",
+        "text": "RΔz/2 LΔz/2 LΔz/2 RΔz/2 GΔz CΔz"
+      }
+    },
+    "correct_answer": "2.20 to 2.30",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q56_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 57,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The asymptotic magnitude Bode plot of a minimum phase system is shown in the\n𝑘(𝑠+𝑧)𝑎\nfigure. The transfer function of the system is (𝑠) = 𝑏      𝑐 , where 𝑘, 𝑧, 𝑝, 𝑎, 𝑏 and\n𝑠 (𝑠+𝑝)\n𝑐 are positive constants. The value of (𝑎 + 𝑏 + 𝑐) is __________(rounded off to the\nnearest integer).\n-20 dB/decade\n|G(jω )| in dB\n-40 dB/decade\nω1             ω2                    log ω\nPage 41 of 44\nOrganizing Institute: IIT Kanpur\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "4 to 4",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q57_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 58,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "Let x1 (t) = u(t + 1.5) − u(t − 1.5) and x2 (t) is shown in the figure below. For\n∞\ny(t) = x1 (t) ∗ x2 (t), the ∫−∞ y(t)dt is ______________________(rounded off to\nthe nearest integer).\nx2(t)\n2\n1          1\n-3 -2 -1 0       1     2   t",
+    "options": null,
+    "correct_answer": "15 to 15",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 59,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "1\nLet 𝑋(𝑡) be a white Gaussian noise with power spectral density 2 W/Hz. If 𝑋(𝑡) is\ninput to an LTI system with impulse response 𝑒 −𝑡 𝑢(𝑡). The average power of the\nsystem output is ___________ W (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.24 to 0.26",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q59_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 60,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A transparent dielectric coating is applied to glass (𝜀𝑟 = 4, 𝜇𝑟 = 1) to eliminate the\nreflection of red light (𝜆0 = 0.75 μm). The minimum thickness of the dielectric\ncoating, in μm, that can be used is _________ (rounded off to two decimal places).",
+    "options": null,
+    "correct_answer": "0.12 to 0.14",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q60_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 61,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In a semiconductor device, the Fermi-energy level is 0.35 eV above the valence band\nenergy. The effective density of states in the valence band at T = 300 K is\n1 × 1019 cm−3 . The thermal equilibrium hole concentration in silicon at 400 K is\n____________ × 1013 cm−3 (rounded off to two decimal places).\nGiven kT at 300 K is 0.026 eV.",
+    "options": null,
+    "correct_answer": "60.00 to 70.00",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 62,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "A sample and hold circuit is implemented using a resistive switch and a capacitor\nwith a time constant of 1 μs. The time for the sampling switch to stay closed to\ncharge a capacitor adequately to a full scale voltage of 1 V with 12-bit accuracy is\n_______ μs (rounded off to two decimal places).\nPage 42 of 44\nOrganizing Institute: IIT Kanpur\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "8.30 to 8.34",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 63,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In a given sequential circuit, initial states are Q1 = 1 and Q2 = 0. For a clock\nfrequency of 1 MHz, the frequency of signal Q2 in kHz, is ___________ (rounded\noff to the nearest integer).\nD1               Q1              D2               Q2\nD                                D\nFlip Flop                        Flip Flop\nQ1                               Q2\nCLK = 1 MHz",
+    "options": null,
+    "correct_answer": "250 to 250 OR 500 to 500",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": null,
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 64,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "In the circuit below, the voltage VL is ____________ V (rounded off to two decimal\nplaces).\nVDD\nW/L = 10           W/L = 7\nW/L = 1\nVL\nW/L = 10                       W/L = 5      1 kΩ\n1 mA\nPage 43 of 44\nOrganizing Institute: IIT Kanpur\nElectronics and Communication Engineering (EC)",
+    "options": null,
+    "correct_answer": "2.00 to 2.00",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q64_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  },
+  {
+    "question_number": 65,
+    "section": "EC",
+    "subject": "Electronics and Communication Engineering",
+    "marks": 2.0,
+    "question_type": "NAT",
+    "question": "The frequency of occurrence of 8 symbols (a-h) is shown in the table below. A\nsymbol is chosen and it is determined by asking a series of “yes/no” questions which\nare assumed to be truthfully answered. The average number of questions when asked\nin the most efficient sequence, to determine the chosen symbol, is _______ (rounded\noff to two decimal places).\nSymbols        a       b        c       d       e        f       g        h\nFrequency     1        1        1        1      1        1       1        1\nof            2        4        8       16     32       64      128      128\noccurrence\n.\nEND OF QUESTION PAPER\nPage 44 of 44\nOrganizing Institute: IIT Kanpur",
+    "options": null,
+    "correct_answer": "1.97 to 1.99",
+    "negative_marks": 0.0,
+    "negative_marking": "false",
+    "solution": "",
+    "solution_status": "not_extracted",
+    "question_image": "assets/2023/q65_question.png",
+    "option_images": {},
+    "verification_status": "source_extracted_not_fully_verified",
+    "source_status": "extracted_from_supplied_sources"
+  }
+]
