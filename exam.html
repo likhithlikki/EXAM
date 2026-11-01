@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>GATE Practice Exam</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+  :root {
+    /* ALL main colours of the exam screen live here (picked to match the GATE interface). */
+    --ink: #000;
+    --top-bg: #e1e1e1;       /* top grey bar and the paper-tab row */
+    --dark: #262626;         /* black title bar */
+    --yellow: #f6e01c;       /* exam name on the black bar */
+    --tab: #2f89d9;          /* active tab, section banner */
+    --tab-dk: #1f6fb8;
+    --tab-line: #bcd3ea;
+    --info: #5aa9ee;         /* little (i) circles */
+    --line: #d3d3d3;
+    --bar-bg: #f1f1f1;       /* bottom button bar, question header */
+    --btn: #1c70c4;          /* Save & Next */
+    --btn-hv: #175ca0;
+    --submit: #3fa9e0;
+    --submit-hv: #2f98cf;
+    --right-bg: #e6f4fc;     /* right panel */
+    --green: #59a82d;        /* answered */
+    --red: #dc4619;          /* not answered */
+    --purple: #6a4ba3;       /* marked for review */
+    --nv: #ececec;           /* not visited */
+    --nv-line: #b4b4b4;
+    --good: #2e9a2e;         /* marks for correct answer */
+    --bad: #d42a1a;          /* negative marks */
+    --orange: #f08a4b;       /* calculator icon */
+    --dlg-head: #2f6fa8;
+    --calc-title: #3b82e8;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font: 14px Arial, Helvetica, sans-serif; color: var(--ink); background: #fff; display: flex; flex-direction: column; overflow: hidden; -webkit-user-select: none; user-select: none; }
+  button { font-family: inherit; }
+  [hidden] { display: none !important; }
+
+  /* ---------- top bars ---------- */
+  .top { display: flex; align-items: center; gap: 14px; padding: 6px 12px; background: var(--top-bg); flex: none; min-height: 46px; }
+  .logo { font-weight: bold; font-size: 22px; color: #1a4b8c; letter-spacing: 1px; border: 2px solid #1a4b8c; padding: 0 8px; border-radius: 3px; }
+  .apptitle { font-size: 19px; }
+  .dark { background: var(--dark); color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 0 14px; height: 38px; flex: none; }
+  .exname { color: var(--yellow); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dl { display: flex; gap: 22px; flex: none; }
+  .dbtn { background: none; border: 0; color: #fff; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; padding: 0; }
+  .ci, .cq { display: inline-flex; width: 21px; height: 21px; border-radius: 50%; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; color: #fff; }
+  .ci { background: #2d9cf0; font-style: italic; font-family: Georgia, serif; }
+  .cq { background: #4caf3a; border-radius: 4px; font-size: 11px; }
+
+  .avatar { width: 46px; height: 54px; background: #dfe5ec; border: 1px solid #a9a9a9; position: relative; overflow: hidden; flex: none; }
+  .avatar::before { content: ""; position: absolute; left: 14px; top: 8px; width: 18px; height: 18px; border-radius: 50%; background: #8d99a8; }
+  .avatar::after { content: ""; position: absolute; left: 5px; top: 30px; width: 36px; height: 36px; border-radius: 50%; background: #8d99a8; }
+  .avatar.ph { background-size: cover; background-position: center; background-repeat: no-repeat; }
+  .avatar.ph::before, .avatar.ph::after { display: none; }
+
+  /* ---------- main ---------- */
+  #app { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .body { flex: 1; display: flex; min-height: 0; position: relative; }
+  .left { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .arr { color: #555; font-size: 12px; flex: none; padding: 0 4px; }
+  .inf { display: inline-flex; width: 17px; height: 17px; border-radius: 50%; background: var(--info); color: #fff; font: italic bold 12px Georgia, serif; align-items: center; justify-content: center; margin-left: 9px; flex: none; }
+
+  .rowA { background: var(--top-bg); display: flex; align-items: center; gap: 10px; padding: 8px 10px 12px; border-bottom: 1px solid #cdcdcd; flex: none; }
+  .rowA .grow { flex: 1; }
+  .paper { background: var(--tab); color: #fff; padding: 8px 14px; position: relative; font-size: 14px; display: inline-flex; align-items: center; white-space: nowrap; max-width: 60%; overflow: visible; }
+  .paper::after { content: ""; position: absolute; left: 50%; bottom: -8px; margin-left: -8px; border: 8px solid transparent; border-top-color: var(--tab); border-bottom: 0; }
+  .paper .inf { background: rgba(255,255,255,.35); }
+  .calcico { background: none; border: 0; cursor: pointer; padding: 2px 4px; display: inline-flex; }
+  .rowB { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; background: #f3f3f3; border-bottom: 1px solid #dcdcdc; font-weight: bold; flex: none; }
+  .timer { font-weight: bold; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .timer.low { color: var(--bad); }
+  .rowC { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #fff; border-bottom: 1px solid var(--line); flex: none; }
+  .tabs { display: flex; align-items: center; gap: 10px; overflow-x: auto; flex: 1; }
+  .tab { border: 1px solid var(--tab-line); background: #fff; color: var(--tab); padding: 9px 16px; cursor: pointer; white-space: nowrap; font-size: 15px; display: inline-flex; align-items: center; border-radius: 2px; }
+  .tab .inf { margin-left: 10px; }
+  .tab.on { background: var(--tab); color: #fff; border-color: var(--tab); }
+  .tab.on .inf { background: rgba(255,255,255,.35); }
+
+  .qhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 9px 14px; background: #fff; border-bottom: 1px solid var(--line); font-size: 14px; flex: none; }
+  .qhead .g { color: var(--good); } .qhead .r { color: var(--bad); }
+  .qno { margin: 8px 8px 0; border: 1px solid #cfcfcf; padding: 8px 14px; font-weight: bold; font-size: 15px; flex: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 40px; background: #fafafa; }
+  .qno .gb { padding: 4px 10px; font-weight: normal; font-size: 12px; box-shadow: none; }
+  .qscroll { flex: 1; overflow: auto; padding: 14px 18px 20px; margin: 0 8px; border: 1px solid #cfcfcf; border-top: 0; }
+  .qtext { font-size: 16px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 14px; }
+  .qimg { max-width: 100%; height: auto; display: block; margin: 8px 0 14px; border: 1px solid #ddd; }
+  .opt { display: flex; align-items: flex-start; gap: 12px; padding: 8px 4px; font-size: 16px; cursor: pointer; line-height: 1.5; }
+  .opt input { margin-top: 4px; width: 16px; height: 16px; accent-color: var(--btn); flex: none; }
+  .opt .t { white-space: pre-wrap; }
+  .opt .t:empty { display: none; }
+  .opt .ob { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+  .opt .k { font-weight: bold; }
+  .oimg { max-width: 100%; max-height: 260px; height: auto; display: block; border: 1px solid #ddd; background: #fff; }
+  .imgmiss { border: 1px dashed #c0392b; color: #c0392b; background: #fdf3f2; padding: 8px 10px; font-size: 12px; margin: 6px 0; word-break: break-all; user-select: text; }
+  .tex { white-space: normal; }
+  .qp .qi .qimg, .qp .qi .oimg { max-height: 220px; width: auto; }
+  .natbox { width: 280px; font-size: 20px; padding: 6px 8px; border: 1px solid #aaa; background: #fff; color: #000; text-align: left; height: 40px; }
+  .keypad { display: grid; grid-template-columns: repeat(3, 58px); gap: 6px; margin-top: 10px; }
+  .keypad button { height: 40px; font-size: 16px; font-weight: bold; background: #ececec; border: 1px solid #9a9a9a; border-radius: 2px; cursor: pointer; box-shadow: 0 1px 1px rgba(0,0,0,.2); }
+  .keypad button:active { background: #d6d6d6; }
+  .keypad .wide { grid-column: span 3; font-size: 14px; }
+
+  .bar { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid #d0d0d0; background: var(--bar-bg); flex: none; }
+  .bar > div { display: flex; gap: 8px; flex-wrap: wrap; }
+  .gb { background: #fff; border: 1px solid #c4c4c4; color: #000; padding: 11px 18px; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 2px; box-shadow: 0 1px 1px rgba(0,0,0,.15); }
+  .gb:hover { background: #f0f5fb; }
+  .gb.blue { background: var(--btn); border-color: var(--btn); color: #fff; }
+  .gb.blue:hover { background: var(--btn-hv); }
+  .gb:disabled { opacity: .45; cursor: not-allowed; }
+  .toast { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); background: #333; color: #fff; padding: 8px 16px; border-radius: 3px; font-size: 13px; z-index: 80; }
+
+  /* ---------- right panel ---------- */
+  .rtoggle { position: absolute; right: 330px; top: 46%; width: 20px; height: 44px; background: #222; color: #fff; border: 0; border-radius: 4px 0 0 4px; cursor: pointer; z-index: 5; font-weight: bold; padding: 0; }
+  .body.collapsed .right { display: none; }
+  .body.collapsed .rtoggle { right: 0; }
+  .right { width: 330px; flex: none; display: flex; flex-direction: column; background: var(--right-bg); min-height: 0; border-left: 1px solid #c9d6e0; }
+  .cprof { display: flex; align-items: flex-start; gap: 16px; padding: 10px 14px; background: #fff; flex: none; }
+  .cprof .avatar { width: 70px; height: 82px; }
+  .cprof .avatar::before { left: 22px; top: 12px; width: 26px; height: 26px; }
+  .cprof .avatar::after { left: 8px; top: 44px; width: 54px; height: 54px; }
+  .cname { font-weight: bold; font-size: 16px; padding-top: 6px; word-break: break-word; }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 8px; padding: 12px 12px 10px; font-size: 13px; flex: none; }
+  .legend > div { display: flex; align-items: center; gap: 8px; line-height: 1.2; }
+  .legend .full { grid-column: span 2; }
+  .secname { background: var(--tab); color: #fff; font-weight: bold; padding: 10px 14px; font-size: 16px; flex: none; }
+  .palhead { padding: 12px 14px 4px; font-weight: bold; font-size: 15px; flex: none; }
+  .pal { flex: 1; overflow: auto; padding: 8px 14px 12px; display: grid; grid-template-columns: repeat(4, 1fr); align-content: start; gap: 10px 6px; }
+  .rfoot { padding: 12px 14px 14px; flex: none; border-top: 1px solid #c9d6e0; }
+  .submit { display: block; margin: 0 auto; background: var(--submit); color: #fff; border: 0; border-radius: 2px; padding: 11px 44px; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .submit:hover { background: var(--submit-hv); }
+
+  /* palette shapes: not answered = points down, answered = points up, marked = circle, not visited = square */
+  .pb, .ic { position: relative; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; border: 0; padding: 0; flex: none; color: #fff; background: none; }
+  .pb { width: 48px; height: 44px; font-size: 16px; cursor: pointer; margin: 0 auto; }
+  .ic { width: 34px; height: 32px; font-size: 13px; }
+  .na { background: var(--red); clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); padding-bottom: 7px; }
+  .ans { background: var(--green); clip-path: polygon(0 30%, 50% 0, 100% 30%, 100% 100%, 0 100%); padding-top: 7px; }
+  .nv { background: var(--nv); color: #000; border: 1px solid var(--nv-line); border-radius: 3px; box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .mr, .am { background: var(--purple); border-radius: 50%; }
+  .pb.mr, .pb.am { width: 44px; }
+  .ic.mr, .ic.am { width: 30px; height: 30px; }
+  .am::after { content: ""; position: absolute; right: 0; bottom: 0; width: 11px; height: 11px; border-radius: 50%; background: var(--green); border: 1px solid #fff; }
+  .pb.cur { transform: scale(1.12); }
+  .pb.cur.nv, .pb.cur.mr, .pb.cur.am { outline: 2px solid #000; outline-offset: 2px; }
+  .pb.cur.na, .pb.cur.ans { filter: brightness(.8); }
+
+  /* ---------- instructions screen ---------- */
+  #gate { flex: 1; display: flex; flex-direction: column; min-height: 0; background: #fff; }
+  .gbody { flex: 1; overflow: auto; padding: 18px 28px; display: flex; gap: 28px; }
+  .gtext { flex: 1; min-width: 0; line-height: 1.55; font-size: 14px; }
+  .gtext h2 { font-size: 17px; margin: 0 0 8px; text-align: center; }
+  .gtext h3 { font-size: 14px; margin: 14px 0 4px; }
+  .gtext ol, .gtext ul { margin: 4px 0 4px 20px; padding: 0; }
+  .gtext li { margin: 4px 0; }
+  .gtext .sym { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+  .gside { width: 250px; flex: none; text-align: center; border-left: 1px solid #ccc; padding-left: 20px; }
+  .gside .avatar { width: 90px; height: 105px; margin: 0 auto 10px; }
+  .gside .avatar::before { left: 28px; top: 16px; width: 34px; height: 34px; }
+  .gside .avatar::after { left: 10px; top: 58px; width: 70px; height: 70px; }
+  .gside table { width: 100%; font-size: 13px; text-align: left; border-collapse: collapse; margin-top: 12px; }
+  .gside td { padding: 4px 2px; border-bottom: 1px solid #e3e3e3; }
+  .gfoot { flex: none; border-top: 1px solid #c4c4c4; background: var(--bar-bg); padding: 12px 28px; display: flex; flex-direction: column; gap: 10px; }
+  .gfoot label { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; cursor: pointer; }
+  .gfoot .gb { align-self: center; padding: 10px 28px; font-size: 14px; }
+
+  /* ---------- overlays + dialogs ---------- */
+  .ov { position: fixed; inset: 0; background: rgba(15, 30, 55, .88); z-index: 90; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .ovbox { background: #fff; border: 2px solid #4d5d73; padding: 22px 26px; max-width: 460px; text-align: center; line-height: 1.5; }
+  .ovbox h2 { margin: 0 0 8px; font-size: 20px; }
+  .ovbox .gb { margin-top: 12px; padding: 9px 22px; }
+  dialog { border: 2px solid var(--dlg-head); padding: 0; width: min(680px, calc(100% - 24px)); background: #fff; color: #000; }
+  dialog.big { width: min(1000px, calc(100% - 24px)); height: calc(100% - 40px); max-height: none; }
+  dialog.big[open] { display: flex; flex-direction: column; }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  .dh { background: var(--dlg-head); color: #fff; padding: 8px 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; flex: none; }
+  .dh button { background: transparent; border: 0; color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
+  .db { padding: 12px; overflow: auto; flex: 1; }
+  .db table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+  .db th, .db td { border: 1px solid #b7b7b7; padding: 5px 6px; text-align: center; }
+  .db th { background: #eef2f7; }
+  .db td:first-child { text-align: left; }
+  .df { display: flex; justify-content: flex-end; gap: 8px; padding: 0 12px 12px; flex: none; }
+  .qp h3 { background: #eef2f7; padding: 6px 8px; margin: 14px 0 6px; font-size: 14px; }
+  .qp .qi { padding: 8px 4px; border-bottom: 1px solid #e3e3e3; }
+  .qp .qi .qt { white-space: pre-wrap; line-height: 1.5; }
+  .qp .qi .qo { margin: 4px 0 0 18px; line-height: 1.5; white-space: pre-wrap; }
+
+  /* ---------- calculator (GATE style) ---------- */
+  .calc { position: fixed; top: 130px; left: 90px; width: 640px; max-width: calc(100% - 16px); background: #d3d3d3; border: 1px solid #9aa8bd; box-shadow: 0 6px 22px rgba(0,0,0,.4); z-index: 40; user-select: none; touch-action: none; }
+  .calc[hidden] { display: none; }
+  .ctitle { background: var(--calc-title); color: #fff; padding: 10px 12px; cursor: move; display: flex; justify-content: space-between; align-items: center; font-size: 16px; }
+  .ctitle button { background: transparent; border: 0; color: #fff; font-size: 26px; line-height: 1; cursor: pointer; padding: 0 4px; }
+  .cbody { padding: 12px 14px 14px; }
+  .cexpr, .cres { background: #fff; border: 1px solid #aaa; box-shadow: inset 0 2px 3px rgba(0,0,0,.15); text-align: right; padding: 0 10px; overflow: hidden; white-space: nowrap; position: relative; font: 18px/36px Arial, sans-serif; height: 38px; margin-bottom: 8px; }
+  .cres { font-size: 22px; }
+  .cexpr .mi { position: absolute; left: 6px; top: 0; font-size: 12px; color: #555; }
+  .cgrid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px; }
+  .cgrid button { height: 32px; font-size: 12px; border: 1px solid #a9a9a9; background: linear-gradient(#f4f4f4, #dedede); border-radius: 3px; cursor: pointer; padding: 0; color: #111; box-shadow: 0 1px 1px rgba(0,0,0,.25); }
+  .cgrid button:active { background: #c9c9c9; }
+  .cgrid button.num { font-weight: bold; font-size: 14px; background: linear-gradient(#fff, #e9e9e9); }
+  .cgrid button.red { background: #e0412f; color: #fff; border-color: #b9301f; font-weight: bold; }
+  .cgrid button.eq { background: #2fc15a; color: #fff; border-color: #25a049; font-weight: bold; font-size: 16px; }
+  .cgrid .deg { grid-column: span 5; display: flex; align-items: center; gap: 12px; font-size: 12px; padding-left: 4px; }
+  .cgrid .deg label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+  sup { font-size: 9px; }
+
+  @media (max-width: 860px) {
+    body { overflow: auto; }
+    #app, .body { flex: none; }
+    .body { flex-direction: column; }
+    .rtoggle { display: none; }
+    .right { width: 100%; }
+    .left { min-height: 70vh; }
+    .gbody { flex-direction: column; }
+    .gside { width: auto; border-left: 0; padding-left: 0; }
+    .calc { left: 8px; width: calc(100% - 16px); }
+    .cgrid button { height: 28px; font-size: 10px; padding: 0; }
+    .dl { gap: 12px; } .dbtn { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top"><span class="logo">GATE</span><span class="apptitle">Exam Practice - GATE Mock Test</span></header>
+<div class="dark">
+  <span class="exname" id="title">Practice Exam</span>
+  <span class="dl" id="dlinks" hidden>
+    <button class="dbtn" id="insBtn"><span class="ci">i</span>Instructions</button>
+    <button class="dbtn" id="qpBtn"><span class="cq">Q</span>Question Paper</button>
+  </span>
+</div>
+
+<!-- instructions screen (shown first) -->
+<section id="gate">
+  <div class="gbody">
+    <div class="gtext" id="gtext"></div>
+    <aside class="gside">
+      <div class="avatar" aria-hidden="true"></div>
+      <b id="gName">Candidate</b>
+      <table id="gsum"></table>
+    </aside>
+  </div>
+  <div class="gfoot">
+    <label id="agreeRow"><input type="checkbox" id="agree"><span>I have read and understood the instructions. I will not leave full screen during the exam, and the exam will be submitted automatically when the time is over.</span></label>
+    <button class="gb blue" id="beginBtn">I am ready to begin</button>
+  </div>
+</section>
+
+<!-- exam screen -->
+<div id="app" hidden>
+  <div class="body" id="mainBody">
+    <section class="left">
+      <div class="rowA">
+        <span class="arr">&#9664;</span>
+        <span class="paper"><span id="paperTab">Exam</span><i class="inf">i</i></span>
+        <span class="grow"></span>
+        <span class="arr">&#9654;</span>
+        <button class="calcico" id="calcBtn" aria-label="Calculator" title="Calculator">
+          <svg width="26" height="30" viewBox="0 0 26 30" fill="none" stroke="#f08a4b" stroke-width="2"><rect x="3" y="2" width="20" height="26" rx="2"/><rect x="6" y="5" width="14" height="5" fill="#f08a4b" stroke="none"/><g fill="#f08a4b" stroke="none"><circle cx="8" cy="15" r="1.4"/><circle cx="13" cy="15" r="1.4"/><circle cx="18" cy="15" r="1.4"/><circle cx="8" cy="20" r="1.4"/><circle cx="13" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><circle cx="8" cy="25" r="1.4"/><circle cx="13" cy="25" r="1.4"/><circle cx="18" cy="25" r="1.4"/></g></svg>
+        </button>
+      </div>
+      <div class="rowB"><span>Sections</span><span>Time Left : <span class="timer" id="timer" role="timer">--:--:--</span></span></div>
+      <div class="rowC"><span class="arr">&#9664;</span><div class="tabs" id="tabs"></div><span class="arr">&#9654;</span></div>
+      <div class="qhead">
+        <span>Question Type: <b id="qtype"></b></span>
+        <span id="qmarks"></span>
+      </div>
+      <div class="qno"><span id="qno"></span><button class="gb" id="bUnmark" hidden>Remove Review Mark</button></div>
+      <div class="qscroll" id="qbody"></div>
+      <div class="bar">
+        <div>
+          <button class="gb" id="bMark">Mark for Review &amp; Next</button>
+          <button class="gb" id="bClear">Clear Response</button>
+        </div>
+        <div>
+          <button class="gb" id="bPrev">Previous</button>
+          <button class="gb blue" id="bNext">Save &amp; Next</button>
+        </div>
+      </div>
+    </section>
+
+    <button class="rtoggle" id="rtoggle" aria-label="Show or hide the question palette">&gt;</button>
+    <aside class="right">
+      <div class="cprof"><div class="avatar" aria-hidden="true"></div><div class="cname" id="candName">Candidate</div></div>
+      <div class="legend" id="legend"></div>
+      <div class="secname" id="secname"></div>
+      <div class="palhead">Choose a Question</div>
+      <div class="pal" id="pal"></div>
+      <div class="rfoot"><button class="submit" id="submitBtn">Submit</button></div>
+    </aside>
+  </div>
+</div>
+
+<!-- virtual calculator -->
+<div class="calc" id="calc" hidden>
+  <div class="ctitle" id="chandle"><span>Scientific Calculator</span><button id="cclose" aria-label="Close calculator">&times;</button></div>
+  <div class="cbody">
+    <div class="cexpr"><span class="mi" id="cmem"></span><span id="ctop"></span></div>
+    <div class="cres" id="cres">0</div>
+    <div class="cgrid" id="cgrid"></div>
+  </div>
+</div>
+
+<!-- submit summary -->
+<dialog id="dlg">
+  <div class="dh">Exam Summary</div>
+  <div class="db">
+    <table>
+      <thead><tr><th>Section</th><th>No. of Questions</th><th>Answered</th><th>Not Answered</th><th>Marked for Review</th><th>Answered &amp; Marked for Review</th><th>Not Visited</th></tr></thead>
+      <tbody id="sumRows"></tbody>
+    </table>
+    <p><b>Are you sure you want to submit this exam for final evaluation?</b><br>Once submitted, you cannot change any answer.</p>
+  </div>
+  <div class="df"><button class="gb" id="dlgNo">No</button><button class="gb blue" id="dlgYes">Yes</button></div>
+</dialog>
+
+<dialog id="qpDlg" class="big">
+  <div class="dh"><span>Question Paper</span><button id="qpClose" aria-label="Close">&times;</button></div>
+  <div class="db qp" id="qpBody"></div>
+</dialog>
+<dialog id="insDlg" class="big">
+  <div class="dh"><span>Instructions</span><button id="insClose" aria-label="Close">&times;</button></div>
+  <div class="db"><div class="gtext" id="insBody"></div></div>
+</dialog>
+
+<div class="toast" id="toast" hidden></div>
+
+<!-- blocking overlays -->
+<div class="ov" id="fsOv" hidden><div class="ovbox"><h2>Full screen is required</h2><p>You left full screen mode. The timer is still running. Return to full screen to continue the exam.</p><button class="gb blue" id="fsBack">Return to full screen</button></div></div>
+<div class="ov" id="timeUp" hidden><div class="ovbox"><h2>Time is up</h2><p>Your exam is being submitted automatically.</p></div></div>
+
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="api.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const raw = sessionStorage.getItem("examSession");
+if (!raw) location.replace("index.html");
+const S = JSON.parse(raw || "{}");
+if (!S.attemptId) S.attemptId = "a" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const Q = S.questions || [];
+const endAt = () => S.startedAt + S.durationSec * 1000;
+let finished = false, timeUpShown = false, running = false;
+
+const C = S.candidate || { name: "Candidate", email: "", photo: "" };
+const save = () => sessionStorage.setItem("examSession", JSON.stringify(S));
+const fmtNum = n => (Math.round(n * 100) / 100).toString();
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const hms = sec => { sec = Math.max(0, Math.round(sec)); const p = n => String(n).padStart(2, "0"); return `${p(Math.floor(sec / 3600))}:${p(Math.floor(sec % 3600 / 60))}:${p(sec % 60)}`; };
+
+function applyCandidate() {
+  $("candName").textContent = C.name; $("gName").textContent = C.name;
+  document.querySelectorAll(".avatar").forEach(a => {
+    if (C.photo) { a.classList.add("ph"); a.style.backgroundImage = `url("${C.photo}")`; }
+  });
+}
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2200); }
+// MCQ wrong answer penalty: from the data, else 1/3 of the marks (GATE rule)
+function negOf(q) {
+  if (qType(q) !== "MCQ") return 0;
+  const n = Number(q.negative_marks) || 0;
+  return n > 0 ? n : q.marks / 3;
+}
+
+/* ---------- question helpers ---------- */
+function qType(q) {
+  const t = (q.question_type || "").toUpperCase();
+  if (t.includes("NAT")) return "NAT";
+  if (t.includes("MSQ")) return "MSQ";
+  if (t.includes("MCQ")) return "MCQ";
+  return q.options ? "MCQ" : "NAT";
+}
+function optionList(q) {
+  const o = q.options;
+  if (!o) return qType(q) === "NAT" ? [] : ["A", "B", "C", "D"].map(k => ({ key: k, text: "" }));
+  if (Array.isArray(o)) return o.map((x, i) => (typeof x === "object" && x) ? { key: x.key || x.label || String.fromCharCode(65 + i), text: x.text ?? x.value ?? "" } : { key: String.fromCharCode(65 + i), text: String(x) });
+  return Object.entries(o).map(([k, v]) => ({ key: k, text: String(v) }));
+}
+
+/* ---------- sections (one per topic) ---------- */
+const SECTIONS = [];
+Q.forEach((q, i) => {
+  const nm = sectionName(q);
+  let s = SECTIONS.find(x => x.name === nm);
+  if (!s) { s = { name: nm, idx: [] }; SECTIONS.push(s); }
+  s.idx.push(i);
+});
+const secOf = i => SECTIONS.find(s => s.idx.includes(i));
+
+function status(i) {
+  const a = !!S.answers[i], m = S.marked.includes(i), v = S.visited.includes(i);
+  if (a && m) return "am";
+  if (m) return "mr";
+  if (a) return "ans";
+  if (v) return "na";
+  return "nv";
+}
+
+/* ======================================================
+   Full screen
+   ====================================================== */
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+const fsSupported = !!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen);
+function enterFS() {
+  const el = document.documentElement;
+  try {
+    const p = el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen && el.webkitRequestFullscreen();
+    return Promise.resolve(p).catch(() => {});
+  } catch { return Promise.resolve(); }
+}
+function leaveFS() { try { if (fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch {} }
+function fsWatch() {
+  if (!running || finished || !fsSupported) { $("fsOv").hidden = true; return; }
+  $("fsOv").hidden = !!fsEl();
+}
+document.addEventListener("fullscreenchange", fsWatch);
+document.addEventListener("webkitfullscreenchange", fsWatch);
+$("fsBack").onclick = () => enterFS();
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+/* ======================================================
+   Timer and automatic submission
+   ====================================================== */
+function tick() {
+  if (!running || finished) return;
+  const left = Math.max(0, Math.round((endAt() - Date.now()) / 1000));
+  $("timer").textContent = hms(left);
+  $("timer").classList.toggle("low", left <= 300);
+  if (Date.now() >= endAt()) timeUp();
+}
+function timeUp() {
+  if (timeUpShown || finished) return;
+  timeUpShown = true;
+  // close anything open so the message is visible, then submit by itself
+  ["dlg", "qpDlg", "insDlg"].forEach(id => { try { $(id).close(); } catch {} });
+  $("calc").hidden = true;
+  $("fsOv").hidden = true;
+  $("timeUp").hidden = false;
+  setTimeout(() => finish(true, "timeup"), 1500);
+}
+function startTimers() {
+  running = true;
+  tick();
+  setInterval(tick, 1000);
+  setTimeout(timeUp, Math.max(0, endAt() - Date.now()) + 20);        // exact moment
+  document.addEventListener("visibilitychange", tick);                // coming back to the tab
+  window.addEventListener("focus", tick);
+}
+
+/* ======================================================
+   Instructions + start
+   ====================================================== */
+function legendHTML() {
+  return `<div class="sym"><span class="ic nv">1</span> You have not visited the question yet.</div>
+    <div class="sym"><span class="ic na">3</span> You have not answered the question.</div>
+    <div class="sym"><span class="ic ans">5</span> You have answered the question.</div>
+    <div class="sym"><span class="ic mr">7</span> You have NOT answered the question, but have marked the question for review.</div>
+    <div class="sym"><span class="ic am">9</span> You have answered the question, but marked it for review (it will be considered for evaluation).</div>`;
+}
+function instructionsHTML() {
+  const mins = Math.round(S.durationSec / 60);
+  const hasMcq = Q.some(q => qType(q) === "MCQ");
+  return `<h2>General Instructions</h2>
+    <ol>
+      <li>Total duration of the exam is <b>${mins} minutes</b> (${hms(S.durationSec)}). It has <b>${Q.length} questions</b> carrying <b>${fmtNum(S.totalMarks)} marks</b>.</li>
+      <li>The clock starts when you click <b>I am ready to begin</b>, and the <b>Remaining Time</b> at the top right counts down. When it reaches zero, the exam ends and your answers are <b>submitted automatically</b>. You do not need to click Submit.</li>
+      <li>Once the exam starts it <b>cannot be paused, resumed or cancelled</b>. If you close or reload the page, your answers so far are saved and the attempt ends.</li>
+      <li>The exam runs in <b>full screen</b>. If you leave full screen, a message asks you to return; the clock keeps running.</li>
+    </ol>
+    <h3>The question palette on the right shows the status of each question:</h3>
+    ${legendHTML()}
+    <h3>Navigating to a question</h3>
+    <ol>
+      <li>Click a question number in the palette to go to that question directly. Your answer to the current question is kept.</li>
+      <li><b>Save &amp; Next</b> keeps your answer and opens the next question.</li>
+      <li><b>Mark for Review &amp; Next</b> keeps your answer (if any), marks the question for review, and opens the next one. An answered question that is marked for review is still evaluated.</li>
+      <li>Click a section name at the top to jump to that section. The paper has two sections: General Aptitude and the branch core section.</li>
+    </ol>
+    <h3>Answering a question</h3>
+    <ol>
+      <li><b>MCQ:</b> click one option. To change it, click another option. To remove your answer, click <b>Clear Response</b>.${hasMcq ? " Wrong MCQ answers carry negative marks as shown above each question." : ""}</li>
+      <li><b>MSQ:</b> tick every correct option. There is no negative marking.</li>
+      <li><b>NAT:</b> enter a number using the on-screen keypad only. There is no negative marking.</li>
+    </ol>
+    <h3>Tools</h3>
+    <ol><li>Use <b>Virtual Calculator</b> at the top for calculations. Question Paper and Instructions can be opened any time from the right side.</li></ol>`;
+}
+function gateInit() {
+  applyCandidate();
+  $("title").textContent = `${S.filters.branch}  |  ${Q.length} questions, ${fmtNum(S.totalMarks)} marks`;
+  const resume = !!S.startedAt;
+  $("gtext").innerHTML = resume
+    ? `<h2>Resume exam</h2><p style="text-align:center">Your exam is in progress and the clock has been running. Continue in full screen.</p>`
+    : instructionsHTML();
+  $("gsum").innerHTML = `<tr><td>Exam</td><td><b>${esc(S.filters.branch)}</b></td></tr>
+    <tr><td>Questions</td><td><b>${Q.length}</b></td></tr>
+    <tr><td>Total marks</td><td><b>${fmtNum(S.totalMarks)}</b></td></tr>
+    <tr><td>Duration</td><td><b>${hms(S.durationSec)}</b></td></tr>`;
+  $("agreeRow").hidden = resume;
+  $("beginBtn").textContent = resume ? "Continue exam" : "I am ready to begin";
+  $("beginBtn").disabled = !resume;
+  $("agree").onchange = () => { $("beginBtn").disabled = !$("agree").checked; };
+  $("beginBtn").onclick = () => {
+    enterFS();                                   // must run inside the click
+    if (!S.startedAt) { S.startedAt = Date.now(); save(); }
+    $("gate").hidden = true;
+    $("app").hidden = false;
+    $("dlinks").hidden = false;
+    $("paperTab").textContent = S.filters.branch;
+    startTimers();
+    render();
+    setTimeout(fsWatch, 400);
+  };
+}
+
+/* ======================================================
+   Rendering the question
+   ====================================================== */
+function render() {
+  const i = S.current, q = Q[i], type = qType(q), sec = secOf(i);
+  if (!S.visited.includes(i)) S.visited.push(i);
+
+  $("tabs").innerHTML = "";
+  SECTIONS.forEach(s => {
+    const b = document.createElement("button");
+    b.className = "tab" + (s === sec ? " on" : "");
+    b.append(s.name);
+    const inf = document.createElement("i"); inf.className = "inf"; inf.textContent = "i"; b.append(inf);
+    b.onclick = () => go(s.idx[0]);
+    $("tabs").append(b);
+  });
+
+  $("qtype").textContent = type;
+  const neg = CONFIG.NEGATIVE_FOR_TYPES.includes(type) ? fmtNum(negOf(q)) : "0";
+  $("qmarks").innerHTML = `Marks for correct answer: <b class="g">${fmtNum(q.marks)}</b> | Negative Marks: <b class="r">${neg}</b>`;
+  $("qno").textContent = `Question No. ${i + 1}`;
+  $("bUnmark").hidden = !S.marked.includes(i);
+
+  const box = $("qbody");
+  box.innerHTML = "";
+  box.scrollTop = 0;
+  const t = document.createElement("div");
+  t.className = "qtext";
+  richText(t, q.question);
+  box.append(t);
+  IMG.forQuestion(q).forEach(p => box.append(IMG.el(p, "qimg", q)));
+
+  const given = S.answers[i] || "";
+  if (type === "NAT") {
+    const inp = document.createElement("input");
+    inp.type = "text"; inp.readOnly = true; inp.className = "natbox"; inp.value = given;
+    inp.setAttribute("aria-label", "Your numerical answer");
+    box.append(inp);
+    let c = given.length;                           // caret position
+    const pad = document.createElement("div");
+    pad.className = "keypad";
+    const press = k => {
+      let v = S.answers[i] || "";
+      if (k === "back") { if (c > 0) { v = v.slice(0, c - 1) + v.slice(c); c--; } }
+      else if (k === "clear") { v = ""; c = 0; }
+      else if (k === "left") c = Math.max(0, c - 1);
+      else if (k === "right") c = Math.min(v.length, c + 1);
+      else if (k === "-") { if (v.startsWith("-")) { v = v.slice(1); c = Math.max(0, c - 1); } else { v = "-" + v; c++; } }
+      else if (k === ".") { if (!v.includes(".")) { v = v.slice(0, c) + "." + v.slice(c); c++; } }
+      else if (v.length < 20) { v = v.slice(0, c) + k + v.slice(c); c++; }
+      inp.value = v;
+      setAnswer(i, v === "-" || v === "." || v === "-." ? "" : v);
+      palRender();
+      try { inp.focus(); inp.setSelectionRange(c, c); } catch {}
+    };
+    const bb = (label, k, cls) => { const b = document.createElement("button"); b.type = "button"; b.textContent = label; if (cls) b.className = cls; b.onclick = () => press(k); pad.append(b); return b; };
+    bb("Backspace", "back", "wide");
+    ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "-"].forEach(k => bb(k, k));
+    bb("\u2190", "left"); bb("\u2192", "right"); pad.append(document.createElement("span"));
+    bb("Clear All", "clear", "wide");
+    box.append(pad);
+  } else {
+    const chosen = new Set(given ? given.split(";") : []);
+    optionList(q).forEach(o => {
+      const lab = document.createElement("label");
+      lab.className = "opt";
+      const inp = document.createElement("input");
+      inp.type = type === "MSQ" ? "checkbox" : "radio";
+      inp.name = "opt"; inp.value = o.key; inp.checked = chosen.has(o.key);
+      inp.onchange = () => {
+        if (type === "MSQ") { inp.checked ? chosen.add(o.key) : chosen.delete(o.key); }
+        else { chosen.clear(); chosen.add(o.key); }
+        setAnswer(i, [...chosen].sort().join(";"));
+        palRender();
+      };
+      const k = document.createElement("span"); k.className = "k"; k.textContent = `${o.key}.`;
+      const ob = document.createElement("div"); ob.className = "ob";
+      const tx = document.createElement("span"); tx.className = "t"; richText(tx, o.text);
+      ob.append(k, tx);
+      IMG.forOption(q, o.key).forEach(p => ob.append(IMG.el(p, "oimg", q)));
+      lab.append(inp, ob);
+      box.append(lab);
+    });
+  }
+
+  $("bPrev").disabled = i === 0;
+  $("bNext").disabled = false;
+  $("rtoggle").textContent = $("mainBody").classList.contains("collapsed") ? "<" : ">";
+  palRender();
+  save();
+}
+
+function setAnswer(i, v) { if (v) S.answers[i] = v; else delete S.answers[i]; save(); }
+function go(n) { if (n >= 0 && n < Q.length) { S.current = n; render(); } }
+
+function palRender() {
+  const i = S.current, sec = secOf(i);
+  $("secname").textContent = sec.name;
+  const pal = $("pal");
+  pal.innerHTML = "";
+  const counts = { ans: 0, na: 0, nv: 0, mr: 0, am: 0 };
+  sec.idx.forEach(n => {
+    const st = status(n);
+    counts[st]++;
+    const b = document.createElement("button");
+    b.className = `pb ${st}` + (n === i ? " cur" : "");
+    b.textContent = n + 1;
+    b.setAttribute("aria-label", `Question ${n + 1}`);
+    b.onclick = () => go(n);
+    pal.append(b);
+  });
+  $("legend").innerHTML =
+    `<div><span class="ic ans">${counts.ans}</span> Answered</div>` +
+    `<div><span class="ic na">${counts.na}</span> Not Answered</div>` +
+    `<div><span class="ic nv">${counts.nv}</span> Not Visited</div>` +
+    `<div><span class="ic mr">${counts.mr}</span> Marked for Review</div>` +
+    `<div class="full"><span class="ic am">${counts.am}</span> Answered &amp; Marked for Review (will be considered for evaluation)</div>`;
+}
+
+$("rtoggle").onclick = () => { $("mainBody").classList.toggle("collapsed"); $("rtoggle").textContent = $("mainBody").classList.contains("collapsed") ? "<" : ">"; };
+
+/* ---------- buttons ---------- */
+$("bNext").onclick = () => {                       // Save & Next
+  const i = S.current;
+  S.marked = S.marked.filter(x => x !== i);
+  save();
+  if (i < Q.length - 1) go(i + 1);
+  else { render(); toast("Saved. This is the last question."); }
+};
+$("bMark").onclick = () => {                       // Mark for Review & Next
+  const i = S.current;
+  if (!S.marked.includes(i)) S.marked.push(i);
+  save();
+  if (i < Q.length - 1) go(i + 1);
+  else { render(); toast("Marked for review. This is the last question."); }
+};
+// Clear Response removes the answer AND the review mark: the question goes back to "Not Answered"
+$("bClear").onclick = () => { const i = S.current; setAnswer(i, ""); S.marked = S.marked.filter(x => x !== i); save(); render(); };
+$("bUnmark").onclick = () => { const i = S.current; S.marked = S.marked.filter(x => x !== i); save(); render(); };
+$("bPrev").onclick = () => go(S.current - 1);
+
+/* ---------- question paper + instructions ---------- */
+$("qpBtn").onclick = () => {
+  const body = $("qpBody");
+  body.innerHTML = "";
+  SECTIONS.forEach(s => {
+    const h = document.createElement("h3"); h.textContent = s.name; body.append(h);
+    s.idx.forEach(n => {
+      const q = Q[n], type = qType(q);
+      const d = document.createElement("div"); d.className = "qi";
+      const t = document.createElement("div"); t.className = "qt";
+      t.innerHTML = `<b>Q.${n + 1}</b> <span style="color:#555">[${type}, ${fmtNum(q.marks)} mark${q.marks === 1 ? "" : "s"}]</span> `;
+      const qs = document.createElement("span"); richText(qs, q.question); t.append(qs);
+      d.append(t);
+      IMG.forQuestion(q).forEach(pth => d.append(IMG.el(pth, "qimg", q)));
+      if (type !== "NAT") optionList(q).forEach(o => {
+        const p = document.createElement("div"); p.className = "qo";
+        p.append(`(${o.key}) `); const os = document.createElement("span"); richText(os, o.text); p.append(os);
+        IMG.forOption(q, o.key).forEach(pth => p.append(IMG.el(pth, "oimg", q)));
+        d.append(p);
+      });
+      body.append(d);
+    });
+  });
+  $("qpDlg").showModal();
+};
+$("qpClose").onclick = () => $("qpDlg").close();
+$("insBtn").onclick = () => { $("insBody").innerHTML = instructionsHTML(); $("insDlg").showModal(); };
+$("insClose").onclick = () => $("insDlg").close();
+
+/* ---------- marking ---------- */
+function isCorrect(q, given) {
+  const type = qType(q), key = String(q.answer).trim();
+  if (type === "NAT") {
+    const g = parseFloat(given);
+    if (Number.isNaN(g)) return false;
+    const range = key.match(/^\s*(-?\d*\.?\d+)\s*(?:to|–|—|-|:)\s*(-?\d*\.?\d+)\s*$/i);
+    if (range) { const lo = Math.min(+range[1], +range[2]), hi = Math.max(+range[1], +range[2]); return g >= lo - 1e-9 && g <= hi + 1e-9; }
+    const k = parseFloat(key);
+    return !Number.isNaN(k) && Math.abs(g - k) <= 0.005 + 1e-9;
+  }
+  const norm = s => String(s).toUpperCase().split(/[;,\s]+/).filter(Boolean).sort().join(";");
+  return norm(given) === norm(Array.isArray(q.answer) ? q.answer.join(";") : key);
+}
+
+function buildResult(auto, status) {
+  let score = 0, maxScore = 0, correct = 0, wrong = 0, unattempted = 0, noKey = 0;
+  const bySubject = {}, detail = [];
+  Q.forEach((q, i) => {
+    const given = S.answers[i] || "";
+    const hasKey = q.answer !== null && q.answer !== undefined && String(q.answer).trim() !== "";
+    const sub = bySubject[sectionName(q)] ||= { score: 0, max: 0, correct: 0, attempted: 0 };
+    let got = 0;
+    if (!hasKey) { noKey++; }
+    else {
+      sub.max += q.marks; maxScore += q.marks;
+      if (!given) { unattempted++; }
+      else {
+        sub.attempted++;
+        if (isCorrect(q, given)) { got = q.marks; correct++; sub.correct++; }
+        else { wrong++; if (CONFIG.NEGATIVE_FOR_TYPES.includes(qType(q))) got = -negOf(q); }
+      }
+      score += got; sub.score += got;
+    }
+    detail.push({ id: q.id, subject: sectionName(q), type: qType(q), marks: q.marks, given, answer: hasKey ? String(q.answer) : "", got });
+  });
+  const attempted = correct + wrong;
+  const timeTakenSec = Math.min(S.durationSec, Math.round((Date.now() - S.startedAt) / 1000));
+  return {
+    finishedAt: new Date().toISOString(), name: C.name, email: C.email, filters: S.filters, total: Q.length,
+    score: Math.round(score * 100) / 100, maxScore, correct, wrong, unattempted, noKey,
+    accuracy: attempted ? Math.round(correct / attempted * 100) : 0,
+    timeTakenSec, durationSec: S.durationSec, autoSubmitted: !!auto, bySubject, detail,
+    attemptId: S.attemptId, status: status || (auto ? "timeup" : "completed"),
+  };
+}
+
+// what the result page needs to show each question again (practice tests only; never sent to the sheet)
+function reviewData() {
+  return Q.map(q => ({
+    id: q.id, type: qType(q), marks: q.marks, neg: negOf(q), subject: q.subject, topic: q.topic || "",
+    question: q.question, options: optionList(q), answer: q.answer, explanation: q.explanation || "",
+  }));
+}
+
+async function finish(auto, status) {
+  if (finished) return;
+  finished = true;
+  ["dlg", "qpDlg", "insDlg"].forEach(id => { try { $(id).close(); } catch {} });
+  document.querySelectorAll("button, input").forEach(el => el.disabled = true);
+  const result = buildResult(auto, status || (auto ? "timeup" : "completed"));
+  // practice tests keep the questions in this browser tab so the result page can show answers + solutions
+  try { sessionStorage.setItem("lastResult", JSON.stringify(S.practice ? { ...result, review: reviewData() } : result)); }
+  catch { sessionStorage.setItem("lastResult", JSON.stringify(result)); }
+  try { await API.saveResult(result); } catch (e) { console.error("Could not save result:", e); }
+  sessionStorage.removeItem("examSession");
+  leaveFS();
+  location.href = "index.html";
+}
+
+/* ---------- submit ---------- */
+$("submitBtn").onclick = () => {
+  $("sumRows").innerHTML = SECTIONS.map(s => {
+    const c = { ans: 0, na: 0, nv: 0, mr: 0, am: 0 };
+    s.idx.forEach(n => c[status(n)]++);
+    return `<tr><td></td><td>${s.idx.length}</td><td>${c.ans}</td><td>${c.na}</td><td>${c.mr}</td><td>${c.am}</td><td>${c.nv}</td></tr>`;
+  }).join("");
+  [...$("sumRows").rows].forEach((r, n) => r.cells[0].textContent = SECTIONS[n].name);
+  $("dlg").showModal();
+};
+$("dlgNo").onclick = () => $("dlg").close();
+$("dlgYes").onclick = () => { $("dlg").close(); finish(false, "completed"); };
+window.addEventListener("pagehide", () => {
+  if (!running || finished) return;
+  finished = true;
+  const r = buildResult(true, "left");
+  try { sessionStorage.setItem("lastResult", JSON.stringify(S.practice ? { ...r, review: reviewData() } : r)); sessionStorage.removeItem("examSession"); } catch {}
+  API.saveResultBeacon(r);
+});
+// progress save every 20 s (only when something changed), in case the browser or device dies
+let lastSnap = "";
+setInterval(() => {
+  if (!running || finished) return;
+  const snap = JSON.stringify([S.answers, S.marked, S.visited]);
+  if (snap === lastSnap) return;
+  lastSnap = snap;
+  API.saveResult(buildResult(true, "in-progress")).catch(() => { lastSnap = ""; });
+}, 20000);
+window.addEventListener("beforeunload", e => { if (running && !finished) { e.preventDefault(); e.returnValue = ""; } });
+
+/* ======================================================
+   Virtual scientific calculator (GATE layout, 11 columns)
+   ====================================================== */
+const calc = (() => {
+  let expr = "", fresh = false, mem = 0, hasMem = false, ans = "0";
+  const deg = () => document.querySelector('input[name="ang"]:checked').value === "deg";
+
+  /* --- safe expression parser (no eval) --- */
+  function evaluate(src) {
+    let s = src.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
+    const open = (s.match(/\(/g) || []).length - (s.match(/\)/g) || []).length;
+    if (open > 0) s += ")".repeat(open);
+    const toks = [];
+    const re = /\s*(\d+\.?\d*(?:e[+-]?\d+)?|\.\d+|π|[a-z]+\d*|[-+*\/^()!,])/gy;
+    let m, end = 0;
+    while ((m = re.exec(s)) !== null) { toks.push(m[1]); end = re.lastIndex; }
+    if (s.slice(end).trim()) throw new Error("bad");
+    if (!toks.length) return 0;
+
+    const toRad = x => deg() ? x * Math.PI / 180 : x;
+    const toDeg = x => deg() ? x * 180 / Math.PI : x;
+    const clean = v => Math.abs(v) < 1e-12 ? 0 : v;
+    const fact = n => { if (n < 0 || n !== Math.floor(n) || n > 170) throw new Error("bad"); let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; };
+    const F = {
+      sin: x => clean(Math.sin(toRad(x))), cos: x => clean(Math.cos(toRad(x))), tan: x => clean(Math.tan(toRad(x))),
+      asin: x => toDeg(Math.asin(x)), acos: x => toDeg(Math.acos(x)), atan: x => toDeg(Math.atan(x)),
+      sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh, asinh: Math.asinh, acosh: Math.acosh, atanh: Math.atanh,
+      ln: Math.log, log: Math.log10, log2: Math.log2, sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs,
+    };
+    let p = 0;
+    const peek = () => toks[p], next = () => toks[p++];
+    const expect = t => { if (next() !== t) throw new Error("bad"); };
+    function sum() { let v = prod(); while (peek() === "+" || peek() === "-") { const o = next(), r = prod(); v = o === "+" ? v + r : v - r; } return v; }
+    function prod() { let v = unary(); while (peek() === "*" || peek() === "/" || peek() === "mod") { const o = next(), r = unary(); v = o === "*" ? v * r : o === "/" ? v / r : v % r; } return v; }
+    function unary() { if (peek() === "-") { next(); return -unary(); } if (peek() === "+") { next(); return unary(); } return power(); }
+    function power() { const b = post(); if (peek() === "^") { next(); return Math.pow(b, unary()); } return b; }
+    function post() { let v = primary(); while (peek() === "!") { next(); v = fact(v); } return v; }
+    function primary() {
+      const t = next();
+      if (t === undefined) throw new Error("bad");
+      if (/^[\d.]/.test(t)) return parseFloat(t);
+      if (t === "(") { const v = sum(); expect(")"); return v; }
+      if (t === "π" || t === "pi") return Math.PI;
+      if (t === "e") return Math.E;
+      if (t === "logy") { expect("("); const a = sum(); expect(","); const b = sum(); expect(")"); return Math.log(a) / Math.log(b); }
+      if (F[t]) { expect("("); const v = sum(); expect(")"); return F[t](v); }
+      throw new Error("bad");
+    }
+    const v = sum();
+    if (p !== toks.length) throw new Error("bad");
+    return v;
+  }
+  const fmt = x => { if (!isFinite(x) || Number.isNaN(x)) throw new Error("bad"); return String(parseFloat(x.toPrecision(12))); };
+  const current = () => { try { return evaluate(expr); } catch { return null; } };
+
+  /* --- display --- */
+  const showTop = t => { $("ctop").textContent = t; $("ctop").parentNode.scrollLeft = 1e6; };
+  const showRes = t => { $("cres").textContent = t === "" ? "0" : t; };
+  const showMem = () => { $("cmem").textContent = hasMem ? "M" : ""; };
+  function live() {
+    showTop(expr);
+    if (!expr) { showRes("0"); return; }
+    const v = current();
+    if (v !== null) { try { showRes(fmt(v)); } catch {} }
+  }
+  function insert(t, startsNew) {
+    if (fresh) { if (startsNew) expr = ""; fresh = false; }
+    expr += t; live();
+  }
+  function equals() {
+    if (!expr) return;
+    try { const out = fmt(evaluate(expr)); showTop(expr + " ="); expr = out; fresh = true; ans = out; showRes(out); }
+    catch { expr = ""; fresh = true; showTop(""); showRes("Error"); }
+  }
+  function negate() {
+    if (!expr) return;
+    const v = current();
+    if (v === null) expr = expr.startsWith("-") ? expr.slice(1) : "-" + expr;
+    else { try { expr = fmt(-v); } catch { return; } fresh = true; }
+    live();
+  }
+  function logy() {
+    const i = expr.lastIndexOf("logy(");
+    if (i >= 0 && !fresh && !expr.slice(i).includes(",")) insert(",", false); else insert("logy(", true);
+  }
+
+  /* --- buttons --- */
+  const num = d => ({ t: d, a: () => insert(d, true), c: "num" });
+  const op = (label, ins) => ({ t: label, a: () => insert(ins, false) });
+  const fn = (label, ins) => ({ t: label, a: () => insert(ins, true) });
+  const mm = (label, f) => ({ t: label, a: f });
+  const LAYOUT = [
+    // row 1
+    op("mod", " mod "),
+    { deg: true },
+    mm("MC", () => { mem = 0; hasMem = false; showMem(); }),
+    mm("MR", () => { if (hasMem) insert(fmt(mem), true); }),
+    mm("MS", () => { const v = current(); if (v !== null) { mem = v; hasMem = true; showMem(); } }),
+    mm("M+", () => { const v = current(); if (v !== null) { mem += v; hasMem = true; showMem(); } }),
+    mm("M-", () => { const v = current(); if (v !== null) { mem -= v; hasMem = true; showMem(); } }),
+    // row 2
+    fn("sinh", "sinh("), fn("cosh", "cosh("), fn("tanh", "tanh("), { t: "Exp", a: () => insert("*10^(", false) }, fn("(", "("), op(")", ")"),
+    { t: "\u2190", c: "red", span: 2, a: () => { if (fresh) { expr = ""; fresh = false; } else expr = expr.replace(/(abs\(|sqrt\(|cbrt\(|asinh\(|acosh\(|atanh\(|sinh\(|cosh\(|tanh\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log2\(|logy\(|log\(|ln\(| mod |.)$/, ""); live(); } },
+    { t: "C", c: "red", a: () => { expr = ""; fresh = false; showTop(""); showRes("0"); } },
+    { t: "+/-", c: "red", a: negate },
+    fn("\u221a", "sqrt("),
+    // row 3
+    fn("sinh<sup>-1</sup>", "asinh("), fn("cosh<sup>-1</sup>", "acosh("), fn("tanh<sup>-1</sup>", "atanh("), fn("log<sub>2</sub>x", "log2("), fn("ln", "ln("), fn("log", "log("),
+    num("7"), num("8"), num("9"), op("/", "/"), op("%", "/100"),
+    // row 4
+    fn("\u03c0", "\u03c0"), fn("e", "e"), op("n!", "!"), { t: "log<sub>y</sub>x", a: logy }, fn("e<sup>x</sup>", "e^("), fn("10<sup>x</sup>", "10^("),
+    num("4"), num("5"), num("6"), op("*", "*"), op("1/x", "^(-1)"),
+    // row 5
+    fn("sin", "sin("), fn("cos", "cos("), fn("tan", "tan("), op("x<sup>y</sup>", "^"), op("x<sup>3</sup>", "^3"), op("x<sup>2</sup>", "^2"),
+    num("1"), num("2"), num("3"), op("-", "-"), { t: "=", c: "eq", rows: 2, a: equals },
+    // row 6
+    fn("sin<sup>-1</sup>", "asin("), fn("cos<sup>-1</sup>", "acos("), fn("tan<sup>-1</sup>", "atan("), fn("<sup>y</sup>\u221ax", "sqrt("), fn("\u221b", "cbrt("), fn("|x|", "abs("),
+    { ...num("0"), span: 2 }, num("."), op("+", "+"),
+  ];
+  const grid = $("cgrid");
+  LAYOUT.forEach(d => {
+    if (!d) return;
+    if (d.deg) {
+      const w = document.createElement("div"); w.className = "deg";
+      w.innerHTML = '<label><input type="radio" name="ang" value="deg" checked> Deg</label><label><input type="radio" name="ang" value="rad"> Rad</label>';
+      grid.append(w); return;
+    }
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = d.c || "";
+    b.innerHTML = d.t;
+    if (d.span) b.style.gridColumn = `span ${d.span}`;
+    if (d.rows) b.style.gridRow = `span ${d.rows}`;
+    b.onclick = d.a;
+    grid.append(b);
+  });
+
+  /* --- open / close / drag --- */
+  const box = $("calc");
+  $("calcBtn").onclick = () => { box.hidden = !box.hidden; };
+  $("cclose").onclick = () => { box.hidden = true; };
+  let drag = null;
+  $("chandle").addEventListener("pointerdown", e => {
+    if (e.target.id === "cclose") return;
+    const r = box.getBoundingClientRect();
+    drag = { dx: e.clientX - r.left, dy: e.clientY - r.top };
+    $("chandle").setPointerCapture(e.pointerId);
+  });
+  $("chandle").addEventListener("pointermove", e => {
+    if (!drag) return;
+    const x = Math.min(Math.max(0, e.clientX - drag.dx), innerWidth - 60);
+    const y = Math.min(Math.max(0, e.clientY - drag.dy), innerHeight - 40);
+    box.style.left = x + "px"; box.style.top = y + "px";
+  });
+  const stop = () => { drag = null; };
+  $("chandle").addEventListener("pointerup", stop);
+  $("chandle").addEventListener("pointercancel", stop);
+  return {};
+})();
+
+/* ---------- start ---------- */
+if (Q.length) {
+  if (S.startedAt) {
+    // the exam had already started and the page was reopened: no resume, the attempt ends with the answers it had
+    running = true;
+    $("gate").hidden = true;
+    $("fsOv").hidden = true;
+    finish(true, "left");
+  } else {
+    gateInit();
+  }
+}
+</script>
+</body>
+</html>

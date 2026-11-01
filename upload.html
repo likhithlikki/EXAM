@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload questions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  pre.fmt { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: .8rem 1rem; overflow-x: auto; font-size: .85rem; line-height: 1.45; margin: .5rem 0 1rem; }
+  .req { color: var(--bad); font-weight: 600; }
+  details > summary { cursor: pointer; font-weight: 600; font-size: 1.1rem; }
+  .st { display:inline-block; padding:.05rem .5rem; border-radius:99px; font-size:.78rem; font-weight:600; border:1px solid var(--line); white-space:nowrap; }
+  .st.ok { color: var(--good); border-color: var(--good); }
+  .st.bad { color: var(--bad); border-color: var(--bad); }
+  .st.warn { color: #9a6b00; border-color: var(--warn-line); background: var(--warn-bg); }
+  @media (prefers-color-scheme: dark) { .st.warn { color: #e6c15a; } }
+  td.path { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; word-break: break-all; }
+  .radios { display:flex; gap:1rem; flex-wrap:wrap; margin: 0 0 1rem; }
+  .radios label { font-weight: 400; display:flex; gap:.4rem; align-items:center; margin:0; }
+  .grp { border: 1px solid var(--bad); border-radius: 8px; margin: 0 0 .8rem; overflow: hidden; }
+  .grp.good { border-color: var(--good); }
+  .grp > h3 { margin: 0; padding: .5rem .8rem; font-size: .95rem; background: var(--warn-bg); display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+  .grp.good > h3 { background: var(--bg); }
+  .grp > h3 code { background: transparent; border: 0; }
+  .item { padding: .4rem .8rem; border-top: 1px solid var(--line); font-size: .88rem; display:flex; gap:.6rem; flex-wrap:wrap; align-items:baseline; }
+  .item .f { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; word-break: break-all; }
+  .item.red .f { color: var(--bad); } .item.green .f { color: var(--good); }
+  .item .muted { font-size: .82rem; }
+  ul.errs { margin: .4rem 0 0 1.1rem; padding: 0; font-size: .9rem; }
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <span class="brand">Exam Practice</span>
+  <nav><a href="index.html">Practice</a><a href="upload.html" aria-current="page">Upload</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Upload questions</h1>
+  <div id="modeNote"></div>
+
+  <section class="card">
+    <details open>
+      <summary>Accepted file format</summary>
+      <p class="muted">The GATE question files: one <b>.json</b> per branch and year (for example <code>CS/2020.json</code>). You can pick many files, or a whole folder at once. Questions whose id is already in the sheet are <b>not uploaded</b>; the existing row is left as it is. Questions with a problem are listed and skipped. <code>manifest.json</code>, <code>source-metadata.json</code> and <code>image-source-map.json</code> are ignored.</p>
+      <pre class="fmt" id="sample"></pre>
+
+      <p class="muted">Also accepted: a list of such objects (several exams in one file), or one flat list of questions where every question carries its own exam, branch, year and topic.</p>
+      <button class="btn" id="sampleBtn">Download sample file</button>
+    </details>
+  </section>
+
+  <section class="card">
+    <div class="drop">
+      <label for="files">Question files</label>
+      <input id="files" type="file" accept=".json,application/json" multiple>
+    </div>
+    <div class="drop" style="margin-top:.8rem">
+      <label for="folder">…or a whole folder (for example the GATE-Questions-By-Branch folder)</label>
+      <input id="folder" type="file" webkitdirectory multiple>
+    </div>
+    <div id="msg" style="margin-top:1rem"></div>
+  </section>
+
+  <section class="card" id="previewCard" hidden>
+    <h2>Check before upload</h2>
+    <div class="stats" id="totals"></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Exam</th><th>Branch</th><th>Years</th><th class="num">Topics</th><th class="num">New questions</th></tr></thead>
+        <tbody id="groupRows"></tbody>
+      </table>
+    </div>
+    <div id="warnings" style="margin-top:1rem"></div>
+    <p class="muted" id="imgNote"></p>
+    <div class="row" style="margin-top:1rem">
+      <button class="btn primary" id="uploadBtn">Upload new questions</button>
+      <button class="btn" id="clearBtn">Clear</button>
+    </div>
+    <progress id="prog" value="0" max="1" hidden style="margin-top:1rem"></progress>
+  </section>
+
+  <section class="card" id="imgCard">
+    <h2>Find problems in data</h2>
+    <p class="muted">Checks the questions already saved in your sheet. For every image they use, this page requests the same URL the exam requests, and lists the ones that cannot be reached (not uploaded to GitHub, or uploaded to a different path). Nothing needs to be selected or uploaded.</p>
+    <p class="muted">Images are requested from: <code id="baseTxt"></code></p>
+
+    <div id="upSummary"><p class="muted">Loading uploaded data…</p></div>
+
+    <div class="grid">
+      <div><label for="fBranch">Branch</label><select id="fBranch"><option value="all">All</option></select></div>
+      <div><label for="fYear">Year</label><select id="fYear"><option value="all">All</option></select></div>
+      <div><label for="fKind">Images of</label>
+        <select id="fKind"><option value="all">All</option><option value="question">Questions</option><option value="option">Options</option><option value="solution">Solutions</option><option value="other">Others</option></select></div>
+    </div>
+
+    <div class="row">
+      <button class="btn primary" id="runCheck" disabled>Check images</button>
+      <button class="btn" id="copyReport" disabled>Copy report</button>
+      <span class="muted" id="copyMsg" role="status"></span>
+    </div>
+    <div class="muted" id="stage" style="margin-top:.8rem"></div>
+    <progress id="imgProg" value="0" max="1" hidden style="margin-top:.4rem"></progress>
+
+    <div class="stats" id="imgStats" style="margin-top:1rem"></div>
+    <div id="redBox"></div>
+
+    <div id="greenWrap" hidden style="margin-top:1rem">
+      <button class="btn" id="toggleGreen"></button>
+      <div id="greenBox" hidden style="margin-top:.8rem"></div>
+    </div>
+  </section>
+
+</main>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let toUpload = [];
+
+if (API.isDemo()) {
+  $("modeNote").innerHTML = '<div class="notice">Demo mode: uploads are saved in this browser only, and the browser can hold about 5 MB. The full GATE set is about 24 MB, so set <code>API_URL</code> in config.js first.</div>';
+}
+
+/* ---------- sample file ---------- */
+const SAMPLE = {
+  exam: "GATE", branch: "CS", year: 2020, subject: "Computer Science and Information Technology",
+  questions: [
+    {
+      id: "cs202002", question_number: 2, question_type: "MCQ", answer_format: "option",
+      marks: 1, negative_marks: 0.33,
+      question: "For parameters a and b, T(n)=T(n^{1/a})+1 and T(b)=1. Then T(n) is [latex]\\Theta(\\log_a \\log_b n)[/latex] for:",
+      options: { A: "III only", B: "II only", C: "II and III only", D: "I and III only" },
+      answer: null, explanation: null, images: [], topic: "Recurrence Relation",
+    },
+    {
+      id: "cs202010", question_number: 10, question_type: "MCQ", answer_format: "option",
+      marks: 2, negative_marks: 0.67, question: "Consider the circuit in the figure. The output is:",
+      options: { A: "", B: "", C: "", D: "" }, answer: null, explanation: null,
+      images: ["images/questions/cs202010_01.jpg", "images/options/cs202010_A_01.jpg", "images/options/cs202010_B_01.jpg", "images/options/cs202010_C_01.jpg", "images/options/cs202010_D_01.jpg"],
+      topic: "Digital Logic",
+    },
+  ],
+};
+$("sample").textContent = JSON.stringify(SAMPLE, null, 2);
+$("sampleBtn").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(SAMPLE, null, 2)], { type: "application/json" }));
+  a.download = "sample-questions.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+/* ---------- checking that images really load from GitHub ---------- */
+function probeImages(paths) {
+  // loads a few random images and reports how many were found
+  const pick = [...paths].sort(() => Math.random() - 0.5).slice(0, 8);
+  return Promise.all(pick.map(p => new Promise(res => {
+    const im = new Image();
+    im.onload = () => res({ p, ok: true });
+    im.onerror = () => res({ p, ok: false });
+    im.src = IMG.url(p);
+  })));
+}
+
+/* ---------- reading files ---------- */
+async function loadFiles(list) {
+  await IMG.load();
+  const all = [...list].filter(f => /\.json$/i.test(f.name));
+  toUpload = [];
+  $("msg").innerHTML = "";
+  $("previewCard").hidden = true;
+  if (!all.length) { if (list.length) $("msg").innerHTML = '<div class="notice err">No .json files found in that selection.</div>'; return; }
+  $("msg").innerHTML = `<div class="notice">Reading ${all.length} file(s)…</div>`;
+
+  const fileProblems = [];
+  const items = [];
+  let ignoredSide = 0;
+  for (const f of all) {
+    if (Importer.SIDE_FILES.test(f.webkitRelativePath || f.name)) { ignoredSide++; continue; }
+    try {
+      const found = Importer.extract(JSON.parse(await f.text()));
+      if (!found.length) fileProblems.push(`${f.name}: no questions found. Check the format above.`);
+      items.push(...found);
+    } catch (err) {
+      fileProblems.push(`${f.name}: not valid JSON (${err.message}).`);
+    }
+  }
+
+  let existing = new Set();
+  if (items.length) {
+    $("msg").innerHTML = '<div class="notice">Checking which ids are already in the sheet…</div>';
+    try { existing = new Set(await API.getIds()); }
+    catch (err) { fileProblems.push(`Could not check existing ids (${err.message}). The sheet will still skip duplicates while uploading.`); }
+  }
+
+  const invalid = [];
+  let dupInFile = 0, dupInSheet = 0, noKey = 0, withImg = 0, unmapped = 0;
+  const imgPaths = [];
+  const seen = new Set();
+  items.forEach((it, i) => {
+    const r = Importer.build(it);
+    if (r.errs.length) { invalid.push(`${r.id || "question #" + (i + 1)}: ${r.errs.join("; ")}`); return; }
+    if (seen.has(r.id)) { dupInFile++; return; }
+    seen.add(r.id);
+    if (existing.has(r.id)) { dupInSheet++; return; }
+    if (!r.row.answer) noKey++;
+    if (r.row.year === "Unmapped" || r.row.branch === "UNKNOWN") unmapped++;
+    const imgs = JSON.parse(r.row.images);
+    if (imgs.length) { withImg++; imgPaths.push(...imgs); }
+    toUpload.push(r.row);
+  });
+
+  const msgs = [];
+  if (fileProblems.length) msgs.push(`<div class="notice err">${fileProblems.map(esc).join("<br>")}</div>`);
+  if (ignoredSide) msgs.push(`<div class="notice">${ignoredSide} side file(s) ignored (manifest / source-metadata / image-source-map).</div>`);
+  $("msg").innerHTML = msgs.join("");
+  if (!items.length) return;
+
+  // summary by exam + branch
+  const groups = {};
+  toUpload.forEach(r => {
+    const g = groups[`${r.exam}|${r.branch}`] ||= { exam: r.exam, branch: r.branch, years: new Set(), subjects: new Set(), n: 0 };
+    g.years.add(r.year); g.subjects.add(r.subject); g.n++;
+  });
+  $("groupRows").innerHTML = Object.values(groups).map(g => {
+    const ys = [...g.years].filter(y => typeof y === "number").sort((a, b) => a - b);
+    let yTxt = ys.length > 4 ? ys[0] + " to " + ys[ys.length - 1] : ys.join(", ");
+    if (g.years.has("Unmapped")) yTxt += (yTxt ? ", " : "") + "Unmapped";
+    return `<tr><td>${esc(g.exam)}</td><td>${esc(g.branch)}</td><td>${esc(yTxt)}</td><td class="num">${g.subjects.size}</td><td class="num">${g.n}</td></tr>`;
+  }).join("") || '<tr><td colspan="5" class="muted">Nothing new to upload.</td></tr>';
+
+  $("totals").innerHTML =
+    `<div class="stat"><b style="color:var(--good)">${toUpload.length}</b><span>new, will upload</span></div>` +
+    `<div class="stat"><b>${dupInSheet}</b><span>id already in sheet, skipped</span></div>` +
+    `<div class="stat"><b>${dupInFile}</b><span>repeated in file, skipped</span></div>` +
+    `<div class="stat"><b style="color:${invalid.length ? "var(--bad)" : "inherit"}">${invalid.length}</b><span>invalid, skipped</span></div>`;
+
+  const notes = [];
+  if (invalid.length) notes.push(`<div class="notice err"><b>${invalid.length} invalid question(s) will not be uploaded.</b><ul class="errs">${invalid.slice(0, 10).map(x => `<li>${esc(x)}</li>`).join("")}</ul>${invalid.length > 10 ? `<div class="muted">…and ${invalid.length - 10} more.</div>` : ""}</div>`);
+  if (noKey) notes.push(`<div class="notice">${noKey} new question(s) have no answer. They upload and can be practised, but are not scored in exams.</div>`);
+  if (unmapped) notes.push(`<div class="notice">${unmapped} new question(s) come from files with no year or no branch. They are saved as year <code>Unmapped</code> / branch <code>UNKNOWN</code> and show up under those names in the filters.</div>`);
+  $("warnings").innerHTML = notes.join("");
+
+  $("imgNote").textContent = withImg
+    ? `${withImg} new question(s) have images (${imgPaths.length} files). Checking that they load from ${CONFIG.IMAGE_BASE || "this site's own images folder"}…`
+    : "";
+  $("uploadBtn").disabled = toUpload.length === 0;
+  $("previewCard").hidden = false;
+
+  if (imgPaths.length) {
+    const res = await probeImages(imgPaths);
+    const ok = res.filter(r => r.ok).length, bad = res.filter(r => !r.ok);
+    $("imgNote").innerHTML = ok === res.length
+      ? `${withImg} new question(s) have images (${imgPaths.length} files). Test of ${res.length} random images: all loaded.`
+      : `<span style="color:var(--bad)"><b>${bad.length} of ${res.length} test images did not load</b> (for example <code>${esc(IMG.url(bad[0].p))}</code>).</span> Upload the <code>images</code> folder to GitHub and check <code>IMAGE_BASE</code> in config.js. You can still upload the questions now; images start working as soon as the files are there.`;
+  }
+}
+
+/* ---------- image checker (works on the questions already in the sheet) ---------- */
+const ImgCheck = (() => {
+  let meta = [];                 // [{id, branch, year, ...}] of every uploaded question
+  const qCache = new Map();      // id -> full question (only fetched when you press Check)
+  const result = new Map();      // path -> true (reachable) / false (not reachable)
+  let refs = [];                 // image references of the questions checked in the last run
+  let redRows = [], greenRows = [];
+  const KIND_LABEL = { question: "Question", option: "Option", solution: "Solution", other: "Other" };
+
+  const dirOf = p => p.includes("/") ? p.slice(0, p.lastIndexOf("/")) : "(no folder)";
+  const fileOf = p => p.split("/").pop();
+  const kindOf = p => /(^|\/)options\//i.test(p) ? "option" : /(^|\/)solutions?\//i.test(p) ? "solution" : /(^|\/)questions\//i.test(p) ? "question" : "other";
+  const yearTxt = y => String(y);
+
+  /* ----- what is uploaded ----- */
+  function summary() {
+    const by = {};
+    meta.forEach(m => { const b = (by[m.branch || "UNKNOWN"] ||= { n: 0, years: {} }); b.n++; b.years[m.year] = (b.years[m.year] || 0) + 1; });
+    const rows = Object.keys(by).sort().map(br => {
+      const ys = Object.keys(by[br].years).sort((a, b) => (a === "Unmapped") - (b === "Unmapped") || a.localeCompare(b));
+      return `<tr><td><b>${esc(br)}</b></td><td class="num">${by[br].n}</td><td class="num">${ys.length}</td><td>${ys.map(y => `${esc(y)} <span class="muted">(${by[br].years[y]})</span>`).join(", ")}</td></tr>`;
+    }).join("");
+    $("upSummary").innerHTML = meta.length
+      ? `<div class="scroll"><table><thead><tr><th>Branch uploaded</th><th class="num">Questions</th><th class="num">Years</th><th>Years uploaded (questions)</th></tr></thead><tbody>${rows}</tbody></table></div>`
+      : '<div class="notice">No questions are uploaded yet.</div>';
+  }
+
+  function fillBranch() {
+    const brs = [...new Set(meta.map(m => m.branch || "UNKNOWN"))].sort();
+    $("fBranch").innerHTML = '<option value="all">All branches</option>' + brs.map(b => `<option value="${esc(b)}">${esc(b)} (${meta.filter(m => (m.branch || "UNKNOWN") === b).length})</option>`).join("");
+    fillYear();
+  }
+  function fillYear() {
+    const b = $("fBranch").value, prev = $("fYear").value;
+    const list = meta.filter(m => b === "all" || (m.branch || "UNKNOWN") === b);
+    const cnt = {}; list.forEach(m => cnt[m.year] = (cnt[m.year] || 0) + 1);
+    const ys = Object.keys(cnt).sort((a, c) => (a === "Unmapped") - (c === "Unmapped") || a.localeCompare(c));
+    $("fYear").innerHTML = `<option value="all">All years (${ys.length})</option>` + ys.map(y => `<option value="${esc(y)}">${esc(y)} (${cnt[y]})</option>`).join("");
+    $("fYear").value = ys.includes(prev) ? prev : "all";
+  }
+  const selectedMeta = () => {
+    const b = $("fBranch").value, y = $("fYear").value;
+    return meta.filter(m => (b === "all" || (m.branch || "UNKNOWN") === b) && (y === "all" || yearTxt(m.year) === y));
+  };
+
+  /* ----- run ----- */
+  function probe(url) {
+    return new Promise(res => {
+      const im = new Image();
+      const t = setTimeout(() => { im.src = ""; res(false); }, 20000);
+      im.onload = () => { clearTimeout(t); res(true); };
+      im.onerror = () => { clearTimeout(t); res(false); };
+      im.referrerPolicy = "no-referrer";
+      im.src = url;
+    });
+  }
+
+  function buildRefs(qs) {
+    const out = [];
+    qs.forEach(q => {
+      const id = String(q.id);
+      IMG.paths(q).forEach(path => {
+        const kind = kindOf(path);
+        let note = "";
+        if (kind === "option" && !IMG.forOption(q, (fileOf(path).match(new RegExp("^" + id + "_([A-Za-z])_", "i")) || [])[1] || "?").includes(path))
+          note = "file name does not match the pattern <id>_<option letter>_01, so the exam will not show it inside an option";
+        out.push({ id, branch: q.branch || "UNKNOWN", year: yearTxt(q.year), kind, path, url: new URL(IMG.url(path, q), location.href).href, note });
+      });
+    });
+    return out;
+  }
+
+  async function run() {
+    await IMG.load();
+    const ids = selectedMeta().map(m => String(m.id));
+    if (!ids.length) { $("stage").textContent = "No uploaded questions match this branch / year."; return; }
+    $("runCheck").disabled = true; $("copyReport").disabled = true;
+    const prog = $("imgProg");
+    try {
+      // 1. load the questions (only for this filter)
+      const need = ids.filter(id => !qCache.has(id));
+      prog.hidden = false; prog.max = Math.max(need.length, 1); prog.value = 0;
+      for (let i = 0; i < need.length; i += 150) {
+        $("stage").textContent = `Loading uploaded questions… ${Math.min(i + 150, need.length)} of ${need.length}`;
+        const part = need.slice(i, i + 150);
+        (await API.getQuestionsByIds(part)).forEach(q => qCache.set(String(q.id), q));
+        prog.value = Math.min(i + 150, need.length);
+      }
+      refs = buildRefs(ids.map(id => qCache.get(id)).filter(Boolean));
+      const kind = $("fKind").value;
+      const want = refs.filter(r => kind === "all" || r.kind === kind);
+
+      // 2. request every image the same way the exam does
+      const todo = [...new Set(want.filter(r => !result.has(r.path)).map(r => r.path))];
+      prog.max = Math.max(todo.length, 1); prog.value = 0;
+      let i = 0, done = 0;
+      const worker = async () => {
+        while (i < todo.length) {
+          const pth = todo[i++];
+          result.set(pth, await probe(IMG.url(pth)));
+          prog.value = ++done;
+          if (done % 20 === 0) { $("stage").textContent = `Checking images… ${done} of ${todo.length}`; }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(12, todo.length) }, worker));
+      $("stage").textContent = `Done. Checked ${want.length} image reference(s) from ${ids.length} question(s).`;
+    } catch (err) {
+      $("stage").innerHTML = `<span style="color:var(--bad)">Stopped: ${esc(err.message)}</span>`;
+    }
+    prog.hidden = true; $("runCheck").disabled = false;
+    render();
+  }
+
+  /* ----- display ----- */
+  function groups(rows, item, cls) {
+    const g = new Map();
+    rows.forEach(r => { const d = dirOf(r.path); if (!g.has(d)) g.set(d, []); g.get(d).push(r); });
+    return [...g.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([dir, list]) =>
+      `<div class="grp ${cls}"><h3><span>Path <code>${esc(dir)}/</code></span><span>${list.length}</span></h3>${list.map(item).join("")}</div>`).join("");
+  }
+  const meta1 = r => `${esc(r.branch)} ${esc(r.year)} · ${esc(r.id)} · ${KIND_LABEL[r.kind]}`;
+  const redItem = r => `<div class="item red"><span class="f">${esc(fileOf(r.path))}</span><span class="muted">${meta1(r)} · not reachable at <code>${esc(r.path)}</code></span>${r.note ? `<span class="muted" style="flex-basis:100%">${esc(r.note)}</span>` : ""}</div>`;
+  const greenItem = r => `<div class="item green"><span class="f">${esc(fileOf(r.path))}</span><span class="muted">${meta1(r)} · loads from <code>${esc(r.path)}</code></span></div>`;
+
+  function render() {
+    const kind = $("fKind").value;
+    const ids = new Set(selectedMeta().map(m => String(m.id)));
+    const rows = refs.filter(r => ids.has(r.id) && (kind === "all" || r.kind === kind) && result.has(r.path));
+    const bad = rows.filter(r => !result.get(r.path)).sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true }));
+    const good = rows.filter(r => result.get(r.path)).sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true }));
+    redRows = bad; greenRows = good;
+
+    $("imgStats").innerHTML = rows.length
+      ? `<div class="stat"><b>${rows.length}</b><span>images used by these questions</span></div>` +
+        `<div class="stat"><b style="color:var(--bad)">${bad.length}</b><span>not reachable (red)</span></div>` +
+        `<div class="stat"><b style="color:var(--good)">${good.length}</b><span>reachable (green)</span></div>` : "";
+    $("redBox").innerHTML = !rows.length ? "" : bad.length
+      ? `<h3 style="margin:.2rem 0 .6rem;color:var(--bad)">Not reachable (${bad.length})</h3>` + groups(bad, redItem, "")
+      : '<div class="notice ok">All images are reachable.</div>';
+    $("greenWrap").hidden = !good.length;
+    $("greenBox").innerHTML = $("greenBox").hidden ? "" : groups(good, greenItem, "good");
+    $("toggleGreen").textContent = ($("greenBox").hidden ? "Show" : "Hide") + ` all green (${good.length})`;
+    $("copyReport").disabled = !bad.length;
+  }
+
+  function reportText() {
+    const v = id => $(id).value === "all" ? "All" : $(id).value;
+    const lines = ["IMAGE CHECK REPORT", `Requested from: ${CONFIG.IMAGE_BASE || location.href.replace(/[^/]*$/, "")}`,
+      `Filters: Branch = ${v("fBranch")} | Year = ${v("fYear")} | Images of = ${$("fKind").selectedOptions[0].textContent}`,
+      `Not reachable: ${redRows.length} | Reachable: ${greenRows.length}`, ""];
+    const g = new Map();
+    redRows.forEach(r => { const d = dirOf(r.path); if (!g.has(d)) g.set(d, []); g.get(d).push(r); });
+    [...g.entries()].sort((a, b) => a[0].localeCompare(b[0])).forEach(([dir, list]) => {
+      lines.push(`== ${dir}/ (${list.length} missing) ==`);
+      list.forEach(r => lines.push(`${fileOf(r.path)}  [${r.branch} ${r.year} ${r.id} ${KIND_LABEL[r.kind]}]  -> not found at ${r.url}` + (r.note ? `  (${r.note})` : "")));
+      lines.push("");
+    });
+    return lines.join("\n");
+  }
+  async function copy() {
+    const text = reportText();
+    try { await navigator.clipboard.writeText(text); }
+    catch {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } finally { ta.remove(); }
+    }
+    $("copyMsg").textContent = `Copied ${redRows.length} missing image(s).`;
+    setTimeout(() => $("copyMsg").textContent = "", 3000);
+  }
+
+  async function init() {
+    $("baseTxt").textContent = CONFIG.IMAGE_BASE || (location.href.replace(/[^/]*$/, "") + "images/…  (this site's own images folder)");
+    try {
+      meta = await API.getMeta();
+      summary(); fillBranch();
+      $("runCheck").disabled = !meta.length;
+    } catch (err) {
+      $("upSummary").innerHTML = `<div class="notice err">Could not read the uploaded questions: ${esc(err.message)}</div>`;
+    }
+  }
+
+  $("fBranch").addEventListener("change", () => { fillYear(); render(); });
+  $("fYear").addEventListener("change", render);
+  $("fKind").addEventListener("change", render);
+  $("runCheck").addEventListener("click", run);
+  $("copyReport").addEventListener("click", copy);
+  $("toggleGreen").addEventListener("click", () => { $("greenBox").hidden = !$("greenBox").hidden; render(); });
+  // refresh the list after an upload finishes
+  return { init, refresh: init };
+})();
+ImgCheck.init();
+
+$("files").addEventListener("change", e => loadFiles(e.target.files));
+$("folder").addEventListener("change", e => loadFiles(e.target.files));
+
+$("clearBtn").onclick = () => { toUpload = []; $("files").value = ""; $("folder").value = ""; $("previewCard").hidden = true; $("msg").innerHTML = ""; };
+
+/* ---------- upload ---------- */
+$("uploadBtn").onclick = async () => {
+  const btn = $("uploadBtn");
+  btn.disabled = true;
+  const prog = $("prog");
+  prog.hidden = false; prog.max = toUpload.length; prog.value = 0;
+  const BATCH = 200;
+  let added = 0, skipped = 0;
+  try {
+    for (let i = 0; i < toUpload.length; i += BATCH) {
+      const res = await API.uploadQuestions(toUpload.slice(i, i + BATCH));
+      added += res.added || 0; skipped += res.skipped || 0;
+      prog.value = Math.min(toUpload.length, i + BATCH);
+    }
+    $("msg").innerHTML = `<div class="notice ok">Upload finished: ${added} added, ${skipped} skipped because the id already existed.</div>`;
+    toUpload = []; $("files").value = ""; $("folder").value = ""; $("previewCard").hidden = true;
+    ImgCheck.refresh();
+  } catch (err) {
+    $("msg").innerHTML = `<div class="notice err">Upload stopped after ${added} added: ${esc(err.message)}<br>Choose the files again. Questions already added are skipped automatically, so nothing is duplicated.</div>`;
+    btn.disabled = false;
+  }
+  prog.hidden = true;
+};
+</script>
+</body>
+</html>
