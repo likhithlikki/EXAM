@@ -1,352 +1,5869 @@
-/*
- ============================================================
-  EXAM PRACTICE BACKEND  (Google Apps Script, single file)
- ============================================================
+/**
+ * ECET ONLINE TEST — Google Apps Script Backend
+ * Clean, readable, and designed for the ECET test + revision + reminder system.
+ *
+ * IMPORTANT:
+ * 1. Put this file in Apps Script as Code.gs.
+ * 2. Replace SPREADSHEET_ID if your Google Sheet is different.
+ * 3. Run setup() once from the Apps Script editor and authorize the script.
+ * 4. Deploy as a Web App and make sure the frontend uses the deployed /exec URL.
+ */
 
-  STEP 1. SCRIPT PROPERTY TO ADD  (only one)
-  ------------------------------------------
-  Apps Script editor -> Project Settings (gear icon) -> Script Properties
-  -> Add script property:
+// ============================================================
+// 1. CONFIGURATION
+// ============================================================
 
-      Property : SHEET_ID
-      Value    : the long id from your Google Sheet URL
-                 https://docs.google.com/spreadsheets/d/<THIS_PART>/edit
+const SPREADSHEET_ID = '1QDu7YTv-MWm9jRuVsmRBGjwuBD6WFtj_4bRqj5B8hds';
 
-  (If you create this script from inside the sheet via
-   Extensions -> Apps Script, SHEET_ID is optional: the script
-   will use that sheet automatically.)
+// Used only when a test URL is not supplied by the frontend.
+// IMPORTANT: replace this with your real website URL if you use
+// server-generated revision links.
+const SITE_URL = ''; // Optional fallback website URL. Prefer frontend-supplied testUrl.
 
-  STEP 2. RUN setup() ONCE
-  ------------------------
-  Pick "setup" in the function dropdown and press Run. Allow the
-  permissions. It creates two tabs with headers:
-      Questions   (one row per question)
-      Results     (one row per finished exam)
+const SHEETS = {
+  // ConsentGiven/ConsentAt: durable, timestamped record that this user
+  // ticked the Privacy Policy / Terms consent checkbox in the frontend
+  // (see consentFieldsHTML_ in app.js) — required for the DPDP Act's
+  // "notice + consent before collecting personal data" requirement to be
+  // demonstrable, not just a client-side box with no server-side trace.
+  // ensureSheets_() auto-adds these two columns to an existing sheet on
+  // next deploy, so no manual spreadsheet edit is needed.
+  // Uid: the Firebase UID for this user, set the first time they register
+  // through the native app (or, for existing web-only users, left blank
+  // until they first sign in natively — email remains how the website
+  // looks up a user, exactly as before; Uid is additive, not a
+  // replacement column the website needs to know about).
+  Users: [
+    'Timestamp', 'Name', 'Email', 'LastSubject', 'LastTestUrl',
+    'ConsentGiven', 'ConsentAt', 'Uid'
+  ],
 
-  STEP 3. MANIFEST + DEPLOY
-  -------------------------
-  Project Settings -> tick "Show appsscript.json manifest file in editor".
-  Open appsscript.json in the editor and replace its content with the
-  provided appsscript.json file.
+  // Server-side admin allowlist for the native app's Firebase-UID-based
+  // admin gate (see requireAdminUser_ in section 3B) — add/remove a row
+  // here to grant/revoke native admin access, no redeploy needed. This is
+  // separate from the website's legacy password-based admin/Control Centre
+  // gate, which still exists unchanged for the website.
+  AdminUsers: [
+    'Uid', 'Name', 'AddedAt'
+  ],
 
-  Deploy -> New deployment -> type: Web app
-      Execute as     : Me
-      Who has access : Anyone
-  Copy the Web app URL (ends with /exec) and paste it into
-  config.js as API_URL.
+  Results: [
+    'ResultId', 'Timestamp', 'Name', 'Email', 'Subject', 'SubjectId',
+    'Score', 'Total', 'Percentage', 'Correct', 'Wrong', 'Unanswered',
+    'TotalTimeSec', 'StartTime', 'EndTime', 'Rank', 'RankOutOf',
+    'RevisionAvailableAt', 'RevisionUnlockedEmailSent', 'TestUrl'
+  ],
 
-  After you edit this file later: Deploy -> Manage deployments ->
-  pencil icon -> Version: New version -> Deploy. (The URL stays same.)
+  Answers: [
+    'ResultId', 'Email', 'Subject', 'QuestionId', 'Year', 'State',
+    'QuestionNumber', 'SelectedIndex', 'CorrectIndex', 'IsCorrect',
+    'TimeSpentSec', 'MarkedForReview'
+  ],
 
-  TEST: open  <WEB_APP_URL>?action=ids  in a browser.
-  You should see {"ids":[]}.
+  WrongAnswers: [
+    'WrongId', 'ResultId', 'Email', 'Subject', 'QuestionId', 'Year',
+    'State', 'QuestionNumber', 'Question', 'OptionsJSON', 'CorrectIndex',
+    'SelectedIndex', 'MistakeType', 'DateAdded', 'RevisionDueDate',
+    'Revised', 'ReminderSent', 'TestUrl', 'ImagesJSON'
+  ],
 
-  RULES
-  -----
-  * Upload is INSERT ONLY. If a question id already exists in the
-    sheet, that question is skipped and the old row is left untouched.
-  * Anyone who has the URL can read and write your sheet, so keep the
-    URL private.
- ============================================================
-*/
+  Rankings: [
+    'Subject', 'Email', 'Name', 'BestPercentage', 'BestScore',
+    'Total', 'Attempts', 'LastAttempt'
+  ],
 
-const QUESTIONS_TAB = "Questions";
-const RESULTS_TAB = "Results";
-const USERS_TAB = "Users";
+  // One row per user. Kept up to date incrementally at submit-time so the
+  // dashboard is a single-row lookup instead of a full Results/WrongAnswers
+  // scan on every load (see dashboard_ and userStats_*).
+  // Journal of Control Centre changes (rename / merge / move / delete ...). Every
+  // change that can be undone stores what it changed in OperationData.
+  Operations: [
+    'OpId', 'Timestamp', 'Admin', 'Type', 'Title', 'Status', 'Undoable', 'Parts'
+  ],
+  OperationData: [
+    'OpId', 'Part', 'Json'
+  ],
 
-// Drive folder where candidate PNG photos are stored (one file per email: <email>.png)
-const IMAGE_FOLDER_ID = "1OmbQejgjswsST2KB2O2sVJR4U2E5WU3c";
-const U_HEADERS = ["email", "name", "photoFile", "firstSeen", "lastSeen"];
+  UserStats: [
+    'Email', 'Attempts', 'SumPercentage', 'BestPercentage',
+    'MistakesCount', 'SubjectStatsJSON', 'UpdatedAt'
+  ],
 
-const Q_HEADERS = [
-  "id", "exam", "branch", "year", "subject", "question_number", "question_type",
-  "answer_format", "marks", "negative_marks", "exam_label", "question", "options",
-  "answer", "explanation", "images", "source_page", "answer_status",
+  RevisionHistory: [
+    'Email', 'Subject', 'QuestionId', 'ActionDate', 'Action', 'MistakeType'
+  ],
+
+  EmailQueue: [
+    'QueueId', 'ToEmail', 'EmailType', 'Subject', 'HtmlBody',
+    'CreatedAt', 'SentAt', 'Status'
+  ],
+
+  SubmittedSessions: [
+    'ExamSessionId', 'ResultId', 'Email', 'Subject', 'SubmittedAt'
+  ],
+
+  Reminders: [
+    'ReminderId', 'Email', 'UserName', 'Name', 'Message', 'RelatedTask',
+    'RelatedUrl', 'Frequency', 'NextRunAt', 'Status', 'Enabled',
+    'CreatedAt', 'UpdatedAt', 'LastSentAt'
+  ],
+
+  Questions: [
+    'QuestionId', 'SubjectId', 'Subject', 'Year', 'State', 'QuestionNumber',
+    'Question', 'OptionA', 'OptionB', 'OptionC', 'OptionD', 'CorrectAnswer',
+    'CreatedAt', 'CreatedBy', 'QuestionImage', 'OptionAImage', 'OptionBImage',
+    'OptionCImage', 'OptionDImage', 'Topic', 'Exam', 'Marks', 'Type'
+  ],
+
+  Subjects: [
+    'SubjectId', 'Name', 'Password', 'Description', 'CreatedBy', 'CreatedAt', 'Exam'
+  ],
+
+  Notifications: [
+    'NotificationId', 'ReminderId', 'Email', 'UserName', 'Name',
+    'Message', 'RelatedTask', 'RelatedUrl', 'ScheduledAt', 'SentAt',
+    'Status', 'Error', 'RetryCount'
+  ],
+
+  ChangeLog: [
+    'ChangeId', 'Timestamp', 'EditedBy', 'Subject', 'SubjectId',
+    'QuestionId', 'QuestionSnippet', 'BeforeJSON', 'AfterJSON', 'Summary'
+  ],
+
+  // Admin-only exam-timer overrides. One row per adjustment; the newest row
+  // for an (Email, Subject) pair wins. Subject '*' means "all subjects".
+  CooldownOverrides: [
+    'OverrideId', 'Email', 'Subject', 'UnlockAt', 'Action', 'Note',
+    'SetBy', 'SetAt'
+  ]
+};
+
+// Names of the built-in (static JSON) subjects. Only used to fill the Subject
+// dropdowns inside the Google Sheet; custom subjects are read live.
+const STATIC_SUBJECT_NAMES = [
+  "Digital Electronics",
+  "Software Engineering",
+  "Computer Organisation & Microprocessors",
+  "Data Structures through C",
+  "Computer Networks & Cyber Security",
+  "Operating Systems",
+  "DBMS",
+  "Java Programming",
+  "Web Technologies",
+  "Big Data & Cloud Computing",
+  "Android Programming",
+  "Internet of Things (IoT)",
+  "Python Programming"
 ];
-const META_COLS = 9; // id .. marks (first 9 columns) are sent to the setup page
 
-const R_HEADERS = [
-  "finishedAt", "branch", "year", "topic", "total", "score", "maxScore", "correct",
-  "wrong", "unattempted", "noKey", "accuracy", "timeTakenSec", "durationSec",
-  "autoSubmitted", "bySubject", "detail", "name", "email", "attemptId", "status",
-];
-const R_TEXT_COLS = ["year", "topic", "bySubject", "detail", "name", "email", "attemptId", "status"];
 
-/* ---------------- one-time setup ---------------- */
-function setup() {
-  getSheet_(QUESTIONS_TAB, Q_HEADERS);
-  getSheet_(RESULTS_TAB, R_HEADERS);
-  getSheet_(USERS_TAB, U_HEADERS);
-  getSheet_(GP_QUESTIONS_TAB, GP_HEADERS);
-  DriveApp.getFolderById(IMAGE_FOLDER_ID).getName();   // makes Google ask for Drive permission
-  Logger.log("Done. Sheets and Drive folder are ready.");
+// ============================================================
+// 2. BASIC HELPERS
+// ============================================================
+
+function ss_() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
 }
 
-/* ---------------- web app entry points ---------------- */
-function doGet(e) {
+function sh_(name) {
+  return ss_().getSheetByName(name);
+}
+
+function tz_() {
+  return Session.getScriptTimeZone() || 'Asia/Kolkata';
+}
+
+function iso_(value) {
+  return Utilities.formatDate(
+    new Date(value),
+    tz_(),
+    "yyyy-MM-dd'T'HH:mm:ssXXX"
+  );
+}
+
+function display_(value) {
+  return Utilities.formatDate(
+    new Date(value),
+    tz_(),
+    'dd MMM yyyy, hh:mm a'
+  );
+}
+
+function email_(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function validEmail_(value) {
+  var email = email_(value);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function esc_(value) {
+  return String(value == null ? '' : value).replace(
+    /[&<>"']/g,
+    function (char) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char];
+    }
+  );
+}
+
+function out_(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function bool_(value) {
+  return value === true ||
+    String(value).toLowerCase() === 'true' ||
+    String(value) === '1';
+}
+
+function num_(value, fallback) {
+  var n = Number(value);
+  return isFinite(n) ? n : (fallback || 0);
+}
+
+function validDate_(value) {
+  var d = new Date(value);
+  return !isNaN(d.getTime());
+}
+
+function toDate_(value, fallback) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return value;
+  }
+
+  var d = new Date(value);
+  if (!isNaN(d.getTime())) {
+    return d;
+  }
+
+  return fallback || new Date();
+}
+
+function normalizeFrequency_(value) {
+  var f = String(value || 'once').trim().toLowerCase();
+
+  var allowed = [
+    'once',
+    'one-time',
+    'single',
+    'hourly',
+    'daily',
+    'weekly',
+    'monthly'
+  ];
+
+  if (allowed.indexOf(f) === -1) {
+    return 'once';
+  }
+
+  if (f === 'one-time' || f === 'single') {
+    return 'once';
+  }
+
+  return f;
+}
+
+
+// ============================================================
+// 3. SHEET SETUP
+// ============================================================
+
+function ensureSheets_() {
+  var book = ss_();
+
+  Object.keys(SHEETS).forEach(function (name) {
+    var sheet = book.getSheetByName(name);
+
+    if (!sheet) {
+      sheet = book.insertSheet(name);
+    }
+
+    var wantedHeaders = SHEETS[name];
+
+    if (sheet.getLastRow() === 0) {
+      sheet
+        .getRange(1, 1, 1, wantedHeaders.length)
+        .setValues([wantedHeaders])
+        .setFontWeight('bold');
+
+      sheet.setFrozenRows(1);
+      return;
+    }
+
+    var lastColumn = Math.max(1, sheet.getLastColumn());
+
+    var currentHeaders = sheet
+      .getRange(1, 1, 1, lastColumn)
+      .getValues()[0]
+      .map(String);
+
+    var missingHeaders = wantedHeaders.filter(function (header) {
+      return currentHeaders.indexOf(header) === -1;
+    });
+
+    if (missingHeaders.length) {
+      sheet
+        .getRange(
+          1,
+          sheet.getLastColumn() + 1,
+          1,
+          missingHeaders.length
+        )
+        .setValues([missingHeaders])
+        .setFontWeight('bold');
+    }
+
+    sheet.setFrozenRows(1);
+  });
+
+  // Remove the unused default Sheet1 when safe to do so.
+  var defaultSheet = book.getSheetByName('Sheet1');
+
+  if (
+    defaultSheet &&
+    defaultSheet.getLastRow() === 0 &&
+    book.getSheets().length > 1
+  ) {
+    book.deleteSheet(defaultSheet);
+  }
+}
+
+function objs_(sheet) {
+  if (!sheet || sheet.getLastRow() < 2) {
+    return [];
+  }
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0];
+
+  return values
+    .slice(1)
+    .filter(function (row) {
+      return row.join('') !== '';
+    })
+    .map(function (row) {
+      var obj = {};
+
+      headers.forEach(function (header, index) {
+        obj[header] = row[index];
+      });
+
+      return obj;
+    });
+}
+
+// Finds the first row where columnHeader === value (TextFinder-based search
+// of a single column, rather than pulling every column of every row into
+// memory the way objs_() does) and returns that row as a header-keyed
+// object. Use this instead of objs_().find(...) on hot paths / large sheets
+// when you only need one row.
+function findRowByColumn_(sheetName, columnHeader, value) {
+  var sheet = sh_(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var col = headers.indexOf(columnHeader) + 1;
+  if (!col) return null;
+
+  var range = sheet.getRange(2, col, sheet.getLastRow() - 1, 1);
+  var match = range.createTextFinder(String(value)).matchEntireCell(true).findNext();
+  if (!match) return null;
+
+  var rowValues = sheet.getRange(match.getRow(), 1, 1, headers.length).getValues()[0];
+  var obj = {};
+  headers.forEach(function (h, i) { obj[h] = rowValues[i]; });
+  return obj;
+}
+
+// Same TextFinder search as findRowByColumn_, but returns just one other
+// column's value from the matching row instead of the whole row — for
+// lookups where that's all that's needed (e.g. session id -> result id).
+function findInColumn_(sheetName, searchHeader, searchValue, returnHeader) {
+  var sheet = sh_(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var searchCol = headers.indexOf(searchHeader) + 1;
+  var returnCol = headers.indexOf(returnHeader) + 1;
+  if (!searchCol || !returnCol) return null;
+
+  var range = sheet.getRange(2, searchCol, sheet.getLastRow() - 1, 1);
+  var match = range.createTextFinder(String(searchValue)).matchEntireCell(true).findNext();
+  if (!match) return null;
+
+  var value = sheet.getRange(match.getRow(), returnCol).getValue();
+  return (value === '' || value === null || value === undefined) ? null : String(value);
+}
+
+function append_(sheet, headers, object) {
+  sheet.appendRow(
+    headers.map(function (header) {
+      return object[header] !== undefined ? object[header] : '';
+    })
+  );
+}
+
+function appendMany_(sheet, headers, objects) {
+  if (!objects || !objects.length) {
+    return;
+  }
+
+  var startRow = sheet.getLastRow() + 1;
+
+  var values = objects.map(function (object) {
+    return headers.map(function (header) {
+      return object[header] !== undefined ? object[header] : '';
+    });
+  });
+
+  sheet
+    .getRange(startRow, 1, values.length, headers.length)
+    .setValues(values);
+}
+
+
+// ============================================================
+// 3B. FIREBASE AUTHENTICATION BRIDGE (native Android app)
+// ============================================================
+// Added to support the native Android app, which authenticates students
+// with Firebase Authentication (Google + Email/Password) instead of the
+// website's old "an email typed into a form IS the identity" model. This
+// section verifies a Firebase ID token SERVER-SIDE before trusting any
+// UID it claims, and never trusts a client-supplied UID or email as proof
+// of identity on its own.
+//
+// DUAL-MODE BY DESIGN: the existing website (index.html/app.js) keeps
+// working completely unchanged — every action below still accepts calls
+// with no idToken at all, exactly as before. idToken is only checked WHEN
+// PRESENT. This is deliberate: forcing every website visitor onto Firebase
+// Auth in one shot was explicitly out of scope ("the existing GitHub
+// website must remain functional"), so the migration path is additive,
+// not a breaking cutover. Once the native app is the primary client, the
+// legacy email-only path can be retired action-by-action.
+//
+// REQUIRED SETUP (see IMPLEMENTATION_REPORT.md "Manual setup"):
+//   1. Firebase Console -> Project Settings -> General -> "Web API Key".
+//   2. In this Apps Script project: Project Settings (gear icon) -> Script
+//      Properties -> add a property named FIREBASE_WEB_API_KEY with that
+//      value. NEVER hard-code it in this file or commit it to GitHub.
+//   3. Add admin UIDs to the AdminUsers sheet (auto-created by
+//      ensureSheets_) — see adminUidAllowlist_() below.
+
+function firebaseWebApiKey_() {
+  var key = PropertiesService.getScriptProperties().getProperty('FIREBASE_WEB_API_KEY');
+  if (!key) {
+    throw new Error('FIREBASE_WEB_API_KEY is not set in Script Properties. See Code.gs section 3B for setup steps.');
+  }
+  return key;
+}
+
+// Structured error shape for the NEW auth-gated failures, matching the
+// Master Prompt's requested {code, message} shape. Every PRE-EXISTING
+// action's errors are untouched (still plain strings via friendlyError_),
+// so the website's error handling never has to change.
+function authError_(code, message) {
+  return { ok: false, error: { code: code, message: message } };
+}
+
+/**
+ * Verifies a Firebase ID token by calling the official Identity Toolkit
+ * REST API (accounts:lookup) — the same approach Firebase's own server-side
+ * verification guidance describes for platforms without the Firebase Admin
+ * SDK (Apps Script has no Admin SDK). Returns the authenticated user's
+ * {uid, email, emailVerified} on success, or null on any failure — callers
+ * must treat null as "reject the request", never as "fall back to
+ * anonymous/legacy behavior" for a NEW protected action.
+ *
+ * SECURITY NOTE: this call itself never sees or needs the student's
+ * password — Firebase already validated credentials when it issued the ID
+ * token client-side. This function's only job is confirming the token is
+ * genuine, current, and reading who it belongs to, so the backend never has
+ * to trust a client-asserted UID/email.
+ */
+function verifyFirebaseIdToken_(idToken) {
+  if (!idToken) return null;
+
+  // Short-lived verification cache. Every native request carries a token, and
+  // each verification is a UrlFetch call (~20,000/day quota on consumer
+  // accounts, plus latency). The token's SHA-256 (never the token itself) is
+  // the cache key, and 120s is short enough that a revoked/expired token is
+  // rejected within two minutes at most.
+  var cacheKey = null;
   try {
-    const action = (e && e.parameter && e.parameter.action) || "";
-    if (action === "meta") return json_({ meta: readMeta_() });
-    if (action === "ids") return json_({ ids: readIds_() });
-    if (action === "results") return json_({ results: readResults_(e.parameter.email) });
-    if (action === "gpMeta") return json_({ meta: gpReadMeta_() });
-    return json_({ error: "Unknown action. Use ?action=meta, ?action=ids, ?action=results or ?action=gpMeta" });
-  } catch (err) {
-    return json_({ error: String(err && err.message || err) });
+    var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(idToken));
+    cacheKey = 'fbtok_' + digest.map(function (b) { return ('0' + (b & 0xff).toString(16)).slice(-2); }).join('');
+    var hit = CacheService.getScriptCache().get(cacheKey);
+    if (hit) return JSON.parse(hit);
+  } catch (ignore) {}
+
+  var url = 'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + encodeURIComponent(firebaseWebApiKey_());
+
+  try {
+    var response = UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify({ idToken: idToken }),
+      muteHttpExceptions: true
+    });
+
+    var status = response.getResponseCode();
+    var body = JSON.parse(response.getContentText() || '{}');
+
+    if (status !== 200 || !body.users || !body.users.length) {
+      return null; // invalid, expired, or malformed token — caller returns AUTH_INVALID/AUTH_EXPIRED
+    }
+
+    var user = body.users[0];
+    var verified = {
+      uid: user.localId,
+      email: email_(user.email || ''),
+      emailVerified: !!user.emailVerified
+    };
+    try {
+      if (cacheKey) CacheService.getScriptCache().put(cacheKey, JSON.stringify(verified), 120);
+    } catch (ignore) {}
+    return verified;
+  } catch (e) {
+    // Network/parse failure talking to Google's own endpoint — treat as
+    // "could not verify", never as "assume valid".
+    return null;
+  }
+}
+
+/**
+ * The single gate every NEW protected native-app action calls at the top.
+ * Returns {uid, email, emailVerified} on success. Returns a ready-to-send
+ * authError_() response on failure — callers do:
+ *
+ *   var auth = requireAuthenticatedUser_(body);
+ *   if (auth.error) return auth.error;
+ *   // ...use auth.uid / auth.email from here on, never body.email alone...
+ *
+ * `request` may be a doPost body object OR a doGet e.parameter object —
+ * both are plain objects with an idToken field by convention (Kotlin's
+ * ApiService sends it as a query param on GET, a JSON body field on POST).
+ */
+function requireAuthenticatedUser_(request) {
+  var idToken = request && request.idToken;
+  if (!idToken) {
+    return { error: authError_('AUTH_REQUIRED', 'Authentication required.') };
+  }
+  var verified = verifyFirebaseIdToken_(idToken);
+  if (!verified) {
+    return { error: authError_('AUTH_INVALID', 'Your session has expired or is invalid. Please sign in again.') };
+  }
+  return { uid: verified.uid, email: verified.email, emailVerified: verified.emailVerified };
+}
+
+// ---- Admin authorization for the native app: UID allowlist, not a password ----
+// "Hiding an admin button is not security" — this is the actual server-side
+// gate: even a manually-crafted request to an admin action is rejected
+// unless the AUTHENTICATED UID (verified above, never a client-claimed one)
+// is on this list. Kept in its own sheet (not a hard-coded array) so admins
+// can be added/removed by editing a spreadsheet row, no redeploy needed.
+function adminUidAllowlist_() {
+  return objs_(sh_('AdminUsers')).map(function (row) { return String(row.Uid || '').trim(); }).filter(Boolean);
+}
+
+function isAdminUid_(uid) {
+  if (!uid) return false;
+  return adminUidAllowlist_().indexOf(uid) !== -1;
+}
+
+/**
+ * Gate for a NEW native-app admin action: requires both a valid Firebase
+ * session AND that UID being on the AdminUsers allowlist. Distinct from the
+ * legacy isAdmin_(email, password) used by pre-existing website actions,
+ * which is left in place for backward compatibility only — see the
+ * "Security fixes" section of IMPLEMENTATION_REPORT.md for why the legacy
+ * password path should be rotated and eventually retired now that this
+ * exists.
+ */
+function requireAdminUser_(request) {
+  var auth = requireAuthenticatedUser_(request);
+  if (auth.error) return auth;
+  if (!isAdminUid_(auth.uid)) {
+    return { error: authError_('AUTH_FORBIDDEN', 'Admin access is required.') };
+  }
+  return auth;
+}
+
+// ============================================================
+// 4. WEB APP ENTRY POINTS
+// ============================================================
+
+// ensureSheets_() scans every sheet's headers on every call — real but
+// avoidable latency when it runs on every single request. Sheet structure
+// only changes on deploy, so gate it behind a short CacheService flag and
+// skip the rescan on the (very common) fast path.
+
+// ============================================================
+// GOOGLE SHEET DROPDOWNS
+// ============================================================
+// Columns with a fixed set of values get a dropdown so they can be edited by
+// clicking instead of typing. Existing values are never rejected or changed
+// (setAllowInvalid(true)); scripts write around validation as usual.
+
+var DROPDOWN_VERSION = '3';
+
+function dropdownSpec_() {
+  var TF = ['TRUE', 'FALSE'];
+  var subjectNames = STATIC_SUBJECT_NAMES.slice();
+  try {
+    objs_(sh_('Subjects')).forEach(function (r) {
+      var n = String(r.Name || '').trim();
+      if (n && subjectNames.indexOf(n) === -1) subjectNames.push(n);
+    });
+  } catch (ignore) {}
+
+  return {
+    Reminders: {
+      Frequency: ['once', 'hourly', 'daily', 'weekly', 'monthly'],
+      Status: ['Active', 'Paused', 'Completed'],
+      Enabled: TF
+    },
+    Notifications: { Status: ['Sent', 'Pending', 'Failed'] },
+    EmailQueue: { Status: ['PENDING', 'SENT', 'FAILED'] },
+    WrongAnswers: {
+      MistakeType: ['wrong', 'unattempted'],
+      Revised: TF,
+      ReminderSent: TF,
+      Subject: subjectNames
+    },
+    Results: { RevisionUnlockedEmailSent: TF, Subject: subjectNames },
+    Answers: { IsCorrect: TF, MarkedForReview: TF, Subject: subjectNames },
+    Questions: {
+      CorrectAnswer: ['A', 'B', 'C', 'D'],
+      Subject: subjectNames
+    },
+    Rankings: { Subject: subjectNames },
+    RevisionHistory: { Action: ['revised', 'unrevised'], Subject: subjectNames },
+    CooldownOverrides: {
+      Subject: ['*'].concat(subjectNames),
+      Action: ['unlock', 'set', 'add', 'default']
+    }
+  };
+}
+
+function applyDropdowns_() {
+  var spec = dropdownSpec_();
+  var book = ss_();
+
+  Object.keys(spec).forEach(function (sheetName) {
+    var sheet = book.getSheetByName(sheetName);
+    if (!sheet) return;
+    var lastCol = Math.max(1, sheet.getLastColumn());
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+    var rows = Math.max(1, sheet.getMaxRows() - 1);
+
+    Object.keys(spec[sheetName]).forEach(function (header) {
+      var col = headers.indexOf(header) + 1;
+      if (!col) return;
+      var rule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(spec[sheetName][header], true)
+        .setAllowInvalid(true)
+        .build();
+      sheet.getRange(2, col, rows, 1).setDataValidation(rule);
+    });
+  });
+
+  // Student email dropdown on the override sheet, fed live from Users.
+  try {
+    var ov = book.getSheetByName('CooldownOverrides');
+    var users = book.getSheetByName('Users');
+    if (ov && users) {
+      var ovHeaders = ov.getRange(1, 1, 1, Math.max(1, ov.getLastColumn())).getValues()[0].map(String);
+      var uHeaders = users.getRange(1, 1, 1, Math.max(1, users.getLastColumn())).getValues()[0].map(String);
+      var ovCol = ovHeaders.indexOf('Email') + 1;
+      var uCol = uHeaders.indexOf('Email') + 1;
+      if (ovCol && uCol) {
+        var emailRule = SpreadsheetApp.newDataValidation()
+          .requireValueInRange(users.getRange(2, uCol, Math.max(1, users.getMaxRows() - 1), 1), true)
+          .setAllowInvalid(true)
+          .build();
+        ov.getRange(2, ovCol, Math.max(1, ov.getMaxRows() - 1), 1).setDataValidation(emailRule);
+      }
+    }
+  } catch (ignore) {}
+}
+
+// Runs the dropdown setup once per DROPDOWN_VERSION (so it happens by itself
+// after you deploy this file), not on every request.
+function ensureDropdowns_() {
+  try {
+    var props = PropertiesService.getScriptProperties();
+    if (props.getProperty('dropdown_version') === DROPDOWN_VERSION) return;
+    applyDropdowns_();
+    props.setProperty('dropdown_version', DROPDOWN_VERSION);
+  } catch (e) {
+    // Dropdowns are a convenience — never block a request because of them.
+  }
+}
+
+// Handy manual entry point: Apps Script editor -> run applyDropdowns after
+// adding a new subject so its name shows up in the dropdown lists.
+function applyDropdowns() {
+  ensureSheets_();
+  applyDropdowns_();
+  PropertiesService.getScriptProperties().setProperty('dropdown_version', DROPDOWN_VERSION);
+  return 'Dropdowns applied.';
+}
+
+function ensureSheetsCached_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    if (cache.get('sheets_ensured')) return;
+    ensureSheets_();
+    ensureDropdowns_();
+    cache.put('sheets_ensured', '1', 300); // re-check at most every 5 min
+  } catch (e) {
+    ensureSheets_();
+  }
+}
+function doGet(e) {
+  e = e || { parameter: {} };
+
+  var action = String(
+    (e.parameter && e.parameter.action) || ''
+  ).trim();
+
+  // Ping/health must stay lightweight and must not fail merely because
+  // sheet initialization fails, so it is answered before ensureSheets_()
+  // and does not depend on it succeeding.
+  if (action === 'ping' || action === 'health') {
+    return out_({
+      ok: true,
+      time: iso_(new Date()),
+      timezone: tz_(),
+      message: 'ECET backend is online.'
+    });
+  }
+
+  try {
+    ensureSheetsCached_();
+
+    // NATIVE APP PATH (all read actions at once): when an idToken is sent,
+    // verify it and force e.parameter.email to the VERIFIED email so a
+    // modified client can't read another student's dashboard/mistakes/
+    // history by typing their email. No idToken -> unchanged website
+    // behavior.
+    if (e.parameter && e.parameter.idToken) {
+      var getAuth = requireAuthenticatedUser_(e.parameter);
+      if (getAuth.error) return out_(getAuth.error);
+      if (getAuth.email) e.parameter.email = getAuth.email;
+      e.parameter.__verifiedUid = getAuth.uid; // internal marker, never read from a client (a client-sent value is overwritten here)
+    } else if (e.parameter) {
+      delete e.parameter.__verifiedUid; // a website caller must never be able to smuggle this marker in
+    }
+
+    switch (action) {
+      case 'homeBundle':
+        var stats = questionStats_(); // one scan of the Questions sheet serves both lists
+        // Collapses the home-page startup burst (ping + isAdmin + customSubjects
+        // + dashboard stats) into a single Apps Script execution instead of
+        // several separate round trips firing at once and competing for the
+        // same backend. Dashboard data is only computed/attached when an
+        // email is present, and even then it's the cached, pre-aggregated
+        // UserStats read (see dashboard_) — never a fresh scan.
+        return out_({
+          ok: true,
+          data: {
+            online: true,
+            isAdmin: e.parameter.__verifiedUid ? isAdminUid_(e.parameter.__verifiedUid) : (e.parameter.email ? isAdmin_(e.parameter.email, e.parameter.password) : false),
+            // Native callers (verified idToken) never receive per-subject exam
+            // passwords — not needed there, and previously shipped to every
+            // client. The website path is unchanged.
+            customSubjects: e.parameter.__verifiedUid
+              ? customSubjects_(stats).map(function (s) { var copy = {}; Object.keys(s).forEach(function (k) { if (k !== 'password') copy[k] = s[k]; }); return copy; })
+              : customSubjects_(stats),
+            topicSummary: topicSummary_(stats),
+            cooldownMinutes: Math.round(subjectCooldownMs_() / 60000),
+            dashboard: e.parameter.email ? cached_('dash_' + email_(e.parameter.email), 30, function () {
+              return dashboard_(e.parameter.email);
+            }) : null
+          }
+        });
+
+      case 'subjectStatus':
+        // Single-row lookup of one subject's cooldown state for this user —
+        // not a recompute of anything. Lets the frontend gate "Open Exam"
+        // with a live countdown without ever recalculating stats.
+        return out_({
+          ok: true,
+          data: subjectStatus_(e.parameter.email, e.parameter.subject)
+        });
+
+      case 'dashboard':
+        return out_({
+          ok: true,
+          data: cached_('dash_' + email_(e.parameter.email), 30, function () {
+            return dashboard_(e.parameter.email);
+          })
+        });
+
+      case 'customSubjects':
+        var subjectStats = questionStats_();
+        return out_({
+          ok: true,
+          data: customSubjects_(subjectStats),
+          topicSummary: topicSummary_(subjectStats)
+        });
+
+      case 'profile':
+        return out_({
+          ok: true,
+          data: profile_(e.parameter.email)
+        });
+
+      case 'mistakes':
+      case 'revision':
+        return out_({
+          ok: true,
+          data: cached_('mist_' + email_(e.parameter.email), 30, function () {
+            return mistakes_(e.parameter.email);
+          })
+        });
+
+      case 'history':
+      case 'attemptHistory':
+        return out_({
+          ok: true,
+          data: cached_('hist_' + email_(e.parameter.email), 30, function () {
+            return history_(e.parameter.email);
+          })
+        });
+
+      case 'reminders':
+        return out_({
+          ok: true,
+          data: cached_('rmnd_' + email_(e.parameter.email), 30, function () {
+            return reminders_(e.parameter.email);
+          })
+        });
+
+      case 'questions':
+        return out_({
+          ok: true,
+          data: questions_(e.parameter.subjectId)
+        });
+
+      case 'isAdmin':
+        return out_({
+          ok: true,
+          isAdmin: isAdmin_(e.parameter.email, e.parameter.password)
+        });
+
+      case 'notifications':
+      case 'notificationHistory':
+        return out_({
+          ok: true,
+          data: notifications_(e.parameter.email)
+        });
+
+      case 'questionChangeLog':
+        return out_({
+          ok: true,
+          data: questionChangeLog_()
+        });
+
+      default:
+        return out_({
+          ok: false,
+          error: 'Unknown action: ' + action
+        });
+    }
+
+  } catch (error) {
+    return out_({
+      ok: false,
+      error: friendlyError_(error)
+    });
   }
 }
 
 function doPost(e) {
-  const lock = LockService.getScriptLock();
-  let locked = false;
+  var lock = LockService.getScriptLock();
+  var body = {};
+
   try {
-    const body = JSON.parse(e.postData.contents);
-    if (body.action === "getByIds") return json_({ questions: readByIds_(body.ids || []) });
-    if (body.action === "gpGetByIds") return json_({ questions: gpReadByIds_(body.ids || []) });
     lock.waitLock(30000);
-    locked = true;
-    if (body.action === "upload") return json_(insertQuestions_(body.rows || []));
-    if (body.action === "gpUpload") return json_(gpUpload_(body));
-    if (body.action === "saveResult") return json_(appendResult_(body.result));
-    if (body.action === "register") return json_(registerUser_(body));
-    return json_({ error: "Unknown action: " + body.action });
-  } catch (err) {
-    return json_({ error: String(err && err.message || err) });
+
+    ensureSheetsCached_();
+
+    if (e && e.postData && e.postData.contents) {
+      body = JSON.parse(e.postData.contents);
+    }
+
+    // NATIVE APP PATH (every POST action at once): verify idToken ONCE here
+    // rather than per-action, then force body.email to the VERIFIED email so
+    // no downstream function (deleteAccount_, submitRevision_, reminder
+    // actions, etc.) can be tricked by a client-supplied email. This closes
+    // the gap noted in IMPLEMENTATION_REPORT.md — previously only
+    // register_/submitExam_ did this themselves. body.__verifiedUid is an
+    // internal marker; a client-sent value is always overwritten below, and
+    // deleted entirely on the legacy (no idToken) website path so it can
+    // never be smuggled in.
+    if (body.idToken) {
+      var postAuth = requireAuthenticatedUser_(body);
+      if (postAuth.error) return out_(postAuth.error);
+      if (postAuth.email) body.email = postAuth.email;
+      body.__verifiedUid = postAuth.uid;
+    } else {
+      delete body.__verifiedUid;
+    }
+
+    var action = String(body.action || '').trim();
+
+    switch (action) {
+      case 'register':
+        return out_(register_(body));
+
+      case 'deleteAccount':
+        return out_(deleteAccount_(body));
+
+      case 'importQuestions':
+        return out_(importQuestions_(body));
+
+      case 'updateQuestion':
+        return out_(updateQuestion_(body));
+
+      case 'setQuestionTopic':
+        return out_(setQuestionTopic_(body));
+
+      case 'adminCooldownList':
+        return out_(adminCooldownList_(body));
+
+      case 'adminCooldownAdjust':
+        return out_(adminCooldownAdjust_(body));
+
+      case 'controlLogin':
+        return out_(controlLogin_(body));
+
+      case 'controlData':
+        return out_(controlData_(body));
+
+      case 'setDefaultCooldown':
+        return out_(setDefaultCooldown_(body));
+
+      case 'setSubjectExam':
+        return out_(setSubjectExam_(body));
+
+      case 'deleteSubjects':
+        return out_(deleteSubjects_(body));
+
+      case 'renameSubject':
+        return out_(renameSubject_(body));
+
+      case 'mergeSubjects':
+        return out_(mergeSubjects_(body));
+
+      case 'moveTopicTests':
+        return out_(moveTopicTests_(body));
+
+      case 'renameTopicTest':
+        return out_(renameTopicTest_(body));
+
+      case 'nestSubjects':
+        return out_(nestSubjects_(body));
+
+      case 'promoteTopicTest':
+        return out_(promoteTopicTest_(body));
+
+      case 'controlHistory':
+        return out_(controlHistory_(body));
+
+      case 'undoOperation':
+        return out_(undoOperation_(body));
+
+      case 'redoOperation':
+        return out_(redoOperation_(body));
+
+      case 'createSubject':
+        return out_(createSubject_(body));
+
+      case 'submitExam':
+        return out_(submitExam_(body));
+
+      case 'submitRevision':
+        return out_(submitRevision_(body));
+
+      case 'createReminder':
+      case 'remindMeLater':
+        return out_(createReminder_(body));
+
+      case 'updateReminder':
+        return out_(updateReminder_(body));
+
+      case 'toggleReminder':
+        return out_(toggleReminder_(body));
+
+      case 'deleteReminder':
+        return out_(deleteReminder_(body));
+
+      case 'retryNotification':
+        return out_(retryNotification_(body));
+
+      case 'processReminders':
+        return out_({
+          ok: true,
+          message: processReminders()
+        });
+
+      case 'processEmailQueue':
+        return out_({
+          ok: true,
+          message: processEmailQueue()
+        });
+
+      case 'sendRevisionUnlockEmails':
+      case 'sendRevisionReminders':
+        return out_({
+          ok: true,
+          message: sendRevisionUnlockEmails()
+        });
+
+      default:
+        return out_({
+          ok: false,
+          error: 'Unknown action: ' + action
+        });
+    }
+
+  } catch (error) {
+    return out_({
+      ok: false,
+      error: friendlyError_(error)
+    });
+
   } finally {
-    if (locked) { try { lock.releaseLock(); } catch (x) {} }
-  }
-}
-
-/* ---------------- questions ---------------- */
-function readMeta_() {
-  const sh = getSheet_(QUESTIONS_TAB, Q_HEADERS);
-  const last = sh.getLastRow();
-  if (last < 2) return [];
-  const values = sh.getRange(2, 1, last - 1, META_COLS).getValues();
-  const out = [];
-  values.forEach(function (row) {
-    if (row[0] === "" || row[0] === null) return;
-    const o = {};
-    for (let i = 0; i < META_COLS; i++) o[Q_HEADERS[i]] = row[i];
-    out.push(o);
-  });
-  return out;
-}
-
-function readIds_() {
-  const sh = getSheet_(QUESTIONS_TAB, Q_HEADERS);
-  const last = sh.getLastRow();
-  if (last < 2) return [];
-  return sh.getRange(2, 1, last - 1, 1).getValues()
-    .map(function (r) { return String(r[0]); })
-    .filter(function (id) { return id !== ""; });
-}
-
-function readByIds_(ids) {
-  const want = {};
-  ids.forEach(function (id) { want[String(id)] = true; });
-  const sh = getSheet_(QUESTIONS_TAB, Q_HEADERS);
-  const last = sh.getLastRow();
-  if (last < 2) return [];
-  const values = sh.getRange(2, 1, last - 1, Q_HEADERS.length).getValues();
-  const out = [];
-  values.forEach(function (row) {
-    if (!want[String(row[0])]) return;
-    const o = {};
-    Q_HEADERS.forEach(function (h, i) { o[h] = row[i]; });
-    out.push(o);
-  });
-  return out;
-}
-
-// INSERT ONLY: ids already in the sheet are skipped (never overwritten).
-function insertQuestions_(rows) {
-  const sh = getSheet_(QUESTIONS_TAB, Q_HEADERS);
-  const last = sh.getLastRow();
-  const seen = {};
-  if (last > 1) {
-    sh.getRange(2, 1, last - 1, 1).getValues().forEach(function (r) { seen[String(r[0])] = true; });
-  }
-  const lines = [];
-  let skipped = 0;
-  rows.forEach(function (r) {
-    if (!r || r.id === undefined || r.id === null || r.id === "") { skipped++; return; }
-    const id = String(r.id);
-    if (seen[id]) { skipped++; return; }
-    seen[id] = true;
-    lines.push(Q_HEADERS.map(function (h) { return cell_(r[h]); }));
-  });
-  if (lines.length) appendBlock_(sh, lines, null);
-  return { ok: true, added: lines.length, skipped: skipped };
-}
-
-/* ---------------- results ---------------- */
-function appendResult_(r) {
-  if (!r) throw new Error("No result received");
-  const sh = getSheet_(RESULTS_TAB, R_HEADERS);
-  const f = r.filters || {};
-  const line = [
-    r.finishedAt, f.branch, String(f.year), f.topic, r.total, r.score, r.maxScore, r.correct,
-    r.wrong, r.unattempted, r.noKey, r.accuracy, r.timeTakenSec, r.durationSec,
-    r.autoSubmitted ? "yes" : "no", JSON.stringify(r.bySubject || {}), JSON.stringify(r.detail || []),
-    String(r.name || ""), String(r.email || "").trim().toLowerCase(),
-    String(r.attemptId || ""), String(r.status || "completed"),
-  ].map(cell_);
-  // same attemptId = same exam: progress saves and the final save update ONE row
-  const last = sh.getLastRow();
-  const idCol = R_HEADERS.indexOf("attemptId") + 1;
-  if (r.attemptId && last > 1) {
-    const ids = sh.getRange(2, idCol, last - 1, 1).getValues();
-    for (let i = 0; i < ids.length; i++) {
-      if (String(ids[i][0]) === String(r.attemptId)) {
-        sh.getRange(i + 2, 1, 1, line.length).setValues([line]);
-        return { ok: true, updated: true };
-      }
+    try {
+      lock.releaseLock();
+    } catch (ignore) {
+      // Nothing to do.
     }
   }
-  appendBlock_(sh, [line], R_TEXT_COLS.map(function (h) { return R_HEADERS.indexOf(h) + 1; }));
-  return { ok: true };
 }
 
-function readResults_(email) {
-  email = String(email || "").trim().toLowerCase();
-  if (!email) return [];                       // results are per candidate
-  const sh = getSheet_(RESULTS_TAB, R_HEADERS);
-  const last = sh.getLastRow();
-  if (last < 2) return [];
-  const emailCol = R_HEADERS.indexOf("email");
-  const values = sh.getRange(2, 1, last - 1, R_HEADERS.length).getValues();
-  return values.filter(function (r) {
-    return r[0] !== "" && String(r[emailCol]).trim().toLowerCase() === email;
-  }).map(function (r) {
-    const o = {};
-    R_HEADERS.forEach(function (h, i) { o[h] = r[i]; });
+// Short-lived server-side cache (Apps Script CacheService) so repeated
+// dashboard/history/mistakes/reminders loads don't rescan the whole sheet
+// every time. TTL is intentionally short so edits show up quickly.
+function cached_(key, ttlSeconds, fn) {
+  try {
+    var cache = CacheService.getScriptCache();
+    var hit = cache.get(key);
+    if (hit) return JSON.parse(hit);
+    var value = fn();
+    try { cache.put(key, JSON.stringify(value), ttlSeconds); } catch (ignore) {}
+    return value;
+  } catch (e) {
+    // Cache unavailable for any reason — fall back to computing directly.
+    return fn();
+  }
+}
+
+function friendlyError_(error) {
+  if (!error) {
+    return 'Unknown backend error.';
+  }
+
+  return String(error && error.message ? error.message : error)
+    .slice(0, 500);
+}
+
+
+// ============================================================
+// 5. USER REGISTRATION
+// ============================================================
+
+function register_(body) {
+  var email = email_(body.email);
+  var name = String(body.name || '').trim();
+
+  // NATIVE APP PATH: doPost() already verified the idToken (once, for every
+  // POST action) and overwrote body.email with the VERIFIED email before
+  // this function ran — email above already reflects that. verifiedUid is
+  // read from that same central check, never re-verified here.
+  // WEBSITE PATH: no idToken -> body.__verifiedUid is absent -> unchanged.
+  var verifiedUid = body.__verifiedUid || '';
+
+  if (!validEmail_(email)) {
     return {
-      finishedAt: o.finishedAt instanceof Date ? o.finishedAt.toISOString() : String(o.finishedAt),
-      filters: { branch: o.branch, year: String(o.year), topic: o.topic },
-      total: Number(o.total), score: Number(o.score), maxScore: Number(o.maxScore),
-      correct: Number(o.correct), wrong: Number(o.wrong), unattempted: Number(o.unattempted),
-      noKey: Number(o.noKey), accuracy: Number(o.accuracy),
-      timeTakenSec: Number(o.timeTakenSec), durationSec: Number(o.durationSec),
-      autoSubmitted: o.autoSubmitted === "yes", status: String(o.status || "completed"), attemptId: String(o.attemptId || ""),
-      bySubject: safeParse_(o.bySubject, {}), detail: safeParse_(o.detail, []),
+      ok: false,
+      error: 'A valid email address is required.'
+    };
+  }
+
+  if (!name) {
+    return {
+      ok: false,
+      error: 'Name is required.'
+    };
+  }
+
+  var sheet = sh_('Users');
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0] || SHEETS.Users;
+  var emailIndex = headers.indexOf('Email');
+  var found = false;
+
+  // Consent is only ever recorded when the frontend explicitly says it was
+  // given (body.consent === true, sent right after the checkbox is
+  // ticked) — a missing/false value here never CLEARS a previously
+  // recorded consent, it just leaves the existing record untouched. This
+  // means re-logging in or editing a profile can't accidentally erase
+  // proof that consent was given earlier.
+  var consentGivenNow = body.consent === true || String(body.consent) === 'true';
+
+  for (var i = 1; i < values.length; i++) {
+    if (email_(values[i][emailIndex]) === email) {
+      var nameIndex = headers.indexOf('Name');
+      var subjectIndex = headers.indexOf('LastSubject');
+      var urlIndex = headers.indexOf('LastTestUrl');
+      var consentGivenIndex = headers.indexOf('ConsentGiven');
+      var consentAtIndex = headers.indexOf('ConsentAt');
+      if (nameIndex >= 0) values[i][nameIndex] = name;
+      // Timestamp is left untouched here on purpose: it records account
+      // creation date and must not be overwritten on later logins.
+      if (subjectIndex >= 0) values[i][subjectIndex] = body.subject || values[i][subjectIndex];
+      if (urlIndex >= 0) values[i][urlIndex] = body.testUrl || values[i][urlIndex];
+      if (consentGivenNow) {
+        if (consentGivenIndex >= 0) values[i][consentGivenIndex] = true;
+        if (consentAtIndex >= 0) values[i][consentAtIndex] = new Date();
+      }
+      var uidIndex = headers.indexOf('Uid');
+      if (verifiedUid && uidIndex >= 0) {
+        // Never silently re-point an email that is already linked to a
+        // DIFFERENT Firebase UID — that would let a second Firebase account
+        // claim an existing student's history.
+        var existingUid = String(values[i][uidIndex] || '').trim();
+        if (existingUid && existingUid !== verifiedUid) {
+          return authError_('AUTH_FORBIDDEN', 'This email is already linked to a different account.');
+        }
+        values[i][uidIndex] = verifiedUid;
+      }
+      sheet.getRange(i + 1, 1, 1, headers.length).setValues([values[i]]);
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    append_(sheet, SHEETS.Users, {
+      Timestamp: new Date(),
+      Name: name,
+      Email: email,
+      LastSubject: body.subject || '',
+      LastTestUrl: body.testUrl || '',
+      ConsentGiven: consentGivenNow,
+      ConsentAt: consentGivenNow ? new Date() : '',
+      Uid: verifiedUid
+    });
+  }
+
+  return {
+    ok: true,
+    existing: found,
+    message: found ? 'User updated.' : 'User saved.'
+  };
+}
+
+// Deletes every row for an email from a sheet. Rewrites the kept rows in one
+// setValues() call and trims the leftover tail in one deleteRows() call,
+// instead of calling sheet.deleteRow() once per matching row — a user with a
+// long history could have hundreds of Answers rows, and one deleteRow() per
+// row (each of which reflows the whole sheet) was slow enough to blow past
+// the client's timeout and, because doPost holds one script-wide lock, could
+// also stall every OTHER concurrent register/submit/delete request queued
+// behind it. This version costs exactly 2 sheet operations no matter how
+// many rows are removed.
+function deleteRowsByEmail_(sheetName, email) {
+  var sheet = sh_(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return 0;
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0];
+  var emailIndex = headers.indexOf('Email');
+  if (emailIndex === -1) return 0;
+
+  var kept = [];
+  var removed = 0;
+  for (var i = 1; i < values.length; i++) {
+    if (email_(values[i][emailIndex]) === email) {
+      removed++;
+    } else {
+      kept.push(values[i]);
+    }
+  }
+  if (!removed) return 0;
+
+  var lastRow = sheet.getLastRow();
+  var numCols = Math.max(1, sheet.getLastColumn());
+  if (kept.length) {
+    sheet.getRange(2, 1, kept.length, numCols).setValues(kept);
+  }
+  var tailStart = kept.length + 2;
+  if (tailStart <= lastRow) {
+    sheet.deleteRows(tailStart, lastRow - tailStart + 1);
+  }
+  return removed;
+}
+
+// Permanently removes a student's account and every record tied to their
+// email (results, answers, mistakes, reminders, notifications). Requires the
+// email to be confirmed by the caller (the frontend asks for confirmation
+// before sending this request).
+function deleteAccount_(body) {
+  var email = email_(body.email);
+  if (!validEmail_(email)) {
+    return { ok: false, error: 'A valid email address is required.' };
+  }
+
+  var sheetsToClean = [
+    'Users', 'Results', 'Answers', 'WrongAnswers', 'Rankings',
+    'RevisionHistory', 'SubmittedSessions', 'Reminders', 'Notifications',
+    'UserStats'
+  ];
+
+  var summary = {};
+  sheetsToClean.forEach(function (name) {
+    summary[name] = deleteRowsByEmail_(name, email);
+  });
+
+  return { ok: true, message: 'Account and related data deleted.', removed: summary };
+}
+
+
+
+
+// ============================================================
+// 5A. QUESTION BANK IMPORT / ADMIN
+// ============================================================
+
+// Set one or more administrator emails before using the import tool.
+// Keep this list private in Apps Script.
+const ADMIN_EMAILS = [
+  'admin@example.com'
+];
+
+// ---------------------------------------------------------------------------
+// LEGACY WEBSITE ADMIN SECRETS — moved out of source (SECURITY FIX)
+// ---------------------------------------------------------------------------
+// These used to be hard-coded constants ('123' and '5798') here AND, for the
+// admin panel one, in the public config.js/app.js — so anyone who could read
+// the GitHub repo had full write access to the question bank. They are now
+// read from Apps Script *Script Properties* (Project Settings -> Script
+// Properties), which are not part of the source and never appear in Git:
+//
+//     ADMIN_PANEL_PASSWORD      unlocks the website admin panel
+//     CONTROL_CENTRE_PASSWORD   unlocks the Control Centre
+//
+// FAIL CLOSED: if a property is not set, that legacy gate is DISABLED
+// entirely (nobody gets in) rather than falling back to a default. After
+// deploying this version, set both properties to NEW strong values (12+
+// characters) — the old values '123' / '5798' must be treated as compromised
+// and never reused. The native app does not use these at all: it uses
+// Firebase-UID-based admin authorization (see requireAdminUser_, section 3B).
+function scriptSecret_(name) {
+  return String(PropertiesService.getScriptProperties().getProperty(name) || '');
+}
+
+// Brute-force throttle for the legacy password gates. Counts wrong attempts in
+// CacheService (15-minute window) and refuses further attempts once the limit
+// is hit. Global rather than per-IP because Apps Script cannot see client IPs
+// — trade-off: an attacker can temporarily lock the real admin out (15 min),
+// which is preferable to letting a short password be guessed.
+var ADMIN_FAIL_LIMIT = 8;
+function adminLockedOut_() {
+  try { return Number(CacheService.getScriptCache().get('admin_fail_count') || 0) >= ADMIN_FAIL_LIMIT; }
+  catch (e) { return false; }
+}
+function recordAdminFailure_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    var n = Number(cache.get('admin_fail_count') || 0) + 1;
+    cache.put('admin_fail_count', String(n), 900);
+  } catch (ignore) {}
+}
+function secretMatches_(supplied, expected) {
+  if (!expected) return false; // property not set -> gate disabled
+  if (adminLockedOut_()) return false;
+  var ok = String(supplied || '') === expected;
+  if (!ok && supplied) recordAdminFailure_();
+  return ok;
+}
+
+function controlGuard_(body) {
+  if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+  if (!secretMatches_(body.controlPassword, scriptSecret_('CONTROL_CENTRE_PASSWORD'))) {
+    return { ok: false, error: 'Incorrect Control Centre password.' };
+  }
+  return null;
+}
+
+function isAdmin_(email, password) {
+  if (password && secretMatches_(password, scriptSecret_('ADMIN_PANEL_PASSWORD'))) return true;
+  var normalized = email_(email);
+  return validEmail_(normalized) && ADMIN_EMAILS.indexOf(normalized) !== -1 && normalized !== 'admin@example.com';
+}
+
+function questionId_() {
+  return 'Q-' + Utilities.getUuid().replace(/-/g, '').slice(0, 20);
+}
+
+function slugify_(text) {
+  return String(text || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40);
+}
+
+// ------------------------------------------------------------
+// TOPIC-WISE TESTS
+// ------------------------------------------------------------
+// A question may carry an optional Topic (for example subject "Networks",
+// topic "Two-Ports"). The website turns every topic of a subject into its own
+// test on the home page. Topic names are compared ignoring case and extra
+// spaces, so "basics" and "Basics " are the same topic; the first spelling
+// stored for a subject is the one every later question is filed under.
+var MAX_TOPIC_LENGTH = 80;
+
+function cleanTopic_(value) {
+  return String(value === undefined || value === null ? '' : value)
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function topicKey_(value) {
+  return cleanTopic_(value).toLowerCase();
+}
+
+// Makes sure an existing Questions sheet has the Topic column. New sheets get
+// it from SHEETS; older sheets get it appended here, so importing or editing
+// never depends on setup() having been re-run first.
+function ensureQuestionsSchema_() {
+  var sheet = sh_('Questions');
+  if (!sheet) return null;
+  ['Topic', 'Exam'].forEach(function (name) {
+    var lastCol = Math.max(1, sheet.getLastColumn());
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+    if (headers.indexOf(name) === -1) {
+      sheet.getRange(1, lastCol + 1).setValue(name).setFontWeight('bold');
+    }
+  });
+  return sheet;
+}
+
+// Same idea for the Subjects sheet's Exam column.
+function ensureSubjectsSchema_() {
+  var sheet = sh_('Subjects');
+  if (!sheet) return null;
+  var lastCol = Math.max(1, sheet.getLastColumn());
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  if (headers.indexOf('Exam') === -1) {
+    sheet.getRange(1, lastCol + 1).setValue('Exam').setFontWeight('bold');
+  }
+  return sheet;
+}
+
+// Like appendMany_, but places every value under the sheet's ACTUAL header
+// (by name) instead of trusting the column order written in this file.
+function appendManyByHeader_(sheet, objects) {
+  if (!objects || !objects.length) return;
+  var lastCol = Math.max(1, sheet.getLastColumn());
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = objects.map(function (object) {
+    return headers.map(function (header) {
+      return object[header] !== undefined ? object[header] : '';
+    });
+  });
+  sheet
+    .getRange(sheet.getLastRow() + 1, 1, values.length, headers.length)
+    .setValues(values);
+}
+
+// EXAMS. The same subject can be practised for more than one exam (for example
+// Digital Electronics for ECET and for GATE). Every question has an optional
+// Exam; a question without one belongs to its subject's "home" exam — the Exam
+// typed when a custom subject was created, or ECET for the built-in subjects.
+// A "test" on the home page is one exam of one subject: its full test, plus one
+// topic test per topic that has questions in that exam.
+function subjectHomeExams_() {
+  var map = {};
+  objs_(sh_('Subjects')).forEach(function (row) {
+    map[String(row.SubjectId)] = cleanTopic_(row.Exam);
+  });
+  return map;
+}
+
+function homeExamOf_(homes, subjectId) {
+  return Object.prototype.hasOwnProperty.call(homes, subjectId) ? homes[subjectId] : 'ECET';
+}
+
+// One pass over the Questions sheet: question count per subject, the exams used
+// by each subject (with question totals) and its topic tests. Everything keeps
+// the order in which it was first added, so an admin who adds Basics, then
+// Capacitors & Inductors, then Two-Ports sees them in that order.
+function questionStats_() {
+  var homes = subjectHomeExams_();
+  var counts = {};
+  var exams = {};
+  var topics = {};
+  objs_(sh_('Questions')).forEach(function (row) {
+    var sid = String(row.SubjectId || '');
+    if (!sid) return;
+    counts[sid] = (counts[sid] || 0) + 1;
+
+    var exam = cleanTopic_(row.Exam) || homeExamOf_(homes, sid);
+    var examKey = 'k:' + topicKey_(exam);
+    var examBucket = exams[sid] || (exams[sid] = { order: [], map: {} });
+    if (!examBucket.map[examKey]) {
+      examBucket.map[examKey] = { name: exam, total: 0 };
+      examBucket.order.push(examKey);
+    }
+    examBucket.map[examKey].total++;
+
+    var topic = cleanTopic_(row.Topic);
+    if (!topic) return;
+    var key = examKey + '|' + topicKey_(topic);
+    var topicBucket = topics[sid] || (topics[sid] = { order: [], map: {} });
+    if (!topicBucket.map[key]) {
+      topicBucket.map[key] = { name: topic, exam: exam, count: 0 };
+      topicBucket.order.push(key);
+    }
+    topicBucket.map[key].count++;
+  });
+  return { counts: counts, exams: exams, topics: topics, homes: homes };
+}
+
+// { subjectId: { total, exams: [{ name, total }], topics: [{ name, count, exam }] } }
+// Covers every subject that has stored questions, including the built-in
+// subjects that also receive admin-imported questions.
+function topicSummary_(stats) {
+  stats = stats || questionStats_();
+  var out = {};
+  Object.keys(stats.counts).forEach(function (sid) {
+    var eb = stats.exams[sid], tb = stats.topics[sid];
+    out[sid] = {
+      total: stats.counts[sid],
+      exams: eb ? eb.order.map(function (k) { return { name: eb.map[k].name, total: eb.map[k].total }; }) : [],
+      topics: tb ? tb.order.map(function (k) { return { name: tb.map[k].name, count: tb.map[k].count, exam: tb.map[k].exam }; }) : []
+    };
+  });
+  return out;
+}
+
+// Custom subjects created entirely from the Admin panel and stored in the
+// 'Subjects' sheet. These need no code or GitHub changes: the homepage's
+// "Practice Tests Added by Admin" section and the Add Questions dropdown
+// both read this sheet live.
+function customSubjects_(stats) {
+  var counts = (stats || questionStats_()).counts;
+  return objs_(sh_('Subjects')).map(function (row) {
+    return {
+      id: row.SubjectId,
+      name: row.Name,
+      password: row.Password,
+      description: row.Description || '',
+      createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : '',
+      exam: cleanTopic_(row.Exam).slice(0, 40),
+      questionCount: counts[String(row.SubjectId)] || 0
     };
   });
 }
 
-/* ---------------- candidates ---------------- */
-// Email is the key (always saved in lower case). Name is only for show and is never verified.
-//  * same name + different emails      -> fine, each email gets its own row
-//  * same email + different name       -> returns {conflict:true, oldName}; nothing changes until the
-//                                         page calls again with confirmRename:true, then the old name is replaced
-function normName_(n) { return String(n || "").trim().replace(/\s+/g, " ").toLowerCase(); }
+function createSubjectImpl_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
 
-function registerUser_(b) {
-  const email = String(b.email || "").trim().toLowerCase();
-  const name = String(b.name || "").trim().replace(/\s+/g, " ");
-  if (!email || !name) throw new Error("Name and email are required");
-  const sh = getSheet_(USERS_TAB, U_HEADERS);
-  const last = sh.getLastRow();
-  let row = -1, oldName = "";
-  if (last > 1) {
-    const vals = sh.getRange(2, 1, last - 1, 2).getValues();
-    for (let i = 0; i < vals.length; i++) {
-      if (String(vals[i][0]).trim().toLowerCase() === email) { row = i + 2; oldName = String(vals[i][1]); break; }
-    }
+  var name = String(body.name || '').trim();
+  var password = String(body.password || '').trim();
+  var description = String(body.description || '').trim();
+  var exam = cleanTopic_(body.exam).slice(0, 40); // GATE, ECET, or anything else the admin typed
+
+  if (!name) {
+    return { ok: false, error: 'Subject name is required.' };
   }
-  const now = new Date().toISOString();
-  if (row < 0) {
-    appendBlock_(sh, [[email, name, "", now, now]], null);
-    row = sh.getLastRow();
-  } else {
-    if (normName_(oldName) !== normName_(name) && !b.confirmRename) {
-      return { conflict: true, oldName: oldName, email: email };
-    }
-    sh.getRange(row, 2).setValue(name);          // replaces the old name
-    sh.getRange(row, 5).setValue(now);
+  if (!password) {
+    return { ok: false, error: 'A password for this subject is required.' };
   }
-  let photo = null;
-  if (b.photo) {
-    savePhoto_(email, String(b.photo));
-    sh.getRange(row, 3).setValue(email + ".png");
-    photo = String(b.photo);
-  } else {
-    photo = readPhoto_(email);
+
+  var sheet = ensureSubjectsSchema_();
+  var existing = objs_(sheet);
+
+  var nameLower = name.toLowerCase();
+  var duplicate = existing.some(function (row) {
+    return String(row.Name || '').trim().toLowerCase() === nameLower;
+  });
+  if (duplicate) {
+    return { ok: false, error: 'A subject with this name already exists.' };
   }
-  return { ok: true, name: name, email: email, photo: photo, oldName: oldName };
+
+  var base = slugify_(name) || 'subject';
+  var id = base;
+  var existingIds = {};
+  existing.forEach(function (row) { existingIds[String(row.SubjectId || '')] = true; });
+  var suffix = 1;
+  while (existingIds[id]) {
+    suffix++;
+    id = base + '-' + suffix;
+  }
+
+  appendManyByHeader_(sheet, [{
+    SubjectId: id,
+    Name: name,
+    Password: password,
+    Description: description,
+    CreatedBy: adminEmail,
+    CreatedAt: new Date(),
+    Exam: exam
+  }]);
+
+  return {
+    ok: true,
+    subject: { id: id, name: name, password: password, description: description, exam: exam }
+  };
 }
 
-function savePhoto_(email, dataUrl) {
-  const m = /^data:image\/png;base64,([A-Za-z0-9+\/=]+)$/.exec(dataUrl);
-  if (!m) throw new Error("Photo must be a PNG image");
-  const bytes = Utilities.base64Decode(m[1]);
-  if (bytes.length > 3 * 1024 * 1024) throw new Error("Photo is too large");
-  const folder = DriveApp.getFolderById(IMAGE_FOLDER_ID);
-  const name = email + ".png";
-  const old = folder.getFilesByName(name);
-  while (old.hasNext()) old.next().setTrashed(true);   // keep one photo per email
-  folder.createFile(Utilities.newBlob(bytes, "image/png", name));
+function importQuestions_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+
+  var subjectId = String(body.subjectId || '').trim();
+  var subject = String(body.subject || '').trim();
+  var rows = Array.isArray(body.questions) ? body.questions : [];
+
+  if (!subjectId || !subject) {
+    return { ok: false, error: 'Subject is required.' };
+  }
+  if (!rows.length) {
+    return { ok: false, error: 'No questions were supplied.' };
+  }
+  if (rows.length > 500) {
+    return { ok: false, error: 'Maximum 500 questions can be imported at once.' };
+  }
+
+  var questionSheet = ensureQuestionsSchema_();
+  var valid = [];
+  var errors = [];
+  var seen = {};
+  var letters = ['A', 'B', 'C', 'D'];
+
+  // Protect against importing a question that already exists in the selected
+  // subject. The browser-side validation catches duplicates inside the file,
+  // while this server-side check also catches duplicates across earlier imports.
+  // The same pass collects the topic spellings already used by this subject,
+  // so a new question filed under "basics" joins the existing "Basics" topic
+  // instead of creating a near-duplicate one.
+  var existing = {};
+  var topicCanon = {};
+  var examCanon = {};
+  var homeExam = homeExamOf_(subjectHomeExams_(), subjectId);
+  if (homeExam) examCanon['k:' + topicKey_(homeExam)] = homeExam;
+  var existingLastRow = questionSheet ? questionSheet.getLastRow() : 0;
+  if (existingLastRow > 1) {
+    var existingLastCol = questionSheet.getLastColumn();
+    var existingHeaders = questionSheet.getRange(1, 1, 1, existingLastCol).getValues()[0].map(String);
+    var colOf = function (name) { return existingHeaders.indexOf(name); };
+    var cSubjectId = colOf('SubjectId'), cYear = colOf('Year'), cState = colOf('State');
+    var cQno = colOf('QuestionNumber'), cQuestion = colOf('Question'), cTopic = colOf('Topic'), cExam = colOf('Exam');
+    var existingValues = questionSheet.getRange(2, 1, existingLastRow - 1, existingLastCol).getValues();
+    existingValues.forEach(function(r) {
+      var existingSubjectId = String(r[cSubjectId] || '').trim();
+      if (existingSubjectId !== subjectId) return;
+      var existingQuestion = String(r[cQuestion] || '').trim().toLowerCase();
+      var existingYear = String(r[cYear] || '').trim();
+      var existingState = String(r[cState] || 'TS').trim();
+      var existingQno = String(r[cQno] || '').trim();
+      if (existingQuestion) {
+        existing[[existingQuestion, existingYear, existingState, existingQno].join('|')] = true;
+      }
+      var existingExam = cExam === -1 ? '' : cleanTopic_(r[cExam]);
+      if (existingExam && !examCanon['k:' + topicKey_(existingExam)]) {
+        examCanon['k:' + topicKey_(existingExam)] = existingExam;
+      }
+      var existingTopic = cTopic === -1 ? '' : cleanTopic_(r[cTopic]);
+      if (existingTopic && !topicCanon['k:' + topicKey_(existingTopic)]) {
+        topicCanon['k:' + topicKey_(existingTopic)] = existingTopic;
+      }
+    });
+  }
+
+  rows.forEach(function(row, index) {
+    var line = index + 2;
+    var q = String(row.question || '').trim();
+    var options = [
+      String(row.optionA || '').trim(),
+      String(row.optionB || '').trim(),
+      String(row.optionC || '').trim(),
+      String(row.optionD || '').trim()
+    ];
+    var correct = String(row.correctAnswer || '').trim().toUpperCase();
+    var year = String(row.year || '').trim();
+    var state = String(row.state || 'TS').trim();
+    var qno = String(row.questionNumber || '').trim();
+    var rowErrors = [];
+
+    // A row's own Topic wins; otherwise the topic chosen for the whole import.
+    var topic = cleanTopic_(cleanTopic_(row.topic) ? row.topic : body.topic);
+    if (topic.length > MAX_TOPIC_LENGTH) {
+      rowErrors.push('Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters');
+    } else if (topic) {
+      var topicSlot = 'k:' + topicKey_(topic);
+      if (!topicCanon[topicSlot]) topicCanon[topicSlot] = topic;
+      topic = topicCanon[topicSlot];
+    }
+
+    // Same rule for the exam: the row's own Exam, else the one chosen for the whole import.
+    var exam = cleanTopic_(cleanTopic_(row.exam) ? row.exam : body.exam);
+    if (exam.length > 40) {
+      rowErrors.push('Exam is longer than 40 characters');
+    } else if (exam) {
+      var examSlot = 'k:' + topicKey_(exam);
+      if (!examCanon[examSlot]) examCanon[examSlot] = exam;
+      exam = examCanon[examSlot];
+    }
+
+    if (!q) rowErrors.push('Question is empty');
+    options.forEach(function(o, i) { if (!o) rowErrors.push('Option ' + letters[i] + ' is empty'); });
+    if (letters.indexOf(correct) === -1) rowErrors.push('Correct Answer must be A, B, C, or D');
+    if (!year) rowErrors.push('Year is empty');
+    var marksRaw = String(row.marks == null ? '' : row.marks).trim();
+    var marks = Number(marksRaw);
+    var type = String(row.type || 'MCQ').trim().toUpperCase() || 'MCQ';
+    if (!marksRaw || !isFinite(marks) || marks <= 0) rowErrors.push('Marks must be a positive number');
+    if (['MCQ','MSQ','NAT'].indexOf(type) === -1) rowErrors.push('Type must be MCQ, MSQ, or NAT');
+
+    var duplicateKey = [q.toLowerCase(), year, state, qno].join('|');
+    if (seen[duplicateKey]) rowErrors.push('Duplicate question in this import');
+    if (existing[duplicateKey]) rowErrors.push('Question already exists in this subject');
+    seen[duplicateKey] = true;
+
+    if (rowErrors.length) {
+      errors.push({ row: line, errors: rowErrors });
+      return;
+    }
+
+    valid.push({
+      QuestionId: questionId_(),
+      SubjectId: subjectId,
+      Subject: subject,
+      Year: year,
+      State: state,
+      QuestionNumber: qno,
+      Question: q,
+      OptionA: options[0],
+      OptionB: options[1],
+      OptionC: options[2],
+      OptionD: options[3],
+      CorrectAnswer: correct,
+      CreatedAt: new Date(),
+      CreatedBy: adminEmail,
+      QuestionImage: String(row.questionImage || '').trim(),
+      OptionAImage: String(row.optionAImage || '').trim(),
+      OptionBImage: String(row.optionBImage || '').trim(),
+      OptionCImage: String(row.optionCImage || '').trim(),
+      OptionDImage: String(row.optionDImage || '').trim(),
+      Topic: topic,
+      Exam: exam,
+      Marks: marks,
+      Type: type
+    });
+  });
+
+  // A retry of an import that already went through (for example after the
+  // browser gave up waiting) finds every row "already exists". That is a
+  // success, not a failure.
+  if (errors.length === rows.length && errors.every(function (er) {
+    return er.errors.length === 1 && er.errors[0] === 'Question already exists in this subject';
+  })) {
+    return {
+      ok: true,
+      imported: 0,
+      alreadyImported: rows.length,
+      invalid: 0,
+      message: 'These ' + rows.length + ' question(s) were already imported.'
+    };
+  }
+
+  if (errors.length) {
+    return {
+      ok: false,
+      error: 'Import validation failed. No rows were added.',
+      imported: 0,
+      invalid: errors.length,
+      errors: errors
+    };
+  }
+
+  appendManyByHeader_(questionSheet, valid);
+  return { ok: true, imported: valid.length, invalid: 0, message: valid.length + ' question(s) imported successfully.' };
 }
 
-function readPhoto_(email) {
+
+// ============================================================
+// EXAM TIMER CONTROL (admin only)
+// ============================================================
+
+function clearUserCaches_(email) {
   try {
-    const it = DriveApp.getFolderById(IMAGE_FOLDER_ID).getFilesByName(email + ".png");
-    if (!it.hasNext()) return null;
-    return "data:image/png;base64," + Utilities.base64Encode(it.next().getBlob().getBytes());
-  } catch (e) { return null; }
+    var cache = CacheService.getScriptCache();
+    cache.remove('dash_' + email_(email));
+    cache.remove('mist_' + email_(email));
+  } catch (ignore) {}
 }
 
-/* ---------------- helpers ---------------- */
-function getSpreadsheet_() {
-  const id = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
-  if (id) return SpreadsheetApp.openById(id);
-  const active = SpreadsheetApp.getActiveSpreadsheet();
-  if (active) return active;
-  throw new Error("Script property SHEET_ID is missing. Add it in Project Settings -> Script Properties.");
+// Lists registered users, and (when an email is given) the timer state of each
+// subject the browser passes in, so the admin sees exactly what the student sees.
+function adminCooldownList_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+
+  var out = { ok: true };
+
+  if (body.includeUsers) {
+    var seen = {};
+    out.users = objs_(sh_('Users')).map(function (u) {
+      return { name: String(u.Name || '').trim(), email: email_(u.Email) };
+    }).filter(function (u) {
+      if (!u.email || seen[u.email]) return false;
+      seen[u.email] = true;
+      return true;
+    });
+  }
+
+  var target = email_(body.targetEmail);
+  if (target) {
+    var names = Array.isArray(body.subjects) ? body.subjects : [];
+    var ov = overridesFor_(target);
+    out.statuses = names.map(function (name) {
+      name = String(name);
+      var last = getSubjectLastAttempt_(target, name);
+      var eff = effectiveUnlock_(last, ov, name);
+      var locked = !!(eff.unlockAt && new Date() < eff.unlockAt);
+      return {
+        subject: name,
+        lastAttempt: last ? iso_(last) : null,
+        locked: locked,
+        unlockAt: locked ? iso_(eff.unlockAt) : null,
+        remainingMinutes: locked ? Math.ceil((eff.unlockAt.getTime() - Date.now()) / 60000) : 0,
+        overridden: eff.overridden
+      };
+    });
+  }
+  return out;
 }
 
-function getSheet_(name, headers) {
-  const ss = getSpreadsheet_();
-  let sh = ss.getSheetByName(name);
-  if (!sh) {
-    sh = ss.insertSheet(name);
-    sh.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight("bold");
-    sh.setFrozenRows(1);
-  } else {
-    // sheet made by an older version: add any new header columns at the end
-    const have = sh.getLastColumn();
-    if (have > 0 && have < headers.length) {
-      sh.getRange(1, have + 1, 1, headers.length - have).setValues([headers.slice(have)]).setFontWeight("bold");
+// mode: 'unlock'  -> open right now (zero the wait)
+//       'set'     -> wait exactly `minutes` from now (0 = unlock)
+//       'add'     -> add `minutes` to the current wait (negative = shorten)
+//       'default' -> remove admin overrides, back to the normal (default) wait
+function adminCooldownAdjustImpl_(body) {
+  var adminEmail = email_(body.adminEmail);
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+
+  var target = email_(body.targetEmail);
+  if (!validEmail_(target)) return { ok: false, error: 'Choose a valid student.' };
+
+  var subject = String(body.subject || '').trim();
+  if (!subject) return { ok: false, error: 'Choose a subject (or All subjects).' };
+
+  var mode = String(body.mode || '').trim();
+  var minutes = Number(body.minutes);
+  if ((mode === 'set' || mode === 'add') && !isFinite(minutes)) {
+    return { ok: false, error: 'Enter the number of minutes.' };
+  }
+  if (mode === 'set' && minutes < 0) {
+    return { ok: false, error: 'Minutes must be 0 or more.' };
+  }
+  // Guard against typos like 99999999.
+  if (Math.abs(minutes) > 60 * 24 * 365) {
+    return { ok: false, error: 'That is more than a year — please enter a smaller value.' };
+  }
+  if (['unlock', 'set', 'add', 'default'].indexOf(mode) === -1) {
+    return { ok: false, error: 'Unknown action.' };
+  }
+
+  var sheet = sh_('CooldownOverrides');
+  var now = new Date();
+
+  if (mode === 'default') {
+    var last = sheet.getLastRow();
+    if (last >= 2) {
+      var headers = SHEETS.CooldownOverrides;
+      var vals = sheet.getRange(2, 1, last - 1, headers.length).getValues();
+      var eCol = headers.indexOf('Email'), sCol = headers.indexOf('Subject');
+      for (var i = vals.length - 1; i >= 0; i--) {
+        if (email_(vals[i][eCol]) === target &&
+            (subject === '*' || String(vals[i][sCol]).trim() === subject)) {
+          sheet.deleteRow(i + 2);
+        }
+      }
+    }
+    clearUserCaches_(target);
+    return { ok: true, message: 'Back to the normal wait.' };
+  }
+
+  var targets = [subject];
+  if (mode === 'add' && subject === '*') {
+    var stats = dashboardBase_(target);
+    targets = (stats.subjects || []).map(function (s) { return s.subject; });
+    if (!targets.length) return { ok: false, error: 'This student has not attempted any subject yet.' };
+  }
+
+  var ovList = overridesFor_(target);
+  var rows = targets.map(function (name) {
+    var unlockAt;
+    if (mode === 'unlock') {
+      unlockAt = now;
+    } else if (mode === 'set') {
+      unlockAt = new Date(now.getTime() + minutes * 60000);
+    } else {
+      var last = getSubjectLastAttempt_(target, name);
+      var eff = effectiveUnlock_(last, ovList, name);
+      var base = (eff.unlockAt && eff.unlockAt > now) ? eff.unlockAt : now;
+      unlockAt = new Date(base.getTime() + minutes * 60000);
+    }
+    return {
+      OverrideId: 'OV-' + Utilities.getUuid().replace(/-/g, '').slice(0, 12),
+      Email: target,
+      Subject: name,
+      UnlockAt: unlockAt,
+      Action: mode,
+      Note: String(body.note || '').trim(),
+      SetBy: adminEmail || 'admin',
+      SetAt: now
+    };
+  });
+
+  appendMany_(sheet, SHEETS.CooldownOverrides, rows);
+  clearUserCaches_(target);
+  return { ok: true, message: 'Exam timer updated.' };
+}
+
+function questions_(subjectId) {
+  var id = String(subjectId || '').trim();
+  if (!id) return [];
+  return objs_(sh_('Questions')).filter(function(row) {
+    return String(row.SubjectId) === id;
+  }).map(function(row) {
+    var letters = ['A','B','C','D'];
+    return {
+      id: String(row.QuestionId),
+      year: String(row.Year),
+      state: String(row.State || ''),
+      questionNumber: String(row.QuestionNumber || ''),
+      question: String(row.Question || ''),
+      options: [row.OptionA, row.OptionB, row.OptionC, row.OptionD].map(String),
+      answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase())),
+      topic: cleanTopic_(row.Topic),
+      exam: cleanTopic_(row.Exam),
+      marks: Number(row.Marks) > 0 ? Number(row.Marks) : 1,
+      type: String(row.Type || 'MCQ').trim().toUpperCase() || 'MCQ',
+      image: String(row.QuestionImage || ''),
+      optionImages: [row.OptionAImage, row.OptionBImage, row.OptionCImage, row.OptionDImage].map(function(v){return String(v||'');})
+    };
+  });
+}
+
+// Admin edit of a single existing question, matched by its QuestionId so it
+// can never accidentally duplicate or touch the wrong row. Every edit is
+// recorded to the ChangeLog sheet with a before/after snapshot.
+function updateQuestion_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+
+  var questionId = String(body.questionId || '').trim();
+  if (!questionId) {
+    return { ok: false, error: 'questionId is required.' };
+  }
+
+  var q = String(body.question || '').trim();
+  var options = [
+    String(body.optionA || '').trim(),
+    String(body.optionB || '').trim(),
+    String(body.optionC || '').trim(),
+    String(body.optionD || '').trim()
+  ];
+  var correct = String(body.correctAnswer || '').trim().toUpperCase();
+  var year = String(body.year || '').trim();
+  var letters = ['A', 'B', 'C', 'D'];
+
+  if (!q) return { ok: false, error: 'Question is empty.' };
+  for (var i = 0; i < options.length; i++) {
+    if (!options[i]) return { ok: false, error: 'Option ' + letters[i] + ' is empty.' };
+  }
+  if (letters.indexOf(correct) === -1) return { ok: false, error: 'Correct Answer must be A, B, C, or D.' };
+  if (!year) return { ok: false, error: 'Year is empty.' };
+
+  var topicInput = body.topic === undefined ? null : cleanTopic_(body.topic);
+  if (topicInput !== null && topicInput.length > MAX_TOPIC_LENGTH) {
+    return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  }
+
+  var examInput = body.exam === undefined ? null : cleanTopic_(body.exam);
+  if (examInput !== null && examInput.length > 40) {
+    return { ok: false, error: 'Exam is longer than 40 characters.' };
+  }
+
+  var sheet = ensureQuestionsSchema_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { ok: false, error: 'No questions found.' };
+
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var idCol = headers.indexOf('QuestionId');
+  var values = sheet.getRange(2, 1, lastRow - 1, headers.length).getValues();
+
+  var rowIndex = -1;
+  for (var r = 0; r < values.length; r++) {
+    if (String(values[r][idCol]) === questionId) { rowIndex = r; break; }
+  }
+  if (rowIndex === -1) return { ok: false, error: 'Question not found (it may have been deleted).' };
+
+  var before = {};
+  headers.forEach(function (h, i) { before[h] = values[rowIndex][i]; });
+
+  // Topic: keep it when the caller did not send one; otherwise reuse the
+  // spelling other questions of this subject already use for that topic.
+  var topic = topicInput === null ? cleanTopic_(before.Topic) : topicInput;
+  if (topic && topicInput !== null) {
+    var topicCol = headers.indexOf('Topic');
+    var subjectCol = headers.indexOf('SubjectId');
+    for (var t = 0; t < values.length; t++) {
+      if (t === rowIndex) continue;
+      if (String(values[t][subjectCol]) !== String(values[rowIndex][subjectCol])) continue;
+      var other = cleanTopic_(values[t][topicCol]);
+      if (other && topicKey_(other) === topicKey_(topic)) { topic = other; break; }
     }
   }
-  return sh;
-}
 
-// Writes rows below the last used row. Adds sheet rows when needed (a new sheet only has 1000).
-// textCols: 1-based column numbers to keep as plain text, or null for every column.
-function appendBlock_(sh, lines, textCols) {
-  const start = sh.getLastRow() + 1;
-  const need = start + lines.length - 1;
-  if (need > sh.getMaxRows()) sh.insertRowsAfter(sh.getMaxRows(), need - sh.getMaxRows());
-  const width = lines[0].length;
-  if (textCols === null) {
-    sh.getRange(start, 1, lines.length, width).setNumberFormat("@");
-  } else {
-    textCols.forEach(function (c) { sh.getRange(start, c, lines.length, 1).setNumberFormat("@"); });
+  // Exam: same idea — keep when not sent, otherwise reuse this subject's existing spelling.
+  var exam = examInput === null ? cleanTopic_(before.Exam) : examInput;
+  if (exam && examInput !== null) {
+    var examCol = headers.indexOf('Exam');
+    var examSubjectCol = headers.indexOf('SubjectId');
+    for (var e = 0; e < values.length; e++) {
+      if (e === rowIndex) continue;
+      if (String(values[e][examSubjectCol]) !== String(values[rowIndex][examSubjectCol])) continue;
+      var otherExam = cleanTopic_(values[e][examCol]);
+      if (otherExam && topicKey_(otherExam) === topicKey_(exam)) { exam = otherExam; break; }
+    }
   }
-  sh.getRange(start, 1, lines.length, width).setValues(lines);
+
+  var updated = {
+    Question: q,
+    OptionA: options[0], OptionB: options[1], OptionC: options[2], OptionD: options[3],
+    CorrectAnswer: correct,
+    Year: year,
+    State: String(body.state || before.State || '').trim(),
+    QuestionNumber: String(body.questionNumber || before.QuestionNumber || '').trim(),
+    QuestionImage: String(body.questionImage || '').trim(),
+    OptionAImage: String(body.optionAImage || '').trim(),
+    OptionBImage: String(body.optionBImage || '').trim(),
+    OptionCImage: String(body.optionCImage || '').trim(),
+    OptionDImage: String(body.optionDImage || '').trim(),
+    Topic: topic,
+    Exam: exam
+  };
+
+  var after = {};
+  headers.forEach(function (h) { after[h] = updated[h] !== undefined ? updated[h] : before[h]; });
+
+  headers.forEach(function (h, i) {
+    if (updated[h] !== undefined) {
+      sheet.getRange(2 + rowIndex, i + 1).setValue(updated[h]);
+    }
+  });
+
+  // Record the change (which fields differed) to ChangeLog.
+  var changedFields = [];
+  Object.keys(updated).forEach(function (h) {
+    if (String(before[h] || '') !== String(updated[h] || '')) changedFields.push(h);
+  });
+
+  append_(sh_('ChangeLog'), SHEETS.ChangeLog, {
+    ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+    Timestamp: new Date(),
+    EditedBy: adminEmail,
+    Subject: String(before.Subject || ''),
+    SubjectId: String(before.SubjectId || ''),
+    QuestionId: questionId,
+    QuestionSnippet: q.slice(0, 120),
+    BeforeJSON: JSON.stringify(before),
+    AfterJSON: JSON.stringify(after),
+    Summary: changedFields.length ? ('Changed: ' + changedFields.join(', ')) : 'No field values changed'
+  });
+
+  return { ok: true, message: 'Question updated successfully.' };
 }
 
-function cell_(v) {
-  if (v === null || v === undefined) return "";
-  if (typeof v === "object") return JSON.stringify(v);
-  return v;
+// Admin: file many existing questions of one subject under a topic (and, when
+// `exam` is sent, under an exam) in a single call. An empty topic takes them out
+// of their topic. This is how questions imported before topics/exams existed get
+// sorted into topic-wise tests. Every changed question is written to ChangeLog.
+function setQuestionTopicImpl_(body) {
+  var adminEmail = email_(body.adminEmail);
+  if (!isAdmin_(adminEmail, body.adminPassword)) {
+    return { ok: false, error: 'Admin access is required.' };
+  }
+
+  var subjectId = String(body.subjectId || '').trim();
+  var ids = Array.isArray(body.questionIds) ? body.questionIds.map(String) : [];
+  var topic = cleanTopic_(body.topic);
+  var examProvided = body.exam !== undefined;
+  var exam = examProvided ? cleanTopic_(body.exam) : '';
+
+  if (!subjectId) return { ok: false, error: 'Subject is required.' };
+  if (!ids.length) return { ok: false, error: 'Select at least one question.' };
+  if (ids.length > 500) return { ok: false, error: 'Maximum 500 questions can be moved at once.' };
+  if (topic.length > MAX_TOPIC_LENGTH) {
+    return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  }
+  if (exam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
+
+  var sheet = ensureQuestionsSchema_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { ok: false, error: 'No questions found.' };
+
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var idCol = headers.indexOf('QuestionId');
+  var subjectCol = headers.indexOf('SubjectId');
+  var topicCol = headers.indexOf('Topic');
+  var examCol = headers.indexOf('Exam');
+  var subjectNameCol = headers.indexOf('Subject');
+  var questionCol = headers.indexOf('Question');
+  var values = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+  // Reuse the spellings other questions in this subject already use.
+  var wantedIds = {};
+  ids.forEach(function (id) { wantedIds[id] = true; });
+  for (var t = 0; t < values.length; t++) {
+    if (String(values[t][subjectCol]) !== subjectId) continue;
+    if (wantedIds[String(values[t][idCol])]) continue;
+    var otherTopic = cleanTopic_(values[t][topicCol]);
+    if (topic && otherTopic && topicKey_(otherTopic) === topicKey_(topic)) topic = otherTopic;
+    var otherExam = cleanTopic_(values[t][examCol]);
+    if (exam && otherExam && topicKey_(otherExam) === topicKey_(exam)) exam = otherExam;
+  }
+
+  var changes = [];
+  var updatedCount = 0;
+  var newTopics = values.map(function (row) { return [row[topicCol]]; });
+  var newExams = values.map(function (row) { return [row[examCol]]; });
+
+  values.forEach(function (row, index) {
+    var id = String(row[idCol]);
+    if (!wantedIds[id] || String(row[subjectCol]) !== subjectId) return;
+    updatedCount++;
+    var previousTopic = cleanTopic_(row[topicCol]);
+    var previousExam = cleanTopic_(row[examCol]);
+    var topicChanged = previousTopic !== topic;
+    var examChanged = examProvided && previousExam !== exam;
+    if (!topicChanged && !examChanged) return;
+    newTopics[index] = [topic];
+    if (examProvided) newExams[index] = [exam];
+    changes.push({
+      ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+      Timestamp: new Date(),
+      EditedBy: adminEmail,
+      Subject: String(row[subjectNameCol] || ''),
+      SubjectId: subjectId,
+      QuestionId: id,
+      QuestionSnippet: String(row[questionCol] || '').slice(0, 120),
+      BeforeJSON: JSON.stringify(examProvided ? { Topic: previousTopic, Exam: previousExam } : { Topic: previousTopic }),
+      AfterJSON: JSON.stringify(examProvided ? { Topic: topic, Exam: exam } : { Topic: topic }),
+      Summary: 'Changed: ' + (examProvided ? 'Topic, Exam' : 'Topic')
+    });
+  });
+
+  if (!updatedCount) {
+    return { ok: false, error: 'None of the selected questions were found in this subject.' };
+  }
+
+  if (changes.length) {
+    sheet.getRange(2, topicCol + 1, newTopics.length, 1).setValues(newTopics);
+    if (examProvided) sheet.getRange(2, examCol + 1, newExams.length, 1).setValues(newExams);
+    appendMany_(sh_('ChangeLog'), SHEETS.ChangeLog, changes);
+  }
+
+  return {
+    ok: true,
+    updated: updatedCount,
+    changed: changes.length,
+    topic: topic,
+    exam: examProvided ? exam : undefined,
+    message: updatedCount + ' question(s) ' + (topic ? 'filed under "' + topic + '"' : 'moved out of their topic') + (examProvided && exam ? ' for ' + exam : '') + '.'
+  };
 }
 
-function safeParse_(s, fallback) {
-  try { return s ? JSON.parse(s) : fallback; } catch (e) { return fallback; }
+// ------------------------------------------------------------
+// CONTROL CENTRE (every action needs the admin AND the Control Centre password)
+// ------------------------------------------------------------
+function controlLogin_(body) {
+  var denied = controlGuard_(body);
+  return denied || { ok: true };
 }
 
-function json_(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+// Everything the Control Centre needs in one call: the default wait, every
+// admin password, and the custom subjects with their passwords.
+function controlData_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var stats = questionStats_();
+  return {
+    ok: true,
+    cooldownMinutes: Math.round(subjectCooldownMs_() / 60000),
+    // Secrets are no longer echoed back to the browser — they live only in Script Properties.
+    adminPanelPassword: scriptSecret_('ADMIN_PANEL_PASSWORD') ? '(set in Script Properties)' : '(NOT SET — admin panel is disabled)',
+    controlPassword: scriptSecret_('CONTROL_CENTRE_PASSWORD') ? '(set in Script Properties)' : '(NOT SET — Control Centre is disabled)',
+    adminEmails: ADMIN_EMAILS.filter(function (e) { return e !== 'admin@example.com'; }),
+    subjects: customSubjects_(stats),
+    topicSummary: topicSummary_(stats),
+    history: historyMeta_()
+  };
+}
+
+// Drops the cached dashboards so every student sees the new wait straight away.
+function clearAllUserCaches_() {
+  try {
+    var cache = CacheService.getScriptCache();
+    var keys = [];
+    objs_(sh_('Users')).forEach(function (u) {
+      var e = email_(u.Email);
+      if (e) { keys.push('dash_' + e); keys.push('mist_' + e); }
+    });
+    for (var i = 0; i < keys.length; i += 100) cache.removeAll(keys.slice(i, i + 100));
+  } catch (ignore) {}
+}
+
+// Changes how long a subject stays locked after a student finishes it
+// (24 hours by default; 3 days, 7 days, 1 month or any custom value).
+function setDefaultCooldownImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var minutes = Number(body.minutes);
+  if (!isFinite(minutes) || minutes < 0) {
+    return { ok: false, error: 'Enter the wait as 0 or more.' };
+  }
+  if (minutes > 60 * 24 * 365) {
+    return { ok: false, error: 'That is more than a year — please enter a smaller value.' };
+  }
+  minutes = Math.round(minutes);
+  PropertiesService.getScriptProperties().setProperty('COOLDOWN_MINUTES', String(minutes));
+  _cooldownMsMemo = null;
+  clearAllUserCaches_();
+  return { ok: true, cooldownMinutes: minutes, message: 'Default wait saved.' };
+}
+
+// Sets the exam label (GATE, ECET, ...) of a custom subject.
+function setSubjectExamImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var subjectId = String(body.subjectId || '').trim();
+  var exam = cleanTopic_(body.exam);
+  if (!subjectId) return { ok: false, error: 'Subject is required.' };
+  if (exam.length > 40) return { ok: false, error: 'Exam name is longer than 40 characters.' };
+
+  var sheet = ensureSubjectsSchema_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { ok: false, error: 'Subject not found.' };
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var idCol = headers.indexOf('SubjectId'), examCol = headers.indexOf('Exam');
+  var ids = sheet.getRange(2, idCol + 1, lastRow - 1, 1).getValues();
+  for (var i = 0; i < ids.length; i++) {
+    if (String(ids[i][0]) === subjectId) {
+      sheet.getRange(i + 2, examCol + 1).setValue(exam);
+      return { ok: true, exam: exam, message: exam ? 'Exam set to ' + exam + '.' : 'Exam label removed.' };
+    }
+  }
+  return { ok: false, error: 'Subject not found.' };
+}
+
+// Deletes custom subjects together with all of their questions. Student
+// results and history are NOT touched. Each deletion is written to ChangeLog.
+function deleteSubjectsImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var wanted = {};
+  var ids = (Array.isArray(body.subjectIds) ? body.subjectIds : []).map(String).filter(function (id) {
+    if (!id || wanted[id]) return false;
+    wanted[id] = true;
+    return true;
+  });
+  if (!ids.length) return { ok: false, error: 'Select at least one subject.' };
+  if (ids.length > 50) return { ok: false, error: 'Maximum 50 subjects can be deleted at once.' };
+
+  var subjectSheet = ensureSubjectsSchema_();
+  var subjectLastRow = subjectSheet.getLastRow();
+  if (subjectLastRow < 2) return { ok: false, error: 'No subjects found.' };
+  var sCols = subjectSheet.getLastColumn();
+  var sHeaders = subjectSheet.getRange(1, 1, 1, sCols).getValues()[0].map(String);
+  var sValues = subjectSheet.getRange(2, 1, subjectLastRow - 1, sCols).getValues();
+  var sIdCol = sHeaders.indexOf('SubjectId'), sNameCol = sHeaders.indexOf('Name'), sExamCol = sHeaders.indexOf('Exam');
+
+  var found = {};        // id -> { name, exam, row }
+  sValues.forEach(function (row, index) {
+    var id = String(row[sIdCol]);
+    if (wanted[id]) found[id] = { name: String(row[sNameCol] || ''), exam: sExamCol === -1 ? '' : String(row[sExamCol] || ''), row: index + 2 };
+  });
+  var foundIds = Object.keys(found);
+  if (!foundIds.length) return { ok: false, error: 'None of the selected subjects were found.' };
+
+  // 1) their questions — removed in contiguous blocks, bottom first, so it stays fast
+  var questionSheet = ensureQuestionsSchema_();
+  var qLastRow = questionSheet.getLastRow();
+  var perSubject = {};
+  var deletedQuestions = 0;
+  if (qLastRow >= 2) {
+    var qHeaders = questionSheet.getRange(1, 1, 1, questionSheet.getLastColumn()).getValues()[0].map(String);
+    var qSubjectCol = qHeaders.indexOf('SubjectId');
+    var qIds = questionSheet.getRange(2, qSubjectCol + 1, qLastRow - 1, 1).getValues();
+    var blocks = [];
+    qIds.forEach(function (cell, index) {
+      var id = String(cell[0]);
+      if (!found[id]) return;
+      perSubject[id] = (perSubject[id] || 0) + 1;
+      deletedQuestions++;
+      var rowNumber = index + 2;
+      var last = blocks[blocks.length - 1];
+      if (last && last.start + last.count === rowNumber) last.count++;
+      else blocks.push({ start: rowNumber, count: 1 });
+    });
+    for (var b = blocks.length - 1; b >= 0; b--) {
+      questionSheet.deleteRows(blocks[b].start, blocks[b].count);
+    }
+  }
+
+  // 2) the subject rows themselves, bottom first
+  foundIds
+    .map(function (id) { return found[id].row; })
+    .sort(function (a, b) { return b - a; })
+    .forEach(function (rowNumber) { subjectSheet.deleteRow(rowNumber); });
+
+  // 3) audit trail
+  var now = new Date();
+  appendMany_(sh_('ChangeLog'), SHEETS.ChangeLog, foundIds.map(function (id) {
+    return {
+      ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+      Timestamp: now,
+      EditedBy: adminEmail,
+      Subject: found[id].name,
+      SubjectId: id,
+      QuestionId: '',
+      QuestionSnippet: '',
+      BeforeJSON: JSON.stringify({ subject: found[id].name, exam: found[id].exam, questions: perSubject[id] || 0 }),
+      AfterJSON: '',
+      Summary: 'Subject deleted (' + (perSubject[id] || 0) + ' questions)'
+    };
+  }));
+
+  return {
+    ok: true,
+    deletedSubjects: foundIds.length,
+    deletedQuestions: deletedQuestions,
+    deletedIds: foundIds,
+    message: foundIds.length + ' subject(s) and ' + deletedQuestions + ' question(s) deleted.'
+  };
+}
+
+// ------------------------------------------------------------
+// CONTROL CENTRE — rename / merge subjects, rename / move topic tests
+// (past results are NOT rewritten: they stay under the name they were taken as)
+// ------------------------------------------------------------
+function readQuestionTable_() {
+  var sheet = ensureQuestionsSchema_();
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = lastRow >= 2 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
+  return {
+    sheet: sheet,
+    headers: headers,
+    values: values,
+    col: function (name) { return headers.indexOf(name); }
+  };
+}
+
+function writeQuestionColumns_(table, names) {
+  if (!table.values.length) return;
+  names.forEach(function (name) {
+    var c = table.col(name);
+    if (c === -1) return;
+    table.sheet
+      .getRange(2, c + 1, table.values.length, 1)
+      .setValues(table.values.map(function (row) { return [row[c]]; }));
+  });
+}
+
+function logSubjectChange_(adminEmail, subjectName, subjectId, summary, before, after) {
+  appendMany_(sh_('ChangeLog'), SHEETS.ChangeLog, [{
+    ChangeId: 'C-' + Utilities.getUuid().replace(/-/g, '').slice(0, 16),
+    Timestamp: new Date(),
+    EditedBy: adminEmail,
+    Subject: subjectName,
+    SubjectId: subjectId,
+    QuestionId: '',
+    QuestionSnippet: '',
+    BeforeJSON: JSON.stringify(before || {}),
+    AfterJSON: JSON.stringify(after || {}),
+    Summary: summary
+  }]);
+}
+
+// Finds a subject row in the Subjects sheet (custom subjects only).
+function findSubjectRow_(subjectId) {
+  var sheet = ensureSubjectsSchema_();
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return null;
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  var idCol = headers.indexOf('SubjectId');
+  for (var i = 0; i < values.length; i++) {
+    if (String(values[i][idCol]) === subjectId) {
+      return { sheet: sheet, headers: headers, values: values, index: i, rowNumber: i + 2,
+        name: String(values[i][headers.indexOf('Name')] || ''),
+        exam: cleanTopic_(values[i][headers.indexOf('Exam')]) };
+    }
+  }
+  return null;
+}
+
+// A move/merge target can be a custom subject or one of the built-in subjects.
+// Built-in subjects live in subjects.json (not in the sheet), so the website sends
+// their id and name; the id must look like a subject id and the name must be there.
+function resolveTargetSubject_(targetId, targetName) {
+  var custom = findSubjectRow_(targetId);
+  if (custom) return { id: targetId, name: custom.name, custom: true };
+  var name = cleanTopic_(targetName);
+  if (!name || name.length > 80 || !/^[a-z0-9][a-z0-9-]*$/.test(String(targetId))) return null;
+  var lower = name.toLowerCase();
+  for (var i = 0; i < STATIC_SUBJECT_NAMES.length; i++) {
+    if (STATIC_SUBJECT_NAMES[i].toLowerCase() === lower) name = STATIC_SUBJECT_NAMES[i];
+  }
+  return { id: targetId, name: name, custom: false };
+}
+
+function renameSubjectImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var subjectId = String(body.subjectId || '').trim();
+  var newName = cleanTopic_(body.newName);
+  if (!subjectId) return { ok: false, error: 'Subject is required.' };
+  if (!newName) return { ok: false, error: 'Enter the new name.' };
+  if (newName.length > 80) return { ok: false, error: 'Subject name is longer than 80 characters.' };
+
+  var row = findSubjectRow_(subjectId);
+  if (!row) return { ok: false, error: 'Only custom subjects can be renamed here. Built-in subjects are named in subjects.json.' };
+
+  var lower = newName.toLowerCase();
+  var taken = STATIC_SUBJECT_NAMES.some(function (n) { return n.toLowerCase() === lower; });
+  var nameCol = row.headers.indexOf('Name'), idCol = row.headers.indexOf('SubjectId');
+  row.values.forEach(function (r, i) {
+    if (i !== row.index && String(r[nameCol]).toLowerCase() === lower) taken = true;
+  });
+  if (taken) return { ok: false, error: 'Another subject already uses that name.' };
+
+  row.sheet.getRange(row.rowNumber, nameCol + 1).setValue(newName);
+
+  var table = readQuestionTable_();
+  var qSubjectId = table.col('SubjectId'), qSubject = table.col('Subject');
+  var moved = 0;
+  table.values.forEach(function (r) {
+    if (String(r[qSubjectId]) === subjectId) { r[qSubject] = newName; moved++; }
+  });
+  if (moved) writeQuestionColumns_(table, ['Subject']);
+
+  logSubjectChange_(adminEmail, newName, subjectId, 'Subject renamed', { name: row.name }, { name: newName });
+  return { ok: true, name: newName, message: 'Renamed "' + row.name + '" to "' + newName + '".' };
+}
+
+// Moves every question of the source subjects into the target subject, then
+// removes the (now empty) source subjects. Each question keeps its topic, and
+// keeps its exam: a question with no exam of its own takes its source subject's
+// exam, so it does not silently switch to the target's.
+function mergeSubjectsImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var targetId = String(body.targetId || '').trim();
+  var sources = (Array.isArray(body.sourceIds) ? body.sourceIds : []).map(String).filter(function (id, i, all) {
+    return id && all.indexOf(id) === i;
+  });
+  if (!targetId) return { ok: false, error: 'Choose the subject to merge into.' };
+  if (!sources.length) return { ok: false, error: 'Select at least one subject to merge.' };
+  if (sources.indexOf(targetId) !== -1) return { ok: false, error: 'A subject cannot be merged into itself.' };
+  if (sources.length > 50) return { ok: false, error: 'Maximum 50 subjects can be merged at once.' };
+
+  var target = resolveTargetSubject_(targetId, body.targetName);
+  if (!target) return { ok: false, error: 'The subject to merge into was not found.' };
+
+  var found = {};
+  for (var i = 0; i < sources.length; i++) {
+    var row = findSubjectRow_(sources[i]);
+    if (!row) return { ok: false, error: 'Only custom subjects can be merged away (' + sources[i] + ' is not one).' };
+    found[sources[i]] = row;
+  }
+
+  var table = readQuestionTable_();
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam');
+  var perSource = {};
+  table.values.forEach(function (r) {
+    var sid = String(r[cSid]);
+    if (!found[sid]) return;
+    if (!cleanTopic_(r[cExam])) r[cExam] = found[sid].exam;
+    r[cSid] = targetId;
+    r[cSubject] = target.name;
+    perSource[sid] = (perSource[sid] || 0) + 1;
+  });
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam']);
+
+  Object.keys(found)
+    .map(function (id) { return found[id].rowNumber; })
+    .sort(function (a, b) { return b - a; })
+    .forEach(function (rowNumber) { ensureSubjectsSchema_().deleteRow(rowNumber); });
+
+  var totalMoved = 0;
+  Object.keys(found).forEach(function (id) {
+    totalMoved += perSource[id] || 0;
+    logSubjectChange_(adminEmail, found[id].name, id, 'Merged into ' + target.name + ' (' + (perSource[id] || 0) + ' questions)',
+      { subject: found[id].name, exam: found[id].exam }, { mergedInto: target.name });
+  });
+  return {
+    ok: true,
+    mergedSubjects: Object.keys(found).length,
+    movedQuestions: totalMoved,
+    mergedIds: Object.keys(found),
+    message: Object.keys(found).length + ' subject(s) merged into "' + target.name + '" (' + totalMoved + ' questions moved).'
+  };
+}
+
+// Picks out the questions of one subject that belong to the given topic tests.
+// items: [{ topic, exam }] with exam = the exam shown for the test (blank = none).
+function selectTopicTestRows_(table, subjectId, items) {
+  var homes = subjectHomeExams_();
+  var home = homeExamOf_(homes, subjectId);
+  var wanted = {};
+  items.forEach(function (it) {
+    wanted[topicKey_(it.exam) + '|' + topicKey_(it.topic)] = true;
+  });
+  var cSid = table.col('SubjectId'), cTopic = table.col('Topic'), cExam = table.col('Exam');
+  var rows = [];
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== subjectId) return;
+    var topic = cleanTopic_(r[cTopic]);
+    if (!topic) return;
+    var exam = cleanTopic_(r[cExam]) || home;
+    if (wanted[topicKey_(exam) + '|' + topicKey_(topic)]) rows.push({ row: r, exam: exam });
+  });
+  return rows;
+}
+
+function cleanItems_(raw) {
+  return (Array.isArray(raw) ? raw : []).map(function (it) {
+    return { topic: cleanTopic_(it && it.topic), exam: cleanTopic_(it && it.exam) };
+  }).filter(function (it) { return it.topic; });
+}
+
+// Moves whole topic tests (all their questions) from one subject to another.
+// By default each keeps its own name. With `toTopic` every moved test is merged
+// into that topic test of the target subject instead (an existing one, or a new
+// name), and `toExam` (when sent) is the exam those questions take — pass the
+// exam of the existing topic test to join it. This also works inside the same
+// subject, which combines several topic tests into one.
+function moveTopicTestsImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var fromId = String(body.fromSubjectId || '').trim();
+  var toId = String(body.toSubjectId || '').trim();
+  var items = cleanItems_(body.items);
+  var toTopic = cleanTopic_(body.toTopic);
+  var examProvided = body.toExam !== undefined && body.toExam !== null;
+  var toExam = examProvided ? cleanTopic_(body.toExam) : '';
+  if (!fromId || !toId) return { ok: false, error: 'Choose the subject to move to.' };
+  if (fromId === toId && !toTopic) return { ok: false, error: 'Those tests are already in that subject.' };
+  if (!items.length) return { ok: false, error: 'Select at least one topic test.' };
+  if (toTopic.length > MAX_TOPIC_LENGTH) return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  if (toExam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
+  var target = resolveTargetSubject_(toId, body.toSubjectName);
+  if (!target) return { ok: false, error: 'The subject to move to was not found.' };
+
+  var table = readQuestionTable_();
+  var picked = selectTopicTestRows_(table, fromId, items);
+  if (!picked.length) return { ok: false, error: 'None of the selected topic tests were found.' };
+
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  var homes = subjectHomeExams_();
+  var targetHome = homeExamOf_(homes, toId);
+  var pickedRows = picked.map(function (p) { return p.row; });
+  // spell each topic (per exam) the way the target subject already spells it
+  var canon = {};
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== toId || pickedRows.indexOf(r) !== -1) return;
+    var t = cleanTopic_(r[cTopic]);
+    if (!t) return;
+    var slot = 'k:' + topicKey_(cleanTopic_(r[cExam]) || targetHome) + '|' + topicKey_(t);
+    if (!canon[slot]) canon[slot] = t;
+  });
+  var fromName = '';
+  picked.forEach(function (p) {
+    fromName = fromName || String(p.row[cSubject] || '');
+    var exam = examProvided ? toExam : p.exam;
+    var topic = toTopic || cleanTopic_(p.row[cTopic]);
+    var slot = 'k:' + topicKey_(exam || targetHome) + '|' + topicKey_(topic);
+    if (canon[slot]) topic = canon[slot]; else canon[slot] = topic;
+    p.row[cTopic] = topic;
+    p.row[cExam] = exam;            // the exam becomes explicit, so it survives the move
+    p.row[cSid] = toId;
+    p.row[cSubject] = target.name;
+  });
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
+  logSubjectChange_(adminEmail, fromName, fromId, 'Moved ' + items.length + ' topic test(s) to ' + target.name + (toTopic ? ' → ' + toTopic : '') + ' (' + picked.length + ' questions)',
+    { from: fromName, tests: items }, { to: target.name, topic: toTopic });
+  return { ok: true, moved: picked.length, tests: items.length,
+    message: items.length + ' topic test(s) moved to "' + target.name + '"' + (toTopic ? ' as "' + toTopic + '"' : '') + ' (' + picked.length + ' questions).' };
+}
+
+// Renames a topic test and/or changes the exam it belongs to. Renaming it to the
+// name of an existing topic test of the same exam combines the two.
+function renameTopicTestImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var subjectId = String(body.subjectId || '').trim();
+  var topic = cleanTopic_(body.topic), exam = cleanTopic_(body.exam);
+  var newTopic = cleanTopic_(body.newTopic);
+  var examProvided = body.newExam !== undefined;
+  var newExam = examProvided ? cleanTopic_(body.newExam) : exam;
+  if (!subjectId || !topic) return { ok: false, error: 'Topic test not specified.' };
+  if (!newTopic) return { ok: false, error: 'Enter the new topic name.' };
+  if (newTopic.length > MAX_TOPIC_LENGTH) return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  if (newExam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
+
+  var table = readQuestionTable_();
+  var picked = selectTopicTestRows_(table, subjectId, [{ topic: topic, exam: exam }]);
+  if (!picked.length) return { ok: false, error: 'That topic test was not found.' };
+
+  var homes = subjectHomeExams_();
+  var home = homeExamOf_(homes, subjectId);
+  var cSid = table.col('SubjectId'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  // reuse the spellings the subject already has for the destination exam / topic
+  // (the rows being renamed are skipped, so a change of capitals alone still works)
+  var pickedRows = picked.map(function (p) { return p.row; });
+  var destExam = newExam || home;
+  var examSpelling = newExam, topicSpelling = newTopic;
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== subjectId || pickedRows.indexOf(r) !== -1) return;
+    var re = cleanTopic_(r[cExam]) || home;
+    if (newExam && cleanTopic_(r[cExam]) && topicKey_(re) === topicKey_(newExam)) examSpelling = cleanTopic_(r[cExam]);
+    if (topicKey_(re) === topicKey_(destExam) && topicKey_(r[cTopic]) === topicKey_(newTopic)) topicSpelling = cleanTopic_(r[cTopic]);
+  });
+  picked.forEach(function (p) {
+    p.row[cTopic] = topicSpelling;
+    if (examProvided) p.row[cExam] = newExam ? examSpelling : '';
+  });
+  writeQuestionColumns_(table, examProvided ? ['Topic', 'Exam'] : ['Topic']);
+  logSubjectChange_(adminEmail, '', subjectId, 'Topic test renamed (' + picked.length + ' questions)',
+    { topic: topic, exam: exam }, { topic: topicSpelling, exam: examProvided ? newExam : exam });
+  return { ok: true, changed: picked.length, topic: topicSpelling, exam: examProvided ? newExam : exam,
+    message: 'Topic test renamed to "' + topicSpelling + '"' + (newExam ? ' (' + newExam + ')' : '') + '.' };
+}
+
+// ------------------------------------------------------------
+// CONTROL CENTRE — subject → topic test, topic test → subject
+// ------------------------------------------------------------
+// Turns whole subjects into topic tests of another subject. Every question of a
+// source subject moves into the target subject; each source becomes one topic
+// test named after it (mode 'single'), or keeps its own topic tests with only
+// the questions that have no topic going under that name (mode 'keep').
+// `targetTopic` puts everything into that one topic test instead (an existing
+// one, or a new name), and `targetExam` (when sent) is the exam the moved
+// questions take — otherwise each keeps its own. The emptied source subjects
+// are removed.
+function nestSubjectsImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var targetId = String(body.targetId || '').trim();
+  var mode = body.mode === 'keep' ? 'keep' : 'single';
+  var targetTopic = cleanTopic_(body.targetTopic);
+  var examProvided = body.targetExam !== undefined && body.targetExam !== null;
+  var targetExam = examProvided ? cleanTopic_(body.targetExam) : '';
+  var sources = (Array.isArray(body.sourceIds) ? body.sourceIds : []).map(String).filter(function (id, i, all) {
+    return id && all.indexOf(id) === i;
+  });
+  if (!targetId) return { ok: false, error: 'Choose the subject to move into.' };
+  if (!sources.length) return { ok: false, error: 'Select at least one subject to move.' };
+  if (sources.indexOf(targetId) !== -1) return { ok: false, error: 'A subject cannot be moved into itself.' };
+  if (sources.length > 50) return { ok: false, error: 'Maximum 50 subjects can be moved at once.' };
+  if (targetTopic.length > MAX_TOPIC_LENGTH) return { ok: false, error: 'Topic is longer than ' + MAX_TOPIC_LENGTH + ' characters.' };
+  if (targetExam.length > 40) return { ok: false, error: 'Exam is longer than 40 characters.' };
+  var target = resolveTargetSubject_(targetId, body.targetName);
+  if (!target) return { ok: false, error: 'The subject to move into was not found.' };
+
+  var found = {};
+  for (var i = 0; i < sources.length; i++) {
+    var row = findSubjectRow_(sources[i]);
+    if (!row) return { ok: false, error: 'Only custom subjects can be moved away (' + sources[i] + ' is not one).' };
+    found[sources[i]] = row;
+  }
+
+  var table = readQuestionTable_();
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  var homes = subjectHomeExams_();
+  var targetHome = homeExamOf_(homes, targetId);
+  // topic spellings the target already uses (per exam)
+  var canon = {};
+  table.values.forEach(function (r) {
+    if (String(r[cSid]) !== targetId) return;
+    var t = cleanTopic_(r[cTopic]);
+    if (!t) return;
+    var slot = 'k:' + topicKey_(cleanTopic_(r[cExam]) || targetHome) + '|' + topicKey_(t);
+    if (!canon[slot]) canon[slot] = t;
+  });
+  var perSource = {}, moved = 0;
+  table.values.forEach(function (r) {
+    var sid = String(r[cSid]);
+    var src = found[sid];
+    if (!src) return;
+    var exam = examProvided ? targetExam : (cleanTopic_(r[cExam]) || src.exam);
+    var own = cleanTopic_(r[cTopic]);
+    var topic = (mode === 'keep' && own) ? own : (targetTopic || cleanTopic_(src.name).slice(0, MAX_TOPIC_LENGTH));
+    var slot = 'k:' + topicKey_(exam || targetHome) + '|' + topicKey_(topic);
+    if (canon[slot]) topic = canon[slot]; else canon[slot] = topic;
+    r[cTopic] = topic;
+    r[cExam] = exam;
+    r[cSid] = targetId;
+    r[cSubject] = target.name;
+    perSource[sid] = (perSource[sid] || 0) + 1;
+    moved++;
+  });
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
+
+  Object.keys(found)
+    .map(function (id) { return found[id].rowNumber; })
+    .sort(function (a, b) { return b - a; })
+    .forEach(function (rowNumber) { ensureSubjectsSchema_().deleteRow(rowNumber); });
+
+  Object.keys(found).forEach(function (id) {
+    logSubjectChange_(adminEmail, found[id].name, id, 'Moved into ' + target.name + ' as a topic test (' + (perSource[id] || 0) + ' questions)',
+      { subject: found[id].name, exam: found[id].exam }, { movedInto: target.name, topic: targetTopic || found[id].name, mode: mode });
+  });
+  return {
+    ok: true,
+    movedSubjects: Object.keys(found).length,
+    movedQuestions: moved,
+    movedIds: Object.keys(found),
+    message: Object.keys(found).length + ' subject(s) moved into "' + target.name + '" as topic test(s) (' + moved + ' questions).'
+  };
+}
+
+// Turns a topic test into a main subject of its own. Its questions leave their
+// topic (they are now simply the new subject's questions) but keep their exam.
+function promoteTopicTestImpl_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var adminEmail = email_(body.adminEmail);
+  var fromId = String(body.fromSubjectId || '').trim();
+  var topic = cleanTopic_(body.topic), exam = cleanTopic_(body.exam);
+  var newName = cleanTopic_(body.newName);
+  var password = String(body.password || '').trim();
+  if (!fromId || !topic) return { ok: false, error: 'Topic test not specified.' };
+  if (!newName) return { ok: false, error: 'Enter a name for the new subject.' };
+  if (newName.length > 80) return { ok: false, error: 'Subject name is longer than 80 characters.' };
+  if (!password) return { ok: false, error: 'A password for the new subject is required.' };
+
+  var sheet = ensureSubjectsSchema_();
+  var existing = objs_(sheet);
+  var lower = newName.toLowerCase();
+  var taken = STATIC_SUBJECT_NAMES.some(function (n) { return n.toLowerCase() === lower; });
+  existing.forEach(function (r) { if (String(r.Name || '').trim().toLowerCase() === lower) taken = true; });
+  if (taken) return { ok: false, error: 'A subject with this name already exists.' };
+
+  var table = readQuestionTable_();
+  var picked = selectTopicTestRows_(table, fromId, [{ topic: topic, exam: exam }]);
+  if (!picked.length) return { ok: false, error: 'That topic test was not found.' };
+
+  var base = slugify_(newName) || 'subject';
+  var id = base, ids = {};
+  existing.forEach(function (r) { ids[String(r.SubjectId || '')] = true; });
+  var suffix = 1;
+  while (ids[id]) { suffix++; id = base + '-' + suffix; }
+
+  var cSid = table.col('SubjectId'), cSubject = table.col('Subject'), cExam = table.col('Exam'), cTopic = table.col('Topic');
+  var fromName = '';
+  picked.forEach(function (p) {
+    fromName = fromName || String(p.row[cSubject] || '');
+    p.row[cSid] = id;
+    p.row[cSubject] = newName;
+    p.row[cTopic] = '';
+    p.row[cExam] = p.exam;
+  });
+  appendManyByHeader_(sheet, [{
+    SubjectId: id, Name: newName, Password: password, Description: '',
+    CreatedBy: adminEmail, CreatedAt: new Date(), Exam: exam
+  }]);
+  writeQuestionColumns_(table, ['SubjectId', 'Subject', 'Exam', 'Topic']);
+  logSubjectChange_(adminEmail, newName, id, 'Created from topic test "' + topic + '" of ' + fromName + ' (' + picked.length + ' questions)',
+    { from: fromName, topic: topic, exam: exam }, { subject: newName });
+  return {
+    ok: true, moved: picked.length,
+    subject: { id: id, name: newName, password: password, exam: exam },
+    message: 'Topic test "' + topic + '" is now the subject "' + newName + '" (' + picked.length + ' questions).'
+  };
+}
+
+// ------------------------------------------------------------
+// CHANGE JOURNAL + UNDO / REDO
+// ------------------------------------------------------------
+// Every structural change (rename, merge, move, delete, default wait ...) is
+// recorded in `Operations` together with exactly what it changed, kept in
+// `OperationData`. The Control Centre shows the list, and Undo / Redo walk
+// through it one change at a time (newest first, like any editor). Doing a new
+// change after an undo clears the redo list. Only the newest 30 changes keep
+// their undo data.
+var UNDO_KEEP = 30;
+var OP_CHUNK = 40000;
+var QUESTION_TRACKED_ = ['SubjectId', 'Subject', 'Topic', 'Exam'];
+var SUBJECT_TRACKED_ = ['Name', 'Password', 'Description', 'Exam'];
+
+function ensureOpSheets_() {
+  var book = ss_();
+  ['Operations', 'OperationData'].forEach(function (name) {
+    var sheet = book.getSheetByName(name);
+    if (!sheet) sheet = book.insertSheet(name);
+    if (sheet.getLastRow() === 0) {
+      sheet.getRange(1, 1, 1, SHEETS[name].length).setValues([SHEETS[name]]).setFontWeight('bold');
+    }
+  });
+}
+
+function readSubjectTable_() {
+  var sheet = ensureSubjectsSchema_();
+  var lastRow = sheet.getLastRow();
+  var lastCol = sheet.getLastColumn();
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  var values = lastRow >= 2 ? sheet.getRange(2, 1, lastRow - 1, lastCol).getValues() : [];
+  return { sheet: sheet, headers: headers, values: values, col: function (n) { return headers.indexOf(n); } };
+}
+
+function opJson_(value) {
+  return JSON.stringify(value, function (key, val) {
+    var original = this[key];
+    if (original instanceof Date) return { '$d': original.getTime() };
+    return val;
+  });
+}
+
+function opParse_(text) {
+  return JSON.parse(text, function (key, val) {
+    return val && typeof val === 'object' && val['$d'] !== undefined ? new Date(val['$d']) : val;
+  });
+}
+
+function rowObj_(headers, row) {
+  var out = {};
+  headers.forEach(function (h, i) { out[h] = row[i]; });
+  return out;
+}
+
+function snapshotState_() {
+  var qt = readQuestionTable_();
+  var qId = qt.col('QuestionId');
+  var qrows = {};
+  qt.values.forEach(function (row, i) {
+    var id = String(row[qId] || '');
+    if (id) qrows[id] = { index: i + 2, row: row };
+  });
+  var st = readSubjectTable_();
+  var sId = st.col('SubjectId');
+  var srows = {};
+  st.values.forEach(function (row, i) {
+    var id = String(row[sId] || '');
+    if (id) srows[id] = { index: i + 2, row: row };
+  });
+  var prop = null;
+  try { prop = PropertiesService.getScriptProperties().getProperty('COOLDOWN_MINUTES'); } catch (ignore) {}
+  return { qHeaders: qt.headers, qrows: qrows, sHeaders: st.headers, srows: srows, cooldown: prop };
+}
+
+function diffTable_(headers, before, after, tracked) {
+  var out = { changed: [], removed: [], added: [] };
+  Object.keys(before).forEach(function (id) {
+    var a = before[id], b = after[id];
+    if (!b) { out.removed.push({ id: id, index: a.index, values: rowObj_(headers.a, a.row) }); return; }
+    var beforeVals = {}, afterVals = {}, any = false;
+    tracked.forEach(function (name) {
+      var ia = headers.a.indexOf(name), ib = headers.b.indexOf(name);
+      var va = ia === -1 ? '' : a.row[ia], vb = ib === -1 ? '' : b.row[ib];
+      if (String(va) !== String(vb)) { beforeVals[name] = va; afterVals[name] = vb; any = true; }
+    });
+    if (any) out.changed.push({ id: id, before: beforeVals, after: afterVals });
+  });
+  Object.keys(after).forEach(function (id) {
+    if (!before[id]) out.added.push({ id: id, index: after[id].index, values: rowObj_(headers.b, after[id].row) });
+  });
+  var byIndex = function (x, y) { return x.index - y.index; };
+  out.removed.sort(byIndex);
+  out.added.sort(byIndex);
+  return out;
+}
+
+function diffState_(a, b) {
+  var diff = {
+    questions: diffTable_({ a: a.qHeaders, b: b.qHeaders }, a.qrows, b.qrows, QUESTION_TRACKED_),
+    subjects: diffTable_({ a: a.sHeaders, b: b.sHeaders }, a.srows, b.srows, SUBJECT_TRACKED_)
+  };
+  if (String(a.cooldown) !== String(b.cooldown)) diff.cooldown = { before: a.cooldown, after: b.cooldown };
+  return diff;
+}
+
+function diffIsEmpty_(diff) {
+  var t = function (d) { return !d.changed.length && !d.removed.length && !d.added.length; };
+  return t(diff.questions) && t(diff.subjects) && !diff.cooldown;
+}
+
+function diffTablesFor_(kind) {
+  if (kind === 'questions') return { read: readQuestionTable_, idName: 'QuestionId' };
+  return { read: readSubjectTable_, idName: 'SubjectId' };
+}
+
+// Returns '' when the diff can be applied, otherwise the reason it cannot.
+function checkDiffApplicable_(diff, direction) {
+  var forward = direction === 'forward';
+  var problem = '';
+  ['questions', 'subjects'].forEach(function (kind) {
+    if (problem) return;
+    var toAdd = forward ? diff[kind].added : diff[kind].removed;
+    if (!toAdd.length) return;
+    var api = diffTablesFor_(kind);
+    var table = api.read();
+    var idCol = table.col(api.idName);
+    var have = {};
+    table.values.forEach(function (r) { have[String(r[idCol])] = true; });
+    toAdd.forEach(function (x) {
+      if (!problem && have[x.id]) problem = 'Cannot ' + (forward ? 'redo' : 'undo') + ': "' + x.id + '" exists again.';
+    });
+  });
+  return problem;
+}
+
+function applyTableDiff_(kind, diff, direction) {
+  var api = diffTablesFor_(kind);
+  var forward = direction === 'forward';
+  var toRemove = forward ? diff.removed : diff.added;
+  var toAdd = forward ? diff.added : diff.removed;
+  var key = forward ? 'after' : 'before';
+  var table = api.read();
+  var idCol = table.col(api.idName);
+
+  // 1) rows that must not exist afterwards — removed in contiguous blocks, bottom first
+  if (toRemove.length) {
+    var removeIds = {};
+    toRemove.forEach(function (x) { removeIds[x.id] = true; });
+    var blocks = [];
+    table.values.forEach(function (r, i) {
+      if (!removeIds[String(r[idCol])]) return;
+      var rowNumber = i + 2, last = blocks[blocks.length - 1];
+      if (last && last.start + last.count === rowNumber) last.count++;
+      else blocks.push({ start: rowNumber, count: 1 });
+    });
+    for (var b = blocks.length - 1; b >= 0; b--) table.sheet.deleteRows(blocks[b].start, blocks[b].count);
+  }
+
+  // 2) rows that must exist afterwards — put back at their old positions, block by block
+  if (toAdd.length) {
+    var sheet = table.sheet, headers = table.headers;
+    var sorted = toAdd.slice().sort(function (x, y) { return x.index - y.index; });
+    var i = 0;
+    while (i < sorted.length) {
+      var start = sorted[i].index, count = 1;
+      while (i + count < sorted.length && sorted[i + count].index === start + count) count++;
+      var rows = sorted.slice(i, i + count).map(function (x) {
+        return headers.map(function (h) { return x.values[h] !== undefined ? x.values[h] : ''; });
+      });
+      var lastRow = sheet.getLastRow();
+      var position = Math.min(start, lastRow + 1);
+      if (position <= lastRow) sheet.insertRowsBefore(position, count);
+      sheet.getRange(position, 1, count, headers.length).setValues(rows);
+      i += count;
+    }
+  }
+
+  // 3) changed cells
+  if (diff.changed.length) {
+    var current = api.read();
+    var currentId = current.col(api.idName);
+    var byId = {};
+    current.values.forEach(function (r) { byId[String(r[currentId])] = r; });
+    var touched = {};
+    diff.changed.forEach(function (c) {
+      var row = byId[c.id];
+      if (!row) return;
+      Object.keys(c[key]).forEach(function (name) {
+        var ci = current.col(name);
+        if (ci === -1) return;
+        row[ci] = c[key][name];
+        touched[name] = true;
+      });
+    });
+    writeQuestionColumns_(current, Object.keys(touched));
+  }
+}
+
+function applyDiff_(diff, direction) {
+  var problem = checkDiffApplicable_(diff, direction);
+  if (problem) return problem;
+  applyTableDiff_('questions', diff.questions, direction);
+  applyTableDiff_('subjects', diff.subjects, direction);
+  if (diff.cooldown) {
+    var value = direction === 'forward' ? diff.cooldown.after : diff.cooldown.before;
+    var props = PropertiesService.getScriptProperties();
+    if (value === null || value === undefined) props.deleteProperty('COOLDOWN_MINUTES');
+    else props.setProperty('COOLDOWN_MINUTES', String(value));
+    _cooldownMsMemo = null;
+    clearAllUserCaches_();
+  }
+  return '';
+}
+
+function readOps_() {
+  ensureOpSheets_();
+  var sheet = sh_('Operations');
+  var values = sheet.getLastRow() >= 1 ? sheet.getDataRange().getValues() : [];
+  var headers = values.length ? values[0].map(String) : SHEETS.Operations;
+  var rows = [];
+  for (var i = 1; i < values.length; i++) {
+    var obj = rowObj_(headers, values[i]);
+    if (!obj.OpId) continue;
+    obj.rowNumber = i + 1;
+    obj.isUndoable = obj.Undoable === true || String(obj.Undoable).toLowerCase() === 'true';
+    rows.push(obj);
+  }
+  return { sheet: sheet, headers: headers, rows: rows };
+}
+
+function setOpStatus_(ops, op, status) {
+  ops.sheet.getRange(op.rowNumber, ops.headers.indexOf('Status') + 1).setValue(status);
+  op.Status = status;
+}
+
+function dropOpData_(opIds) {
+  var sheet = sh_('OperationData');
+  var last = sheet.getLastRow();
+  if (last < 2 || !opIds.length) return;
+  var ids = sheet.getRange(2, 1, last - 1, 1).getValues();
+  var wanted = {};
+  opIds.forEach(function (id) { wanted[id] = true; });
+  var blocks = [];
+  ids.forEach(function (cell, i) {
+    if (!wanted[String(cell[0])]) return;
+    var rowNumber = i + 2, prev = blocks[blocks.length - 1];
+    if (prev && prev.start + prev.count === rowNumber) prev.count++;
+    else blocks.push({ start: rowNumber, count: 1 });
+  });
+  for (var b = blocks.length - 1; b >= 0; b--) sheet.deleteRows(blocks[b].start, blocks[b].count);
+}
+
+// Records one change. `diff` null = an info-only entry (cannot be undone).
+function journalRecord_(adminEmail, type, title, diff) {
+  var ops = readOps_();
+  var undoable = !!diff;
+  var opId = 'OP-' + Utilities.getUuid().replace(/-/g, '').slice(0, 14);
+  var chunks = [];
+  if (diff) {
+    var json = opJson_(diff);
+    for (var i = 0; i < json.length; i += OP_CHUNK) chunks.push(json.slice(i, i + OP_CHUNK));
+    // a new undoable change ends the redo list (and their undo data is no longer needed)
+    var discarded = [];
+    ops.rows.forEach(function (op) {
+      if (op.isUndoable && op.Status === 'undone') { setOpStatus_(ops, op, 'discarded'); discarded.push(op.OpId); }
+    });
+    dropOpData_(discarded);
+  }
+  appendMany_(sh_('Operations'), SHEETS.Operations, [{
+    OpId: opId, Timestamp: new Date(), Admin: adminEmail, Type: type,
+    Title: title, Status: diff ? 'done' : 'info', Undoable: undoable, Parts: chunks.length
+  }]);
+  if (chunks.length) {
+    appendMany_(sh_('OperationData'), SHEETS.OperationData, chunks.map(function (c, i) {
+      return { OpId: opId, Part: i, Json: c };
+    }));
+  }
+  if (diff) {
+    // only the newest UNDO_KEEP changes keep their undo data
+    var live = readOps_().rows.filter(function (op) { return op.isUndoable && (op.Status === 'done' || op.Status === 'undone'); });
+    if (live.length > UNDO_KEEP) {
+      var fresh = readOps_();
+      var expire = live.slice(0, live.length - UNDO_KEEP);
+      expire.forEach(function (op) {
+        var again = fresh.rows.filter(function (x) { return x.OpId === op.OpId; })[0];
+        if (again) {
+          fresh.sheet.getRange(again.rowNumber, fresh.headers.indexOf('Status') + 1).setValue('expired');
+          fresh.sheet.getRange(again.rowNumber, fresh.headers.indexOf('Undoable') + 1).setValue(false);
+        }
+      });
+      dropOpData_(expire.map(function (op) { return op.OpId; }));
+    }
+  }
+  return opId;
+}
+
+function journalInfo_(adminEmail, type, title) {
+  try { journalRecord_(adminEmail, type, title, null); } catch (ignore) {}
+}
+
+// Runs a change and, when it succeeded, records what it changed.
+function recordOp_(body, type, impl) {
+  var before = snapshotState_();
+  var result = impl(body);
+  if (result && result.ok) {
+    try {
+      var diff = diffState_(before, snapshotState_());
+      if (!diffIsEmpty_(diff)) {
+        journalRecord_(email_(body.adminEmail), type, result.message || type, diff);
+        result.journaled = true;
+      }
+    } catch (ignore) {
+      result.journaled = false;
+    }
+  }
+  return result;
+}
+
+function loadOpDiff_(opId) {
+  var sheet = sh_('OperationData');
+  var last = sheet.getLastRow();
+  if (last < 2) return null;
+  var parts = sheet.getRange(2, 1, last - 1, 3).getValues()
+    .filter(function (r) { return String(r[0]) === opId; })
+    .sort(function (a, b) { return Number(a[1]) - Number(b[1]); })
+    .map(function (r) { return String(r[2]); });
+  return parts.length ? opParse_(parts.join('')) : null;
+}
+
+function historyMeta_() {
+  var ops = readOps_().rows.filter(function (op) { return op.isUndoable; });
+  var undo = null, redo = null;
+  for (var i = ops.length - 1; i >= 0; i--) {
+    if (ops[i].Status === 'done') { undo = { id: ops[i].OpId, title: String(ops[i].Title) }; break; }
+  }
+  for (var j = 0; j < ops.length; j++) {
+    if (ops[j].Status === 'undone') { redo = { id: ops[j].OpId, title: String(ops[j].Title) }; break; }
+  }
+  return { undo: undo, redo: redo };
+}
+
+function controlHistory_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var ops = readOps_().rows;
+  var meta = historyMeta_();
+  var entries = ops.slice(-150).reverse().map(function (op) {
+    return {
+      id: op.OpId,
+      time: op.Timestamp ? toDate_(op.Timestamp).toISOString() : '',
+      admin: String(op.Admin || ''),
+      type: String(op.Type || ''),
+      title: String(op.Title || ''),
+      status: String(op.Status || ''),
+      undoable: op.isUndoable
+    };
+  });
+  return { ok: true, entries: entries, undo: meta.undo, redo: meta.redo };
+}
+
+function undoOperation_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var meta = historyMeta_();
+  if (!meta.undo) return { ok: false, error: 'There is nothing to undo.' };
+  var ops = readOps_();
+  var op = ops.rows.filter(function (x) { return x.OpId === meta.undo.id; })[0];
+  var diff = loadOpDiff_(op.OpId);
+  if (!diff) return { ok: false, error: 'This change is too old to undo.' };
+  var problem = applyDiff_(diff, 'reverse');
+  if (problem) return { ok: false, error: problem };
+  setOpStatus_(ops, op, 'undone');
+  return { ok: true, message: 'Undone: ' + op.Title, title: String(op.Title) };
+}
+
+function redoOperation_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var meta = historyMeta_();
+  if (!meta.redo) return { ok: false, error: 'There is nothing to redo.' };
+  var ops = readOps_();
+  var op = ops.rows.filter(function (x) { return x.OpId === meta.redo.id; })[0];
+  var diff = loadOpDiff_(op.OpId);
+  if (!diff) return { ok: false, error: 'This change is too old to redo.' };
+  var problem = applyDiff_(diff, 'forward');
+  if (problem) return { ok: false, error: problem };
+  setOpStatus_(ops, op, 'done');
+  return { ok: true, message: 'Redone: ' + op.Title, title: String(op.Title) };
+}
+
+function createSubject_(body) {
+  var result = createSubjectImpl_(body);
+  if (result && result.ok) journalInfo_(email_(body.adminEmail), 'createSubject', 'Created subject "' + result.subject.name + '"');
+  return result;
+}
+
+function adminCooldownAdjust_(body) {
+  var result = adminCooldownAdjustImpl_(body);
+  if (result && result.ok) {
+    var what = { unlock: 'Unlocked', set: 'Locked', add: 'Changed the wait of', 'default': 'Reset the wait of' }[String(body.mode)] || 'Changed';
+    var minutes = (String(body.mode) === 'set' || String(body.mode) === 'add') ? ' (' + Number(body.minutes) + ' min)' : '';
+    journalInfo_(email_(body.adminEmail), 'studentLock',
+      what + ' ' + (String(body.subject) === '*' ? 'all subjects' : '"' + String(body.subject) + '"') + ' for ' + email_(body.targetEmail) + minutes);
+  }
+  return result;
+}
+
+// The public names: each structural change runs through the journal.
+function renameSubject_(body) { return recordOp_(body, 'renameSubject', renameSubjectImpl_); }
+function mergeSubjects_(body) { return recordOp_(body, 'mergeSubjects', mergeSubjectsImpl_); }
+function moveTopicTests_(body) { return recordOp_(body, 'moveTopicTests', moveTopicTestsImpl_); }
+function renameTopicTest_(body) { return recordOp_(body, 'renameTopicTest', renameTopicTestImpl_); }
+function deleteSubjects_(body) { return recordOp_(body, 'deleteSubjects', deleteSubjectsImpl_); }
+function setSubjectExam_(body) { return recordOp_(body, 'setSubjectExam', setSubjectExamImpl_); }
+function setDefaultCooldown_(body) { return recordOp_(body, 'setDefaultCooldown', setDefaultCooldownImpl_); }
+function setQuestionTopic_(body) { return recordOp_(body, 'setQuestionTopic', setQuestionTopicImpl_); }
+function nestSubjects_(body) { return recordOp_(body, 'nestSubjects', nestSubjectsImpl_); }
+function promoteTopicTest_(body) { return recordOp_(body, 'promoteTopicTest', promoteTopicTestImpl_); }
+
+// Returns the most recent ~50 ChangeLog entries, newest first.
+function questionChangeLog_() {
+  var rows = objs_(sh_('ChangeLog'));
+  rows.sort(function (a, b) { return toDate_(b.Timestamp) - toDate_(a.Timestamp); });
+  return rows.slice(0, 50).map(function (row) {
+    return {
+      changeId: String(row.ChangeId || ''),
+      timestamp: row.Timestamp ? toDate_(row.Timestamp).toISOString() : '',
+      editedBy: String(row.EditedBy || ''),
+      subject: String(row.Subject || ''),
+      subjectId: String(row.SubjectId || ''),
+      questionId: String(row.QuestionId || ''),
+      questionSnippet: String(row.QuestionSnippet || ''),
+      summary: String(row.Summary || '')
+    };
+  });
+}
+
+// ============================================================
+// 6. RANKING
+// ============================================================
+
+// Ranks this attempt against every other user's BEST score in the same
+// subject. Used to read the entire Results sheet (every attempt from every
+// user, across every subject) on every single test submission — the hottest
+// write path in the app, and one that runs under the global script lock, so
+// it was the biggest single thing slowing submissions down as history grew.
+// The Rankings sheet already stores exactly one row per (user, subject) with
+// their BestPercentage, kept current by upsertRanking_ right after this
+// runs — so read that instead: it grows with unique user×subject pairs, not
+// with every attempt ever taken.
+function practiceRank_(subject, email, percentage) {
+  var rows = objs_(sh_('Rankings')).filter(function (row) {
+    return String(row.Subject) === String(subject);
+  });
+
+  var bestByUser = {};
+
+  rows.forEach(function (row) {
+    var userEmail = email_(row.Email);
+
+    if (!userEmail) {
+      return;
+    }
+
+    bestByUser[userEmail] = Math.max(
+      0,
+      Math.min(100, num_(row.BestPercentage))
+    );
+  });
+
+  var currentEmail = email_(email);
+  var currentPercentage = Math.max(
+    0,
+    Math.min(100, num_(percentage))
+  );
+
+  if (
+    bestByUser[currentEmail] === undefined ||
+    currentPercentage > bestByUser[currentEmail]
+  ) {
+    bestByUser[currentEmail] = currentPercentage;
+  }
+
+  var rank = 1;
+
+  Object.keys(bestByUser).forEach(function (userEmail) {
+    if (bestByUser[userEmail] > currentPercentage) {
+      rank++;
+    }
+  });
+
+  return {
+    rank: rank,
+    total: Object.keys(bestByUser).length
+  };
+}
+
+/**
+ * This is the configured ECET equalized-rank range used by the project.
+ * It is NOT calculated from official ECET normalization data.
+ */
+function expectedRank_(percentage) {
+
+  var p = num_(percentage);
+
+  // Minimum qualifying percentage = 25%
+  if (p < 25) return 'Not Qualified';
+
+  // Percentage -> estimated specific rank
+  var points = [
+    [25, 8500],
+    [30, 8000],
+    [35, 7000],
+    [40, 6000],
+    [45, 5000],
+    [50, 3000],
+    [65, 1200],
+    [75, 400],
+    [85, 100],
+    [95, 10],
+    [100, 1]
+  ];
+
+  for (var i = 0; i < points.length - 1; i++) {
+
+    var p1 = points[i][0];
+    var r1 = points[i][1];
+
+    var p2 = points[i + 1][0];
+    var r2 = points[i + 1][1];
+
+    if (p >= p1 && p <= p2) {
+
+      var rawRank =
+        r1 + ((p - p1) / (p2 - p1)) * (r2 - r1);
+
+      return Math.max(1, Math.round(rawRank));
+    }
+  }
+
+  return 1;
+}
+
+
+// ============================================================
+// 7. EXAM SUBMISSION
+// ============================================================
+
+function submitExam_(body) {
+  var sessionId = String(body.examSessionId || '').trim();
+  var email = email_(body.email);
+  var subject = String(body.subject || '').trim();
+  var name = String(body.name || '').trim();
+
+  // NATIVE APP PATH: doPost() already verified the idToken and overwrote
+  // body.email with the VERIFIED email before this function ran — the
+  // `email` var above (read from body.email) already reflects that, so a
+  // tampered client can never write an exam result into another student's
+  // record. WEBSITE PATH: no idToken -> unchanged legacy behavior.
+
+  if (!validEmail_(email)) {
+    return {
+      ok: false,
+      error: 'A valid email address is required.'
+    };
+  }
+
+  if (!subject) {
+    return {
+      ok: false,
+      error: 'Test subject is required.'
+    };
+  }
+
+  // Duplicate submission protection. Uses TextFinder to search just the
+  // ExamSessionId / ResultId columns instead of objs_() (which would pull
+  // every column of every row, across every user, into memory just to
+  // find one match) — this runs on every single submission, so it's worth
+  // keeping cheap as both sheets grow.
+  if (sessionId) {
+    var priorResultId = findInColumn_('SubmittedSessions', 'ExamSessionId', sessionId, 'ResultId');
+
+    if (priorResultId) {
+      var oldResult = findRowByColumn_('Results', 'ResultId', priorResultId);
+
+      if (oldResult) {
+        return resultResponse_(oldResult, true);
+      }
+    }
+  }
+
+  var now = new Date();
+  var startTime = toDate_(body.startTime, now);
+  var detail = Array.isArray(body.detail) ? body.detail : [];
+
+  if (!detail.length) {
+    return { ok: false, error: 'No question details were supplied. Please reopen the test and submit again.' };
+  }
+
+  // 1-day re-attempt cooldown. Only rejects a genuinely NEW session: if this
+  // attempt's startTime is at or before the last completed attempt's time,
+  // it's the resume of an exam that was already running before the cooldown
+  // existed (or is that same completed attempt being resubmitted, which the
+  // session-dedup check above already handled) — resuming is always allowed.
+  // This never sends an email or creates a reminder; it's a pure pacing rule.
+  var lastAttemptAt = getSubjectLastAttempt_(email, subject);
+  var eff = effectiveUnlock_(lastAttemptAt, overridesFor_(email), subject);
+  if (eff.unlockAt && eff.since && now < eff.unlockAt && startTime > eff.since) {
+    return {
+      ok: false,
+      error: 'You already attempted "' + subject + '" recently. You can retake it after ' + iso_(eff.unlockAt) + '.',
+      cooldown: { locked: true, unlockAt: iso_(eff.unlockAt) }
+    };
+  }
+
+  var userRows = objs_(sh_('Users'));
+  var knownUser = userRows.find(function(row){ return email_(row.Email) === email; });
+  if (!name && knownUser) name = String(knownUser.Name || '').trim();
+  if (!name) name = 'ECET Student';
+
+  // ----------------------------------------------------------
+  // Recalculate score from question details.
+  // This prevents the browser from sending incorrect totals.
+  // No negative marking is applied.
+  // ----------------------------------------------------------
+
+  var correct = 0;
+  var wrong = 0;
+  var unanswered = 0;
+  var totalTimeSec = 0;
+
+  detail.forEach(function (question) {
+    var answered =
+      question.selected !== null &&
+      question.selected !== undefined &&
+      question.selected !== '';
+
+    var isCorrect =
+      answered &&
+      Number(question.selected) === Number(question.correct);
+
+    if (!answered) {
+      unanswered++;
+    } else if (isCorrect) {
+      correct++;
+    } else {
+      wrong++;
+    }
+
+    totalTimeSec += Math.max(0, num_(question.time));
+  });
+
+  var total = detail.length;
+
+  // If the frontend sends no detail, fall back to its totals.
+  // This keeps compatibility with older frontend versions.
+  if (total === 0) {
+    total = Math.max(0, Math.floor(num_(body.total)));
+    correct = Math.max(0, Math.floor(num_(body.correct)));
+    wrong = Math.max(0, Math.floor(num_(body.wrong)));
+    unanswered = Math.max(
+      0,
+      Math.floor(num_(body.unanswered))
+    );
+    totalTimeSec = Math.max(
+      0,
+      Math.floor(num_(body.totalTime))
+    );
+  }
+
+  // No negative marking.
+  var score = correct;
+
+  var percentage = total > 0
+    ? Math.round((correct / total) * 10000) / 100
+    : 0;
+
+  var rank = practiceRank_(
+    subject,
+    email,
+    percentage
+  );
+
+  var resultId = Utilities.getUuid();
+
+  // Revision becomes available 24 hours after the completed test.
+  var unlock = new Date(
+    now.getTime() + 24 * 60 * 60 * 1000
+  );
+
+  var testUrl = String(body.testUrl || '').trim();
+  var revisionTestUrl =
+    String(body.revisionTestUrl || '').trim();
+
+  var result = {
+    ResultId: resultId,
+    Timestamp: now,
+    Name: name,
+    Email: email,
+    Subject: subject,
+    SubjectId: body.subjectId || '',
+    Score: score,
+    Total: total,
+    Percentage: percentage,
+    Correct: correct,
+    Wrong: wrong,
+    Unanswered: unanswered,
+    TotalTimeSec: totalTimeSec,
+    StartTime: startTime,
+    EndTime: now,
+    Rank: rank.rank,
+    RankOutOf: rank.total,
+    RevisionAvailableAt: unlock,
+    RevisionUnlockedEmailSent: false,
+    TestUrl: testUrl
+  };
+
+  append_(
+    sh_('Results'),
+    SHEETS.Results,
+    result
+  );
+
+  // ----------------------------------------------------------
+  // Save every answer and every mistake.
+  // Wrong + unattempted both become revision questions.
+  // ----------------------------------------------------------
+
+  var answerRows = [];
+  var mistakeRows = [];
+
+  detail.forEach(function (question) {
+    var answered =
+      question.selected !== null &&
+      question.selected !== undefined &&
+      question.selected !== '';
+
+    var isCorrect =
+      answered &&
+      Number(question.selected) === Number(question.correct);
+
+    answerRows.push({
+      ResultId: resultId,
+      Email: email,
+      Subject: subject,
+      QuestionId: question.id,
+      Year: question.year,
+      State: question.state,
+      QuestionNumber: question.questionNumber,
+      SelectedIndex: answered ? question.selected : '',
+      CorrectIndex: question.correct,
+      IsCorrect: isCorrect,
+      TimeSpentSec: Math.max(0, num_(question.time)),
+      MarkedForReview: bool_(question.marked)
+    });
+
+    if (!isCorrect) {
+      mistakeRows.push({
+        WrongId:
+          resultId + '-' + String(question.id || Utilities.getUuid()),
+
+        ResultId: resultId,
+        Email: email,
+        Subject: subject,
+        QuestionId: question.id,
+        Year: question.year,
+        State: question.state,
+        QuestionNumber: question.questionNumber,
+        Question: question.question || '',
+        OptionsJSON: JSON.stringify(question.options || []),
+        ImagesJSON: JSON.stringify({image: question.image || '', optionImages: question.optionImages || []}),
+        CorrectIndex: question.correct,
+        SelectedIndex: answered ? question.selected : '',
+        MistakeType: answered ? 'wrong' : 'unattempted',
+        DateAdded: now,
+        RevisionDueDate: unlock,
+        Revised: false,
+        ReminderSent: false,
+        TestUrl:
+          revisionTestUrl ||
+          siteFromTestUrl_(testUrl)
+      });
+    }
+  });
+
+  appendMany_(
+    sh_('Answers'),
+    SHEETS.Answers,
+    answerRows
+  );
+
+  appendMany_(
+    sh_('WrongAnswers'),
+    SHEETS.WrongAnswers,
+    mistakeRows
+  );
+
+  recordAttemptInUserStats_(result, mistakeRows.length);
+
+  if (sessionId) {
+    append_(
+      sh_('SubmittedSessions'),
+      SHEETS.SubmittedSessions,
+      {
+        ExamSessionId: sessionId,
+        ResultId: resultId,
+        Email: email,
+        Subject: subject,
+        SubmittedAt: now
+      }
+    );
+  }
+
+  upsertRanking_(result);
+
+  var emailResult = sendResultEmail_(
+    result,
+    rank.rank,
+    unlock
+  );
+
+  return {
+    ok: true,
+    resultId: resultId,
+    rank: rank.rank,
+    rankOutOf: rank.total,
+    expectedRank: expectedRank_(percentage),
+    revisionAvailableAt: unlock.toISOString(),
+    emailStatus: emailResult.status
+  };
+}
+
+function resultResponse_(result, duplicate) {
+  return {
+    ok: true,
+    duplicate: !!duplicate,
+    resultId: result.ResultId || '',
+    rank: result.Rank || '',
+    rankOutOf: result.RankOutOf || '',
+    expectedRank: expectedRank_(result.Percentage),
+    revisionAvailableAt:
+      result.RevisionAvailableAt
+        ? new Date(result.RevisionAvailableAt).toISOString()
+        : null,
+    emailStatus: 'ALREADY_SENT'
+  };
+}
+
+
+// ============================================================
+// 8. RANKING SHEET
+// ============================================================
+
+function upsertRanking_(result) {
+  var sheet = sh_('Rankings');
+  var values = sheet.getDataRange().getValues();
+
+  if (!values.length) {
+    return;
+  }
+
+  var headers = values[0];
+
+  var subjectIndex = headers.indexOf('Subject');
+  var emailIndex = headers.indexOf('Email');
+  var nameIndex = headers.indexOf('Name');
+  var bestPercentageIndex =
+    headers.indexOf('BestPercentage');
+  var bestScoreIndex =
+    headers.indexOf('BestScore');
+  var totalIndex = headers.indexOf('Total');
+  var attemptsIndex = headers.indexOf('Attempts');
+  var lastAttemptIndex =
+    headers.indexOf('LastAttempt');
+
+  var userEmail = email_(result.Email);
+  var currentPercentage = num_(result.Percentage);
+
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i];
+
+    if (
+      String(row[subjectIndex]) === String(result.Subject) &&
+      email_(row[emailIndex]) === userEmail
+    ) {
+      var oldBest = num_(row[bestPercentageIndex]);
+
+      if (currentPercentage > oldBest) {
+        row[bestPercentageIndex] = currentPercentage;
+        row[bestScoreIndex] = num_(result.Score);
+        row[totalIndex] = num_(result.Total);
+      }
+
+      row[attemptsIndex] =
+        num_(row[attemptsIndex]) + 1;
+
+      row[lastAttemptIndex] = new Date();
+
+      sheet
+        .getRange(i + 1, 1, 1, headers.length)
+        .setValues([row]);
+
+      return;
+    }
+  }
+
+  append_(
+    sheet,
+    SHEETS.Rankings,
+    {
+      Subject: result.Subject,
+      Email: userEmail,
+      Name: result.Name,
+      BestPercentage: currentPercentage,
+      BestScore: num_(result.Score),
+      Total: num_(result.Total),
+      Attempts: 1,
+      LastAttempt: new Date()
+    }
+  );
+}
+
+
+// ============================================================
+// 8b. USER STATS (incremental dashboard cache)
+// ============================================================
+// dashboard_() used to recompute everything from a full scan of Results +
+// WrongAnswers on every single load, which only gets slower as those sheets
+// grow with every attempt from every user. UserStats keeps one row per user,
+// updated incrementally right here at submit-time, so a dashboard load is a
+// single-row lookup no matter how much history has piled up.
+
+function userStatsHeaders_() {
+  return SHEETS.UserStats;
+}
+
+// Finds the row (values[], 0-based, includes header row at index 0) for an
+// email in a values[][] snapshot of the UserStats sheet. Returns -1 if none.
+function findUserStatsRowIndex_(values, headers, email) {
+  var emailIndex = headers.indexOf('Email');
+  for (var i = 1; i < values.length; i++) {
+    if (email_(values[i][emailIndex]) === email) return i;
+  }
+  return -1;
+}
+
+function parseSubjectStats_(json) {
+  try {
+    var parsed = JSON.parse(json || '{}');
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// Called once per submitted test, right after that attempt's mistakes are
+// known. Updates (or creates) the single UserStats row for this email.
+function recordAttemptInUserStats_(result, newMistakesCount) {
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  var headers = values.length ? values[0] : userStatsHeaders_();
+
+  var email = email_(result.Email);
+  var percentage = num_(result.Percentage);
+  var subject = String(result.Subject || '');
+
+  var emailIndex = headers.indexOf('Email');
+  var attemptsIndex = headers.indexOf('Attempts');
+  var sumIndex = headers.indexOf('SumPercentage');
+  var bestIndex = headers.indexOf('BestPercentage');
+  var mistakesIndex = headers.indexOf('MistakesCount');
+  var subjJsonIndex = headers.indexOf('SubjectStatsJSON');
+  var updatedIndex = headers.indexOf('UpdatedAt');
+
+  var rowIndex = values.length
+    ? findUserStatsRowIndex_(values, headers, email)
+    : -1;
+
+  var row = rowIndex === -1
+    ? headers.map(function () { return ''; })
+    : values[rowIndex];
+
+  var subjectStats = parseSubjectStats_(row[subjJsonIndex]);
+  var s = subjectStats[subject] || { attempts: 0, sum: 0, best: 0, worst: 100 };
+  s.attempts += 1;
+  s.sum += percentage;
+  s.best = Math.max(s.best, percentage);
+  // worst may be undefined on entries created before this field existed —
+  // fall back to +Infinity so the very first comparison always takes
+  // percentage rather than silently keeping an undefined "worst".
+  s.worst = Math.min(s.worst === undefined ? Infinity : s.worst, percentage);
+  // Drives the 1-day re-attempt cooldown (see subjectStatus_ / dashboard_).
+  // Stored as an ISO string so it survives JSON round-tripping untouched.
+  s.lastAttempt = iso_(result.EndTime || new Date());
+  subjectStats[subject] = s;
+
+  row[emailIndex] = email;
+  row[attemptsIndex] = num_(row[attemptsIndex]) + 1;
+  row[sumIndex] = num_(row[sumIndex]) + percentage;
+  row[bestIndex] = Math.max(num_(row[bestIndex]), percentage);
+  row[mistakesIndex] = num_(row[mistakesIndex]) + num_(newMistakesCount);
+  row[subjJsonIndex] = JSON.stringify(subjectStats);
+  row[updatedIndex] = new Date();
+
+  if (rowIndex === -1) {
+    sheet.getRange(sheet.getLastRow() + 1, 1, 1, headers.length).setValues([row]);
+  } else {
+    sheet.getRange(rowIndex + 1, 1, 1, headers.length).setValues([row]);
+  }
+}
+
+// Reads just the lastAttempt timestamp for one (email, subject) pair straight
+// out of the already-maintained UserStats row — a single-row lookup, not a
+// scan or recompute of anything. Returns null if the user/subject has no
+// completed attempt yet. Backs both the 1-day cooldown check in submitExam_
+// and the subjectStatus_ endpoint the frontend polls before starting a test.
+function getSubjectLastAttempt_(email, subject) {
+  email = email_(email);
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  if (!values.length) return null;
+  var headers = values[0];
+  var rowIndex = findUserStatsRowIndex_(values, headers, email);
+  if (rowIndex === -1) return null;
+  var subjJsonIndex = headers.indexOf('SubjectStatsJSON');
+  var subjectStats = parseSubjectStats_(values[rowIndex][subjJsonIndex]);
+  var s = subjectStats[String(subject || '')];
+  if (!s || !s.lastAttempt) return null;
+  var d = new Date(s.lastAttempt);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// Re-attempt cooldown: once a subject is completed, the same user can't
+// start a fresh attempt on it again for 1 day. Purely a practice-pacing
+// rule — it never queues or sends any email/reminder about it, and it never
+// blocks resuming an exam that was already in progress before the cooldown
+// started (see subjectStatus_ callers on the frontend for that distinction).
+var SUBJECT_COOLDOWN_MS = 1 * 24 * 60 * 60 * 1000; // factory default: 24 hours
+
+// The wait after finishing a subject can be changed from the Control Centre
+// (24 hours / 3 days / 7 days / 1 month / custom). It is stored as a script
+// property, so it survives redeploys and needs no extra sheet. Anything missing
+// or invalid falls back to the 24-hour default.
+var _cooldownMsMemo = null;
+function subjectCooldownMs_() {
+  if (_cooldownMsMemo !== null) return _cooldownMsMemo;
+  var ms = SUBJECT_COOLDOWN_MS;
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty('COOLDOWN_MINUTES');
+    var minutes = Number(raw);
+    if (raw !== null && raw !== '' && isFinite(minutes) && minutes >= 0 && minutes <= 60 * 24 * 365) {
+      ms = minutes * 60000;
+    }
+  } catch (ignore) {}
+  _cooldownMsMemo = ms;
+  return ms;
+}
+
+// Admin overrides for the exam timer. Read once per call and filtered in
+// memory (the sheet is tiny compared with Results/Answers).
+function overridesFor_(email) {
+  email = email_(email);
+  var sheet = sh_('CooldownOverrides');
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  return objs_(sheet).filter(function (r) {
+    return email_(r.Email) === email && validDate_(r.UnlockAt) && validDate_(r.SetAt);
+  }).map(function (r) {
+    return {
+      subject: String(r.Subject || '').trim(),
+      unlockAt: toDate_(r.UnlockAt),
+      setAt: toDate_(r.SetAt)
+    };
+  });
+}
+
+function pickOverride_(list, subject) {
+  var best = null;
+  list.forEach(function (o) {
+    if (o.subject !== '*' && o.subject !== String(subject || '')) return;
+    if (!best || o.setAt.getTime() >= best.setAt.getTime()) best = o;
+  });
+  return best;
+}
+
+// The one place that decides when a subject unlocks for a user:
+//  - default: last completed attempt + the default wait (24 hours unless changed in the Control Centre)
+//  - an admin override wins, but only until the user completes a NEW attempt
+//    (a newer attempt restarts the normal 24-hour rule).
+// Returns { unlockAt: Date|null, since: Date|null, overridden: bool }.
+// "since" is the moment the rule started applying; only exams started after
+// it can be rejected, so a test already in progress is never thrown away.
+function effectiveUnlock_(lastAttempt, overrideList, subject) {
+  var ov = pickOverride_(overrideList || [], subject);
+  if (ov && (!lastAttempt || ov.setAt.getTime() >= lastAttempt.getTime())) {
+    return { unlockAt: ov.unlockAt, since: ov.setAt, overridden: true };
+  }
+  if (lastAttempt) {
+    return {
+      unlockAt: new Date(lastAttempt.getTime() + subjectCooldownMs_()),
+      since: lastAttempt,
+      overridden: false
+    };
+  }
+  return { unlockAt: null, since: null, overridden: false };
+}
+
+function subjectStatus_(email, subject) {
+  email = email_(email);
+  subject = String(subject || '');
+  var lastAttempt = getSubjectLastAttempt_(email, subject);
+  var eff = effectiveUnlock_(lastAttempt, overridesFor_(email), subject);
+  var locked = !!(eff.unlockAt && new Date() < eff.unlockAt);
+  return {
+    locked: locked,
+    lastAttempt: lastAttempt ? iso_(lastAttempt) : null,
+    unlockAt: locked ? iso_(eff.unlockAt) : null,
+    overridden: eff.overridden
+  };
+}
+
+
+function adjustUserMistakesCount_(email, delta) {
+  if (!delta) return;
+  email = email_(email);
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  if (!values.length) return;
+
+  var headers = values[0];
+  var rowIndex = findUserStatsRowIndex_(values, headers, email);
+  if (rowIndex === -1) return;
+
+  var mistakesIndex = headers.indexOf('MistakesCount');
+  var updatedIndex = headers.indexOf('UpdatedAt');
+  var row = values[rowIndex];
+
+  row[mistakesIndex] = Math.max(0, num_(row[mistakesIndex]) + delta);
+  row[updatedIndex] = new Date();
+
+  sheet.getRange(rowIndex + 1, 1, 1, headers.length).setValues([row]);
+}
+
+// One-time backfill for users who already had Results/WrongAnswers before
+// UserStats existed. Safe to re-run — it recomputes each user from scratch
+// rather than double-adding. Run manually from the Apps Script editor once
+// after deploying this update; not called from doGet/doPost.
+function migrateUserStats_() {
+  var results = objs_(sh_('Results'));
+  var wrongAnswers = objs_(sh_('WrongAnswers')).filter(function (row) {
+    return !bool_(row.Revised);
+  });
+
+  var byEmail = {};
+
+  results.forEach(function (row) {
+    var email = email_(row.Email);
+    if (!byEmail[email]) {
+      byEmail[email] = { attempts: 0, sum: 0, best: 0, mistakes: 0, subjects: {} };
+    }
+    var percentage = num_(row.Percentage);
+    var subject = String(row.Subject || '');
+    var u = byEmail[email];
+    u.attempts += 1;
+    u.sum += percentage;
+    u.best = Math.max(u.best, percentage);
+    var s = u.subjects[subject] || { attempts: 0, sum: 0, best: 0, worst: 100, lastAttempt: null };
+    s.attempts += 1;
+    s.sum += percentage;
+    s.best = Math.max(s.best, percentage);
+    s.worst = Math.min(s.worst, percentage);
+    var endTime = toDate_(row.EndTime || row.Timestamp);
+    if (!s.lastAttempt || endTime > new Date(s.lastAttempt)) {
+      s.lastAttempt = iso_(endTime);
+    }
+    u.subjects[subject] = s;
+  });
+
+  wrongAnswers.forEach(function (row) {
+    var email = email_(row.Email);
+    if (!byEmail[email]) {
+      byEmail[email] = { attempts: 0, sum: 0, best: 0, mistakes: 0, subjects: {} };
+    }
+    byEmail[email].mistakes += 1;
+  });
+
+  var sheet = sh_('UserStats');
+  var headers = userStatsHeaders_();
+  var now = new Date();
+
+  var rows = Object.keys(byEmail).map(function (email) {
+    var u = byEmail[email];
+    return [
+      email, u.attempts, u.sum, u.best, u.mistakes, JSON.stringify(u.subjects), now
+    ];
+  });
+
+  // Wipe and rewrite rather than upsert row-by-row — this only runs once,
+  // manually, so a clean full rebuild is simpler and safer than merging.
+  if (sheet.getLastRow() > 1) {
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).clearContent();
+  }
+  if (rows.length) {
+    sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  }
+
+  return { ok: true, usersMigrated: rows.length };
+}
+
+
+// ============================================================
+// 9. RESULT EMAIL
+// ============================================================
+
+function minutes_(seconds) {
+  var totalSeconds = Math.round(num_(seconds));
+
+  var hours = Math.floor(totalSeconds / 3600);
+  var minutes = Math.floor(
+    (totalSeconds % 3600) / 60
+  );
+  var remainingSeconds =
+    totalSeconds % 60;
+
+  if (hours) {
+    return (
+      hours + 'h ' +
+      minutes + 'm ' +
+      remainingSeconds + 's'
+    );
+  }
+
+  return (
+    minutes + 'm ' +
+    remainingSeconds + 's'
+  );
+}
+
+function resultHtml_(result, rank, unlock) {
+  var ready = new Date() >= new Date(unlock);
+
+  var revisionUrl =
+    String(result.RevisionTestUrl || '').trim() ||
+    siteFromTestUrl_(result.TestUrl);
+
+  var revisionSection = ready
+    ? (
+      revisionUrl
+        ? '<a href="' + esc_(revisionUrl) + '"' +
+          ' style="display:inline-block;padding:12px 18px;' +
+          'background:#111;color:#fff;text-decoration:none;' +
+          'border-radius:7px;margin:4px">Take Revision Test</a>'
+        : '<p style="padding:12px;background:#f4f4f4;' +
+          'border-radius:7px">Revision Test is unlocked. ' +
+          'Open the website to start it.</p>'
+    )
+    : (
+      '<p style="padding:12px;background:#f4f4f4;' +
+      'border-radius:7px">' +
+      'Revision Test unlocks on <b>' +
+      esc_(display_(unlock)) +
+      '</b>.</p>'
+    );
+
+  var rows = [
+    ['Test Subject', result.Subject],
+    ['Test Start Date & Time', display_(result.StartTime)],
+    ['Test End Date & Time', display_(result.EndTime)],
+    ['Total Time Spent', minutes_(result.TotalTimeSec)],
+    ['Marks Obtained', result.Score],
+    ['Percentage', result.Percentage + '%'],
+    ['Total Questions', result.Total],
+    ['Correct', result.Correct],
+    ['Wrong', result.Wrong],
+    ['Unattempted', result.Unanswered],
+    ['Current Test Rank',
+      result.Rank + ' / ' + result.RankOutOf],
+    ['ECET Equalized Rank',
+      expectedRank_(result.Percentage)]
+  ];
+
+  var table = rows.map(function (row) {
+    return (
+      '<tr>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee">' +
+      '<b>' + esc_(row[0]) + '</b>' +
+      '</td>' +
+      '<td style="padding:9px;border-bottom:1px solid #eee">' +
+      esc_(row[1]) +
+      '</td>' +
+      '</tr>'
+    );
+  }).join('');
+
+  var retakeButton = result.TestUrl
+    ? (
+      '<a href="' + esc_(result.TestUrl) + '"' +
+      ' style="display:inline-block;padding:12px 18px;' +
+      'background:#111;color:#fff;text-decoration:none;' +
+      'border-radius:7px;margin:4px">Retake Test</a>'
+    )
+    : '';
+
+  return (
+    '<div style="font-family:Arial,sans-serif;' +
+    'max-width:680px;margin:auto;color:#222">' +
+
+    '<h2>ECET Test Result</h2>' +
+
+    '<p>Dear <b>' +
+    esc_(result.Name) +
+    '</b>,</p>' +
+
+    '<table style="width:100%;border-collapse:collapse">' +
+    table +
+    '</table>' +
+
+    '<p style="margin-top:20px">' +
+    retakeButton +
+    revisionSection +
+    '</p>' +
+
+    '<p style="font-size:12px;color:#777">' +
+    'This email contains your test summary only.' +
+    '</p>' +
+
+    '</div>'
+  );
+}
+
+function sendResultEmail_(result, rank, unlock) {
+  var subject =
+    'ECET ' + result.Subject + ' — Test Result';
+
+  var html = resultHtml_(
+    result,
+    rank,
+    unlock
+  );
+
+  // submitExam_ runs inside doPost's script lock. MailApp.sendEmail is a
+  // network call (1–4s) — calling it live here would hold that lock for
+  // the whole send, blocking every other doPost request (including other
+  // students' submitExam calls) until it finished. So we never send here:
+  // we just queue a fast sheet append, and processEmailQueue() (a
+  // background trigger) sends it a few seconds later, outside this lock.
+  append_(
+    sh_('EmailQueue'),
+    SHEETS.EmailQueue,
+    {
+      QueueId: Utilities.getUuid(),
+      ToEmail: email_(result.Email),
+      EmailType: 'result',
+      Subject: subject,
+      HtmlBody: html,
+      CreatedAt: new Date(),
+      SentAt: '',
+      Status: 'PENDING'
+    }
+  );
+
+  return {
+    status: 'QUEUED'
+  };
+}
+
+
+// ============================================================
+// 10. DASHBOARD / MISTAKES / HISTORY
+// ============================================================
+
+// Reads the single UserStats row for this email — O(1)-ish regardless of how
+// many attempts exist across the whole app. Falls back to the old full-sheet
+// scan (dashboardLegacy_) only for a user who attempted tests before
+// UserStats existed and hasn't had migrateUserStats_() run for them yet; that
+// fallback also writes the computed result back so the NEXT load is fast.
+function dashboard_(email) {
+  var d = dashboardBase_(email);
+  try {
+    var ov = overridesFor_(email);
+    (d.subjects || []).forEach(function (s) {
+      var last = s.lastAttempt ? new Date(s.lastAttempt) : null;
+      if (last && isNaN(last.getTime())) last = null;
+      var eff = effectiveUnlock_(last, ov, s.subject);
+      s.unlockAt = (eff.unlockAt && new Date() < eff.unlockAt) ? iso_(eff.unlockAt) : null;
+    });
+  } catch (err) {
+    // Never let the override lookup break the dashboard itself.
+  }
+  return d;
+}
+
+function dashboardBase_(email) {
+  email = email_(email);
+
+  var sheet = sh_('UserStats');
+  var values = sheet.getDataRange().getValues();
+  var headers = values.length ? values[0] : userStatsHeaders_();
+  var rowIndex = values.length ? findUserStatsRowIndex_(values, headers, email) : -1;
+
+  if (rowIndex === -1) {
+    var legacy = dashboardLegacy_(email);
+    if (legacy.attempts > 0 || legacy.mistakes > 0) {
+      bootstrapUserStatsRow_(email, legacy);
+    }
+    return legacy;
+  }
+
+  var row = values[rowIndex];
+  var attempts = num_(row[headers.indexOf('Attempts')]);
+  var sum = num_(row[headers.indexOf('SumPercentage')]);
+  var best = num_(row[headers.indexOf('BestPercentage')]);
+  var mistakes = num_(row[headers.indexOf('MistakesCount')]);
+  var subjectStats = parseSubjectStats_(row[headers.indexOf('SubjectStatsJSON')]);
+
+  var subjectList = Object.keys(subjectStats).map(function (key) {
+    var s = subjectStats[key];
+    return {
+      subject: key,
+      best: Math.round(s.best * 10) / 10,
+      // Older rows created before "worst" existed won't have it — fall back
+      // to best so the UI never shows a blank instead of a number.
+      worst: Math.round((s.worst === undefined ? s.best : s.worst) * 10) / 10,
+      avg: s.attempts ? Math.round((s.sum / s.attempts) * 10) / 10 : 0,
+      attempts: s.attempts,
+      lastAttempt: s.lastAttempt || null
+    };
+  });
+
+  return {
+    attempts: attempts,
+    best: Math.round(best * 10) / 10,
+    avg: attempts ? Math.round((sum / attempts) * 10) / 10 : 0,
+    mistakes: mistakes,
+    subjects: subjectList
+  };
+}
+
+// Writes a freshly-computed legacy result into UserStats so subsequent loads
+// for this user hit the fast path. Rebuilds SubjectStatsJSON in the {sum,
+// best, attempts} shape recordAttemptInUserStats_ expects.
+function bootstrapUserStatsRow_(email, legacy) {
+  var sheet = sh_('UserStats');
+  var headers = userStatsHeaders_();
+  var subjectStats = {};
+  (legacy.subjects || []).forEach(function (s) {
+    subjectStats[s.subject] = {
+      attempts: s.attempts,
+      sum: s.avg * s.attempts,
+      best: s.best,
+      worst: s.worst === undefined ? s.best : s.worst,
+      lastAttempt: s.lastAttempt || null
+    };
+  });
+  sheet.appendRow([
+    email, legacy.attempts, legacy.attempts * legacy.avg, legacy.best,
+    legacy.mistakes, JSON.stringify(subjectStats), new Date()
+  ]);
+}
+
+// The original full-sheet-scan implementation. Only reached now as a
+// fallback for a user missing a UserStats row (see dashboard_ above) and by
+// migrateUserStats_.
+function dashboardLegacy_(email) {
+  email = email_(email);
+
+  var results = objs_(sh_('Results')).filter(function (row) {
+    return email_(row.Email) === email;
+  });
+
+  var mistakes = objs_(sh_('WrongAnswers')).filter(function (row) {
+    return (
+      email_(row.Email) === email &&
+      !bool_(row.Revised)
+    );
+  });
+
+  var subjects = {};
+
+  results.forEach(function (row) {
+    var key = String(row.Subject || '');
+
+    if (!subjects[key]) {
+      subjects[key] = {
+        subject: row.Subject,
+        best: 0,
+        worst: 100,
+        attempts: 0,
+        lastAttempt: null
+      };
+    }
+
+    subjects[key].best = Math.max(
+      subjects[key].best,
+      num_(row.Percentage)
+    );
+
+    subjects[key].worst = Math.min(
+      subjects[key].worst,
+      num_(row.Percentage)
+    );
+
+    var endTime = toDate_(row.EndTime || row.Timestamp);
+    if (!subjects[key].lastAttempt || endTime > new Date(subjects[key].lastAttempt)) {
+      subjects[key].lastAttempt = iso_(endTime);
+    }
+
+    subjects[key].attempts++;
+  });
+
+  var percentages = results.map(function (row) {
+    return num_(row.Percentage);
+  });
+
+  var subjectList = Object.keys(subjects).map(function (key) {
+    var subjectResults = results.filter(function(row){ return String(row.Subject || '') === key; });
+    var avg = subjectResults.length ? subjectResults.reduce(function(sum,row){ return sum + num_(row.Percentage); },0) / subjectResults.length : 0;
+    return {
+      subject: subjects[key].subject,
+      best: Math.round(subjects[key].best * 10) / 10,
+      worst: Math.round(subjects[key].worst * 10) / 10,
+      avg: Math.round(avg * 10) / 10,
+      attempts: subjects[key].attempts,
+      lastAttempt: subjects[key].lastAttempt
+    };
+  });
+
+  return {
+    attempts: results.length,
+    best: percentages.length ? Math.max.apply(null, percentages) : 0,
+    avg: percentages.length ? Math.round((percentages.reduce(function (a, b) { return a + b; }, 0) / percentages.length) * 10) / 10 : 0,
+    mistakes: mistakes.length,
+    subjects: subjectList
+  };
+}
+
+function profile_(email) {
+  email = email_(email);
+
+  var d = dashboard_(email);
+
+  var userRow = objs_(sh_('Users')).filter(function (row) {
+    return email_(row.Email) === email;
+  })[0];
+
+  var reminderCount = objs_(sh_('Reminders')).filter(function (row) {
+    return email_(row.Email) === email;
+  }).length;
+
+  return {
+    name: userRow ? userRow.Name : '',
+    email: email,
+    createdAt: userRow && userRow.Timestamp ? toDate_(userRow.Timestamp).toISOString() : '',
+    attempts: d.attempts,
+    avg: d.avg,
+    best: d.best,
+    mistakes: d.mistakes,
+    reminders: reminderCount,
+    subjects: d.subjects
+  };
+}
+
+function mistakes_(email) {
+  email = email_(email);
+
+  return objs_(sh_('WrongAnswers'))
+    .filter(function (row) {
+      return (
+        email_(row.Email) === email &&
+        !bool_(row.Revised)
+      );
+    })
+    .map(function (row) {
+      var options = [];
+
+      try {
+        options = JSON.parse(
+          row.OptionsJSON || '[]'
+        );
+      } catch (ignore) {
+        options = [];
+      }
+
+      var images = {};
+      try {
+        images = JSON.parse(row.ImagesJSON || '{}');
+      } catch (ignore) {
+        images = {};
+      }
+
+      return {
+        wrongId: row.WrongId,
+        resultId: row.ResultId,
+        subject: row.Subject,
+        questionId: row.QuestionId,
+        year: row.Year,
+        state: row.State,
+        questionNumber: row.QuestionNumber,
+        question: row.Question,
+        options: options,
+        image: images.image || '',
+        optionImages: images.optionImages || [],
+        correctIndex: row.CorrectIndex,
+        selectedIndex: row.SelectedIndex,
+        mistakeType:
+          String(
+            row.MistakeType || 'wrong'
+          ).toLowerCase(),
+        revisionDueIso:
+          row.RevisionDueDate
+            ? new Date(row.RevisionDueDate).toISOString()
+            : null,
+        revised: bool_(row.Revised),
+        testUrl: row.TestUrl || ''
+      };
+    });
+}
+
+function history_(email) {
+  email = email_(email);
+
+  return objs_(sh_('Results'))
+    .filter(function (row) {
+      return email_(row.Email) === email;
+    })
+    .sort(function (a, b) {
+      return (
+        new Date(b.EndTime || b.Timestamp) -
+        new Date(a.EndTime || a.Timestamp)
+      );
+    })
+    .map(function (row) {
+      var liveRank = practiceRank_(row.Subject, row.Email, num_(row.Percentage));
+      return {
+        resultId: row.ResultId,
+        timestamp: toDate_(
+          row.Timestamp
+        ).toISOString(),
+        subject: row.Subject,
+        subjectId: row.SubjectId,
+        score: num_(row.Score),
+        total: num_(row.Total),
+        percentage: num_(row.Percentage),
+        correct: num_(row.Correct),
+        wrong: num_(row.Wrong),
+        unanswered: num_(row.Unanswered),
+        totalTimeSec: num_(row.TotalTimeSec),
+        rank: liveRank.rank,
+        rankOutOf: liveRank.total,
+        startTime: toDate_(
+          row.StartTime || row.Timestamp
+        ).toISOString(),
+        endTime: toDate_(
+          row.EndTime || row.Timestamp
+        ).toISOString()
+      };
+    });
+}
+
+
+// ============================================================
+// 11. REVISION TEST SUBMISSION
+// ============================================================
+
+function submitRevision_(body) {
+  var email = email_(body.email);
+
+  if (!validEmail_(email)) {
+    return {
+      ok: false,
+      error: 'A valid email address is required.'
+    };
+  }
+
+  var sheet = sh_('WrongAnswers');
+  var values = sheet.getDataRange().getValues();
+
+  if (!values.length) {
+    return {
+      ok: true,
+      correct: 0,
+      wrong: 0,
+      unattempted: 0
+    };
+  }
+
+  var headers = values[0];
+
+  function indexOfHeader(name) {
+    return headers.indexOf(name);
+  }
+
+  var items = Array.isArray(body.items)
+    ? body.items
+    : [];
+
+  var itemMap = new Map();
+
+  items.forEach(function (item) {
+    itemMap.set(
+      String(item.wrongId),
+      item
+    );
+  });
+
+  var historyRows = [];
+
+  var correct = 0;
+  var wrong = 0;
+  var unattempted = 0;
+
+  var touchedRows = [];
+
+  for (var i = 1; i < values.length; i++) {
+    var wrongId = String(
+      values[i][indexOfHeader('WrongId')]
+    );
+
+    if (!itemMap.has(wrongId)) {
+      continue;
+    }
+
+    var storedEmail = email_(
+      values[i][indexOfHeader('Email')]
+    );
+
+    if (storedEmail !== email) {
+      continue;
+    }
+
+    var item = itemMap.get(wrongId);
+
+    var answered =
+      item.selected !== null &&
+      item.selected !== undefined &&
+      item.selected !== '';
+
+    var isCorrect =
+      answered &&
+      Number(item.selected) ===
+      Number(
+        values[i][indexOfHeader('CorrectIndex')]
+      );
+
+    if (isCorrect) {
+      correct++;
+
+      values[i][indexOfHeader('Revised')] = true;
+
+      historyRows.push({
+        Email: email,
+        Subject:
+          values[i][indexOfHeader('Subject')],
+        QuestionId:
+          values[i][indexOfHeader('QuestionId')],
+        ActionDate: new Date(),
+        Action: 'revised',
+        MistakeType:
+          values[i][indexOfHeader('MistakeType')]
+      });
+
+    } else if (answered) {
+      wrong++;
+    } else {
+      unattempted++;
+    }
+
+    values[i][indexOfHeader('ReminderSent')] = false;
+    touchedRows.push(i);
+  }
+
+  // Write back only the rows that actually changed, instead of rewriting
+  // the whole sheet on every revision submission (as before). WrongAnswers
+  // accumulates one row per wrong/unattempted question from every user,
+  // forever, so a full rewrite here got a little slower with every passing
+  // day; this batch is bounded by how many questions were in THIS revision
+  // test, not by how big the sheet has grown.
+  touchedRows.forEach(function (i) {
+    sheet.getRange(i + 1, 1, 1, headers.length).setValues([values[i]]);
+  });
+
+  appendMany_(
+    sh_('RevisionHistory'),
+    SHEETS.RevisionHistory,
+    historyRows
+  );
+
+  adjustUserMistakesCount_(email, -correct);
+
+  return {
+    ok: true,
+    correct: correct,
+    wrong: wrong,
+    unattempted: unattempted,
+    total:
+      correct + wrong + unattempted
+  };
+}
+
+
+// ============================================================
+// 12. REMINDERS
+// ============================================================
+
+function createReminder_(body) {
+  var email = email_(body.email);
+  var name = String(body.name || '').trim();
+  var message = String(
+    body.message || ''
+  ).trim();
+
+  var nextRunAt = toDate_(
+    body.nextRunAt,
+    null
+  );
+
+  if (!validEmail_(email)) {
+    return {
+      ok: false,
+      error: 'A valid registered email address is required.'
+    };
+  }
+
+  if (!name) {
+    return {
+      ok: false,
+      error: 'Reminder name is required.'
+    };
+  }
+
+  if (!message) {
+    return {
+      ok: false,
+      error: 'Reminder message is required.'
+    };
+  }
+
+  if (
+    !nextRunAt ||
+    isNaN(nextRunAt.getTime()) ||
+    nextRunAt <= new Date()
+  ) {
+    return {
+      ok: false,
+      error:
+        'Please provide a valid future date/time.'
+    };
+  }
+
+  var now = new Date();
+  var frequency = normalizeFrequency_(body.frequency);
+  var duplicate = objs_(sh_('Reminders')).find(function(row){
+    return email_(row.Email) === email &&
+      String(row.Name || '').trim() === name &&
+      String(row.Message || '').trim() === message &&
+      normalizeFrequency_(row.Frequency) === frequency &&
+      new Date(row.NextRunAt).getTime() === nextRunAt.getTime() &&
+      bool_(row.Enabled);
+  });
+  if (duplicate) {
+    return { ok: true, duplicate: true, id: duplicate.ReminderId, nextRunAt: nextRunAt.toISOString(), status: duplicate.Status || 'Active' };
+  }
+  var id = Utilities.getUuid();
+
+  append_(
+    sh_('Reminders'),
+    SHEETS.Reminders,
+    {
+      ReminderId: id,
+      Email: email,
+      UserName:
+        String(
+          body.userName ||
+          body.userDisplayName ||
+          name
+        ).trim(),
+
+      Name: name,
+      Message: message,
+
+      // Optional for standalone reminders.
+      RelatedTask:
+        String(
+          body.relatedTask || ''
+        ).trim(),
+
+      RelatedUrl:
+        String(
+          body.relatedUrl || ''
+        ).trim(),
+
+      Frequency: frequency,
+      NextRunAt: nextRunAt,
+      Status: 'Active',
+      Enabled: true,
+      CreatedAt: now,
+      UpdatedAt: now,
+      LastSentAt: ''
+    }
+  );
+
+  return {
+    ok: true,
+    id: id,
+    nextRunAt: nextRunAt.toISOString(),
+    status: 'Active'
+  };
+}
+
+function updateReminder_(body) {
+  var sheet = sh_('Reminders');
+  var values = sheet.getDataRange().getValues();
+
+  if (!values.length) {
+    return {
+      ok: false,
+      error: 'Reminder not found.'
+    };
+  }
+
+  var headers = values[0];
+
+  var idIndex = headers.indexOf('ReminderId');
+  var emailIndex = headers.indexOf('Email');
+
+  var email = email_(body.email);
+  var reminderId = String(body.id || '').trim();
+
+  if (!validEmail_(email) || !reminderId) {
+    return {
+      ok: false,
+      error: 'Valid email and reminder ID are required.'
+    };
+  }
+
+  for (var i = 1; i < values.length; i++) {
+    if (
+      String(values[i][idIndex]) === reminderId &&
+      email_(values[i][emailIndex]) === email
+    ) {
+      var nextRunAt = toDate_(
+        body.nextRunAt,
+        null
+      );
+
+      if (
+        !nextRunAt ||
+        isNaN(nextRunAt.getTime()) ||
+        nextRunAt <= new Date()
+      ) {
+        return {
+          ok: false,
+          error:
+            'Please provide a valid future date/time.'
+        };
+      }
+
+      function setValue(column, value) {
+        var index = headers.indexOf(column);
+
+        if (index >= 0) {
+          values[i][index] = value;
+        }
+      }
+
+      var currentUserName =
+        values[i][headers.indexOf('UserName')] || '';
+
+      var reminderName =
+        String(
+          body.name ||
+          values[i][headers.indexOf('Name')] ||
+          ''
+        ).trim();
+
+      var reminderMessage =
+        String(
+          body.message ||
+          values[i][headers.indexOf('Message')] ||
+          ''
+        ).trim();
+
+      if (!reminderName) {
+        return {
+          ok: false,
+          error: 'Reminder name is required.'
+        };
+      }
+
+      if (!reminderMessage) {
+        return {
+          ok: false,
+          error: 'Reminder message is required.'
+        };
+      }
+
+      setValue(
+        'UserName',
+        String(
+          body.userName ||
+          currentUserName ||
+          reminderName
+        ).trim()
+      );
+
+      setValue('Name', reminderName);
+      setValue('Message', reminderMessage);
+
+      var currentTask =
+        values[i][headers.indexOf('RelatedTask')] || '';
+      var currentUrl =
+        values[i][headers.indexOf('RelatedUrl')] || '';
+      var currentFrequency =
+        values[i][headers.indexOf('Frequency')] || 'once';
+
+      setValue(
+        'RelatedTask',
+        body.relatedTask !== undefined
+          ? String(body.relatedTask || '').trim()
+          : String(currentTask).trim()
+      );
+
+      setValue(
+        'RelatedUrl',
+        body.relatedUrl !== undefined
+          ? String(body.relatedUrl || '').trim()
+          : String(currentUrl).trim()
+      );
+
+      setValue(
+        'Frequency',
+        body.frequency !== undefined
+          ? normalizeFrequency_(body.frequency)
+          : normalizeFrequency_(currentFrequency)
+      );
+
+      setValue(
+        'NextRunAt',
+        nextRunAt
+      );
+
+      setValue('Status', 'Active');
+      setValue('Enabled', true);
+      setValue('UpdatedAt', new Date());
+
+      sheet
+        .getRange(
+          i + 1,
+          1,
+          1,
+          headers.length
+        )
+        .setValues([values[i]]);
+
+      return {
+        ok: true,
+        nextRunAt:
+          nextRunAt.toISOString()
+      };
+    }
+  }
+
+  return {
+    ok: false,
+    error: 'Reminder not found.'
+  };
+}
+
+function toggleReminder_(body) {
+  var sheet = sh_('Reminders');
+  var values = sheet.getDataRange().getValues();
+
+  if (!values.length) {
+    return {
+      ok: false,
+      error: 'Reminder not found.'
+    };
+  }
+
+  var headers = values[0];
+
+  var idIndex = headers.indexOf('ReminderId');
+  var emailIndex = headers.indexOf('Email');
+  var enabledIndex = headers.indexOf('Enabled');
+  var statusIndex = headers.indexOf('Status');
+  var updatedIndex = headers.indexOf('UpdatedAt');
+
+  var email = email_(body.email);
+  var reminderId = String(body.id || '').trim();
+  var enabled = bool_(body.enabled);
+
+  for (var i = 1; i < values.length; i++) {
+    if (
+      String(values[i][idIndex]) === reminderId &&
+      email_(values[i][emailIndex]) === email
+    ) {
+      values[i][enabledIndex] = enabled;
+      values[i][statusIndex] =
+        enabled ? 'Active' : 'Paused';
+      values[i][updatedIndex] = new Date();
+
+      sheet
+        .getRange(
+          i + 1,
+          1,
+          1,
+          headers.length
+        )
+        .setValues([values[i]]);
+
+      return {
+        ok: true,
+        enabled: enabled,
+        status:
+          enabled ? 'Active' : 'Paused'
+      };
+    }
+  }
+
+  return {
+    ok: false,
+    error: 'Reminder not found.'
+  };
+}
+
+function deleteReminder_(body) {
+  // A single targeted lookup (one match, then done) rather than a scan
+  // over many rows — a single TextFinder call is a safe, direct swap for
+  // the full-sheet read here (no "many small calls" downside like a loop
+  // of lookups would have).
+  var sheet = sh_('Reminders');
+  if (!sheet || sheet.getLastRow() < 2) {
+    return { ok: false, error: 'Reminder not found.' };
+  }
+
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var idCol = headers.indexOf('ReminderId') + 1;
+  var emailIndex = headers.indexOf('Email');
+  if (!idCol) return { ok: false, error: 'Reminder not found.' };
+
+  var email = email_(body.email);
+  var reminderId = String(body.id || '').trim();
+
+  var idRange = sheet.getRange(2, idCol, sheet.getLastRow() - 1, 1);
+  var match = idRange.createTextFinder(reminderId).matchEntireCell(true).findNext();
+
+  if (match) {
+    var rowNum = match.getRow();
+    var rowEmail = email_(sheet.getRange(rowNum, emailIndex + 1).getValue());
+
+    if (rowEmail === email) {
+      sheet.deleteRow(rowNum);
+      return { ok: true };
+    }
+  }
+
+  return {
+    ok: false,
+    error: 'Reminder not found.'
+  };
+}
+
+function reminders_(email) {
+  email = email_(email);
+
+  return objs_(sh_('Reminders'))
+    .filter(function (row) {
+      return email_(row.Email) === email;
+    })
+    .map(function (row) {
+      return {
+        id: row.ReminderId,
+        userName: row.UserName || '',
+        name: row.Name || '',
+        message: row.Message || '',
+        relatedTask: row.RelatedTask || '',
+        relatedUrl: row.RelatedUrl || '',
+        frequency:
+          normalizeFrequency_(row.Frequency),
+
+        nextRunAt:
+          row.NextRunAt
+            ? toDate_(row.NextRunAt).toISOString()
+            : null,
+
+        status:
+          row.Status ||
+          (bool_(row.Enabled)
+            ? 'Active'
+            : 'Paused'),
+
+        enabled: bool_(row.Enabled),
+
+        lastSentAt:
+          row.LastSentAt
+            ? toDate_(row.LastSentAt).toISOString()
+            : null
+      };
+    });
+}
+
+
+// ============================================================
+// 13. NOTIFICATION HISTORY
+// ============================================================
+
+function notifications_(email) {
+  email = email_(email);
+
+  return objs_(sh_('Notifications'))
+    .filter(function (row) {
+      return email_(row.Email) === email;
+    })
+    .sort(function (a, b) {
+      return (
+        new Date(b.ScheduledAt) -
+        new Date(a.ScheduledAt)
+      );
+    })
+    .map(function (row) {
+      return {
+        id: row.NotificationId,
+        reminderId: row.ReminderId,
+        name: row.Name || '',
+        message: row.Message || '',
+        relatedTask: row.RelatedTask || '',
+        relatedUrl: row.RelatedUrl || '',
+
+        scheduledAt:
+          row.ScheduledAt
+            ? toDate_(row.ScheduledAt).toISOString()
+            : null,
+
+        sentAt:
+          row.SentAt
+            ? toDate_(row.SentAt).toISOString()
+            : null,
+
+        status: row.Status || '',
+        error: row.Error || '',
+        retryCount:
+          num_(row.RetryCount)
+      };
+    });
+}
+
+
+// ============================================================
+// 14. SEND REMINDER EMAIL
+// ============================================================
+
+function sendReminder_(reminder, notificationId) {
+  var subject =
+    'Reminder: ' + String(reminder.Name || 'Reminder');
+
+  var relatedTask =
+    String(reminder.RelatedTask || '').trim();
+
+  var relatedUrl =
+    String(reminder.RelatedUrl || '').trim();
+
+  var relatedSection = '';
+
+  if (relatedTask) {
+    relatedSection +=
+      '<p><b>Related task:</b> ' +
+      esc_(relatedTask) +
+      '</p>';
+  }
+
+  if (relatedUrl) {
+    relatedSection +=
+      '<p>' +
+      '<a href="' + esc_(relatedUrl) + '"' +
+      ' style="display:inline-block;padding:12px 18px;' +
+      'background:#111;color:#fff;text-decoration:none;' +
+      'border-radius:7px">Open Task</a>' +
+      '</p>';
+  }
+
+  var html =
+    '<div style="font-family:Arial,sans-serif;' +
+    'max-width:680px;margin:auto;color:#222">' +
+
+    '<h2>Reminder</h2>' +
+
+    '<p>Dear <b>' +
+    esc_(
+      reminder.UserName ||
+      reminder.Name ||
+      'User'
+    ) +
+    '</b>,</p>' +
+
+    '<p>' +
+    esc_(reminder.Message) +
+    '</p>' +
+
+    relatedSection +
+
+    '<p><b>Date/time:</b> ' +
+    esc_(
+      display_(
+        reminder.NextRunAt || new Date()
+      )
+    ) +
+    '</p>' +
+
+    '</div>';
+
+  try {
+    MailApp.sendEmail({
+      to: email_(reminder.Email),
+      subject: subject,
+      htmlBody: html
+    });
+
+    updateNotificationStatus_(
+      notificationId,
+      'Sent',
+      '',
+      true
+    );
+
+    return true;
+
+  } catch (error) {
+    updateNotificationStatus_(
+      notificationId,
+      'Failed',
+      String(error).slice(0, 300),
+      false
+    );
+
+    return false;
+  }
+}
+
+function updateNotificationStatus_(
+  notificationId,
+  status,
+  errorText,
+  sent
+) {
+  var sheet = sh_('Notifications');
+  var values = sheet.getDataRange().getValues();
+
+  if (!values.length) {
+    return;
+  }
+
+  var headers = values[0];
+
+  var idIndex =
+    headers.indexOf('NotificationId');
+
+  var statusIndex =
+    headers.indexOf('Status');
+
+  var sentAtIndex =
+    headers.indexOf('SentAt');
+
+  var errorIndex =
+    headers.indexOf('Error');
+
+  var retryIndex =
+    headers.indexOf('RetryCount');
+
+  for (var i = 1; i < values.length; i++) {
+    if (
+      String(values[i][idIndex]) ===
+      String(notificationId)
+    ) {
+      values[i][statusIndex] = status;
+
+      if (sent) {
+        values[i][sentAtIndex] = new Date();
+      }
+
+      if (errorIndex >= 0) {
+        values[i][errorIndex] =
+          errorText || '';
+      }
+
+      if (!sent && retryIndex >= 0) {
+        values[i][retryIndex] =
+          num_(values[i][retryIndex]) + 1;
+      }
+
+      sheet
+        .getRange(
+          i + 1,
+          1,
+          1,
+          headers.length
+        )
+        .setValues([values[i]]);
+
+      return;
+    }
+  }
+}
+
+
+// ============================================================
+// 15. PROCESS DUE REMINDERS
+// ============================================================
+
+function processReminders() {
+  var lock = LockService.getScriptLock();
+
+  // Run-guard: if a previous processReminders run (or an overlapping
+  // trigger fire) is still in progress, skip this run instead of
+  // waiting up to 30s for the lock and piling another lock-holder on
+  // top of the last one. The next trigger fire a few minutes from now
+  // will pick up anything still due.
+  if (!lock.tryLock(0)) {
+    return 'Reminder processor skipped — a previous run is still in progress.';
+  }
+
+  var dueList = [];
+
+  try {
+    ensureSheets_();
+
+    var reminderSheet = sh_('Reminders');
+    var reminders = objs_(reminderSheet);
+    var now = new Date();
+
+    reminders.forEach(function (reminder) {
+      if (!bool_(reminder.Enabled)) {
+        return;
+      }
+
+      if (String(reminder.Status) !== 'Active') {
+        return;
+      }
+
+      var dueAt = toDate_(
+        reminder.NextRunAt,
+        null
+      );
+
+      if (
+        !dueAt ||
+        isNaN(dueAt.getTime()) ||
+        dueAt > now
+      ) {
+        return;
+      }
+
+      var notificationId =
+        Utilities.getUuid();
+
+      // This append is a fast sheet write, not a network call, so it's
+      // fine to do while still holding the lock — it also claims the
+      // reminder so a concurrent run can't queue it twice.
+      append_(
+        sh_('Notifications'),
+        SHEETS.Notifications,
+        {
+          NotificationId: notificationId,
+          ReminderId: reminder.ReminderId,
+          Email: reminder.Email,
+          UserName: reminder.UserName || '',
+          Name: reminder.Name || '',
+          Message: reminder.Message || '',
+          RelatedTask: reminder.RelatedTask || '',
+          RelatedUrl: reminder.RelatedUrl || '',
+          ScheduledAt: dueAt,
+          SentAt: '',
+          Status: 'Pending',
+          Error: '',
+          RetryCount: 0
+        }
+      );
+
+      dueList.push({
+        reminder: reminder,
+        notificationId: notificationId,
+        dueAt: dueAt
+      });
+    });
+
+  } finally {
+    try {
+      lock.releaseLock();
+    } catch (ignore) {
+      // Nothing to do.
+    }
+  }
+
+  // The slow part — MailApp.sendEmail is a network call, 1–4s each —
+  // now runs AFTER the lock has been released, so a queue of reminders
+  // no longer blocks doPost/submitExam or anything else waiting on the
+  // script lock.
+  var processed = 0;
+
+  dueList.forEach(function (item) {
+    processed++;
+
+    var sent = sendReminder_(
+      item.reminder,
+      item.notificationId
+    );
+
+    updateReminderAfterSend_(
+      item.reminder.ReminderId,
+      sent,
+      item.dueAt,
+      item.reminder.Frequency
+    );
+  });
+
+  return (
+    'Reminder processor completed. ' +
+    'Processed: ' + processed
+  );
+}
+
+function updateReminderAfterSend_(
+  reminderId,
+  sent,
+  scheduledAt,
+  frequency
+) {
+  var sheet = sh_('Reminders');
+  var values = sheet.getDataRange().getValues();
+
+  if (!values.length) {
+    return;
+  }
+
+  var headers = values[0];
+
+  var idIndex =
+    headers.indexOf('ReminderId');
+
+  var enabledIndex =
+    headers.indexOf('Enabled');
+
+  var statusIndex =
+    headers.indexOf('Status');
+
+  var nextRunIndex =
+    headers.indexOf('NextRunAt');
+
+  var lastSentIndex =
+    headers.indexOf('LastSentAt');
+
+  var updatedIndex =
+    headers.indexOf('UpdatedAt');
+
+  for (var i = 1; i < values.length; i++) {
+    if (
+      String(values[i][idIndex]) ===
+      String(reminderId)
+    ) {
+      values[i][lastSentIndex] = new Date();
+
+      if (
+        normalizeFrequency_(frequency) ===
+        'once'
+      ) {
+        values[i][enabledIndex] = false;
+        values[i][statusIndex] =
+          sent ? 'Completed' : 'Paused';
+
+      } else {
+        var next = nextRun_(
+          scheduledAt,
+          frequency
+        );
+
+        values[i][nextRunIndex] = next;
+        values[i][statusIndex] =
+          sent ? 'Active' : 'Paused';
+
+        values[i][enabledIndex] = !!sent;
+      }
+
+      values[i][updatedIndex] = new Date();
+
+      sheet
+        .getRange(
+          i + 1,
+          1,
+          1,
+          headers.length
+        )
+        .setValues([values[i]]);
+
+      return;
+    }
+  }
+}
+
+function nextRun_(date, frequency) {
+  var next = new Date(date);
+  var f = normalizeFrequency_(frequency);
+
+  if (f === 'hourly') {
+    next.setHours(
+      next.getHours() + 1
+    );
+  } else if (f === 'daily') {
+    next.setDate(
+      next.getDate() + 1
+    );
+  } else if (f === 'weekly') {
+    next.setDate(
+      next.getDate() + 7
+    );
+  } else if (f === 'monthly') {
+    var originalDay = next.getDate();
+    var targetMonth = next.getMonth() + 1;
+
+    // Move to the first day of the target month, then clamp
+    // to that month's last valid day (e.g. Jan 31 -> Feb 28/29).
+    next.setDate(1);
+    next.setMonth(targetMonth);
+
+    var lastDay = new Date(
+      next.getFullYear(),
+      next.getMonth() + 1,
+      0
+    ).getDate();
+
+    next.setDate(Math.min(originalDay, lastDay));
+  }
+
+  return next;
+}
+
+
+// ============================================================
+// 16. RETRY FAILED NOTIFICATION
+// ============================================================
+
+function retryNotification_(body) {
+  var sheet = sh_('Notifications');
+  var rows = sheet.getDataRange().getValues();
+
+  if (!rows.length) {
+    return {
+      ok: false,
+      error: 'Notification not found.'
+    };
+  }
+
+  var headers = rows[0];
+
+  var idIndex =
+    headers.indexOf('NotificationId');
+
+  var emailIndex =
+    headers.indexOf('Email');
+
+  var reminderIdIndex =
+    headers.indexOf('ReminderId');
+
+  var userNameIndex =
+    headers.indexOf('UserName');
+
+  var nameIndex =
+    headers.indexOf('Name');
+
+  var messageIndex =
+    headers.indexOf('Message');
+
+  var taskIndex =
+    headers.indexOf('RelatedTask');
+
+  var urlIndex =
+    headers.indexOf('RelatedUrl');
+
+  var notificationId =
+    String(body.id || '').trim();
+
+  var email = email_(body.email);
+
+  for (var i = 1; i < rows.length; i++) {
+    if (
+      String(rows[i][idIndex]) === notificationId &&
+      email_(rows[i][emailIndex]) === email
+    ) {
+      var retryId =
+        Utilities.getUuid();
+
+      var reminder = {
+        Email: rows[i][emailIndex],
+        UserName: rows[i][userNameIndex],
+        Name: rows[i][nameIndex],
+        Message: rows[i][messageIndex],
+        RelatedTask: rows[i][taskIndex],
+        RelatedUrl: rows[i][urlIndex],
+        NextRunAt: new Date()
+      };
+
+      append_(
+        sh_('Notifications'),
+        SHEETS.Notifications,
+        {
+          NotificationId: retryId,
+          ReminderId:
+            rows[i][reminderIdIndex],
+          Email: reminder.Email,
+          UserName:
+            reminder.UserName || '',
+          Name: reminder.Name || '',
+          Message:
+            reminder.Message || '',
+          RelatedTask:
+            reminder.RelatedTask || '',
+          RelatedUrl:
+            reminder.RelatedUrl || '',
+          ScheduledAt: new Date(),
+          SentAt: '',
+          Status: 'Pending',
+          Error: '',
+          RetryCount: 0
+        }
+      );
+
+      var sent = sendReminder_(
+        reminder,
+        retryId
+      );
+
+      return {
+        ok: true,
+        sent: sent,
+        retryNotificationId: retryId
+      };
+    }
+  }
+
+  return {
+    ok: false,
+    error: 'Notification not found.'
+  };
+}
+
+
+// ============================================================
+// 17. EMAIL QUEUE
+// ============================================================
+
+function processEmailQueue() {
+  var lock = LockService.getScriptLock();
+
+  // Run-guard: if a previous processEmailQueue run (or an overlapping
+  // trigger fire) is still in progress, skip this run instead of
+  // waiting up to 30s for the lock and piling another lock-holder on
+  // top of the last one. The next trigger fire a few minutes from now
+  // will pick up anything still pending.
+  if (!lock.tryLock(0)) {
+    return 'Email queue processor skipped — a previous run is still in progress.';
+  }
+
+  var toSend = [];
+
+  try {
+    ensureSheets_();
+
+    var sheet = sh_('EmailQueue');
+    var values = sheet.getDataRange().getValues();
+
+    if (!values.length) {
+      return 'Email queue is empty.';
+    }
+
+    var headers = values[0];
+
+    var statusIndex =
+      headers.indexOf('Status');
+
+    var toIndex =
+      headers.indexOf('ToEmail');
+
+    var subjectIndex =
+      headers.indexOf('Subject');
+
+    var htmlIndex =
+      headers.indexOf('HtmlBody');
+
+    for (var i = 1; i < values.length; i++) {
+      var status =
+        String(values[i][statusIndex] || '');
+
+      if (
+        status !== 'PENDING' &&
+        status.indexOf('FAILED') !== 0
+      ) {
+        continue;
+      }
+
+      // Claim this row now, while we still hold the lock, so a
+      // concurrent run can't pick it up too. This is a fast sheet
+      // write, not a network call.
+      values[i][statusIndex] = 'SENDING';
+
+      sheet
+        .getRange(
+          i + 1,
+          1,
+          1,
+          headers.length
+        )
+        .setValues([values[i]]);
+
+      toSend.push({
+        rowIndex: i,
+        to: values[i][toIndex],
+        subject: values[i][subjectIndex],
+        html: values[i][htmlIndex]
+      });
+    }
+
+  } finally {
+    try {
+      lock.releaseLock();
+    } catch (ignore) {
+      // Nothing to do.
+    }
+  }
+
+  if (!toSend.length) {
+    return 'Email queue completed. Processed: 0';
+  }
+
+  // The slow part — MailApp.sendEmail, one network call per email —
+  // now runs AFTER the lock has been released, so a backlog of queued
+  // emails no longer blocks doPost/submitExam or anything else waiting
+  // on the script lock.
+  var sheet2 = sh_('EmailQueue');
+  var headers2 = sheet2.getDataRange().getValues()[0];
+  var statusIndex2 = headers2.indexOf('Status');
+  var sentAtIndex2 = headers2.indexOf('SentAt');
+  var processed = 0;
+
+  toSend.forEach(function (item) {
+    try {
+      MailApp.sendEmail({
+        to: item.to,
+        subject: item.subject,
+        htmlBody: item.html
+      });
+
+      sheet2
+        .getRange(item.rowIndex + 1, statusIndex2 + 1)
+        .setValue('SENT');
+
+      sheet2
+        .getRange(item.rowIndex + 1, sentAtIndex2 + 1)
+        .setValue(new Date());
+
+      processed++;
+
+    } catch (error) {
+      sheet2
+        .getRange(item.rowIndex + 1, statusIndex2 + 1)
+        .setValue('FAILED: ' + String(error).slice(0, 200));
+    }
+  });
+
+  return (
+    'Email queue completed. ' +
+    'Processed: ' + processed
+  );
+}
+
+
+// ============================================================
+// 18. REVISION URL + UNLOCK EMAIL
+// ============================================================
+
+function siteFromTestUrl_(url) {
+  var value = String(url || '').trim();
+
+  if (!value) {
+    return '';
+  }
+
+  // Remove an existing query string and add revision=1.
+  return value.split('?')[0] +
+    '?revision=1';
+}
+
+function sendRevisionUnlockEmails() {
+  var sheet = sh_('Results');
+  var rows = sheet.getDataRange().getValues();
+
+  if (!rows.length) {
+    return 'No results found.';
+  }
+
+  var headers = rows[0];
+
+  var sentIndex =
+    headers.indexOf(
+      'RevisionUnlockedEmailSent'
+    );
+
+  var dueIndex =
+    headers.indexOf(
+      'RevisionAvailableAt'
+    );
+
+  var nameIndex =
+    headers.indexOf('Name');
+
+  var emailIndex =
+    headers.indexOf('Email');
+
+  var subjectIndex =
+    headers.indexOf('Subject');
+
+  var subjectIdIndex =
+    headers.indexOf('SubjectId');
+
+  var testUrlIndex =
+    headers.indexOf('TestUrl');
+
+  var sentCount = 0;
+
+  for (var i = 1; i < rows.length; i++) {
+    if (
+      bool_(rows[i][sentIndex])
+    ) {
+      continue;
+    }
+
+    if (!rows[i][dueIndex]) {
+      continue;
+    }
+
+    var due = new Date(
+      rows[i][dueIndex]
+    );
+
+    if (
+      isNaN(due.getTime()) ||
+      due > new Date()
+    ) {
+      continue;
+    }
+
+    var name = rows[i][nameIndex];
+    var email = rows[i][emailIndex];
+    var subject = rows[i][subjectIndex];
+    var subjectId =
+      rows[i][subjectIdIndex];
+
+    var testUrl =
+      rows[i][testUrlIndex] || '';
+
+    var revisionUrl =
+      siteFromTestUrl_(testUrl);
+
+    if (
+      !revisionUrl &&
+      typeof SITE_URL === 'string' &&
+      SITE_URL &&
+      SITE_URL !== 'https://example.com/'
+    ) {
+      revisionUrl =
+        SITE_URL.split('?')[0] +
+        '?revision=1';
+    }
+
+    var button = revisionUrl
+      ? (
+        '<p>' +
+        '<a href="' +
+        esc_(revisionUrl) +
+        '"' +
+        ' style="display:inline-block;padding:12px 18px;' +
+        'background:#111;color:#fff;text-decoration:none;' +
+        'border-radius:7px">Take Revision Test</a>' +
+        '</p>'
+      )
+      : (
+        '<p>' +
+        'Your Revision Test is now unlocked. ' +
+        'Open the ECET website to start it.' +
+        '</p>'
+      );
+
+    var html =
+      '<div style="font-family:Arial,sans-serif;' +
+      'max-width:680px;margin:auto;color:#222">' +
+
+      '<h2>ECET Revision Test Unlocked</h2>' +
+
+      '<p>Dear <b>' +
+      esc_(name) +
+      '</b>,</p>' +
+
+      '<p>Your Revision Test for <b>' +
+      esc_(subject) +
+      '</b> is now unlocked.</p>' +
+
+      button +
+
+      '<p style="font-size:12px;color:#777">' +
+      'Subject ID: ' +
+      esc_(subjectId) +
+      '</p>' +
+
+      '</div>';
+
+    try {
+      MailApp.sendEmail({
+        to: email_(email),
+        subject:
+          'ECET Revision Test unlocked — ' +
+          subject,
+        htmlBody: html
+      });
+
+      rows[i][sentIndex] = true;
+
+      sheet
+        .getRange(
+          i + 1,
+          1,
+          1,
+          headers.length
+        )
+        .setValues([rows[i]]);
+
+      sentCount++;
+
+    } catch (error) {
+      // Leave the flag false so the next trigger can retry.
+      console.log(
+        'Revision email failed: ' +
+        String(error)
+      );
+    }
+  }
+
+  return (
+    'Revision unlock email processor completed. ' +
+    'Sent: ' + sentCount
+  );
+}
+
+/**
+ * Compatibility alias.
+ * Your screenshot showed an old trigger/function name:
+ * sendRevisionReminders.
+ *
+ * Keeping this alias prevents an old trigger or frontend call
+ * from breaking after the function was renamed.
+ */
+function sendRevisionReminders() {
+  return sendRevisionUnlockEmails();
+}
+
+
+// ============================================================
+// 19. AUTOMATION SETUP
+// ============================================================
+
+function setup() {
+  ensureSheets_();
+  applyDropdowns();
+
+  var triggers =
+    ScriptApp.getProjectTriggers();
+
+  // Remove the old compatibility trigger if it exists.
+  // Otherwise both the old alias and the new function could send
+  // the same revision-unlock email.
+  triggers.forEach(function (trigger) {
+    if (
+      trigger.getHandlerFunction() ===
+      'sendRevisionReminders'
+    ) {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+
+  function hasTrigger(functionName) {
+    return ScriptApp.getProjectTriggers().some(function (trigger) {
+      return trigger.getHandlerFunction() === functionName;
+    });
+  }
+
+  function addTrigger(functionName, minutes) {
+    if (!hasTrigger(functionName)) {
+      ScriptApp
+        .newTrigger(functionName)
+        .timeBased()
+        .everyMinutes(minutes)
+        .create();
+    }
+  }
+
+  addTrigger('processReminders', 5);
+  addTrigger('processEmailQueue', 5);
+  addTrigger('sendRevisionUnlockEmails', 15);
+
+  return (
+    'Backend ready. Sheets and automation triggers are configured.'
+  );
+}
+
+
+// ============================================================
+// 20. OPTIONAL MANUAL TEST FUNCTIONS
+// ============================================================
+
+function testBackend() {
+  ensureSheets_();
+
+  return {
+    ok: true,
+    message: 'ECET backend is working.',
+    spreadsheetId: SPREADSHEET_ID,
+    timezone: tz_(),
+    sheets: Object.keys(SHEETS)
+  };
+}
+
+function testPing() {
+  return {
+    ok: true,
+    time: iso_(new Date()),
+    message: 'ECET backend is online.'
+  };
 }
