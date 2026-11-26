@@ -1,0 +1,6242 @@
+[
+  {
+    "id": "Q-223fa51f269b49a2a1c8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "A 12 V source feeds 4 Ω and 8 Ω in series. Voltage across 8 Ω?",
+    "options": [
+      "4 V",
+      "6 V",
+      "8 V",
+      "10 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6f30bb66be5a4e7ab804",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "In C, what is the output of the expression (int)(7.9/2) + (int)(-7.9/2)?",
+    "options": [
+      "",
+      "-1",
+      "1",
+      "-2"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c746e8ce90a74a28bb3b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "A value rises 25% then falls 20%. Net change?",
+    "options": [
+      "No change",
+      "2% rise",
+      "5% fall",
+      "10% rise"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f9017c33302d4fafbf21",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "Which C type is guaranteed to hold at least 16 bits?",
+    "options": [
+      "char",
+      "short",
+      "int",
+      "long"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-37d7c1f1a45241e284c4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "If A:B=5:7 and B:C=14:9, A:B:C is?",
+    "options": [
+      "Sat Dec 30 1899 05:14:09 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 10:14:09 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 05:07:09 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 10:07:09 GMT+0521 (India Standard Time)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-82a417ee09fd4d169c08",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "What is the value of x after this code executes? int x=5; if (x++ > 5) x+=2; else if (++x == 7) x*=3;",
+    "options": [
+      "18",
+      "21",
+      "7",
+      "6"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-eab593590b894df4a7c0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "Three resistors 6 Ω, 3 Ω and 2 Ω are in parallel. Equivalent resistance?",
+    "options": [
+      "1 Ω",
+      "2 Ω",
+      "3 Ω",
+      "11 Ω"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-eabfc7ade5cf48c88f32",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "What is the result of 17 % 5 in C?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-268c134c378b4a739fc7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "Which operator has higher precedence?",
+    "options": [
+      "+",
+      "*",
+      "#ERROR!",
+      "&&"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-520c3589ebd24a98b71c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "How many times is the body executed? for (i=1; i<=20; i*=2) for (j=1; j<=i; j*=2) count++;",
+    "options": [
+      "10",
+      "15",
+      "16",
+      "20"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9b3d7a637a504c3ba58e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "Average of 15 numbers is 24. Replace 36 by 21. New average?",
+    "options": [
+      "22",
+      "23",
+      "24",
+      "25"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b69e824fa1be4ce78993",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "A 24 V source with 2 Ω internal resistance feeds 10 Ω load. Load voltage?",
+    "options": [
+      "10 V",
+      "15 V",
+      "20 V",
+      "24 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1d5d99d2f58c433fb2f2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "A 5 A current flows through 4 Ω for 3 minutes. Energy dissipated?",
+    "options": [
+      "1.2 kJ",
+      "3.6 kJ",
+      "12 kJ",
+      "18 kJ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6b9be1e7d2f14d98b8ed",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "Which statement about C strings is correct?",
+    "options": [
+      "strlen counts the terminating null character",
+      "strncpy always null-terminates its destination",
+      "strcmp returns zero when strings are equal",
+      "A string literal can safely be modified"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9b6f11d5a71244228379",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "Average of first n positive even integers is 31. n is?",
+    "options": [
+      "30",
+      "31",
+      "32",
+      "33"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e38cb92c118b419b9e00",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "What is printed by printf(\"%d\", 5/2);?",
+    "options": [
+      "2",
+      "2.5",
+      "3",
+      "Error"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-26b10687ef2e4199a805",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "Which is a valid C identifier?",
+    "options": [
+      "2count",
+      "total-marks",
+      "_count",
+      "float"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-284e5a03a00a4ccd90b7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "A sum doubles in 8 years at simple interest. Rate?",
+    "options": [
+      "0.1",
+      "0.125",
+      "0.15",
+      "0.16"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-589bef34c44d474f9c07",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "For int a[3][4], which expression refers to the element in row 2, column 3 using zero-based indices?",
+    "options": [
+      "*(a+2)+3",
+      "*(*(a+2)+3)",
+      "*(*(a+3)+2)",
+      "*(a[2]+3) gives an address"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b4f9945741a9407490a4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "Two 10 Ω resistors in parallel are in series with 5 Ω. Total resistance?",
+    "options": [
+      "5 Ω",
+      "10 Ω",
+      "15 Ω",
+      "25 Ω"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-379e0cc2eba44bdb9a4d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "A 100 μF capacitor is charged to 20 V. Stored energy?",
+    "options": [
+      "2 mJ",
+      "10 mJ",
+      "20 mJ",
+      "40 mJ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-77f79d6dbf28435795c4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "Which header declares strlen?",
+    "options": [
+      "stdio.h",
+      "string.h",
+      "stdlib.h",
+      "math.h"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d672446674554d1488cf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "Which statement about malloc and calloc is correct?",
+    "options": [
+      "malloc initializes allocated bytes to zero",
+      "calloc allocates one contiguous block and zero-initializes its bytes",
+      "free can be called only on memory allocated by calloc",
+      "realloc always moves the block"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e459cff8ddda4d16b3d3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "₹13,310 is amount after 3 years at 10% compound interest. Principal?",
+    "options": [
+      "₹10,000",
+      "₹10,500",
+      "₹11,000",
+      "₹12,100"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1ea26e30aa134b4f9d89",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "Simple interest ₹1,440 at 8% for 3 years. Principal?",
+    "options": [
+      "₹5,000",
+      "₹6,000",
+      "₹7,000",
+      "₹8,000"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4415153260dc487692f6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "What is the output? int f(int n){ if(n<=1)return 1; return n*f(n-2);} printf(\"%d\",f(6));",
+    "options": [
+      "48",
+      "36",
+      "720",
+      "24"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7b452b93df78468ca74f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "A 4 mH inductor carries 5 A. Stored energy?",
+    "options": [
+      "10 mJ",
+      "25 mJ",
+      "50 mJ",
+      "100 mJ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b18c40c21c444c3885a0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "What does strcmp return for equal strings?",
+    "options": [
+      "−1",
+      "1",
+      "",
+      "Length"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2b0c9d97360c460d8585",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "What terminates a C string?",
+    "options": [
+      "Space",
+      "Newline",
+      "Null character",
+      "EOF"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2dc46fc0ffe448838f48",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "Marked 50% above cost, successive discounts 20%, 10%. Profit?",
+    "options": [
+      "0.05",
+      "0.08",
+      "0.1",
+      "0.12"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61b642972db74ad39239",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "In C++, which feature allows a derived-class function to be selected at run time through a base-class pointer?",
+    "options": [
+      "Function overloading",
+      "Static binding",
+      "Virtual function",
+      "Friend function"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a5bec1f4343142fb8d2f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "In a purely capacitive AC circuit, current?",
+    "options": [
+      "Lags 90°",
+      "Leads 90°",
+      "In phase",
+      "Lags 180°"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3bba71b34c404e3288cd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "Which declaration creates a pointer to a function taking an int and returning a pointer to char?",
+    "options": [
+      "char *f(int);",
+      "char (*f)(int);",
+      "char *(*f)(int);",
+      "char **f(int);"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-68ad1631a5364d56abad",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "What is sizeof(\"ECET\") on a conforming implementation?",
+    "options": [
+      "4",
+      "5",
+      "Pointer size",
+      "Undefined"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-95d394c78dc746e8b1c3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "Sold at 12% loss. Increase selling price by what % of old selling price to make 10% profit?",
+    "options": [
+      "0.2",
+      "0.22",
+      "0.25",
+      "0.3"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-97f51262dd684fb79352",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "A series RLC has R=10 Ω, XL=30 Ω, XC=30 Ω. Impedance?",
+    "options": [
+      "10 Ω",
+      "30 Ω",
+      "50 Ω",
+      "70 Ω"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0e3718f433a44122a468",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "40 L mixture milk:water=7:3. Water added for ratio 7:5?",
+    "options": [
+      "6 L",
+      "8 L",
+      "10 L",
+      "12 L"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9b4e56168dd8409186f0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "What is the output? int a=3; printf(\"%d\", a << (2 + 1));",
+    "options": [
+      "12",
+      "18",
+      "24",
+      "32"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c66b0751e3b241078cd3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "Which function safely reads a bounded line from stdin?",
+    "options": [
+      "gets",
+      "fgets",
+      "puts",
+      "strcpy"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fad3eb976aa843b39928",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "A 230 V rms supply feeds 23 Ω. Power?",
+    "options": [
+      "1 kW",
+      "2.3 kW",
+      "4.6 kW",
+      "10 kW"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-31318229bbdb44deb76c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "A 2 kW load operates for 3 hours. Energy?",
+    "options": [
+      "2 kWh",
+      "3 kWh",
+      "5 kWh",
+      "6 kWh"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-43b273ba5663485cb204",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "A 12 V ideal source is connected across 6 Ω and 3 Ω resistors in parallel. What is the source current?",
+    "options": [
+      "2 A",
+      "4 A",
+      "6 A",
+      "9 A"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b78d8d1e530b4d5087a2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "A and B finish work in 15 and 20 days. Together?",
+    "options": [
+      "60/7 days",
+      "8 days",
+      "9 days",
+      "10 days"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c5b918564ea8457cbad0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "Which function allocates zero-initialized memory?",
+    "options": [
+      "malloc",
+      "calloc",
+      "realloc",
+      "free"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1f5844d03dd24c839b88",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "A 1 kW heater rated 250 V has resistance?",
+    "options": [
+      "31.25 Ω",
+      "62.5 Ω",
+      "125 Ω",
+      "250 Ω"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-26efecbea68042b1a06e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "A completes 3/5 job in 12 days. Whole job takes?",
+    "options": [
+      "18",
+      "20",
+      "22",
+      "24 days"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2acd6743dfc64e9c8e6e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "A 10 Ω resistor carries 2 A for 5 minutes. Energy dissipated is:",
+    "options": [
+      "1.2 kJ",
+      "6 kJ",
+      "12 kJ",
+      "24 kJ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5dcb325f87dc46459849",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "What must be passed to free?",
+    "options": [
+      "Any address",
+      "Only a valid allocated pointer or NULL",
+      "An integer",
+      "An array size"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0cf651ece272450c98d2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "If realloc fails for nonzero size, what happens to the original block?",
+    "options": [
+      "It is freed",
+      "It remains allocated",
+      "It is zeroed",
+      "Program must terminate"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-36cb23f502d34d819fec",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "Pipe fills in 6 h, leak empties in 9 h. Net fill time?",
+    "options": [
+      "12 h",
+      "15 h",
+      "18 h",
+      "24 h"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-74652479bbac40fdb7aa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "Two resistors 4 Ω and 12 Ω are in parallel, and this combination is in series with 5 Ω. The equivalent resistance is:",
+    "options": [
+      "3 Ω",
+      "8 Ω",
+      "12 Ω",
+      "17 Ω"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7c1b3453fe874f3589bc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "At a node 7 A and 2 A enter and 4 A leaves. Other outgoing current?",
+    "options": [
+      "3 A",
+      "5 A",
+      "9 A",
+      "13 A"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2fef4cbe55434763852f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "A 10 V source is in series with 2 Ω and 3 Ω. Current?",
+    "options": [
+      "1 A",
+      "2 A",
+      "3 A",
+      "5 A"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3c4ffe65577b49fcabac",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "A takes 10 days, B 15 days. Together 3 days; work left?",
+    "options": [
+      "Mon Jan 05 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Sat Jan 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Fri Jan 02 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Thu Feb 05 2026 00:00:00 GMT+0530 (India Standard Time)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-78f459f5643a4418a9cf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "A 100 W, 200 V lamp is operated at 100 V, assuming constant resistance. Its power is:",
+    "options": [
+      "100 W",
+      "50 W",
+      "25 W",
+      "12.5 W"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9e344da4683843d18beb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "Which declaration is pointer to an array of 10 integers?",
+    "options": [
+      "int *p[10]",
+      "int (*p)[10]",
+      "int p[10]*",
+      "int **p[10]"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0c4ad627fd414a45866f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "At a node, 3 A and 5 A enter while 2 A leaves through one branch. The current in the other outgoing branch is:",
+    "options": [
+      "4 A",
+      "6 A",
+      "8 A",
+      "10 A"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8f1715b0506b4d23ae22",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "For int a[]={3,6,9,12}, what is *(a+2)?",
+    "options": [
+      "3",
+      "6",
+      "9",
+      "12"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ac4a2dae2f4a4e16815d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "Thevenin resistance is found by which operation on independent sources?",
+    "options": [
+      "Open voltage sources",
+      "Short voltage, open current sources",
+      "Short all sources",
+      "Remove all resistors"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f346090d1d724a178e67",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "180 m train crosses 270 m platform in 18 s. Speed?",
+    "options": [
+      "72",
+      "80",
+      "90",
+      "100 km/h"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1ea09a7dc4604e029b9b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "120 m and 180 m trains pass oppositely at 54 and 36 km/h. Crossing time?",
+    "options": [
+      "10 s",
+      "12 s",
+      "15 s",
+      "18 s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-48ba75e34e39463ca589",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "A 2 mH inductor carries 3 A. The energy stored in its magnetic field is:",
+    "options": [
+      "3 mJ",
+      "6 mJ",
+      "9 mJ",
+      "18 mJ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8fd0042b1cf84a8eaa4b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "Maximum power transfer to a resistive load occurs when load resistance equals?",
+    "options": [
+      "Zero",
+      "Source resistance",
+      "Twice source resistance",
+      "Infinite"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e7e62a73655c4e609917",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "What is the value of 5 & 3?",
+    "options": [
+      "",
+      "1",
+      "2",
+      "7"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0464accb24e8483fb56d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "A 50 Hz sinusoid has angular frequency?",
+    "options": [
+      "50π",
+      "100π",
+      "200π",
+      "314π rad/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-51693c1bee1540149603",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "What is the value of 5 | 3?",
+    "options": [
+      "1",
+      "5",
+      "6",
+      "7"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-59aa738032ad4e36af6f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "For a series RLC circuit at resonance, which statement is true?",
+    "options": [
+      "Impedance is maximum and current is minimum",
+      "Power factor is zero",
+      "Inductive and capacitive reactances are equal",
+      "Current lags voltage by 90 degrees"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9bda15f834874b9e9e20",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "Equal distances at 40 and 60 km/h. Average speed?",
+    "options": [
+      "48",
+      "50",
+      "52",
+      "54 km/h"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1f869a30aaba4e9891fc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "60 km at 30 km/h and return at 20 km/h. Average speed?",
+    "options": [
+      "24",
+      "25",
+      "26",
+      "27 km/h"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-24bf4ae772224572a2db",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "What is the value of 1 << 4?",
+    "options": [
+      "4",
+      "8",
+      "16",
+      "32"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-370cb692b16f46d6beb0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "A load consumes 800 W at 1000 VA. Power factor?",
+    "options": [
+      "0.6",
+      "0.8",
+      "1",
+      "1.25"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d3b159a519bd41489c60",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "A 20 V source with internal resistance 2 Ω supplies a 8 Ω load. The load voltage is:",
+    "options": [
+      "4 V",
+      "8 V",
+      "16 V",
+      "20 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5a795279497249bea917",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "In balanced star connection, line voltage is?",
+    "options": [
+      "Phase voltage",
+      "√3 times phase voltage",
+      "Phase/√3",
+      "3 times phase voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8bf436ebd3e4496094f2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "Which semiconductor device is normally used for voltage regulation in its reverse-breakdown region?",
+    "options": [
+      "LED",
+      "Zener diode",
+      "Photodiode",
+      "Tunnel diode"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a30925c99c1846f4b61a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "Which loop executes its body at least once?",
+    "options": [
+      "for",
+      "while",
+      "do-while",
+      "Nested for"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e3c8045ce17841f08396",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "Boat speed 12 km/h, stream 3 km/h. Downstream 45 km time?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "6 h"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-468bde709a6847a39f67",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "For an ideal operational amplifier operating with negative feedback, the input currents are approximately:",
+    "options": [
+      "Equal to output current",
+      "Zero",
+      "Infinite",
+      "Proportional to feedback resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7084d88211e24285a6da",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "Walk 5 km north, 12 east, 5 south. Displacement?",
+    "options": [
+      "5 km",
+      "12 km east",
+      "13 km east",
+      "17 km"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-afa752d24f684f708a5c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "A balanced 3-phase load takes 10 A at 400 V and pf 0.8. Power approx?",
+    "options": [
+      "3.2 kW",
+      "4.43 kW",
+      "5.54 kW",
+      "6.4 kW"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e4d822de61674dcb896c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "Which statement skips to the next loop iteration?",
+    "options": [
+      "break",
+      "continue",
+      "return",
+      "goto"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8b797e2f533c4a289c5e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "A transistor has α = 0.98. Its common-emitter current gain β is approximately:",
+    "options": [
+      "0.02",
+      "0.49",
+      "24",
+      "49"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d05042c5b3384a5b8628",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "Which statement exits the nearest loop or switch?",
+    "options": [
+      "continue",
+      "break",
+      "case",
+      "default"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ecbea99b15564367a5a7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "Which stores energy in an electric field?",
+    "options": [
+      "Inductor",
+      "Capacitor",
+      "Resistor",
+      "Transformer core"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f855a0bbce784a2cb593",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "If 3^(x+1)=27^(2x−1), x is?",
+    "options": [
+      "Thu Feb 05 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Sun Apr 05 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "1",
+      "Mon May 04 2026 00:00:00 GMT+0530 (India Standard Time)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0fd2433456d54dd9bbbd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "A PN diode is forward biased when?",
+    "options": [
+      "P negative to N",
+      "P positive to N",
+      "Equal potential",
+      "Reverse breakdown"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1865610396f84b30be9b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "Simplify (2^5 × 4^3)/8^2.",
+    "options": [
+      "8",
+      "16",
+      "32",
+      "64"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8c39e6e1b21544e0aed3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "How many times does for(i=0;i<5;i++) execute?",
+    "options": [
+      "4",
+      "5",
+      "6",
+      "Infinite"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c83709c9f4e64206bcc2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "Which logic gate alone is functionally complete?",
+    "options": [
+      "XOR",
+      "XNOR",
+      "NAND",
+      "Buffer"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-738035c97b564e51ae6b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "If x+1/x=5, x²+1/x² is?",
+    "options": [
+      "21",
+      "23",
+      "25",
+      "27"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7f8c8fe26e4549d98c4b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "What is printed by int i=0; while(i<3){printf(\"%d\",i++);}?",
+    "options": [
+      "12",
+      "123",
+      "1",
+      "Nothing"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81af16ac799c45db8ba4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "Approximate forward drop of silicon diode?",
+    "options": [
+      "0.1 V",
+      "0.3 V",
+      "0.7 V",
+      "1.5 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-eda18f2b5e0e42ef8d66",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "The Boolean expression A + A'B simplifies to:",
+    "options": [
+      "A+B",
+      "AB",
+      "A' + B",
+      "A'B"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2165f9c2c6944f21860e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "A Zener regulator normally operates in?",
+    "options": [
+      "Forward cut-in",
+      "Reverse breakdown",
+      "Zero bias",
+      "Reverse leakage only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3749f53f48914e738472",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "A 4-bit binary number 1011 is represented in 2's-complement form. Its signed decimal value is:",
+    "options": [
+      "−5",
+      "−11",
+      "11",
+      "5"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c8a95f1634f548de8ef2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "Roots of 2x²−7x+3=0 are?",
+    "options": [
+      "3 and 1/2",
+      "−3 and −1/2",
+      "1 and 3/2",
+      "−1 and −3/2"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d2694b184a384fa1b0c1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "Which switch expression type is invalid in standard C?",
+    "options": [
+      "int",
+      "char",
+      "enum",
+      "float"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-04441a60a78b477f8ea5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "Ratio of numbers 4:9, HCF 6. LCM?",
+    "options": [
+      "108",
+      "144",
+      "216",
+      "324"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6e0b94df774f49fc81d7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "Which keyword begins a function definition returning no value?",
+    "options": [
+      "null",
+      "void",
+      "empty",
+      "static"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7caaa672941e4adc9051",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "Full-wave rectifier ripple frequency for 50 Hz input?",
+    "options": [
+      "25 Hz",
+      "50 Hz",
+      "100 Hz",
+      "150 Hz"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ea764639db7146a1998d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "The decimal equivalent of hexadecimal 3A is:",
+    "options": [
+      "48",
+      "56",
+      "58",
+      "62"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-220815844ba44bc3b930",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "A recursive function needs what to terminate normally?",
+    "options": [
+      "Global variable",
+      "Base case",
+      "Header file",
+      "Union"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-736332f3526f4e99a204",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "How many select lines are required for a 16-to-1 multiplexer?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "16"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-74bd3bbd8f944366948e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "How many diodes are used in a bridge rectifier?",
+    "options": [
+      "1",
+      "2",
+      "4",
+      "6"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a2a7b95c1bcc4f789697",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "Least number leaving remainder 5 when divided by 8,12,15?",
+    "options": [
+      "125",
+      "120",
+      "245",
+      "365"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3a31d0a225104dd49407",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "A 3-bit ripple counter is driven by a 1 MHz clock. The frequency at its most significant output is:",
+    "options": [
+      "500 kHz",
+      "250 kHz",
+      "125 kHz",
+      "62.5 kHz"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-535f9ff8792147a3b783",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "Greatest divisor of 187 and 233 leaving remainders 7 and 8?",
+    "options": [
+      "15",
+      "30",
+      "45",
+      "60"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5f589e900b6f46da9c55",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "Common-emitter amplifier output is normally?",
+    "options": [
+      "In phase",
+      "180° out of phase",
+      "90° ahead",
+      "Unrelated"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dc295c0b37004621bcff",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "What is the sum computed by f(n)=n+f(n-1), f(0)=0, at n=4?",
+    "options": [
+      "6",
+      "10",
+      "16",
+      "24"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-47db0bf35d8348039426",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "Which operator obtains the address of a variable?",
+    "options": [
+      "*",
+      "&",
+      "%",
+      "->"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-719e7b1526b44cdb9c0e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "Number leaves remainder 4 when divided by 7. Its square leaves?",
+    "options": [
+      "1",
+      "2",
+      "4",
+      "6"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ae575ff9553342cd8966",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "A transistor has α=0.96. Its β is?",
+    "options": [
+      "12",
+      "18",
+      "24",
+      "36"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c0d69ff1f9e04dfb803e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "Which flip-flop condition causes a JK flip-flop to toggle?",
+    "options": [
+      "J=0, K=0",
+      "J=0, K=1",
+      "J=1, K=0",
+      "J=1, K=1"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-47886c37358e4c87ac71",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "An ideal op-amp has?",
+    "options": [
+      "Zero input impedance",
+      "Infinite input impedance",
+      "Infinite output impedance",
+      "Zero gain"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6e9034f13c4642febccd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "What does *p++ mean?",
+    "options": [
+      "Increment pointed value",
+      "Increment pointer after dereference",
+      "Dereference then increment pointer",
+      "Increment both"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a384ae3ad1c34054a557",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "Sum first 25 terms AP: a=7,d=3.",
+    "options": [
+      "925",
+      "950",
+      "975",
+      "1000"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-aaaaefb2a4974dd3a879",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "A 5 V logic output drives a 1 kΩ resistor to ground. Assuming an ideal output, the current is:",
+    "options": [
+      "0.5 mA",
+      "5 mA",
+      "50 mA",
+      "500 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-195a899583234295a2fc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "Inverting op-amp Rf=100 kΩ, Rin=10 kΩ. Gain?",
+    "options": [
+      "+10",
+      "−10",
+      "+0.1",
+      "−0.1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2220ee9295254884875f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "8th term GP with a=3,r=2?",
+    "options": [
+      "192",
+      "256",
+      "384",
+      "768"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3e7474aff7784f7cb9da",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "The binary sum 101101 + 011011 equals:",
+    "options": [
+      "1001000",
+      "1010000",
+      "1101000",
+      "1110000"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ee06eed601d141fe8fb4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "Which declaration is a function returning pointer to int?",
+    "options": [
+      "int *f(void)",
+      "int (*f)(void)",
+      "int f*(void)",
+      "int &f(void)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0819b1f21acd45afba76",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "Rectangle area 384 cm², length:breadth=3:2. Perimeter?",
+    "options": [
+      "72",
+      "76",
+      "80",
+      "84 cm"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1823f8df16d44ac09b42",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "A number is increased by 20% and then decreased by 20%. The net change is:",
+    "options": [
+      "No change",
+      "4% decrease",
+      "4% increase",
+      "8% decrease"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2b0715462b2b419f9be2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "Non-inverting amplifier Rf=9 kΩ, R1=1 kΩ. Gain?",
+    "options": [
+      "9",
+      "10",
+      "11",
+      "−10"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5ecd2c8d22ab4ba68daa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "Which storage class is associated with external linkage declaration?",
+    "options": [
+      "auto",
+      "register",
+      "extern",
+      "volatile"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-141b0b1b6d5348429d13",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "If A:B = 3:5 and B:C = 10:7, then A:C equals:",
+    "options": [
+      "3:7",
+      "6:7",
+      "7:6",
+      "Sat Dec 30 1899 15:14:00 GMT+0521 (India Standard Time)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b6eaf7ad6996446c8b48",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "Circle circumference 44 cm, π=22/7. Area?",
+    "options": [
+      "144",
+      "154",
+      "164",
+      "176 cm²"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f6bcadd52c254d5bac59",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "Which device detects light?",
+    "options": [
+      "Zener",
+      "Photodiode",
+      "Varactor",
+      "Schottky"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fb1a97815347495bb6b3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "What does const int *p specify?",
+    "options": [
+      "Constant pointer",
+      "Pointer to const int",
+      "Constant function",
+      "Pointer to pointer"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-73a2198df2ce40518bb6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "Which makes the pointer itself constant?",
+    "options": [
+      "const int *p",
+      "int const *p",
+      "int * const p",
+      "int **p"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ca965473093b4d4881b9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "The average of 12 values is 18. If one value 30 is replaced by 18, the new average is:",
+    "options": [
+      "16",
+      "17",
+      "18",
+      "19"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cf73ff2eb0b54c5ea43f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "AND gate output is 1 only when?",
+    "options": [
+      "Any input 1",
+      "All inputs 1",
+      "All inputs 0",
+      "Inputs differ"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e78a6b54efee46adb91b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "Rectangle diagonal 13 cm, one side 5 cm. Area?",
+    "options": [
+      "30",
+      "50",
+      "60",
+      "65 cm²"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4ef201bedacf43478dd0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "A sum becomes ₹13,310 in 3 years at 10% compound interest annually. The principal is:",
+    "options": [
+      "₹10,000",
+      "₹10,500",
+      "₹11,000",
+      "₹12,100"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-71964672fe05421794ca",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "Which gate outputs 1 when two inputs differ?",
+    "options": [
+      "AND",
+      "OR",
+      "XOR",
+      "XNOR"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a9083b14b0d14ba0b573",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "Which preprocessor directive defines a macro?",
+    "options": [
+      "#include",
+      "#define",
+      "#ifdef only",
+      "#pragma"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cdf8865a60a0425094ec",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "Sphere radius rises 10%. Volume increase?",
+    "options": [
+      "0.21",
+      "0.3",
+      "0.331",
+      "0.361"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-151b252af8e848569728",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "Simplify A + A'B.",
+    "options": [
+      "A+B",
+      "AB",
+      "A'B",
+      "A'+B'"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-32d28439553b42469598",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "If 3^(x+1) = 81^(x−1), then x is:",
+    "options": [
+      "1",
+      "Sun May 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "2",
+      "3"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6eebd1786ef8492e8798",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "What is the purpose of include guards?",
+    "options": [
+      "Speed arithmetic",
+      "Prevent repeated header inclusion",
+      "Allocate memory",
+      "Declare functions"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8ee2c84fd8f24b18aa94",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "Cylinder CSA 440 cm², radius 7 cm. Height?",
+    "options": [
+      "5",
+      "8",
+      "10",
+      "12 cm"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bf1fd317c1b9444896d8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "A shopkeeper marks an item 40% above cost and gives successive discounts of 10% and 5%. The profit percentage is:",
+    "options": [
+      "0.197",
+      "0.195",
+      "0.2",
+      "0.21"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c4cb8327809b402abf05",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "Which OOP concept bundles data and methods?",
+    "options": [
+      "Inheritance",
+      "Encapsulation",
+      "Recursion",
+      "Compilation"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d499e2db095c47daacd0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "Complement of (A+B) is?",
+    "options": [
+      "A'+B'",
+      "A'B'",
+      "AB",
+      "A+B'"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f7d4a83962674bf59428",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "Polygon interior angle sum 1440°. Sides?",
+    "options": [
+      "8",
+      "9",
+      "10",
+      "12"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-46b84d0fd10e40a2b998",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "Which C++ feature enables run-time polymorphism?",
+    "options": [
+      "Macros",
+      "Virtual functions",
+      "Namespaces",
+      "Overloading by return type"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-afa89a810ae34a01b340",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "Right triangle legs 9 and 12 cm. Inradius?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5 cm"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b331cc835d3b41de8b18",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "A train 180 m long crosses a pole in 9 seconds. Its speed in km/h is:",
+    "options": [
+      "60",
+      "64",
+      "72",
+      "80"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c85b54957d1e4a63aff7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "A 4-variable Boolean function has how many minterms?",
+    "options": [
+      "4",
+      "8",
+      "16",
+      "32"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2948f89dd4354b51a141",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "A base class destructor should be virtual when what is intended?",
+    "options": [
+      "Base never instantiated",
+      "Delete derived object through base pointer",
+      "All members static",
+      "No inheritance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b179e1a4e62046d69c13",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "Mean of 20 values is 35. Each reduced by 4. New mean?",
+    "options": [
+      "29",
+      "31",
+      "35",
+      "39"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ea7d8443584e477facc4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "Decimal value of binary 110101?",
+    "options": [
+      "49",
+      "51",
+      "53",
+      "55"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fa5c4042a5cb4d65a52a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "Two cars start 300 km apart and move towards each other at 60 km/h and 40 km/h. How long until they meet?",
+    "options": [
+      "2 h",
+      "2.5 h",
+      "3 h",
+      "3.5 h"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-161094e706344da3a85f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "Weighted mean of 70 weight 3, 80 weight 2, 90 weight 5?",
+    "options": [
+      "81",
+      "82",
+      "83",
+      "84"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-16e352b1a8fa4d91bae1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "C++ function overloading is based on what?",
+    "options": [
+      "Return type only",
+      "Parameter list",
+      "Function name only",
+      "Access modifier"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-78f00c5663b44fd5bb5e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "A can complete a job in 12 days and B in 18 days. Working together, they complete it in:",
+    "options": [
+      "6 days",
+      "7.2 days",
+      "8 days",
+      "9 days"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d09e7bce6cfe42659c27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "8-bit 2's complement representation of −18?",
+    "options": [
+      "10010",
+      "11101110",
+      "11101101",
+      "10010010"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-18bea1e647d34943beda",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "A pipe fills a tank in 8 hours, while a leak empties it in 12 hours. If both are open, the tank fills in:",
+    "options": [
+      "16 h",
+      "20 h",
+      "24 h",
+      "30 h"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1f5f4dcf2ba54e14a8f8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "Which feature derives a new class from an existing class?",
+    "options": [
+      "Encapsulation",
+      "Inheritance",
+      "Abstraction only",
+      "Compilation"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-97249fa3ea604d70bcba",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "Average after 12 innings is 48. Score in 13th for average 50?",
+    "options": [
+      "64",
+      "68",
+      "72",
+      "74"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c112f7072e6647d79ea4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "Hexadecimal equivalent of binary 1110 1011?",
+    "options": [
+      "D9",
+      "EA",
+      "EB",
+      "F1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3b6c706b6c21401c8100",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "A 16-to-1 multiplexer needs how many select inputs?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "8"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7b211a3e53ba463d83db",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "Median of 3,7,8,11,15,18,20,24 is?",
+    "options": [
+      "11",
+      "13",
+      "15",
+      "16"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dc5b832218f541dab994",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "Which is not a standard C storage class specifier?",
+    "options": [
+      "auto",
+      "register",
+      "static",
+      "virtual"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dca08bbb44cb4d619ea3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "A 30 L mixture contains milk and water in the ratio 4:1. How much water must be added to make the ratio 2:1?",
+    "options": [
+      "5 L",
+      "6 L",
+      "7.5 L",
+      "10 L"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-501d4626cc2c43d6a96f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "Which algorithm has worst-case O(n log n) time among these?",
+    "options": [
+      "Bubble sort",
+      "Insertion sort",
+      "Merge sort",
+      "Selection sort"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e9c6162d57ef4bf2aeed",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "Bag has 5 red,4 blue,3 green. Probability not blue?",
+    "options": [
+      "Sat Jan 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Fri Jan 02 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Tue Feb 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Wed Mar 04 2026 00:00:00 GMT+0530 (India Standard Time)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-eb64c3b94b724d3dacab",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "If the length and breadth of a rectangle are increased by 20% and decreased by 10%, respectively, its area changes by:",
+    "options": [
+      "8% increase",
+      "8% decrease",
+      "10% increase",
+      "10% decrease"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ef35cef823944110989a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "A 3-bit binary counter has how many states?",
+    "options": [
+      "3",
+      "6",
+      "8",
+      "16"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1329c4ad3a7e48c2a937",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "Two dice thrown. Probability sum is 9?",
+    "options": [
+      "Tue Jan 06 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Fri Jan 09 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Mon Jan 12 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Sun Jan 18 2026 00:00:00 GMT+0530 (India Standard Time)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-51fed9b009574b86aef5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "The area of a circle is 154 cm². Using π=22/7, its circumference is:",
+    "options": [
+      "22 cm",
+      "44 cm",
+      "66 cm",
+      "88 cm"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-745b4bc1280e40e28c1c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "Binary search on a sorted array takes worst-case time?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n²)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ed158726b4f74143842c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "JK flip-flop J=K=1 causes?",
+    "options": [
+      "Set",
+      "Reset",
+      "Toggle",
+      "Hold"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4585e486a0a74770b28a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "Committee of 3 selected from 8. Number of ways?",
+    "options": [
+      "24",
+      "48",
+      "56",
+      "64"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-536d483b252e430483c6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "The angles of a triangle are in the ratio 2:3:4. The largest angle is:",
+    "options": [
+      "40°",
+      "60°",
+      "80°",
+      "90°"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-553036d37bec400191a8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "Which structure follows LIFO?",
+    "options": [
+      "Queue",
+      "Stack",
+      "Tree",
+      "Graph"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e5de407347fe42769343",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "A D flip-flop samples input?",
+    "options": [
+      "Continuously",
+      "At active clock edge",
+      "Only on reset",
+      "At power-up"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-18c3cb35c9814aaaad36",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "Which structure is used for breadth-first search?",
+    "options": [
+      "Stack",
+      "Queue",
+      "Heap",
+      "Array only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1fdd870747914fbe95f4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "Distinct arrangements of LEVEL?",
+    "options": [
+      "20",
+      "30",
+      "60",
+      "120"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b0af26fd6d1c4a7d92eb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "A 4-bit ripple counter clocked at 1.6 kHz has MSB frequency?",
+    "options": [
+      "100 Hz",
+      "200 Hz",
+      "400 Hz",
+      "800 Hz"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f2472b47461749bcaa61",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "The diagonal of a square is 10√2 cm. Its perimeter is:",
+    "options": [
+      "20 cm",
+      "30 cm",
+      "40 cm",
+      "50 cm"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0f2b32cd8602452799e1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "5 people in row, two specified together. Arrangements?",
+    "options": [
+      "24",
+      "36",
+      "48",
+      "60"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1c97ef46530c4034a0e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "A full binary tree with 7 internal nodes has how many leaves?",
+    "options": [
+      "6",
+      "7",
+      "8",
+      "14"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-63acccc3fe2844c693a9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "If the radius of a cylinder is doubled and its height is halved, its volume becomes:",
+    "options": [
+      "Half",
+      "Unchanged",
+      "Double",
+      "Four times"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a9533be6b14d4205bbd5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "Which logic family usually has low static power?",
+    "options": [
+      "TTL",
+      "ECL",
+      "CMOS",
+      "RTL"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7771f44ff586410f94ad",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "Ideal transformer has 500 primary and 100 secondary turns. At 250 V primary, secondary?",
+    "options": [
+      "25 V",
+      "50 V",
+      "100 V",
+      "125 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7b8db724af9140e890db",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "The mean of 8 observations is 15. If each observation is multiplied by 2 and then increased by 3, the new mean is:",
+    "options": [
+      "30",
+      "33",
+      "36",
+      "39"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-876625957eec4944a82d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "Next term: 4,9,19,39,79,__",
+    "options": [
+      "119",
+      "149",
+      "159",
+      "169"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b557f7b8b51f4943a10d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "In a max heap, the maximum key is at the?",
+    "options": [
+      "Last leaf",
+      "Root",
+      "Left child",
+      "Any node"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-368c3b6f138949349dbc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "Missing term: 3,8,18,38,78,__",
+    "options": [
+      "148",
+      "156",
+      "158",
+      "160"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b5860042763c40f4af63",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "Which collision strategy uses linked lists per bucket?",
+    "options": [
+      "Linear probing",
+      "Quadratic probing",
+      "Separate chaining",
+      "Rehashing only"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b650215ba08c4789a2fc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "The weighted average of 60 marks with weight 2 and 80 marks with weight 3 is:",
+    "options": [
+      "68",
+      "70",
+      "72",
+      "74"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f51e3afd09ff44b28d4c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "A 5 kVA, 250/125 V transformer has rated secondary current?",
+    "options": [
+      "10 A",
+      "20 A",
+      "30 A",
+      "40 A"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-32d01d4bb2604fceaa28",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "Ideal transformer secondary frequency is?",
+    "options": [
+      "Half primary",
+      "Same as primary",
+      "Twice primary",
+      "Depends on turns"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-336aa3b2c6e7421789c0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "A batsman's average after 10 innings is 42. What score in the 11th innings raises the average to 45?",
+    "options": [
+      "65",
+      "70",
+      "75",
+      "78"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8e5ccbfdb0e1435498c9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "Shift each letter forward one: PLANE becomes?",
+    "options": [
+      "QMBOF",
+      "QMBOD",
+      "OKZMD",
+      "QKBOF"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bc55878a291c40b18eeb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "Which SQL clause filters groups after aggregation?",
+    "options": [
+      "WHERE",
+      "HAVING",
+      "FROM",
+      "JOIN"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0ee222a8a9334eb2b532",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "DC motor back EMF is proportional to?",
+    "options": [
+      "Armature resistance",
+      "Flux and speed",
+      "Armature current only",
+      "Supply frequency"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5cf448af1c4d43f188fd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "Which normal form removes partial dependency on a candidate key?",
+    "options": [
+      "1NF",
+      "2NF",
+      "3NF",
+      "BCNF"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9354a286d4d14d6c863b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "A is brother of B; B daughter of C; C married to D. A to D?",
+    "options": [
+      "Son",
+      "Brother",
+      "Father",
+      "Cannot determine"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-aac7986b536942d09567",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "A and B invest in a business in the ratio 4:5. A invests for 12 months and B for 8 months. Their profit-sharing ratio is:",
+    "options": [
+      "4:5",
+      "6:5",
+      "5:6",
+      "8:5"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-01b72683c1344ae2a46f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "Facing west, turn 135° clockwise then 90° anticlockwise. Direction?",
+    "options": [
+      "North-west",
+      "North-east",
+      "South-west",
+      "South-east"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-93b9b7cb5c524d508ffd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "Synchronous speed of 4-pole, 50 Hz motor?",
+    "options": [
+      "750 rpm",
+      "1000 rpm",
+      "1500 rpm",
+      "3000 rpm"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dce05421922f4f41bc8e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "A foreign key enforces which integrity?",
+    "options": [
+      "Domain",
+      "Referential",
+      "Entity only",
+      "Transaction"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e8a02eab7e0b41ffbab8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "Find the next term: 2, 6, 15, 31, 56, __.",
+    "options": [
+      "82",
+      "88",
+      "92",
+      "96"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4fcbc9829fc8451f94d0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "Which ACID property means committed changes survive failure?",
+    "options": [
+      "Atomicity",
+      "Consistency",
+      "Isolation",
+      "Durability"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-baa10f80412749e2b8f7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "In 80 students, 45 like maths, 38 science, 20 both. Neither?",
+    "options": [
+      "15",
+      "17",
+      "20",
+      "23"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dd2d8b5a091146eba9f0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "Synchronous speed 1500 rpm, rotor speed 1440 rpm. Slip?",
+    "options": [
+      "0.02",
+      "0.04",
+      "0.06",
+      "0.08"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f856be27d1bf4b02b3db",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "In a code, each letter is replaced by the letter three positions ahead in the alphabet, with wraparound. How is LOGIC coded?",
+    "options": [
+      "ORJLF",
+      "ORJLG",
+      "LOJLF",
+      "PRJLF"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3e3d2338989645e9a509",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "Which OS scheduling can starve low-priority processes?",
+    "options": [
+      "FCFS",
+      "Round robin",
+      "Priority scheduling",
+      "FIFO queue"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-adc69a0bfc394da584c8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "All pens are tools. Some tools costly. Which must follow?",
+    "options": [
+      "Some pens costly",
+      "All tools pens",
+      "All pens tools",
+      "No pen costly"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c63a1b69f01d4794b490",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "A person walks 8 km north, 6 km east, then 8 km south. How far and in which direction is the person from the start?",
+    "options": [
+      "6 km east",
+      "6 km west",
+      "10 km east",
+      "2 km east"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e7d0827a34ab4e928698",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "Which instrument measures single-phase electrical power?",
+    "options": [
+      "Ammeter",
+      "Voltmeter",
+      "Wattmeter",
+      "Ohmmeter"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1710876154fa4ece889d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "A process waiting for I/O is usually in which state?",
+    "options": [
+      "Running",
+      "Ready",
+      "Blocked",
+      "Terminated"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2df40fb346d84f0fa4ff",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "Clock gains 4 min/hour. Set 9 AM. At actual 3 PM it shows?",
+    "options": [
+      "Sat Dec 30 1899 03:20:00 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 03:24:00 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 03:30:00 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 15:40:00 GMT+0521 (India Standard Time)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-68926d601e4c44dc9d9b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "In a class of 60 students, 35 study C, 30 study mathematics, and 15 study both. How many study neither?",
+    "options": [
+      "5",
+      "10",
+      "15",
+      "20"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8428b1dc2bdc4ec68783",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "Ideal voltmeter has?",
+    "options": [
+      "Zero resistance",
+      "Very low resistance",
+      "Very high resistance",
+      "Load-matched resistance"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4827db567a9b48f0b28d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "Which page replacement can show Belady's anomaly?",
+    "options": [
+      "LRU",
+      "Optimal",
+      "FIFO",
+      "All stack algorithms"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8a43ef403a8c4268915f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "If the statement 'All engineers are logical' is true, which conclusion must follow?",
+    "options": [
+      "All logical people are engineers",
+      "Some engineers are not logical",
+      "Every engineer is logical",
+      "No logical person is an engineer"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b2baa5629fc64c478cc5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "An ammeter is connected?",
+    "options": [
+      "Parallel",
+      "Series",
+      "Across supply only",
+      "Across capacitor"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e6052295ffc649318c4e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "A is 20% more efficient than B. B takes 24 days. A takes?",
+    "options": [
+      "18",
+      "20",
+      "21",
+      "22 days"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61649cd3b2994781baa4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "A fuse should be connected in?",
+    "options": [
+      "Neutral only",
+      "Earth",
+      "Live conductor in series",
+      "Parallel with load"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6ab5bccad3034424874b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "How many bits are in an IPv4 address?",
+    "options": [
+      "16",
+      "32",
+      "64",
+      "128"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ce3a95644c694c0a91be",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "P:Q:R=2:3:5. R gets ₹4,500. Total?",
+    "options": [
+      "₹8,000",
+      "₹9,000",
+      "₹10,000",
+      "₹12,000"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fdb7d4ed4a6e4f5980f3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "A clock loses 5 minutes every 2 hours. If set correctly at 8:00 AM, what time will it show at actual 8:00 PM?",
+    "options": [
+      "Sat Dec 30 1899 19:25:00 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 19:30:00 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 19:35:00 GMT+0521 (India Standard Time)",
+      "Sat Dec 30 1899 19:40:00 GMT+0521 (India Standard Time)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2b1b5a09ea6142248c68",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "The sum of the first n natural numbers is 210. The value of n is:",
+    "options": [
+      "18",
+      "19",
+      "20",
+      "21"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6a1c9eda00094b96aa9f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "Which transport protocol is connection-oriented and reliable?",
+    "options": [
+      "UDP",
+      "IP",
+      "TCP",
+      "ARP"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8e2a1785f2c641a48d61",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "Earthing mainly provides?",
+    "options": [
+      "Higher voltage",
+      "Low-resistance fault path",
+      "Lower frequency",
+      "Power factor correction"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a155115bcb4b47ae8285",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "Person spends 70% income. Income +20%, expenditure +10%. Savings increase?",
+    "options": [
+      "0.2",
+      "0.3",
+      "0.4",
+      "0.5"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-912e13cd950e4173bbba",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "A 40% solution is mixed with a 10% solution to obtain 25% solution. The ratio of the quantities of 40% and 10% solutions is:",
+    "options": [
+      "1:1",
+      "2:1",
+      "3:2",
+      "2:3"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b21a279a712c4db0b3b0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "What does DNS primarily do?",
+    "options": [
+      "Maps names to IP addresses",
+      "Encrypts files",
+      "Assigns MAC addresses",
+      "Detects viruses"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b7ca7de2869345b0b676",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "Which quantity is measured in siemens?",
+    "options": [
+      "Resistance",
+      "Conductance",
+      "Capacitance",
+      "Inductance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e7bd78b9d19e4dff8d05",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "Price rises 25%. Consumption must fall by what % to keep spend same?",
+    "options": [
+      "0.16",
+      "0.2",
+      "0.25",
+      "0.3"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-257a0d448d3742d0bd0a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "RC time constant for 20 kΩ and 50 μF?",
+    "options": [
+      "0.1 s",
+      "0.5 s",
+      "1 s",
+      "10 s"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-739ab5399d55447493d6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "A machine depreciates by 10% of its value each year. If its value after 2 years is ₹81,000, its initial value was:",
+    "options": [
+      "₹90,000",
+      "₹1,00,000",
+      "₹1,10,000",
+      "₹1,20,000"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a9cbfa0979984333b091",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "Which test checks interactions between integrated modules?",
+    "options": [
+      "Unit",
+      "Integration",
+      "Acceptance",
+      "Alpha only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ef46b9fb14bc4514807b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "Rectangle perimeter 120 m, length 1.5 times breadth. Area?",
+    "options": [
+      "720",
+      "800",
+      "864",
+      "900 m²"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-441631b9cc6b4edf8e92",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "At one time constant, capacitor voltage after a 10 V step is about?",
+    "options": [
+      "3.68 V",
+      "5 V",
+      "6.32 V",
+      "10 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "Electrical or Electronics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8556131cddff4d4ab010",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "Which SDLC activity defines architecture from requirements?",
+    "options": [
+      "Coding",
+      "Design",
+      "Deployment",
+      "Maintenance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "Computer science / IT",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c93d98cba7d0430dabc8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "A and B invest 3:4 for 12 and 9 months. Profit ratio?",
+    "options": [
+      "1:1",
+      "3:4",
+      "4:3",
+      "Sat Dec 30 1899 09:16:00 GMT+0521 (India Standard Time)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "Common Topics",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ff1f66183d3a4a78adb4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "If x:y = 4:7 and y:z = 14:9, then (x+y):z is:",
+    "options": [
+      "11:9",
+      "18:9",
+      "22:9",
+      "2:1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]

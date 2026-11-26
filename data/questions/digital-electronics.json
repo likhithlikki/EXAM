@@ -1,0 +1,3096 @@
+[
+  {
+    "id": "Q-1871e8022ab145ce9893",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "An ideal n-bit unipolar DAC with full-scale output V_FS has an LSB size of approximately",
+    "options": [
+      "V_FS/n",
+      "V_FS/2^n",
+      "2^n V_FS",
+      "V_FS/(2^n-1)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f77c4558e0e148948cf8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "A singly linked list has n nodes and only a head pointer. What is the worst-case time complexity of inserting a node immediately before a specified node whose address is known?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-69004caf0b7f4387a50d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "A 4-bit ideal DAC has input code 1010. If the reference voltage is 8 V and the DAC is unipolar, what is the ideal output voltage using V_o = V_ref D/2^n?",
+    "options": [
+      "2.5 V",
+      "4.0 V",
+      "5.0 V",
+      "6.0 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7b157544c6fc41518a03",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "A singly linked list contains 2^k nodes. Without a tail pointer, what is the minimum worst-case number of next-pointer traversals needed to inspect the last node?",
+    "options": [
+      "2^k - 1",
+      "2^(k-1)",
+      "2^k",
+      "k"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7b36507dbbd84282881d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "In a binary-weighted resistor DAC, the resistor connected to the MSB branch is generally",
+    "options": [
+      "Largest among all branch resistors",
+      "Smallest among all branch resistors",
+      "Equal to the LSB resistor",
+      "Independent of bit position"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fdf9e67b629a426595aa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "In a singly linked list, p points to a node and p->next is q. Which operation can be performed in O(1) time without knowing p's predecessor?",
+    "options": [
+      "Delete p normally",
+      "Delete q by copying q into p and bypassing q",
+      "Insert before p",
+      "Find p's position"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0209e7e5a34f4f7d93e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "For struct node { int data; struct node *next; }, with 4-byte int and 8-byte pointer, ignoring padding, what is the node size?",
+    "options": [
+      "8 bytes",
+      "12 bytes",
+      "16 bytes",
+      "24 bytes"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2f219ebb114e49e3836c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "The main advantage of an R-2R ladder DAC over a binary-weighted resistor DAC is that it",
+    "options": [
+      "Uses only two resistor values",
+      "Requires no reference voltage",
+      "Has zero quantization error",
+      "Does not need switches"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-42adf6d67c1f4fd79afe",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "For an ideal n-bit ADC with input range 0 to V_ref, the quantization step is",
+    "options": [
+      "V_ref/n",
+      "V_ref/2^n",
+      "2^n/V_ref",
+      "nV_ref"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e52fdf3b3ec240dba7b2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "A list is built by inserting 4, 7, 2, 9, 1 at the head. What is the final traversal order?",
+    "options": [
+      "4,7,2,9,1",
+      "1,9,2,7,4",
+      "1,4,7,2,9",
+      "9,7,4,2,1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-119aa69801b3475c8c3e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "An ideal 8-bit ADC has an input range of 0 to 5.12 V. Its LSB size is",
+    "options": [
+      "10 mV",
+      "20 mV",
+      "40 mV",
+      "80 mV"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5b4c30706475448aa6af",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "A nonempty properly terminated singly linked list contains n nodes. How many NULL next fields exist?",
+    "options": [
+      "",
+      "1",
+      "n",
+      "n-1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ab83cc3e01d54e089746",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "A queue implemented with head and tail pointers removes its only node. Which state is required afterward?",
+    "options": [
+      "head points to old tail",
+      "tail points to old head",
+      "head and tail are both NULL",
+      "tail->next points to head"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e9fcdfd6a0b644c1bf27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "For a 3-bit ideal unipolar ADC using straight binary coding, the maximum digital output code is",
+    "options": [
+      "110",
+      "111",
+      "1000",
+      "11"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-49f152f4848443858170",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "In an ideal ADC, quantization error is typically bounded by",
+    "options": [
+      "±1 LSB",
+      "±2 LSB",
+      "±0.5 LSB",
+      "0 LSB for every input"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8a9c4dca8b0d478f98ad",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "A recursive singly linked-list traversal visits every node and stops at NULL. What is its auxiliary stack-space complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-383fd24db55243c0966f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "The function of the sample-and-hold circuit in an ADC is primarily to",
+    "options": [
+      "Increase the ADC resolution",
+      "Keep the analog input constant during conversion",
+      "Remove quantization noise completely",
+      "Generate the reference voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bafc1bc8b5e244eb8992",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "During in-place reversal of a singly linked list, how many times is each original node's next field normally reassigned?",
+    "options": [
+      "",
+      "1",
+      "2",
+      "n"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81eac858256b42a0829e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "A flash ADC is characterized by",
+    "options": [
+      "One comparator per input bit",
+      "2^n-1 comparators for an n-bit conversion",
+      "n-1 comparators for n-bit conversion",
+      "A single comparator used repeatedly"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f59af01fe3d94ebf8711",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "A singly linked list is sorted by insertion sort. What is its worst-case time complexity for n nodes?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n log n)",
+      "O(n^2)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61a1f0fc32d7498ca3b7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "A singly linked list has a head and tail pointer. Which operation remains O(n) in the worst case?",
+    "options": [
+      "Insert at head",
+      "Insert at tail",
+      "Delete at head",
+      "Search by value"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6d7d807ee6cc4a3aafb1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "How many comparators are required for an ideal 6-bit flash ADC?",
+    "options": [
+      "31",
+      "32",
+      "63",
+      "64"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7163389f7bdd4f25a249",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "The last node of a singly linked list accidentally points to the third node. What traversal behavior results?",
+    "options": [
+      "Immediate termination",
+      "Skipping the third node",
+      "A cycle may cause nontermination",
+      "Automatic reversal"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c190a73c080843e6b7a0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "The major advantage of a flash ADC is its",
+    "options": [
+      "Lowest power consumption",
+      "Very high conversion speed",
+      "Highest resolution in all applications",
+      "Use of no comparators"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c3ea41baf1364f3f8d93",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "A successive-approximation ADC performs conversion by",
+    "options": [
+      "Counting upward until the DAC output exceeds the input",
+      "Using binary search through successive trial codes",
+      "Using one comparator for every code",
+      "Integrating the input indefinitely"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cd7d2d2a8cde4ab59686",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "A singly linked list contains n nodes. Counting nodes and then replacing all negative values requires what total worst-case complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2a52be78984d4112b6a6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "A SAR ADC contains a DAC mainly to",
+    "options": [
+      "Generate clock pulses",
+      "Convert the trial digital code back to an analog value for comparison",
+      "Store the final digital code permanently",
+      "Amplify the input signal"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-668c8b7dce8240da8ccc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "A singly linked list is sorted by repeatedly selecting the minimum remaining value. What is the worst-case complexity?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n log n)",
+      "O(n^2)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9b7b50c5957444ae9445",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "A binary-search-like method on a singly linked list repeatedly traverses to the middle of each remaining segment. What is the worst-case complexity?",
+    "options": [
+      "O(log n)",
+      "O(n)",
+      "O(n log n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e5095bf449f44d02aa14",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "For a 10-bit SAR ADC, how many main bit decisions are required for one conversion, excluding acquisition overhead?",
+    "options": [
+      "5",
+      "8",
+      "10",
+      "20"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-df4e77e26d8c43e2b5e8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "A dual-slope ADC is especially suitable for digital voltmeters because of its",
+    "options": [
+      "Extremely high conversion speed",
+      "Good noise rejection and high accuracy",
+      "Need for no integrator",
+      "Very small conversion time"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-df93f5809fb8421488d0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "In a doubly linked list, which invariant must hold when p->next is not NULL?",
+    "options": [
+      "p->next->prev == NULL",
+      "p->next->prev == p",
+      "p->prev->next == NULL",
+      "p->next == p"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cd322b7b9e1c4e3e8cce",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "In a dual-slope ADC, the input is first integrated for a fixed time and then",
+    "options": [
+      "The reference is integrated until the integrator returns to zero",
+      "The input is disconnected permanently",
+      "The comparator is bypassed",
+      "The DAC is switched off for the entire conversion"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f5489bf5c97f4f3fad4a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "A doubly linked list has n data nodes. How many next and prev pointer fields exist, excluding a dummy header?",
+    "options": [
+      "n",
+      "2n",
+      "n+1",
+      "2n+1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2e8cb5cc34604884be06",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "A counter-type ADC generally has conversion time that",
+    "options": [
+      "Is independent of input magnitude",
+      "Varies with the input value",
+      "Is always exactly one clock period",
+      "Does not depend on resolution"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ddd1267f25c342219819",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "A doubly linked list uses a dummy header H and is empty when H->next == H and H->prev == H. What is the main advantage?",
+    "options": [
+      "It prevents traversal",
+      "It simplifies boundary cases",
+      "It removes all data nodes permanently",
+      "It requires a tail pointer"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-90b86769820f4720bc43",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "Which ADC architecture generally provides the highest conversion speed among the standard architectures?",
+    "options": [
+      "Dual-slope",
+      "Counter-type",
+      "Flash",
+      "Integrating"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-955d6b5b72a34a9680ec",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "Nodes A, B, C, D form a doubly linked list. After deleting C, which assignments reconnect B and D?",
+    "options": [
+      "B->next=D and D->prev=B",
+      "A->next=D and D->prev=A",
+      "B->prev=D and D->next=B",
+      "C->next=D and C->prev=B"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0e7df114a9b945038a4f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "A pipeline ADC achieves high throughput primarily by",
+    "options": [
+      "Using several conversion stages operating concurrently",
+      "Using only one comparator",
+      "Eliminating sample-and-hold",
+      "Using an analog memory instead of a DAC"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4b173f0765714c048728",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "A pointer to a node in a doubly linked list is available. What is the deletion complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-62c5182e2842401b8699",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "A doubly linked list node has int data and two 8-byte pointers on a naturally aligned 64-bit system. What is the typical size?",
+    "options": [
+      "16 bytes",
+      "20 bytes",
+      "24 bytes",
+      "32 bytes"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d0173f3c67034bd2948c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "The resolution of a DAC refers to its ability to",
+    "options": [
+      "Reject common-mode noise",
+      "Distinguish small changes in the digital input",
+      "Increase the reference voltage",
+      "Remove offset error"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0a995984cd0d42ec89da",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "A doubly linked list is used as a deque. Which operation is O(1) with both end pointers?",
+    "options": [
+      "Search arbitrary value",
+      "Delete arbitrary value",
+      "Insert at either end",
+      "Sort all nodes"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0d3bb68fa736481da126",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "A 12-bit ADC has how many possible output codes?",
+    "options": [
+      "12",
+      "1024",
+      "2048",
+      "4096"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c6414d7cae6d45a8a766",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "A doubly linked list contains A, B, C, D. A new node X is inserted between A and B. Which assignments correctly initialize X?",
+    "options": [
+      "X->next=A; X->prev=B",
+      "X->prev=A; X->next=B",
+      "A->prev=B; B->next=A",
+      "X->prev=NULL; X->next=NULL"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cd23d48a5ec5413eb6d7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "An ideal 10-bit DAC has how many distinct output levels?",
+    "options": [
+      "10",
+      "100",
+      "512",
+      "1024"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0859a78eebf5471a8850",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "A circular singly linked list has tail pointer T. Which expression identifies its head?",
+    "options": [
+      "T",
+      "T->next",
+      "T->prev",
+      "T->next->next"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fe81cdf38bfd487abb79",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "For an n-bit ADC, increasing n by one approximately",
+    "options": [
+      "Doubles the number of quantization levels",
+      "Halves the number of quantization levels",
+      "Leaves the number of levels unchanged",
+      "Reduces the reference voltage automatically"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9010fcfdeeb14566a59e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "A circular singly linked list has one node. Which condition represents the circular link?",
+    "options": [
+      "T==NULL",
+      "T->next==NULL",
+      "T->next==T",
+      "T->next=T->prev"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-92e80ea627c043438ce9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "A unipolar DAC produces",
+    "options": [
+      "Only positive output voltages relative to its reference polarity",
+      "Only negative output voltages",
+      "Both positive and negative outputs without any reference",
+      "Only zero output"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-97e4b5c6ca0c40fb8037",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "A bipolar DAC is capable of producing",
+    "options": [
+      "Only positive outputs",
+      "Only zero and positive outputs",
+      "Outputs of both polarities",
+      "Only negative outputs"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d1dfc005b1534c828157",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "A circular singly linked list has 5 nodes. A traversal stops when the pointer returns to the head. How many node visits occur?",
+    "options": [
+      "4",
+      "5",
+      "6",
+      "10"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1b63782172904e9e8131",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "In an ideal R-2R ladder, the ratio of the two resistor values is",
+    "options": [
+      "1:1",
+      "1:2",
+      "2:3",
+      "1:4"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d64ddac8be4549928661",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "A circular singly linked list has tail T and head T->next. A node X is inserted immediately after T and T is updated to X. What is the resulting order from head?",
+    "options": [
+      "X,1,2,3",
+      "1,2,3,X",
+      "1,X,2,3",
+      "3,2,1,X"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ad161d8e23bf483ebb42",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "For a 5-bit ideal DAC, the number of distinct input codes is",
+    "options": [
+      "5",
+      "16",
+      "32",
+      "64"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d4c0ca3a63e44f1abe87",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "To delete the head of a circular singly linked list with more than one node using only T, which assignment is needed?",
+    "options": [
+      "T=T->next",
+      "T->next=T->next->next",
+      "T->next=NULL",
+      "T=NULL"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-308dde8a88fb4cf19efc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "A 5-bit ADC with a 0–10 V input range has an ideal LSB size of",
+    "options": [
+      "0.15625 V",
+      "0.3125 V",
+      "0.625 V",
+      "1.25 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-603a2d4cb643474aadd8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "A circular singly linked list has n nodes. Why is p==NULL unsafe as the traversal termination test?",
+    "options": [
+      "It skips the head",
+      "It reverses links",
+      "The traversal may never reach NULL",
+      "It deletes the tail"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0279fd79fbfa4f069acf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "A circular singly linked list has 6 nodes. Starting at the head, after 14 next moves, which position is reached?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-17dedce5a007415588cf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "A 4-bit ADC has an input range of 0–4.8 V. The input corresponding to code 1010 using V_in = code × LSB is",
+    "options": [
+      "2.4 V",
+      "3.0 V",
+      "3.2 V",
+      "4.0 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-44d9b2a4f5164ea68cb0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "If the input to an ideal 8-bit ADC is exactly halfway between two quantization levels, the quantization error magnitude can be",
+    "options": [
+      "0 LSB only",
+      "0.5 LSB",
+      "1 LSB",
+      "2 LSB"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c843ff1ea8d44014b109",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "A doubly circular list has dummy header H. Which conditions identify an empty list?",
+    "options": [
+      "H->next=NULL and H->prev=NULL",
+      "H->next=H and H->prev=H",
+      "H->next=H and H->prev=NULL",
+      "H->next=NULL and H->prev=H"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1ec995182e714c5c9fd9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "The DNL of an ideal ADC is",
+    "options": [
+      "Always +1 LSB",
+      "Always 0",
+      "Always -1 LSB",
+      "Equal to the full-scale voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9d101604a6684644be3a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "A doubly circular list has n data nodes and one dummy header. How many total nodes and non-NULL next links exist?",
+    "options": [
+      "n and n",
+      "n+1 and n+1",
+      "n+1 and n",
+      "n and n+1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-54022cae4f064afaa8be",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "Integral nonlinearity (INL) of a converter indicates",
+    "options": [
+      "Deviation of the transfer characteristic from an ideal straight-line characteristic",
+      "The number of output bits",
+      "The conversion clock frequency",
+      "The reference voltage only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c35db70347724cdf9bde",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "In a doubly circular list A, B, C, D with dummy header H, what are D->next and A->prev?",
+    "options": [
+      "H and H",
+      "A and D",
+      "H and A",
+      "D and H"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ac296e2e0f824317a345",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "Deleting a known node p from a doubly circular list requires which pair of updates?",
+    "options": [
+      "p->next=p; p->prev=p",
+      "p->prev->next=p->next and p->next->prev=p->prev",
+      "H->next=p; H->prev=p",
+      "p->prev=NULL; p->next=NULL"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e02a32d975314cea86ca",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "An ADC has a 3.3 V reference and 10-bit resolution. Its ideal LSB is closest to",
+    "options": [
+      "0.806 mV",
+      "3.22 mV",
+      "6.6 mV",
+      "10 mV"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0cf0122e43c44c38b937",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "A doubly circular list has 12 data nodes and dummy header H. Forward traversal starts at H->next and stops at H. How many data nodes are visited?",
+    "options": [
+      "11",
+      "12",
+      "13",
+      "24"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-706d25b82c5244afa214",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "A 10-bit ADC with 0–3.3 V range receives 1.65 V. Using the ideal code ≈ V_in/V_ref × (2^n−1), the nearest code is",
+    "options": [
+      "256",
+      "511",
+      "512",
+      "768"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2172d5d21e3c4635b0a7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "For an ideal 8-bit DAC with V_ref = 2.56 V and code 11111111, the output is approximately",
+    "options": [
+      "1.27 V",
+      "2.54 V",
+      "2.56 V",
+      "5.12 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ce5b1be051f049b09892",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "A singly linked list performs insertion at head, deletion at tail without tail pointer, and complete traversal. What are the worst-case complexities?",
+    "options": [
+      "O(1), O(1), O(n)",
+      "O(1), O(n), O(n)",
+      "O(n), O(1), O(n)",
+      "O(n), O(n), O(1)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1edd5e93e605473db787",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "A list is built by inserting each new node immediately after the head. For input 1,2,3,4,5, what is the final sequence?",
+    "options": [
+      "1,2,3,4,5",
+      "5,4,3,2,1",
+      "1,5,4,3,2",
+      "2,3,4,5,1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6a627cefca8c4dc2bd48",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "A DAC's settling time is the time required for",
+    "options": [
+      "The digital input to be sampled",
+      "The analog output to enter and remain within a specified error band after a code change",
+      "The reference voltage to become zero",
+      "The ADC comparator to switch"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-374503660ffa4c36b16a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "Glitch energy in a DAC is mainly associated with",
+    "options": [
+      "Transient output errors during code transitions",
+      "Permanent loss of resolution",
+      "Input impedance only",
+      "ADC aperture error"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e4f5b2da63434fbc927b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "A singly linked list 1,2,3,4,5,6 is pairwise swapped by changing links. What is the result?",
+    "options": [
+      "2,1,4,3,6,5",
+      "1,3,5,2,4,6",
+      "6,5,4,3,2,1",
+      "2,3,4,5,6,1"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-26615d704cca4313b1ec",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "For a 7-node singly linked list, slow moves one node and fast two nodes per iteration, both from head. Where is slow when fast first becomes NULL?",
+    "options": [
+      "Third node",
+      "Fourth node",
+      "Fifth node",
+      "Sixth node"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-536add2fa3c64d9caec5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "A major source of glitches in a binary DAC occurs when",
+    "options": [
+      "Only one bit changes state",
+      "Several bits change state simultaneously due to unequal switch delays",
+      "The reference voltage is constant",
+      "The LSB resistor is removed"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0e014542f7b0419494d6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "Monotonicity of a DAC means that",
+    "options": [
+      "Every increase in input code causes the output to remain the same or increase",
+      "Every code gives exactly the same output",
+      "The output must be sinusoidal",
+      "The DAC must have zero offset"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-55aad2c718374cd090d0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "Floyd cycle detection on a singly linked list has what worst-case time complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cc9a05e5ab2b498a986b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "A monotonic n-bit DAC is guaranteed not to",
+    "options": [
+      "Have any offset error",
+      "Decrease in output for an increasing input code",
+      "Have any gain error",
+      "Require a reference"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e4caa7e92eb443d7b039",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "A linked structure has links 1->2, 2->3, 3->4, 4->2. Starting at 1, how many distinct nodes are visited before the first repeated node?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-11309b3791ff4e249575",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "The Nyquist sampling condition for an ADC input with maximum frequency f_max is",
+    "options": [
+      "f_s < f_max",
+      "f_s = f_max/2",
+      "f_s > 2f_max",
+      "f_s < 2f_max"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d4c4c20e73d34001b159",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "A singly linked list has dummy header H followed by n data nodes. Traversing from H to NULL visits how many nodes?",
+    "options": [
+      "n",
+      "n+1",
+      "n-1",
+      "2n"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1421d55bbbdf4adeb07c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "Which insertion using a dummy header can avoid a special empty-list case?",
+    "options": [
+      "Insert after H",
+      "Insert before H with no predecessor",
+      "Delete tail using only H",
+      "Insert after NULL"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c3a50ee52a344dd19544",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "Aliasing in an ADC occurs when",
+    "options": [
+      "The sampling frequency is sufficiently high",
+      "Higher-frequency input components are indistinguishably mapped into lower frequencies",
+      "The ADC has infinite resolution",
+      "The DAC output is monotonic"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5e5050f4451f4d018ba2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "The purpose of an anti-aliasing filter before an ADC is to",
+    "options": [
+      "Limit input frequencies above the usable Nyquist band",
+      "Increase ADC bit count",
+      "Generate digital codes",
+      "Eliminate quantization levels"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c8d72d552dc84110b9ad",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "Replacing every occurrence of x with y in an empty singly linked list performs how many comparisons?",
+    "options": [
+      "",
+      "1",
+      "n",
+      "n+1"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-56087001ed644329a49f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "An ADC has a conversion time of 2 microseconds per sample. Ignoring other delays, its maximum conversion rate is",
+    "options": [
+      "0.5 kS/s",
+      "2 kS/s",
+      "500 kS/s",
+      "1 MS/s"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d0e4cfa5f3ae44949342",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "A doubly linked list is traversed from head to tail and then tail to head, visiting every data node once per direction. Total data-node visits?",
+    "options": [
+      "n",
+      "2n",
+      "n-1",
+      "2n+1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ae3dd4b5277c4f70ae05",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "A SAR ADC completes a 12-bit conversion in 12 clock cycles. If the clock frequency is 6 MHz, the conversion rate is",
+    "options": [
+      "0.5 MS/s",
+      "1 MS/s",
+      "2 MS/s",
+      "6 MS/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-faa5a73ffa4c4fd6875b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "Deleting the only node from a circular singly linked list with tail pointer T requires which final state?",
+    "options": [
+      "T points to deleted node",
+      "T becomes NULL",
+      "T->next becomes NULL",
+      "T->next points to T"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-24dbcc6e85f14204b916",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "A flash ADC uses 255 comparators. Its resolution is",
+    "options": [
+      "6 bits",
+      "7 bits",
+      "8 bits",
+      "9 bits"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e279f9d0068447c493d6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "A singly linked list has nodes 5,10,15,20. Inserting 12 immediately before 15 produces which sequence?",
+    "options": [
+      "5,10,12,15,20",
+      "5,12,10,15,20",
+      "5,10,15,12,20",
+      "12,5,10,15,20"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5902ef06fa9e42be9fe1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "A 10-bit ADC has a full-scale range of 2.048 V. If the input is 1.024 V, the ideal output code is approximately",
+    "options": [
+      "256",
+      "511",
+      "512",
+      "1023"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99e2ef76f40b48969955",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "A value is guaranteed to be present at the last node of an n-node singly linked list. How many comparisons are required by linear search?",
+    "options": [
+      "1",
+      "n-1",
+      "n",
+      "n+1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-48cd44afa66c4f378fa5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "An empty singly linked list maintains both head and tail pointers. Inserting the first node at the tail requires which assignments?",
+    "options": [
+      "head=new; tail=new",
+      "head=new only",
+      "tail=new only",
+      "new->next=new"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c8e2792966544d4bb8da",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "A DAC has a 2.5 V reference, 8-bit resolution, and unipolar operation. The ideal output for code 64 using D/256 scaling is",
+    "options": [
+      "0.25 V",
+      "0.625 V",
+      "1.25 V",
+      "2.0 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61a603f0bd024291af6f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "A doubly linked list uses only a head pointer. Deleting the tail node has what worst-case complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a68c18f422f64574a2d4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "For an ideal n-bit ADC, the signal-to-quantization-noise ratio for a full-scale sinusoidal input is approximately",
+    "options": [
+      "3.01n + 1.76 dB",
+      "6.02n + 1.76 dB",
+      "20n dB",
+      "10n + 20 dB"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5d8335e5b53f4429aba7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "If ADC resolution increases from 8 bits to 10 bits, the ideal SQNR for a full-scale sine wave improves by approximately",
+    "options": [
+      "6.02 dB",
+      "12.04 dB",
+      "20 dB",
+      "40 dB"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fb8a8f0d01e34d4d9b5e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "A singly linked list has n nodes. Appending n nodes by traversing from head every time has what total complexity?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n log n)",
+      "O(n^2)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4a3a66b0cc194fcfacbd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "A doubly linked list with head and tail pointers is rotated left by one node by moving the head to the tail. Complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d345f0e5f32f4d5f9dc2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "A 6-bit ADC has a 0–3.2 V range. The ideal LSB is",
+    "options": [
+      "25 mV",
+      "50 mV",
+      "100 mV",
+      "200 mV"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4a82ebe4d76c4bca83d3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "For the ADC in the previous question, an input of 1.6 V is approximately at",
+    "options": [
+      "Code 16",
+      "Code 24",
+      "Code 32",
+      "Code 48"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ce7462bc3d2c48de843f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "A singly linked list contains n nodes. Finding the middle with slow/fast pointers and reversing the second half has what overall complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2feb93a70fee490e8c09",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "A circular singly linked list contains n nodes. Counting nodes by stopping when the pointer returns to head has what complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4f05b12d773e450182dd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "A DAC has 4-bit resolution and produces 0–15 V for codes 0000 to 1111, with ideal equally spaced levels. The voltage step between adjacent codes is",
+    "options": [
+      "0.5 V",
+      "1 V",
+      "2 V",
+      "15 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b35fb28ec910495281ca",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "A doubly linked list inserts a node immediately after known node p. Which operation is O(1)?",
+    "options": [
+      "Search for p",
+      "Count nodes",
+      "Update p->next and successor->prev",
+      "Sort the list"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f2754f396eb1477eacbb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "In a current-steering DAC, the digital code controls",
+    "options": [
+      "Current sources or switches that steer weighted currents",
+      "Only capacitors",
+      "Only an integrator",
+      "A sample-and-hold capacitor exclusively"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-08fa60ed34394b49af06",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "A singly linked list removes all duplicate values using nested traversals and no hash table. Worst-case complexity?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n log n)",
+      "O(n^2)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99e922d4a6eb41bc9f66",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "A capacitive DAC is commonly used in SAR ADCs because",
+    "options": [
+      "Its capacitor array can perform both sampling and charge redistribution for DAC conversion",
+      "It requires no comparator",
+      "It always gives infinite resolution",
+      "It eliminates the need for a clock"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6dbff691eabd4f859d7b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "The aperture error of a sample-and-hold circuit is related to",
+    "options": [
+      "Uncertainty in the exact instant at which the input is sampled",
+      "The number of DAC resistors",
+      "The ADC's digital output code",
+      "The reference polarity only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c1eff9bb7de5454ab2bb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "A doubly circular list with dummy H inserts X immediately after H. Which assignment sets X's previous pointer?",
+    "options": [
+      "X->prev=H",
+      "X->prev=H->prev",
+      "X->prev=H->next",
+      "X->prev=NULL"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-37cbb77493d743ecb47a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "A singly linked list deletes all nodes and frees memory. Which value must be saved before freeing the current node?",
+    "options": [
+      "Head pointer",
+      "Current node's next pointer",
+      "Tail pointer",
+      "Previous node's data"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-65c6bc3f64c5443eb82f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "A 3-bit ADC uses thresholds at 1, 2, 3, 4, 5, 6 and 7 V. For an ideal staircase quantizer over 0–8 V, an input of 5.6 V produces which 3-bit code if each 1 V interval maps to the corresponding integer code?",
+    "options": [
+      "100",
+      "101",
+      "110",
+      "111"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2e7e28e9e100486fba96",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "A doubly circular list with n data nodes and dummy H deletes a known node p. What is the complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-58e64340bed749aaaaba",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "In an ADC, missing codes are most directly associated with",
+    "options": [
+      "A failure of the transfer characteristic to produce one or more expected digital codes",
+      "An increase in sampling frequency",
+      "A perfectly monotonic response",
+      "Zero quantization error"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "DAC AND ADC COVERTERS",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-834d01b09da24b248793",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "A singly linked list searches for a missing value and then appends a node using only head pointer. Worst-case complexity?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]

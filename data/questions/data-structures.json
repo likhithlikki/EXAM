@@ -1,0 +1,1562 @@
+[
+  {
+    "id": "Q-928e3a14460b4593b76a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "What is the time complexity of accessing an element in an array by its index?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-be2d0579e0264df68c9d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "In a 2D array of size M x N stored in row-major order, what is the address of element A[i][j], given base address B and element size w?",
+    "options": [
+      "B + (i*N + j)*w",
+      "B + (j*M + i)*w",
+      "B + (i + j)*w",
+      "B + (i*M + j)*w"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0633a991316f4bceb64a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "What is the worst-case time complexity of inserting an element at the beginning of an array of size n?",
+    "options": [
+      "O(1)",
+      "O(n)",
+      "O(log n)",
+      "O(n^2)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0c75622698c94ef3857f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "Which of the following is a disadvantage of arrays compared to linked lists?",
+    "options": [
+      "Random access not possible",
+      "Fixed size / static memory allocation",
+      "Slow access time",
+      "Cannot store primitive data types"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9942941d59fa4754b0ef",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "In sparse matrix representation, which data structure is typically used to save memory space?",
+    "options": [
+      "2D array",
+      "Linked list of triples (row, column, value)",
+      "Stack",
+      "Queue"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-880e633070bf46f5a96f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "What is the time complexity to insert a node at the beginning of a singly linked list?",
+    "options": [
+      "O(1)",
+      "O(n)",
+      "O(log n)",
+      "O(n^2)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-35b7f5a93ace4a949dc8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "In a singly linked list, to delete a given node (not the last node) when only a pointer to that node is provided (not the head), which technique deletes it in O(1) time?",
+    "options": [
+      "Traverse from head to find the previous node",
+      "Copy the data of the next node into the given node and delete the next node",
+      "Convert the list into a doubly linked list first",
+      "It is not possible in O(1) time"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a291ee7e4c734d97a676",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "Which type of linked list allows traversal in both forward and backward directions?",
+    "options": [
+      "Singly linked list",
+      "Circular linked list",
+      "Doubly linked list",
+      "None of these"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-65a0157c19574be0af3d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "Compared to a singly linked list, what is the extra space overhead per node in a doubly linked list?",
+    "options": [
+      "No difference",
+      "One extra pointer per node",
+      "Two extra pointers per node",
+      "Depends on the data type stored"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2c4ad49e8ead451892b1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "Which of the following applications commonly uses a circular linked list?",
+    "options": [
+      "Undo operation in a text editor",
+      "Round robin CPU scheduling",
+      "Function call stack management",
+      "Binary search implementation"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-35bce9406e724165bd19",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "Which data structure is used internally to implement recursive function calls in programming languages?",
+    "options": [
+      "Queue",
+      "Stack",
+      "Array",
+      "Graph"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8139301974134abda184",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "What is the postfix expression for the infix expression (A+B)*(C-D)?",
+    "options": [
+      "AB+CD-*",
+      "AB+CD*-",
+      "A+B*C-D",
+      "AB*CD+-"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6cb1cf4373da458e83fa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "In a stack implemented using an array of fixed size n, what does 'stack overflow' mean?",
+    "options": [
+      "The stack is empty and a pop is attempted",
+      "The stack is full and a push is attempted",
+      "An array index goes out of bounds while traversing",
+      "The stack contains negative elements"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7b982c63efbf481598eb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "Evaluate the postfix expression: 5 3 + 8 2 - *",
+    "options": [
+      "40",
+      "48",
+      "30",
+      "24"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f9d72e059fd74b55a57d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "Which of the following is true regarding the push and pop operations of a stack?",
+    "options": [
+      "Both operate at the same end of the structure",
+      "Push operates at the front, pop at the rear",
+      "Push operates at the rear, pop at the front",
+      "Stack follows FIFO order"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7044499f12b14ad1a5e2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "A queue data structure follows which order for insertion and deletion of elements?",
+    "options": [
+      "LIFO",
+      "FIFO",
+      "Random order",
+      "LILO"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4e134eb1e03343da9397",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "In a circular queue of size n, if FRONT = 0 and REAR = n-1, what does this indicate?",
+    "options": [
+      "The queue is empty",
+      "The queue is full",
+      "The queue has exactly one element",
+      "An invalid state"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b1309a1793dd49499fc0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "Which type of queue allows insertion and deletion of elements at both ends?",
+    "options": [
+      "Simple queue",
+      "Circular queue",
+      "Priority queue",
+      "Deque (double-ended queue)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6f79603772394fdf8041",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "In a priority queue, which element is removed first?",
+    "options": [
+      "The element inserted first",
+      "The element inserted last",
+      "The element with the highest priority",
+      "A randomly chosen element"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1e9eb8fc753f495497ed",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "What is the main advantage of a circular queue over a linear queue implemented using an array?",
+    "options": [
+      "Faster element access time",
+      "Efficient utilization of memory, avoiding wasted space",
+      "It allows duplicate elements",
+      "It supports random access to elements"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8309a49273ff46f9a675",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "What is the maximum number of nodes at level l of a binary tree (root at level 0)?",
+    "options": [
+      "2^l",
+      "2^(l-1)",
+      "l^2",
+      "2l"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7bc89708cf2f4172b8b0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "What is the maximum number of nodes in a binary tree of height h (root at height 0)?",
+    "options": [
+      "2^h - 1",
+      "2^(h+1) - 1",
+      "2h",
+      "h^2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1a98d362683d462ebb29",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "An in-order traversal of a Binary Search Tree produces elements in which order?",
+    "options": [
+      "Random order",
+      "Descending sorted order",
+      "Ascending sorted order",
+      "Level order"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2e7c229199c747ea802e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "What is the average-case time complexity of searching for an element in a balanced Binary Search Tree with n nodes?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(n log n)",
+      "O(1)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0da069d5240f4efdbf96",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "What is the worst-case time complexity of searching in a Binary Search Tree that has degenerated into a skewed (linked-list-like) tree?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8c0a13e8fc1c451181fa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "Which traversal of a binary tree visits the root node before its left and right subtrees?",
+    "options": [
+      "In-order",
+      "Pre-order",
+      "Post-order",
+      "Level-order"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-49b0c370650c455f9b1d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "What is the allowed range of the balance factor for every node in an AVL tree?",
+    "options": [
+      "-1, 0, 1",
+      "-2, 0, 2",
+      "0 to n",
+      "-1 to n"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2121f14039d34502a4e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "In AVL tree balancing, the LL (Left-Left) imbalance case is corrected using which rotation?",
+    "options": [
+      "A single right rotation",
+      "A single left rotation",
+      "A left-right rotation",
+      "A right-left rotation"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6d0850ae43d6499c8376",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "What is the time complexity of inserting a node into an AVL tree with n nodes?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n^2)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dd961dfe578f4876b7af",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "In a Max-Heap (a complete binary tree), which property holds for every node?",
+    "options": [
+      "Every parent is smaller than its children",
+      "Every parent is greater than or equal to its children",
+      "The left child is always greater than the right child",
+      "It must also satisfy the BST property"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-338cda0de47c41e28544",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "What is the time complexity of building a heap (heapify) from an unsorted array of n elements?",
+    "options": [
+      "O(n log n)",
+      "O(n)",
+      "O(n^2)",
+      "O(log n)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c8195f1e04124d70a4e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "In a Min-Heap stored as a 0-indexed array, what are the indices of the two children of the node at index i?",
+    "options": [
+      "i-1 and i+1",
+      "2i and 2i+1",
+      "2i+1 and 2i+2",
+      "i/2 and i/2+1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ef8ac1e3ca20426dbe95",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "What is the worst-case time complexity of the Heap Sort algorithm?",
+    "options": [
+      "O(n)",
+      "O(n log n)",
+      "O(n^2)",
+      "O(log n)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5e761d37861a4ad7b9d5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "In graph theory, the number of edges incident on a vertex is called its:",
+    "options": [
+      "Degree",
+      "Weight",
+      "Path length",
+      "Cycle"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f5e0c68664464f9aa9d2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "Which graph traversal algorithm uses a queue as its underlying data structure?",
+    "options": [
+      "Depth First Search",
+      "Breadth First Search",
+      "In-order traversal",
+      "Post-order traversal"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a9a354aeb5c141af96b4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "Which graph traversal algorithm uses a stack (or recursion) as its underlying mechanism?",
+    "options": [
+      "Breadth First Search",
+      "Depth First Search",
+      "Level order traversal",
+      "Dijkstra's algorithm only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a659ba38760f4d5096a4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "Which algorithm finds the shortest path from a single source to all other vertices in a weighted graph with non-negative edge weights?",
+    "options": [
+      "Kruskal's algorithm",
+      "Prim's algorithm",
+      "Dijkstra's algorithm",
+      "Depth First Search"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99ee4b029c5844cdbf40",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "A connected graph with n vertices requires at least how many edges to form a spanning tree?",
+    "options": [
+      "n",
+      "n - 1",
+      "n + 1",
+      "2n"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-755c615f0bfa48b198a5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "Which data structure representation is preferred for a sparse graph (one with relatively few edges)?",
+    "options": [
+      "Adjacency matrix",
+      "Adjacency list",
+      "2D boolean array",
+      "Incidence matrix only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d4181ea51ddd4b7d923d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "In hashing, what is a 'collision'?",
+    "options": [
+      "When two different keys map to the same hash index",
+      "When the hash table becomes full",
+      "When a key is not found in the table",
+      "When the hash function returns a negative value"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b1493649fbaa4e22b89a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "Which of the following is a collision resolution technique used in hashing?",
+    "options": [
+      "Binary search",
+      "Chaining",
+      "Merge sort",
+      "Heapify"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-96e448df1ce64bbaa6d8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "In a well-designed hash table, what is the average-case time complexity of search, insert, and delete operations?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b3e8deda6b3e4aafb3db",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "In open addressing with linear probing, after a collision at index h(k), which slots are checked next?",
+    "options": [
+      "(h(k)+1) mod m, (h(k)+2) mod m, and so on",
+      "A randomly chosen slot",
+      "The square of h(k)",
+      "A separate chained list at h(k)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-05d8ad6e30e447a8b87f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "What is the average-case time complexity of Quick Sort?",
+    "options": [
+      "O(n)",
+      "O(n log n)",
+      "O(n^2)",
+      "O(log n)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1e4e4ee978db49709999",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "What is the worst-case time complexity of Quick Sort?",
+    "options": [
+      "O(n log n)",
+      "O(n^2)",
+      "O(n)",
+      "O(log n)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5d12d897ccb34c539f8d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "Which sorting algorithm is stable and guarantees O(n log n) time complexity even in the worst case?",
+    "options": [
+      "Quick Sort",
+      "Heap Sort",
+      "Merge Sort",
+      "Selection Sort"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cc6eff85f32248828222",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "Using an optimized Bubble Sort (with a swap flag), what is the best-case time complexity on an already sorted array?",
+    "options": [
+      "O(n^2)",
+      "O(n log n)",
+      "O(n)",
+      "O(log n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b847ac57afab4eceb2ca",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "Which sorting algorithm repeatedly selects the minimum element from the unsorted part and places it at the beginning?",
+    "options": [
+      "Insertion Sort",
+      "Selection Sort",
+      "Bubble Sort",
+      "Merge Sort"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-db70109403ed46b2968e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "What is the space complexity of the standard Merge Sort algorithm?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-83bf23c384b44ddb9605",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "What is the time complexity of Binary Search on a sorted array of n elements?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(1)",
+      "O(n log n)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-de919a9dc45c4af48279",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "Binary search can be correctly applied only on which type of data structure?",
+    "options": [
+      "An unsorted array",
+      "A sorted array",
+      "A linked list only",
+      "Any data structure"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-073905371fd34a719c64",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "What is the worst-case number of comparisons required by linear search on an array of n elements?",
+    "options": [
+      "log n",
+      "n",
+      "n/2",
+      "n^2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99edfe278b4f4fda994f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "What does Big-O notation represent for an algorithm?",
+    "options": [
+      "Its best-case time complexity",
+      "Its average-case time complexity",
+      "An upper bound on its worst-case time or space growth",
+      "Its exact running time in seconds"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f08805d1a71c4bfba187",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "What is the time complexity of the following code: for(i=0;i<n;i++) for(j=0;j<n;j++) print(i,j);",
+    "options": [
+      "O(n)",
+      "O(n log n)",
+      "O(n^2)",
+      "O(2n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1912f72e4d07477dbcca",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "Which of the following growth rates is the most efficient (slowest growing) as n becomes large?",
+    "options": [
+      "O(n^2)",
+      "O(n log n)",
+      "O(log n)",
+      "O(n)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2ff02221f7514a6c8b6c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "What is the space complexity of an algorithm that uses only a fixed number of variables, regardless of input size?",
+    "options": [
+      "O(n)",
+      "O(1)",
+      "O(log n)",
+      "O(n^2)"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-92d667e249b7401e9f2d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "What is the time complexity of computing the nth Fibonacci number using naive (non-memoized) recursion?",
+    "options": [
+      "O(n)",
+      "O(log n)",
+      "O(2^n)",
+      "O(n^2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-28c9518da38c447aad6b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "Which data structure implicitly supports recursive function calls in most programming languages?",
+    "options": [
+      "Heap memory",
+      "Call stack",
+      "Queue",
+      "Array"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b2533f4b701146a2b8a1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "A Trie data structure is primarily used for efficient storage and retrieval of:",
+    "options": [
+      "Integers",
+      "Strings and their prefixes",
+      "Graphs",
+      "Matrices"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b31e4ff697d948bfa2dd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "What is the time complexity of searching for a word of length m in a Trie?",
+    "options": [
+      "O(m)",
+      "O(log m)",
+      "O(n), where n is the number of stored words",
+      "O(m^2)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]

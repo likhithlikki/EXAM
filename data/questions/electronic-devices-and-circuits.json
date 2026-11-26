@@ -1,0 +1,2602 @@
+[
+  {
+    "id": "Q-7c73304e45ff460f982a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "In a BJT operating in forward-active mode, the base-emitter and base-collector junctions are respectively",
+    "options": [
+      "Forward biased and reverse biased",
+      "Reverse biased and forward biased",
+      "Both forward biased",
+      "Both reverse biased"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a24c75da441247bda652",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "In BJT saturation, the base-emitter and base-collector junctions are",
+    "options": [
+      "Both reverse biased",
+      "Forward and reverse biased",
+      "Both forward biased",
+      "Reverse and forward biased"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-85f527a966bc4fb7af14",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "A BJT is called bipolar mainly because conduction involves",
+    "options": [
+      "Only electrons",
+      "Only holes",
+      "Both electrons and holes",
+      "Only ions"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-360f4ed9886941caa7a3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "In a properly designed NPN BJT, the emitter is generally",
+    "options": [
+      "Lightly doped",
+      "Heavily doped",
+      "Undoped",
+      "Equally doped as the base"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0cafa58bb51740799fe9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "The base of a BJT is made thin primarily to",
+    "options": [
+      "Increase base resistance",
+      "Allow efficient carrier transport from emitter to collector",
+      "Prevent collector current",
+      "Increase junction capacitance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1f052118e1a24a8c819e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "For an NPN transistor in forward-active operation, a necessary voltage ordering is",
+    "options": [
+      "VC < VB < VE",
+      "VE < VB < VC",
+      "VB < VC < VE",
+      "VC < VE < VB"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3d73d8f239ac4c70b639",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "For a silicon NPN transistor in forward-active operation, VBE is typically close to",
+    "options": [
+      "0 V",
+      "0.2 V",
+      "0.7 V",
+      "2 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a90dd44db28044c686e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "In BJT cutoff, the transistor is approximately equivalent to",
+    "options": [
+      "A short circuit",
+      "An open circuit",
+      "A constant-current source",
+      "A voltage source"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-824f11e18c8043b6bb27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "In BJT saturation, the transistor is commonly used as",
+    "options": [
+      "A linear voltage amplifier",
+      "A closed switch",
+      "A high-impedance buffer",
+      "A current mirror only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-518ff11c1571461d88e5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "In forward-active BJT operation, collector current is approximately",
+    "options": [
+      "IC = IB/β",
+      "IC = βIB",
+      "IC = β/IB",
+      "IC = IB + β"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9f837c86e9984b838771",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "For a BJT, emitter current satisfies",
+    "options": [
+      "IE = IC - IB",
+      "IE = IC + IB",
+      "IE = IC/IB",
+      "IE = βIC"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-66b0731d9fe04c1592e2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "If β = 100 and IB = 20 µA in active mode, IC is",
+    "options": [
+      "0.2 mA",
+      "2 mA",
+      "20 mA",
+      "200 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-149e2f4d378640c39458",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "If IC = 4 mA and β = 80, the base current is",
+    "options": [
+      "20 µA",
+      "50 µA",
+      "80 µA",
+      "320 µA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1ab24f3401f84d1aa7d0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "If IC = 2 mA and IB = 20 µA, the emitter current is",
+    "options": [
+      "1.98 mA",
+      "2.00 mA",
+      "2.02 mA",
+      "2.20 mA"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-325c065386f64f4f8c25",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "The common-emitter current gain β is approximately",
+    "options": [
+      "IC/IB",
+      "IB/IC",
+      "IE/IC",
+      "IC/IE"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2e1753f3bbbd4f91b8c5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "The common-base current gain α is approximately",
+    "options": [
+      "IC/IB",
+      "IC/IE",
+      "IE/IB",
+      "IB/IE"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a7983f34980f4dca81f0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "The relation between α and β is",
+    "options": [
+      "β = α/(1-α)",
+      "β = 1-α",
+      "β = α+1",
+      "β = 1/α"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-57517a6e1f7e44ba8e3c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "If α = 0.98, β is approximately",
+    "options": [
+      "9",
+      "49",
+      "98",
+      "0.98"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-90348572299e421584a0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "If β = 49, α is approximately",
+    "options": [
+      "0.49",
+      "0.96",
+      "0.98",
+      "1.49"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-48694d86e1464e2e9863",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "The BJT configuration most commonly used for voltage amplification is",
+    "options": [
+      "Common base",
+      "Common emitter",
+      "Common collector",
+      "Common drain"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-736b6205dbd04f1c9e2f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "The BJT configuration having voltage gain approximately unity and high input impedance is",
+    "options": [
+      "Common emitter",
+      "Common base",
+      "Common collector",
+      "Common gate"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9649900ce28b4d378aae",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "A common-base amplifier is characterized by",
+    "options": [
+      "High input impedance and phase inversion",
+      "Low input impedance and no voltage phase inversion",
+      "High output current only",
+      "Unity voltage gain always"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2447efbdd5f249cc9ffb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "A common-emitter amplifier produces an output voltage that is normally",
+    "options": [
+      "In phase with input",
+      "180° out of phase with input",
+      "90° out of phase",
+      "Independent of input"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-69f090b84e674c52bb2b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "A common-collector amplifier is also called",
+    "options": [
+      "Emitter follower",
+      "Source follower",
+      "Cascode",
+      "Darlington only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6c6ec7aa091841b89dc1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "A common-base amplifier is useful at high frequency partly because it has",
+    "options": [
+      "Large Miller multiplication at input",
+      "Low input resistance and reduced Miller effect",
+      "Infinite output resistance",
+      "Zero collector current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2d918280b2af487aa6bf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "For a CE amplifier, voltage gain magnitude generally increases when collector load resistance",
+    "options": [
+      "Decreases strongly",
+      "Increases, within limits",
+      "Becomes zero",
+      "Is disconnected in all cases"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fe0a1455453a4b3f9ad9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "The small-signal emitter resistance of a BJT is approximately",
+    "options": [
+      "VT/IE",
+      "IE/VT",
+      "βVT",
+      "VTβ"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d921bed9f89b433997f1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "At room temperature, VT of a silicon BJT is approximately",
+    "options": [
+      "2.6 mV",
+      "26 mV",
+      "260 mV",
+      "1 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e4d39c65a10448cd878a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "If IE = 1 mA and VT = 25 mV, intrinsic emitter resistance re is approximately",
+    "options": [
+      "2.5 Ω",
+      "25 Ω",
+      "250 Ω",
+      "0.025 Ω"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5226d83103ba44ee8924",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "A CE stage has gm = 40 mS and effective collector resistance of 2 kΩ. Ignoring loading, voltage gain magnitude is approximately",
+    "options": [
+      "20",
+      "40",
+      "80",
+      "100"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f2b6c92643f944ec9a9e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "BJT transconductance gm in forward-active operation is approximately",
+    "options": [
+      "IC/VT",
+      "VT/IC",
+      "β/IC",
+      "ICβ"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3623901029cc4f2db54b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "For IC = 1 mA and VT = 25 mV, gm is approximately",
+    "options": [
+      "4 mS",
+      "25 mS",
+      "40 mS",
+      "100 mS"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-16c5a50684604324ab5d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "The Early effect causes BJT collector current in active mode to",
+    "options": [
+      "Decrease with VCE",
+      "Increase slightly with VCE",
+      "Become exactly zero",
+      "Become independent of base current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-86f262c42cc84b4faa3e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "The Early voltage mainly determines the BJT's",
+    "options": [
+      "Input capacitance",
+      "Output resistance due to Early effect",
+      "Threshold voltage",
+      "Base-emitter drop"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-967baa7221e745438d95",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "If Early voltage VA = 100 V and IC = 1 mA, approximate small-signal output resistance ro is",
+    "options": [
+      "10 Ω",
+      "100 Ω",
+      "10 kΩ",
+      "100 kΩ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e2a75908978348038927",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "A transistor biased at the midpoint of its load line is commonly chosen to",
+    "options": [
+      "Maximize symmetrical output swing",
+      "Force cutoff",
+      "Force saturation",
+      "Eliminate base current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-16448be5049944d9ae52",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "For a CE circuit with VCC = 10 V, RC = 2 kΩ and IC = 2 mA, VCE is",
+    "options": [
+      "2 V",
+      "4 V",
+      "6 V",
+      "10 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d1d5d042bc5b4398be17",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "For VCC = 12 V, RC = 3 kΩ and desired Q-point VCE = 6 V, IC should be",
+    "options": [
+      "1 mA",
+      "2 mA",
+      "3 mA",
+      "6 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ee3b42309a7b48d4bbbd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "A BJT used as a switch should normally move between",
+    "options": [
+      "Active and reverse-active",
+      "Cutoff and saturation",
+      "Cutoff and active only",
+      "Breakdown and active"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-48335590fcbb4804aee0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "If a switch transistor has VCC = 5 V, RC = 1 kΩ and VCE(sat) = 0.2 V, the saturated collector current is approximately",
+    "options": [
+      "0.2 mA",
+      "4.8 mA",
+      "5 mA",
+      "6 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fa0e6ca7ba6c436c8425",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "For reliable BJT switching, forced β is used mainly to",
+    "options": [
+      "Ensure saturation with sufficient base drive",
+      "Increase VCC",
+      "Prevent cutoff",
+      "Set transistor breakdown voltage"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-98118a02eb084e799489",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "A PNP transistor is generally turned on by making its base voltage",
+    "options": [
+      "Higher than emitter",
+      "Lower than emitter",
+      "Equal to collector always",
+      "Higher than collector always"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e4d44e346ee84b9f8abd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "For a PNP transistor in forward-active mode, the collector is normally at a voltage",
+    "options": [
+      "Higher than emitter",
+      "Lower than base",
+      "Higher than base and emitter",
+      "Equal to emitter"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bfc7020635494bbebca3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "The collector of a BJT is moderately doped mainly to",
+    "options": [
+      "Withstand higher reverse voltage and dissipate power",
+      "Inject all carriers",
+      "Prevent current flow",
+      "Make β exactly one"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-52bc35510c144843a133",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "In reverse-active operation of a BJT",
+    "options": [
+      "BE is reverse biased and BC is forward biased",
+      "Both junctions are forward biased",
+      "Both are reverse biased",
+      "BE is forward biased and BC reverse biased"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e670852d8e4747d886ed",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "A MOSFET is primarily controlled by",
+    "options": [
+      "Base current",
+      "Gate-source voltage",
+      "Collector current",
+      "Emitter current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-70cd3b75856d4290bca8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "The DC gate current of an ideal MOSFET is",
+    "options": [
+      "Infinite",
+      "Approximately zero",
+      "Equal to drain current",
+      "Equal to source current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a80804b284f84a599764",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "For an enhancement NMOS, a conducting channel forms when",
+    "options": [
+      "VGS is sufficiently above threshold",
+      "VGS is always zero",
+      "VDS is negative only",
+      "Gate is shorted to source"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0578a1d364d24db68d74",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "For an NMOS, cutoff occurs when",
+    "options": [
+      "VGS < VT",
+      "VDS > VGS",
+      "VGS = VDS always",
+      "VDS < 0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-758ba3384d4645beafa4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "For a long-channel NMOS in the triode region, the condition is",
+    "options": [
+      "VGS > VT and VDS < VGS-VT",
+      "VGS < VT",
+      "VDS > VGS-VT",
+      "VGS = 0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0ebcfa6ca8114910b395",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "For a long-channel NMOS in saturation, the condition is",
+    "options": [
+      "VGS < VT",
+      "VGS > VT and VDS ≥ VGS-VT",
+      "VDS < VGS-VT",
+      "VGS = 0"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-26a42bcc283046809622",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "In the MOSFET triode region, the device behaves approximately as",
+    "options": [
+      "A voltage-controlled resistor",
+      "An ideal current source independent of VGS",
+      "An open circuit",
+      "A current-controlled voltage source"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-34817a81cebe4a0aa102",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "A MOSFET biased in saturation is commonly used as",
+    "options": [
+      "A voltage-controlled current source for amplification",
+      "A short circuit only",
+      "An open switch only",
+      "A transformer"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-155419effed64a7c8af8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "The overdrive voltage of an NMOS is defined as",
+    "options": [
+      "VGS + VT",
+      "VGS - VT",
+      "VT - VDS",
+      "VDS - VGS"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-01470d20e22f46e5b301",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "If VGS = 2.5 V and VT = 1 V, the overdrive voltage is",
+    "options": [
+      "0.5 V",
+      "1 V",
+      "1.5 V",
+      "3.5 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-013135123736411dbca6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "For a long-channel NMOS in saturation, ignoring channel-length modulation, ID is proportional to",
+    "options": [
+      "VGS",
+      "(VGS-VT)^2",
+      "1/VGS",
+      "VDS^2 only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d0599a980698479dbc0b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "For a long-channel NMOS, the saturation current equation is",
+    "options": [
+      "ID = k(VGS-VT)^2",
+      "ID = (1/2)k(VGS-VT)^2",
+      "ID = kVDS",
+      "ID = VGS/k"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-142afa4f388642c0b62f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "If k = 2 mA/V² and VOV = 1 V, saturation current is",
+    "options": [
+      "0.5 mA",
+      "1 mA",
+      "2 mA",
+      "4 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-def1810fa2344b0090d6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "If a MOSFET has ID = 2 mA and k = 8 mA/V², its overdrive voltage is",
+    "options": [
+      "0.25 V",
+      "0.5 V",
+      "1 V",
+      "2 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-94c28989cde14c958d27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "MOSFET transconductance in saturation can be written as",
+    "options": [
+      "gm = 2ID/VOV",
+      "gm = VOV/(2ID)",
+      "gm = IDVOV",
+      "gm = 1/ID"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-227fbcf87285462791c4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "61",
+    "question": "If ID = 1 mA and VOV = 0.5 V, gm is",
+    "options": [
+      "1 mS",
+      "2 mS",
+      "4 mS",
+      "8 mS"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1593b4f5103e4c84baf5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "62",
+    "question": "Channel-length modulation causes saturation-region drain current to",
+    "options": [
+      "Decrease with VDS",
+      "Increase slightly with VDS",
+      "Become exactly zero",
+      "Become independent of all voltages"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-494d18f937414dd2afc9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "63",
+    "question": "The small-signal MOSFET output resistance due to channel-length modulation is approximately",
+    "options": [
+      "1/(λID)",
+      "λID",
+      "ID/λ",
+      "λ/ID"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0ca28588750d4332b918",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "64",
+    "question": "If λ = 0.02 V^-1 and ID = 2 mA, ro is approximately",
+    "options": [
+      "250 Ω",
+      "2.5 kΩ",
+      "25 kΩ",
+      "250 kΩ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0091b45a5aa44fffbac4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "65",
+    "question": "The body effect in an NMOS generally causes threshold voltage to",
+    "options": [
+      "Increase as source-body reverse bias increases",
+      "Always decrease to zero",
+      "Remain exactly constant",
+      "Become negative"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e3fa62cde76d4c7d8220",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "66",
+    "question": "A body terminal is often tied to source in discrete NMOS circuits to",
+    "options": [
+      "Avoid unintended body-effect variation",
+      "Increase gate current",
+      "Eliminate drain current",
+      "Force cutoff"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-317cbc36de1942379a4d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "67",
+    "question": "The body diode in a power MOSFET is associated with",
+    "options": [
+      "The intrinsic body-drain/source junction",
+      "The gate oxide only",
+      "The gate resistor",
+      "The load resistor"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-58f4252f21a94ea98dc8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "68",
+    "question": "MOSFET gate oxide makes the input resistance ideally",
+    "options": [
+      "Very low",
+      "Very high",
+      "Exactly 50 Ω",
+      "Equal to drain resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e8994c916e974225a6dc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "69",
+    "question": "A common-source MOSFET amplifier has",
+    "options": [
+      "Voltage gain with phase inversion",
+      "Unity voltage gain always",
+      "No voltage gain",
+      "Only current gain and no voltage gain"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f8d85b1dc2e4461d9bd7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "70",
+    "question": "A common-drain MOSFET amplifier is also called",
+    "options": [
+      "Source follower",
+      "Emitter follower",
+      "Gate follower",
+      "Drain follower"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-36e873b5a7034c038f77",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "71",
+    "question": "The common-drain configuration is commonly used as a",
+    "options": [
+      "Buffer with low output resistance",
+      "High-gain inverting stage",
+      "Current mirror only",
+      "Rectifier"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-47174ab38b94440ca85b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "72",
+    "question": "The common-gate MOSFET configuration has",
+    "options": [
+      "Low input impedance at the source",
+      "Infinite input current",
+      "Zero output impedance",
+      "180° phase inversion always"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dbf808cf060e41a99e53",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "73",
+    "question": "A common-gate stage is useful for",
+    "options": [
+      "Low-input-impedance and high-frequency applications",
+      "Very high input impedance buffering",
+      "Only DC switching",
+      "Eliminating transconductance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ff5a5d6416744c1094b7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "74",
+    "question": "Among CS, CG and CD MOSFET stages, the one with approximately unity voltage gain is",
+    "options": [
+      "CS",
+      "CG",
+      "CD",
+      "All always have unity gain"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-39421b6863874669890f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "75",
+    "question": "The MOSFET common-source stage normally provides",
+    "options": [
+      "180° phase inversion",
+      "0° phase shift",
+      "360° only",
+      "No output signal"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-df7a93fd7a614be48229",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "76",
+    "question": "The small-signal voltage gain of a simple common-source stage, ignoring ro, is approximately",
+    "options": [
+      "+gmRD",
+      "-gmRD",
+      "RD/gm",
+      "1/gmRD"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b3274a63922f4c7f8137",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "77",
+    "question": "If gm = 5 mS and RD = 4 kΩ, the CS voltage gain is approximately",
+    "options": [
+      "-5",
+      "-10",
+      "-20",
+      "-40"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f1febfede336416ebccf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "78",
+    "question": "A source resistor in a CS amplifier provides",
+    "options": [
+      "Source degeneration and bias stabilization",
+      "Infinite voltage gain",
+      "Zero input resistance",
+      "Gate current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7de0194eea0d4bc09f27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "79",
+    "question": "Source degeneration generally",
+    "options": [
+      "Reduces gain and improves linearity",
+      "Increases gain without limit",
+      "Makes gm infinite",
+      "Eliminates biasing"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e94f8d9f937f4857bc10",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "80",
+    "question": "A MOSFET source follower has voltage gain generally",
+    "options": [
+      "Greater than 10",
+      "Approximately less than unity",
+      "Exactly -1",
+      "Always zero"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cbb88c466b06459c84f0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "81",
+    "question": "The output resistance of a source follower is generally",
+    "options": [
+      "Lower than its input resistance",
+      "Higher than its input resistance",
+      "Infinite",
+      "Equal to gate resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81c2922fce6f4af6934d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "82",
+    "question": "A common-gate amplifier has no Miller multiplication of Cgd at its input to the same extent as a common-source stage because",
+    "options": [
+      "The gate is at AC ground and the source is the input",
+      "The drain is grounded",
+      "The source is open",
+      "The gate current is large"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5bb838edd91f48328326",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "83",
+    "question": "For a MOSFET, gm indicates the change in",
+    "options": [
+      "Drain current per change in gate-source voltage",
+      "Gate voltage per drain current",
+      "Drain voltage per gate current",
+      "Body current per source voltage"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a73cefb0e3354e789422",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "84",
+    "question": "If a MOSFET has gm = 10 mS and input signal is 5 mV, small-signal drain-current change is",
+    "options": [
+      "5 µA",
+      "50 µA",
+      "0.5 mA",
+      "5 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c94f0fa0125b44dba9cd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "85",
+    "question": "A MOSFET current mirror is mainly used to",
+    "options": [
+      "Replicate a reference current",
+      "Convert voltage to frequency",
+      "Rectify AC",
+      "Generate gate current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-be0d33207f4a48e7a1f5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "86",
+    "question": "In a simple MOSFET current mirror, matched devices ideally have",
+    "options": [
+      "Equal VGS under equal current-density conditions",
+      "Equal VDS under every condition",
+      "Zero threshold voltage",
+      "Infinite gate current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-730b4f3be33c48409eb2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "87",
+    "question": "A cascode current source mainly improves",
+    "options": [
+      "Output resistance and current-source accuracy",
+      "Gate leakage",
+      "Input offset voltage",
+      "Threshold voltage to zero"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-46069951af17475384c6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "88",
+    "question": "The minimum supply headroom required by a current-source transistor is related to",
+    "options": [
+      "Its required operating region voltage",
+      "Its gate oxide thickness only",
+      "Its package color",
+      "Its input capacitance only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-68c4dcf0522d415ab0bc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "89",
+    "question": "For an n-channel JFET, the gate-source junction is normally",
+    "options": [
+      "Forward biased",
+      "Reverse biased",
+      "Shorted through a resistor",
+      "Avalanche biased in normal operation"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-945f27ed065a421ea144",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "90",
+    "question": "An n-channel JFET is controlled mainly by",
+    "options": [
+      "Reverse-biasing its gate-source junction",
+      "Forward-biasing its gate",
+      "Collector current",
+      "Base current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c2f39dfb9f1048aca25a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "91",
+    "question": "For an n-channel JFET, making VGS more negative generally",
+    "options": [
+      "Increases ID",
+      "Decreases ID",
+      "Leaves ID unchanged",
+      "Makes gate current large"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-713a8e31b3d74374b78c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "92",
+    "question": "The JFET drain current at VGS = 0 for a device specification is commonly denoted",
+    "options": [
+      "IDSS",
+      "VGS(off)",
+      "gm0",
+      "VDS(sat)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c690c9f996074653a8f4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "93",
+    "question": "Shockley's JFET equation is",
+    "options": [
+      "ID = IDSS(1-VGS/VGS(off))^2",
+      "ID = IDSS(1+VGS)^2",
+      "ID = VGS/IDSS",
+      "ID = VDS/RD"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-576b083829904248b846",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "94",
+    "question": "If IDSS = 8 mA and VGS(off) = -4 V, ID at VGS = -2 V is",
+    "options": [
+      "1 mA",
+      "2 mA",
+      "4 mA",
+      "8 mA"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1c2b380824b24aec98c2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "95",
+    "question": "The pinch-off voltage of a JFET is associated with",
+    "options": [
+      "Formation of a pinched channel and current saturation",
+      "Gate oxide breakdown",
+      "Emitter injection",
+      "BJT saturation"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7f4c4de6d24242bf9863",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "96",
+    "question": "Compared with a BJT, a FET is generally described as",
+    "options": [
+      "Voltage controlled with high input impedance",
+      "Current controlled with low input impedance",
+      "A bipolar current source only",
+      "A four-junction device"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-28b529fc795a4620aec3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "97",
+    "question": "A MOSFET is preferred over a BJT for many CMOS digital circuits mainly because",
+    "options": [
+      "Its gate draws very little DC current",
+      "It always has higher voltage gain",
+      "It requires base current",
+      "It has no capacitances"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ecfefcdc09e74beabe49",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "98",
+    "question": "A BJT generally offers higher transconductance than a MOSFET at the same small bias current because",
+    "options": [
+      "gm of BJT is approximately IC/VT",
+      "BJT gate oxide is thinner",
+      "MOSFET has no channel",
+      "BJT has zero output resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3e50ec8669194fb9a1fc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "99",
+    "question": "For a low-noise, high-input-impedance voltage amplifier, a FET input device is often selected because of",
+    "options": [
+      "Very low gate input current",
+      "Large base current",
+      "Low input resistance",
+      "Zero transconductance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-104f8b79bad3448c8cb1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "100",
+    "question": "For a power switching application, a MOSFET is often attractive because",
+    "options": [
+      "Its gate is voltage controlled and switching can be fast",
+      "It always has zero conduction loss",
+      "It has no parasitic capacitance",
+      "It requires continuous gate current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]

@@ -1,0 +1,2602 @@
+[
+  {
+    "id": "Q-e2c85169bbe448f6aae2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "For the characteristic equation s⁴ + 2s³ + 11s² + 18s + 18 = 0, the Routh array has a complete row of zeros at s¹. The number of roots lying on the jω axis is",
+    "options": [
+      "2",
+      "",
+      "1",
+      "4"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-89643bf73f8943dfa047",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "The unit step response of the system G(s) = 10/((s+1)(s+5)) settles to a final value of",
+    "options": [
+      "10",
+      "0.5",
+      "5",
+      "2"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0e047c7756d2400eaf08",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "In the s-plane, a phase-lead compensator has",
+    "options": [
+      "its pole nearer to the origin than its zero",
+      "a zero in the right half-plane",
+      "a pole at the origin",
+      "its zero nearer to the origin than its pole"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a0fbaba544a54df6b009",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "For G(s)H(s) = 1/(s(1+s)(1+2s)), the Nyquist plot crosses the negative real axis at -2/3. The gain margin is",
+    "options": [
+      "1.5 (about 3.52 dB)",
+      "2 (about 6.02 dB)",
+      "0.667",
+      "3 (about 9.54 dB)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3f8ac7b3a86e4c2190d2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "A signal flow graph has three loops with gains L1 = -1, L2 = -2 and L3 = -3. Only L1 and L3 are non-touching with each other; all other pairs touch. The graph determinant Δ is",
+    "options": [
+      "-2",
+      "7",
+      "10",
+      "4"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0d4ad831d4544f0a9b36",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "A unity feedback system has G(s) = K/(s(s+1)(s+2)). At the value of K for which the closed-loop system is marginally stable, the frequency of sustained oscillation is",
+    "options": [
+      "√2 rad/s",
+      "2 rad/s",
+      "√3 rad/s",
+      "1 rad/s"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ce68ef54278b4d16b225",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "Which statement about the poles of the transfer function and the eigenvalues of A in a state-space model is correct?",
+    "options": [
+      "The poles always equal the eigenvalues of A",
+      "The poles equal the eigenvalues of A only if the system is both controllable and observable; otherwise they are a subset",
+      "The poles and the eigenvalues of A are unrelated",
+      "The eigenvalues of A are always a subset of the poles"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e58bfb86d5d54b3b8088",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "For an underdamped second-order system with fixed ωn, the damping ratio is increased from 0.2 to 0.8. Which statement is correct?",
+    "options": [
+      "Both peak overshoot and peak time increase",
+      "Peak overshoot increases and peak time decreases",
+      "Peak overshoot decreases and peak time increases",
+      "Both peak overshoot and peak time decrease"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-40862695b5d24f9c9322",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "For which of the following Laplace transforms Y(s) can the final value theorem be applied directly to obtain y(∞)?",
+    "options": [
+      "1/(s(s+1))",
+      "1/(s²+4)",
+      "1/(s(s-1))",
+      "s/(s²+1)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c9397aadc97444648615",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "The frequency response of a standard second-order system with ζ = 0.8 shows",
+    "options": [
+      "a resonant peak at ωn√(1 - 2ζ²)",
+      "a resonant peak exactly at ωn",
+      "no resonant peak, with magnitude falling monotonically",
+      "an unbounded resonant peak"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9b988fc2087e43e6ac9d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "A state-space model has A = -2, B = 1, C = 3 and D = 1. Its transfer function is",
+    "options": [
+      "(s + 1)/(s + 2)",
+      "(3s + 7)/(s + 2)",
+      "(s + 5)/(s + 2)",
+      "3/(s + 2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2e26bd5bff4f4501acc4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "A type-0 plant with a stable unity feedback loop is cascaded with a PI controller (Kp + Ki/s). The steady-state error to a unit step input becomes",
+    "options": [
+      "Kp/Ki",
+      "1/(1 + Kp)",
+      "infinite",
+      "zero"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-423bf29f42d94c4097d4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "The unit impulse response of the system G(s) = 1/(s² + 4) is",
+    "options": [
+      "0.5 cos 2t",
+      "cos 2t",
+      "sin 2t",
+      "0.5 sin 2t"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9bd3cedfddc94977a94d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "A second-order system has closed-loop poles at -3 ± j4. The damping ratio of the system is",
+    "options": [
+      "0.6",
+      "0.5",
+      "0.8",
+      "0.75"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7933185b56184b2ab3e9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "For the same transfer function, the observable canonical form is related to the controllable canonical form by",
+    "options": [
+      "A_OCF = A_CCFᵀ, B_OCF = C_CCFᵀ, C_OCF = B_CCFᵀ",
+      "A_OCF = A_CCF⁻¹, B_OCF = C_CCF, C_OCF = B_CCF",
+      "A_OCF = A_CCF, B_OCF = B_CCF, C_OCF = C_CCF",
+      "A_OCF = -A_CCFᵀ, B_OCF = B_CCF, C_OCF = C_CCF"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e36ac1993ff442b69ce7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "A second-order underdamped system has a peak overshoot of e^(-π) ≈ 4.32% in its step response. The damping ratio is",
+    "options": [
+      "0.707",
+      "0.6",
+      "0.8",
+      "0.5"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7077ff36cfa543139f06",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "For G(s)H(s) = K/(s(s+2)), the point s = -1 + j1 lies on the root locus. The value of K at this point is",
+    "options": [
+      "4",
+      "1",
+      "2",
+      "√2"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-951e0c4892e543a18035",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "The exact magnitude of G(s) = 1/(1 + s/10) at ω = 10 rad/s, in dB, is approximately",
+    "options": [
+      "-3.01 dB",
+      "-6.02 dB",
+      "-20 dB",
+      "0 dB"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3036278a92ce42d1b35e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "Which of the following state matrices represents an asymptotically stable system?",
+    "options": [
+      "[0 1; 4 2]",
+      "[0 1; -4 0]",
+      "[1 0; 0 -1]",
+      "[0 1; -4 -2]"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-446b08387e9f47709487",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "For G(s)H(s) = K/(s(s+2)), the value of K at the breakaway point of the root locus is",
+    "options": [
+      "2",
+      "4",
+      "1",
+      "0.5"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b12e4e27d4f347b9a1b9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "A negative feedback system has forward path gain G = 10 and feedback gain H = 0.1. The closed-loop gain is",
+    "options": [
+      "20",
+      "1",
+      "10",
+      "5"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-64254e77002747398648",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "For G(s)H(s) = K/(s(s+1)(s+2)(s+3)), the angles of the asymptotes of the root locus (K > 0) are",
+    "options": [
+      "±30°, ±150°",
+      "0°, 90°, 180°, 270°",
+      "±45°, ±135°",
+      "±60°, 180°"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-842219b9f35d4381b9bc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "The transfer function (3s + 4)/(s² + 4s + 5) is realised in controllable canonical form with B = [0; 1]. The output matrix C is",
+    "options": [
+      "[1 0]",
+      "[4 3]",
+      "[3 4]",
+      "[5 4]"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bc08b860ca234080994c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "A system has impulse response h(t) = e^(-t) - e^(-2t) for t ≥ 0. Its transfer function is",
+    "options": [
+      "2/((s+1)(s+2))",
+      "1/((s+1)(s+2))",
+      "1/(s(s+1)(s+2))",
+      "s/((s+1)(s+2))"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7e48339b5f9a4d288120",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "Addition of a pole in the left half of the s-plane to the open-loop transfer function of a feedback system generally",
+    "options": [
+      "reduces relative stability and increases rise time",
+      "improves relative stability and reduces rise time",
+      "reduces relative stability and reduces rise time",
+      "improves relative stability and increases rise time"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-416f40f8b9424078b962",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "Which of the following characteristic polynomials can be declared to have roots not strictly in the left half-plane without constructing a Routh array?",
+    "options": [
+      "s³ + 2s² + 3s + 1",
+      "s³ + 2s + 4",
+      "s³ + 3s² + 3s + 1",
+      "s² + 3s + 2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ff49392a12ad484fb535",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "Which of the following open-loop transfer functions has an infinite gain margin?",
+    "options": [
+      "K/(s(s+2))",
+      "K e^(-0.1s)/(s+1)",
+      "K/(s(s+1)(s+2)(s+3))",
+      "K/(s(s+1)(s+2))"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0147a476cabf41e7834d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "A system with A = [0 1; 0 0] and B = [0; 1] uses state feedback u = -Kx. The gain K = [k1 k2] that places the closed-loop poles at -1 and -2 is",
+    "options": [
+      "[3 2]",
+      "[2 3]",
+      "[1 2]",
+      "[2 1]"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e47f56e3be7247d7bd4b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "For G(s) = 10(1 + 0.2s)/(s(1 + 0.01s)), the slope of the asymptotic Bode magnitude plot between ω = 5 rad/s and ω = 100 rad/s is",
+    "options": [
+      "-40 dB/decade",
+      "0 dB/decade",
+      "-20 dB/decade",
+      "+20 dB/decade"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-70096b8c8d234d8a980b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "For G(s)H(s) = K/(s(s+2)(s+4)), the sum of the closed-loop poles for any K > 0 is",
+    "options": [
+      "-2",
+      "",
+      "-6",
+      "dependent on K"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a41a6e9ec9f542a987a7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "A standard second-order system has ζ = 0.5 and ωn = 10 rad/s. The resonant peak Mr and resonant frequency ωr are approximately",
+    "options": [
+      "Mr = 1.155, ωr = 7.07 rad/s",
+      "Mr = 1.155, ωr = 8.66 rad/s",
+      "Mr = 2.0, ωr = 7.07 rad/s",
+      "Mr = 1.0, ωr = 10 rad/s"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7a847007dfaa4b818fce",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "The eigenvalues of the state matrix A = [0 1; -2 -3] are",
+    "options": [
+      "Fri Jan 02 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "-2, 3",
+      "-1, -3",
+      "-1, -2"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-09d1503697d640039f14",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "If the Nyquist plot of G(s)H(s) passes exactly through the point (-1, 0), the closed-loop system is",
+    "options": [
+      "stable with 90° phase margin",
+      "unstable",
+      "marginally stable",
+      "stable with infinite gain margin"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-289a1cc5923d4b7899a0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "A unity feedback system has G(s) = K/(s(s+4)). The value of K that gives a damping ratio ζ = 0.5 is",
+    "options": [
+      "4",
+      "8",
+      "16",
+      "32"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1a22bacb315a482fa4ef",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "A unity feedback system with G(s) = K/(s(s+2)) and K = 6 is subjected to r(t) = 2 + 3t. The steady-state error is",
+    "options": [
+      "3",
+      "0.5",
+      "2",
+      "1"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-23d4ebfa8b0e4f2bb512",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "A system has transfer function G(s) = e^(-0.5s)/s in a unity feedback loop. The phase margin is approximately",
+    "options": [
+      "118.6°",
+      "28.6°",
+      "90°",
+      "61.4°"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-69f9b84a6a4f460ebf22",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "For ẋ = Ax with A = [0 1; -2 -3] and x(0) = [1; -1], the first state x1(t) for t ≥ 0 is",
+    "options": [
+      "e^(-t)",
+      "e^(-t) + e^(-2t)",
+      "2e^(-t) - e^(-2t)",
+      "e^(-2t)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9c5bbb71a2504322b16b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "For A = [0 1; 0 0], the state transition matrix e^(At) is",
+    "options": [
+      "[1 t; 0 1]",
+      "[e^t t; 0 e^t]",
+      "[1 0; t 1]",
+      "[1 t²/2; 0 1]"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-25b60ee882af48b5860f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "For G(s)H(s) = K/(s(s²+2s+2)), the angle of departure of the root locus from the pole at s = -1 + j1 is",
+    "options": [
+      "-45°",
+      "-135°",
+      "135°",
+      "45°"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1724d957e69f4924b21a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "The Laplace transform of a signal is Y(s) = (3s+5)/(s(s+2)). The initial value y(0+) is",
+    "options": [
+      "3",
+      "",
+      "Sat May 02 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "∞"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e58e7d9dd0f64f8da65f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "A unity feedback system has G(s) = K/(s(s+5)). The value of K required for a steady-state error of 0.1 to a unit ramp input is",
+    "options": [
+      "5",
+      "10",
+      "50",
+      "25"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4479c193e6c3407ba051",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "A lead compensator has the transfer function (1 + 4s)/(1 + s). The maximum phase lead it provides is approximately",
+    "options": [
+      "30°",
+      "36.9°",
+      "53.1°",
+      "45°"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-33e12fecca544f529bba",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "A unity feedback system has G(s) = K/(s(s+1)(s+5)). The value of K at marginal stability and the corresponding frequency of oscillation are",
+    "options": [
+      "K = 6, ω = √5 rad/s",
+      "K = 30, ω = √5 rad/s",
+      "K = 30, ω = 5 rad/s",
+      "K = 5, ω = √30 rad/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c52170747ff74ba0bbde",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "Addition of a zero in the left half of the s-plane to the forward path of an underdamped second-order system generally",
+    "options": [
+      "reduces rise time and reduces peak overshoot",
+      "increases rise time and increases peak overshoot",
+      "increases rise time and reduces peak overshoot",
+      "reduces rise time and increases peak overshoot"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-39100a6db2c74720a4f2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "The unit step response of a system is c(t) = 1 - e^(-2t), t ≥ 0. The transfer function of the system is",
+    "options": [
+      "(s+2)/2",
+      "2/(s(s+2))",
+      "2/(s+2)",
+      "1/(s+2)"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0b68070ef9bd4b529fd7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "A unity feedback system has G(s) = 10/(s(s+2)). The steady-state error for the input r(t) = 4t is",
+    "options": [
+      "1.25",
+      "0.8",
+      "2",
+      "0.4"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fac94b9189cb44069c48",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "A unity feedback system has G(s) = 1/(s(s+1)). The phase margin of the system is approximately",
+    "options": [
+      "60°",
+      "45°",
+      "38.2°",
+      "51.8°"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e1113275ea8f4e56be74",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "The polar plot of G(s) = 1/(s²(1 + sT)) approaches the origin (ω → ∞) at an angle of",
+    "options": [
+      "-360°",
+      "-180°",
+      "-90°",
+      "-270°"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-47729626f4564e6488bd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "A second-order system has ζ = 0.5 and ωn = 2 rad/s. Its damped natural frequency is",
+    "options": [
+      "2 rad/s",
+      "√3 rad/s",
+      "1 rad/s",
+      "1.5 rad/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d9aacb1ec35443f688c7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "A 2×2 state matrix A has trace -4 and determinant 3. Its eigenvalues are",
+    "options": [
+      "-2, -2",
+      "Sat Jan 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "-4, 3",
+      "-1, -3"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e76a05a6edaa4dcd973a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "A system has A = [-1 0; 0 -2] and B = [1; 0]. The system is",
+    "options": [
+      "controllable only if C is specified",
+      "not controllable, since the controllability matrix has rank 1",
+      "controllable, since A is diagonal",
+      "controllable, since the controllability matrix has rank 2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d4a4822d23e742f08e6e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "The unit step response of a first-order system is c(t) = 1 - e^(-4t). The 10% to 90% rise time is approximately",
+    "options": [
+      "0.25 s",
+      "0.75 s",
+      "0.55 s",
+      "1.0 s"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-75093b3afde941268e94",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "A passive lag network has a series resistor R1 followed by a shunt branch of R2 in series with C. With R1 = 1 kΩ, R2 = 9 kΩ and C = 1 μF, its transfer function is (1 + aTs)/(1 + Ts) with",
+    "options": [
+      "T = 9 ms, a = 0.1",
+      "T = 10 ms, a = 1.11",
+      "T = 10 ms, a = 0.9",
+      "T = 9 ms, a = 0.9"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2ae6c25dfddd4f2ca5de",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "The final slope of the Bode magnitude plot at high frequency for G(s) = 10(s+2)/(s(s+1)(s+10)(s+20)) is",
+    "options": [
+      "-60 dB/decade",
+      "-20 dB/decade",
+      "-40 dB/decade",
+      "-80 dB/decade"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cd03e3c75b464b05a1cf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "For G(s) = 1/(1 + sT), the magnitude and phase of G(jω) at ω = 1/T are",
+    "options": [
+      "0.5 ∠ -45°",
+      "0.707 ∠ -90°",
+      "0.707 ∠ -45°",
+      "1 ∠ -45°"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cc3e9bb349814a3499d7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "The characteristic equation of a system is s⁴ + s³ + s² + s + 1 = 0. The number of roots in the right half of the s-plane is",
+    "options": [
+      "",
+      "2",
+      "4",
+      "1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5fab885f05844af5ab71",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "A system has A = [0 1; -6 -5], B = [0; 1], C = [1 0] and D = 0. Its transfer function is",
+    "options": [
+      "1/(s² + 5s + 6)",
+      "1/(s² - 5s + 6)",
+      "6/(s² + 5s + 6)",
+      "s/(s² + 5s + 6)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-de16126911ea4c188249",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "A unity feedback system has G(s) = K/(s - 1). Using the Nyquist criterion, the closed-loop system is stable for",
+    "options": [
+      "K > 1",
+      "0 < K < 1",
+      "K < -1",
+      "K > 0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b2b765c6ccfc4b3881fa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "A unity feedback system has G(s) = 5(s+2)/(s²(s+5)). The steady-state error for the input r(t) = t²/2 is",
+    "options": [
+      "∞",
+      "0.5",
+      "0.2",
+      "2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6f072ed4b3364ec2a785",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "For G(s) = (1 - s)/(1 + s), the magnitude and phase at ω = 1 rad/s are",
+    "options": [
+      "|G| = 0.707, phase = -45°",
+      "|G| = 1, phase = +90°",
+      "|G| = 1, phase = -90°",
+      "|G| = 1, phase = 0°"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8fd1c2a59bfd4b198449",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "61",
+    "question": "The transfer function of a first-order system is 4/(1 + 0.5s). The 2% settling time is",
+    "options": [
+      "0.5 s",
+      "2 s",
+      "1.5 s",
+      "2.5 s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b9be1ad983994730868d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "62",
+    "question": "A unity feedback system has G(s) = K/(s+2). The value of K that gives a steady-state error of 0.2 to a unit step input is",
+    "options": [
+      "8",
+      "2",
+      "10",
+      "4"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f17d12b3a2764956a2b8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "63",
+    "question": "The characteristic equation of a system is s⁴ + 2s³ + 3s² + 4s + 5 = 0. The number of roots in the right half of the s-plane is",
+    "options": [
+      "1",
+      "2",
+      "",
+      "3"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b1ef4d28576c4927a102",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "64",
+    "question": "Which of the following is NOT an advantage of using negative feedback in a control system?",
+    "options": [
+      "Reduced sensitivity to parameter variations",
+      "Increased bandwidth",
+      "Improved rejection of disturbances",
+      "Increase in the overall gain of the system"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8d639c10178d43928b77",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "65",
+    "question": "The open-loop transfer function of a unity feedback system is K/(s(s+4)(s²+4s+20)). The centroid of the asymptotes of the root locus is",
+    "options": [
+      "-4",
+      "-8",
+      "-1",
+      "-2"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-606a9eb520d74785acea",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "66",
+    "question": "For a unity-gain-feedback system, the loop gain at a given operating point is G·H = 19 (negative feedback). The sensitivity of the closed-loop transfer function T = G/(1+GH) with respect to G is",
+    "options": [
+      "0.95",
+      "0.5",
+      "0.05",
+      "0.2"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d0761f4ece874bcdbe42",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "67",
+    "question": "For ẋ = -x + u with x(0) = 0 and a unit step input, the state at t = 1 s is approximately",
+    "options": [
+      "0.5",
+      "0.632",
+      "0.368",
+      "1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-67a1b68ded5e47a591e5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "68",
+    "question": "The open-loop transfer function is G(s)H(s) = K(s+2)/(s(s+1)(s+4)). Which portions of the real axis belong to the root locus for K > 0?",
+    "options": [
+      "Between 0 and -1, and between -2 and -4",
+      "Between 0 and -1, and to the left of -4",
+      "Between -1 and -2, and to the left of -4",
+      "Between -2 and -4 only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1b6376f5a1c84b6b8781",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "69",
+    "question": "A system has G(s)H(s) with 5 poles and 2 zeros. The number of asymptotes of the root locus (K > 0) is",
+    "options": [
+      "2",
+      "3",
+      "5",
+      "7"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e66618e9f47e4ad28127",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "70",
+    "question": "For the open-loop transfer function G(s)H(s) = K/(s(s+1)(s+2)), the breakaway point of the root locus is at approximately",
+    "options": [
+      "-1.58",
+      "-2",
+      "-0.42",
+      "-1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c13245f98e6f4c04a1cb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "71",
+    "question": "For a stable unity feedback type-1 system, the steady-state errors for unit step, unit ramp and unit parabolic inputs are respectively",
+    "options": [
+      "∞, 1/Kv, 0",
+      "0, 0, 1/Ka",
+      "1/(1+Kp), ∞, ∞",
+      "0, 1/Kv, ∞"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-dabccdc7ed04402a8583",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "72",
+    "question": "Addition of a pole in the left half of the s-plane to the open-loop transfer function of a system",
+    "options": [
+      "pushes the root locus towards the left, improving relative stability",
+      "pulls the root locus towards the right half-plane, reducing relative stability",
+      "has no effect on the shape of the root locus",
+      "makes the root locus symmetric about the jω axis"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1ef71275d25746358642",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "73",
+    "question": "A unity negative feedback system has G(s) = 1/(s(s+1)). The damping ratio of the closed-loop system is",
+    "options": [
+      "0.707",
+      "1",
+      "0.5",
+      "0.25"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-53c6dadfb86d43b982b8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "74",
+    "question": "A unity feedback system has G(s) = (s + 2)/(s(s + 1)). The closed-loop poles are at",
+    "options": [
+      "-1 and -2",
+      "-1 ± j",
+      "-1 ± j2",
+      "-2 ± j"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b9c2a34505d14dc98dd5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "75",
+    "question": "A system has A = [0 1; -2 -3], B = [0; 1] and C = [1 1]. The system is",
+    "options": [
+      "controllable but not observable",
+      "neither controllable nor observable",
+      "observable but not controllable",
+      "both controllable and observable"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1990d5db06c54aa0afb9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "76",
+    "question": "In a signal flow graph, the only loops are L1 = -2 and L2 = -3, and they are non-touching. A single forward path of gain 4 touches L1 but does not touch L2. The overall transfer function is",
+    "options": [
+      "Fri Apr 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Sat Jan 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "Mon Aug 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "4"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a2c8bd16fbd24d61a814",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "77",
+    "question": "A unity feedback system has G(s) = 2/(s(s+1)(s+2)). The gain margin of the system is approximately",
+    "options": [
+      "3.52 dB",
+      "6.02 dB",
+      "15.6 dB",
+      "9.54 dB"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f70419e070b3416b91ae",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "78",
+    "question": "A series RLC circuit with R = 2 Ω, L = 1 H and C = 0.5 F has its output taken across the capacitor. The damping ratio of the circuit is",
+    "options": [
+      "0.707",
+      "0.5",
+      "1",
+      "1.414"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a54b0867d3b94930a046",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "79",
+    "question": "The characteristic equation of a system is s³ + 6s² + 11s + K = 0. The system is stable for",
+    "options": [
+      "0 < K < 11",
+      "K > 66",
+      "0 < K < 66",
+      "0 < K < 6"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-750444d9d4ad4582863e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "80",
+    "question": "The closed-loop transfer function of a system is 100/(s² + 12s + 100). The peak time of its unit step response is",
+    "options": [
+      "0.524 s",
+      "0.314 s",
+      "0.262 s",
+      "0.393 s"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ee3d8091dfe74b52be88",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "81",
+    "question": "For a negative feedback system with loop gain G·H = 4 at the operating point, the sensitivity of the closed-loop transfer function T with respect to the feedback element H is",
+    "options": [
+      "-0.2",
+      "-4",
+      "0.8",
+      "-0.8"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-03dcbb89b09d4c6c85d4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "82",
+    "question": "The main effects of a lag compensator on a feedback system are",
+    "options": [
+      "increased bandwidth with no change in steady-state error",
+      "reduced steady-state accuracy and a faster response",
+      "increased bandwidth and reduced rise time",
+      "improved steady-state accuracy and reduced bandwidth"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-74dcffb7a85b4d818c77",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "83",
+    "question": "A signal flow graph has two forward paths with gains 5 and 3, and a single loop of gain -2 that touches both forward paths. The overall gain from input to output is",
+    "options": [
+      "Fri Apr 03 2026 00:00:00 GMT+0530 (India Standard Time)",
+      "8",
+      "-8",
+      "Mon Aug 03 2026 00:00:00 GMT+0530 (India Standard Time)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-266e8b9462fd40fcb89a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "84",
+    "question": "A unity feedback system has G(s) = K/(s²(s+3)) with K > 0. The steady-state error for a unit ramp input is",
+    "options": [
+      "1/K",
+      "",
+      "3/K",
+      "∞"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-20edbf74bcc74518988d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "85",
+    "question": "A slope of -60 dB/decade on a Bode magnitude plot is approximately equal to",
+    "options": [
+      "-20 dB/octave",
+      "-6 dB/octave",
+      "-12 dB/octave",
+      "-18 dB/octave"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5419d0be688a4634bfb1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "86",
+    "question": "A lead compensator has the transfer function (s + 1)/(s + 9). The frequency at which the maximum phase lead occurs is",
+    "options": [
+      "4.5 rad/s",
+      "3 rad/s",
+      "5 rad/s",
+      "√10 rad/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-92011e87f90a4086b13d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "87",
+    "question": "The 3 dB bandwidth of a system with transfer function 1/(1 + 0.1s) is",
+    "options": [
+      "0.1 rad/s",
+      "10 rad/s",
+      "100 rad/s",
+      "1 rad/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1c12f2c0918241daacf0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "88",
+    "question": "The polar plot of a pure time delay e^(-jωT) is",
+    "options": [
+      "a unit circle traced repeatedly in the counterclockwise direction",
+      "a semicircle in the lower half-plane",
+      "a straight line along the real axis",
+      "a unit circle traced repeatedly in the clockwise direction"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-37a3019b9ce9457bb9a2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "89",
+    "question": "For G(s) = 1/(s(1+s)), the polar plot as ω → 0+ approaches a vertical asymptote located at Re[G(jω)] equal to",
+    "options": [
+      "-2",
+      "",
+      "-1",
+      "-0.5"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a313283acb0d4e15bc11",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "90",
+    "question": "The Bode magnitude plot of a minimum-phase system has an initial slope of -20 dB/decade, and the extension of this initial line cuts the 0 dB axis at ω = 4 rad/s. The velocity error constant Kv is",
+    "options": [
+      "16",
+      "0.25",
+      "4",
+      "2"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81e24d1a7cf34539aa5f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "91",
+    "question": "For G(s)H(s) = K/(s(s+1)), the large semicircular arc of the Nyquist contour (|s| → ∞) maps in the GH-plane to",
+    "options": [
+      "an infinite circle",
+      "the unit circle",
+      "a point at the origin",
+      "a circle of radius K"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5f489e48dbb147909488",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "92",
+    "question": "Which statement about a PD controller is correct?",
+    "options": [
+      "It reduces the bandwidth and makes the system slower",
+      "It increases the system type by one and reduces the steady-state error",
+      "It adds a zero, increases bandwidth and improves damping, but amplifies high-frequency noise",
+      "It reduces damping and increases the peak overshoot"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fc48b1d3464b484aa41e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "93",
+    "question": "A lag compensator has the transfer function (1 + s)/(1 + 9s). The magnitude of its maximum phase lag is approximately",
+    "options": [
+      "53.1°",
+      "36.9°",
+      "30°",
+      "41.8°"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a1e094aca42e4e6fa562",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "94",
+    "question": "A unity feedback system has G(s) = 20/((s+1)(s+4)). The steady-state error for the input r(t) = 2u(t) is",
+    "options": [
+      "2",
+      "0.4",
+      "0.2",
+      "Sat Jan 03 2026 00:00:00 GMT+0530 (India Standard Time)"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3ab1a4cc9af34895b268",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "95",
+    "question": "The closed-loop transfer function of a system is 25/(s² + 6s + 25). The percentage peak overshoot of its unit step response is approximately",
+    "options": [
+      "0.254",
+      "0.043",
+      "0.163",
+      "0.095"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6e2f79d772dd48359083",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "96",
+    "question": "A phase-lag compensator behaves as a",
+    "options": [
+      "low-pass filter",
+      "notch filter",
+      "band-pass filter",
+      "high-pass filter"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-671b14e2db9b4cea925e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "97",
+    "question": "The open-loop system has no right half-plane poles, and its Nyquist plot encircles (-1, 0) twice in the clockwise direction. The number of closed-loop poles in the right half-plane is",
+    "options": [
+      "",
+      "2",
+      "1",
+      "4"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c0e223e9786e48d4bf75",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "98",
+    "question": "The open-loop transfer function of a unity feedback system has one pole in the right half-plane and no other unstable poles. By the Nyquist criterion, the closed-loop system is stable if the Nyquist plot encircles the point (-1, 0)",
+    "options": [
+      "once in the clockwise direction",
+      "never",
+      "once in the counterclockwise direction",
+      "twice in the counterclockwise direction"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a479fa91ad8847c1854d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "99",
+    "question": "A unity feedback system has G(s) = K/((s+1)(s+2)(s+3)). The closed-loop system is stable for",
+    "options": [
+      "K > -6 only",
+      "-6 < K < 60",
+      "0 < K < 60",
+      "-6 < K < 66"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ecb4682a08ab41119033",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "100",
+    "question": "A second-order system has its closed-loop poles at -2 ± j4. The 2% settling time is",
+    "options": [
+      "4 s",
+      "2 s",
+      "1 s",
+      "1.5 s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "GATE",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]

@@ -1,0 +1,5202 @@
+[
+  {
+    "id": "Q-b1f2392efcda4f2da172",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "The SI unit of resistance is",
+    "options": [
+      "ohm",
+      "henry",
+      "farad",
+      "siemens"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ba15f8cf82c7425eb30c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "The SI unit of inductance is",
+    "options": [
+      "ohm",
+      "henry",
+      "farad",
+      "weber"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a18a42468d514423acac",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "The SI unit of capacitance is",
+    "options": [
+      "farad",
+      "henry",
+      "siemens",
+      "coulomb"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7ec797bb63f74c47a698",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "The SI unit of conductance is",
+    "options": [
+      "siemens",
+      "ohm",
+      "henry",
+      "farad"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-412c7e191ae0480ebdfc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "The SI unit of impedance is",
+    "options": [
+      "ohm",
+      "siemens",
+      "henry",
+      "farad"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e923b0c044d040aea734",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "For a resistor, voltage and current are related by",
+    "options": [
+      "v=Ri",
+      "i=Rv",
+      "v=R/i",
+      "vi=R"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-caf7e640599e447da10e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "The power absorbed by a resistor carrying current I is",
+    "options": [
+      "IR",
+      "I/R",
+      "I²R",
+      "R/I²"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99581a6d51ba4cc4a11d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "A 10 ohm resistor carries 2 A. Its power dissipation is",
+    "options": [
+      "5 W",
+      "20 W",
+      "40 W",
+      "100 W"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e798fd3164484f87b6bd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "Two resistors 4 ohm and 6 ohm in series have equivalent resistance",
+    "options": [
+      "2.4 ohm",
+      "10 ohm",
+      "24 ohm",
+      "1.0 ohm"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fee922593adb4b46aeed",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "Two resistors 4 ohm and 6 ohm in parallel have equivalent resistance",
+    "options": [
+      "2.4 ohm",
+      "5 ohm",
+      "10 ohm",
+      "24 ohm"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-20157f7146da4fb89852",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "Kirchhoff's current law is based on conservation of",
+    "options": [
+      "energy",
+      "charge",
+      "momentum",
+      "power"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6fb0b9d351b54e12b38c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "Kirchhoff's voltage law is based on conservation of",
+    "options": [
+      "charge",
+      "energy",
+      "mass",
+      "current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-88cfa68c1a6244f4bab8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "At any node, algebraic sum of currents is",
+    "options": [
+      "one",
+      "zero",
+      "infinite",
+      "equal to voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3eeb1aea35c24399943b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "Around a closed loop, algebraic sum of voltages is",
+    "options": [
+      "zero",
+      "one",
+      "infinite",
+      "equal to current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4b0c16420284491e8b94",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "A short circuit ideally has resistance",
+    "options": [
+      "infinite",
+      "zero",
+      "one ohm",
+      "negative"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4ee0f9859d43419aa2d4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "An ideal open circuit has current",
+    "options": [
+      "infinite",
+      "zero",
+      "one ampere",
+      "equal to voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f13821270a31403288dd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "An ideal voltage source has internal resistance",
+    "options": [
+      "zero",
+      "infinite",
+      "one ohm",
+      "equal to load resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-369a3529dfc643c79803",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "An ideal current source has internal resistance",
+    "options": [
+      "zero",
+      "infinite",
+      "one ohm",
+      "equal to load resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8472a5c1e0cc41aa8ea7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "The conductance of a 5 ohm resistor is",
+    "options": [
+      "0.2 S",
+      "5 S",
+      "25 S",
+      "0.04 S"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-189b99d930794e94b9d1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "A 12 V source across 6 ohm resistance produces current",
+    "options": [
+      "0.5 A",
+      "2 A",
+      "6 A",
+      "72 A"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-088b327ac0b84758bfa5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "A passive element",
+    "options": [
+      "generates net energy",
+      "cannot deliver net energy without stored energy or source action",
+      "always has negative resistance",
+      "must be nonlinear"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-19fcb0a805f94e46ac98",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "An element is linear if its voltage-current relation satisfies",
+    "options": [
+      "only power conservation",
+      "superposition and homogeneity",
+      "only KCL",
+      "only KVL"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-76f985798dcf409a8e4e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "A bilateral element has behavior that",
+    "options": [
+      "depends on current direction",
+      "is the same for either direction of excitation",
+      "requires a transistor",
+      "requires an independent source"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a310f9f612e84b918c67",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "A time-invariant resistor has resistance that",
+    "options": [
+      "changes with time",
+      "is constant with time for a given operating condition",
+      "is always zero",
+      "is always infinite"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4be77d6b30f54be9a368",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "The current through an ideal capacitor under DC steady state is",
+    "options": [
+      "zero",
+      "infinite",
+      "V/C",
+      "C/V"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cf6e47735bbd4ca2a020",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "The voltage across an ideal inductor cannot change",
+    "options": [
+      "continuously",
+      "instantaneously",
+      "periodically",
+      "at all"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5c6b994c43424100869c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "The current through an ideal capacitor can change",
+    "options": [
+      "instantaneously",
+      "only after one hour",
+      "never",
+      "only at DC"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e7c85ecd0ba24e2b813f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "The voltage-current relation of a capacitor is",
+    "options": [
+      "i=C dv/dt",
+      "v=C di/dt",
+      "i=L di/dt",
+      "v=Ri"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4d91f22ae8cc47e09cb5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "The voltage-current relation of an inductor is",
+    "options": [
+      "v=L di/dt",
+      "i=L dv/dt",
+      "v=C dv/dt",
+      "i=V/R"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bd6f2c5379cf4670be33",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "Energy stored in a capacitor is",
+    "options": [
+      "CV²",
+      "1/2 CV²",
+      "1/2 LI²",
+      "V²/C"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a3c46f433d1f4705a78e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "Energy stored in an inductor is",
+    "options": [
+      "LI",
+      "1/2 LI²",
+      "1/2 CV²",
+      "I²/L"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b11e09df614f46bcad87",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "A 10 µF capacitor charged to 20 V stores energy",
+    "options": [
+      "0.0002 J",
+      "0.002 J",
+      "0.02 J",
+      "2 J"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bced57b5132a47549c6e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "A 2 H inductor carrying 3 A stores energy",
+    "options": [
+      "3 J",
+      "6 J",
+      "9 J",
+      "18 J"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1de5d7a185e44ed38b85",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "A dependent source is controlled by",
+    "options": [
+      "only time",
+      "another voltage or current in the circuit",
+      "temperature only",
+      "mechanical force only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5d583bb9eab140468443",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "A voltage-controlled voltage source is abbreviated",
+    "options": [
+      "VCVS",
+      "VCCS",
+      "CCVS",
+      "CCCS"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f0ea7bb334bf4afe9ac2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "A current-controlled current source is abbreviated",
+    "options": [
+      "VCVS",
+      "VCCS",
+      "CCVS",
+      "CCCS"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2ee5b7ff7cb048628eb5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "Source transformation between a voltage source and series resistance gives an equivalent",
+    "options": [
+      "current source with parallel resistance",
+      "current source with series resistance only",
+      "voltage source with parallel resistance",
+      "ideal open circuit"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d7bd3af901d84647a377",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "A 12 V source in series with 3 ohm is equivalent to a Norton source of",
+    "options": [
+      "4 A in parallel with 3 ohm",
+      "36 A in parallel with 3 ohm",
+      "4 A in series with 3 ohm",
+      "9 A in parallel with 12 ohm"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b33e38eec29a4c8b81f1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "Nodal analysis primarily uses",
+    "options": [
+      "KVL equations",
+      "KCL equations",
+      "only power equations",
+      "only mesh equations"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b29347eacb684a759adf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "Mesh analysis primarily uses",
+    "options": [
+      "KCL",
+      "KVL",
+      "Ohm's law only",
+      "maximum power theorem"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8f864ded843c4510a82e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "Mesh analysis is directly applicable to",
+    "options": [
+      "planar circuits",
+      "only nonplanar circuits",
+      "only magnetic circuits",
+      "only one-node circuits"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3b980f54d1a945489f91",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "A supernode occurs in nodal analysis when a voltage source is connected",
+    "options": [
+      "between a node and ground only",
+      "between two non-reference nodes",
+      "in series with a resistor to ground only",
+      "across a single resistor"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c6adc34614ba422ea3c5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "A supermesh occurs when a current source is present",
+    "options": [
+      "inside a mesh boundary common to two meshes",
+      "only in a branch outside all meshes",
+      "at ground",
+      "in parallel with an open circuit"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f23b8423d2a8420f8ee9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "The number of independent KCL equations for n non-reference nodes is generally",
+    "options": [
+      "n-1",
+      "n",
+      "n+1",
+      "2n"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-33ae6118246b4da3bf96",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "For a connected circuit graph with n nodes, a tree contains",
+    "options": [
+      "n branches",
+      "n-1 branches",
+      "n+1 branches",
+      "2n branches"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2f3ffd7033a245858f31",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "A link in a graph is a branch",
+    "options": [
+      "belonging to every tree",
+      "not included in the selected tree",
+      "always connected to ground",
+      "with zero impedance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c1cf3cb28c5b4f9eb067",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "For a connected graph, the number of fundamental loops is",
+    "options": [
+      "b+n-1",
+      "b-n+1",
+      "n-b+1",
+      "bn"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8f820d5c3b5643c58221",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "The dual of a series connection is",
+    "options": [
+      "series",
+      "parallel",
+      "open circuit",
+      "short circuit only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d6d395b0dd7f4752a405",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "Thevenin equivalent consists of",
+    "options": [
+      "current source in parallel with resistance",
+      "voltage source in series with resistance",
+      "voltage source in parallel with resistance",
+      "resistor only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d36bedf6df944ea9a16d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "Norton equivalent consists of",
+    "options": [
+      "voltage source in series with resistance",
+      "current source in parallel with resistance",
+      "two voltage sources",
+      "resistor only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-31c77bae832b4df59a27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "The Thevenin resistance is obtained by deactivating independent sources and finding",
+    "options": [
+      "open-circuit voltage",
+      "equivalent resistance seen from terminals",
+      "short-circuit current",
+      "load power"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-247120ec6d6b467e957f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "To find Thevenin voltage at a pair of terminals, the load is",
+    "options": [
+      "shorted",
+      "removed",
+      "replaced by a current source",
+      "made zero resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fedc09cb1cd24e34ae60",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "Norton current is the",
+    "options": [
+      "open-circuit current",
+      "short-circuit current at output terminals",
+      "load current at maximum power",
+      "source current only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1bf9c4c783994f58aeb6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "For a linear two-terminal network, the relation between Thevenin and Norton quantities is",
+    "options": [
+      "Vth=IN Rth",
+      "IN=Vth/Rth",
+      "both A and B",
+      "Vth=IN/Rth"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-62e196bf98dd43ed9dcc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "Maximum power transfer in a DC resistive network occurs when load resistance equals",
+    "options": [
+      "zero",
+      "source resistance/Thevenin resistance",
+      "twice source resistance",
+      "infinite"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f5644f4c6ae74a97bc8e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "At maximum power transfer in a resistive circuit, efficiency is",
+    "options": [
+      "0.25",
+      "0.5",
+      "0.75",
+      "1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1b80f0f178b34c20bc39",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "The superposition theorem applies to",
+    "options": [
+      "linear circuits",
+      "only nonlinear circuits",
+      "only power quantities",
+      "only circuits with one source"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-45aace47b8304da78b80",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "In superposition, an ideal independent voltage source is deactivated by",
+    "options": [
+      "open circuit",
+      "short circuit",
+      "resistor",
+      "current source"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5c059d6ae6e44acfaacf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "In superposition, an ideal independent current source is deactivated by",
+    "options": [
+      "short circuit",
+      "open circuit",
+      "voltage source",
+      "resistor of zero value"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6d12b861ebba4b60b914",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "The reciprocity theorem applies to",
+    "options": [
+      "linear bilateral networks under suitable single-source conditions",
+      "all nonlinear circuits",
+      "only unilateral devices",
+      "only transient circuits"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e3bb8fbd654344c1bbbe",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "61",
+    "question": "The impedance of an inductor at angular frequency omega is",
+    "options": [
+      "jωL",
+      "1/(jωL)",
+      "j/(ωL)",
+      "ωL"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-29de774c5ffe49af9cf5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "62",
+    "question": "The impedance of a capacitor is",
+    "options": [
+      "jωC",
+      "1/(jωC)",
+      "j/(ωC)",
+      "ωC"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bd1c1e2c69634eb3a481",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "63",
+    "question": "At DC steady state, an ideal inductor behaves as",
+    "options": [
+      "open circuit",
+      "short circuit",
+      "capacitor",
+      "current source"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bcd5ef4f376d4e8497ff",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "64",
+    "question": "At DC steady state, an ideal capacitor behaves as",
+    "options": [
+      "short circuit",
+      "open circuit",
+      "inductor",
+      "voltage source"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-48fbfb6b3c064692ae8d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "65",
+    "question": "The impedance of a 10 mH inductor at 100 rad/s is",
+    "options": [
+      "0.1j ohm",
+      "1j ohm",
+      "10j ohm",
+      "100j ohm"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3fabee5f17f64370b6df",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "66",
+    "question": "The magnitude of impedance of a 100 µF capacitor at 100 rad/s is",
+    "options": [
+      "10 ohm",
+      "100 ohm",
+      "1 ohm",
+      "0.1 ohm"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3c06588b00f14200a9a9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "67",
+    "question": "In a pure resistor, voltage and current are",
+    "options": [
+      "90° apart",
+      "in phase",
+      "180° apart",
+      "unrelated"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-83705f16999a4979b5c8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "68",
+    "question": "In a pure inductor, current",
+    "options": [
+      "leads voltage by 90°",
+      "lags voltage by 90°",
+      "is in phase",
+      "lags by 180°"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9836a4084fcb48dab46c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "69",
+    "question": "In a pure capacitor, current",
+    "options": [
+      "lags voltage by 90°",
+      "leads voltage by 90°",
+      "is in phase",
+      "lags by 180°"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-91e23792de48432a9533",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "70",
+    "question": "Power factor of a pure resistor is",
+    "options": [
+      "",
+      "0.5",
+      "1",
+      "-1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0e962a2a1a60481f8b2f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "71",
+    "question": "Power factor of a pure inductor is",
+    "options": [
+      "",
+      "0.5",
+      "1",
+      "-1"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3a8149aebaf344e18b55",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "72",
+    "question": "Real power in an AC circuit is",
+    "options": [
+      "VI",
+      "VI sin phi",
+      "VI cos phi",
+      "V/I"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b36d95f150b24d0d9d9e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "73",
+    "question": "Reactive power is",
+    "options": [
+      "VI cos phi",
+      "VI sin phi",
+      "V²I",
+      "I²/V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-11853abfc85d479f8449",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "74",
+    "question": "Apparent power is",
+    "options": [
+      "P+Q",
+      "VI",
+      "P/Q",
+      "V/I"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3e85c94008c4434baaa6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "75",
+    "question": "The unit of reactive power is",
+    "options": [
+      "watt",
+      "var",
+      "VA only",
+      "ohm"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ef3e198608bb42bba2ff",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "76",
+    "question": "The unit of apparent power is",
+    "options": [
+      "VA",
+      "var",
+      "W/ohm",
+      "henry"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61d7b718b4c24a43af4d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "77",
+    "question": "For a lagging power factor, the load is predominantly",
+    "options": [
+      "capacitive",
+      "inductive",
+      "resistive only",
+      "open circuit"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6c43c855db2e44bb9e6c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "78",
+    "question": "A capacitor is commonly used for power-factor correction of an inductive load because it",
+    "options": [
+      "adds leading reactive power",
+      "adds lagging reactive power",
+      "increases resistance",
+      "removes real power"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f0e0b90368bd4f68b55d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "79",
+    "question": "For a balanced three-phase load, total real power is",
+    "options": [
+      "VL IL",
+      "√3 VL IL cosφ",
+      "3VL/IL",
+      "VL IL sinφ"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-49c8ee7656f44088a5ce",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "80",
+    "question": "In a star-connected balanced load, line voltage is",
+    "options": [
+      "equal to phase voltage",
+      "√3 times phase voltage",
+      "three times phase voltage",
+      "phase voltage/√3"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-16971c0cb9494922bf7e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "81",
+    "question": "In a delta-connected balanced load, line current is",
+    "options": [
+      "equal to phase current",
+      "√3 times phase current",
+      "three times phase current",
+      "phase current/√3"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-84617df5d8fc4d128eb9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "82",
+    "question": "RMS value of a sinusoid with peak Vm is",
+    "options": [
+      "Vm",
+      "Vm/2",
+      "Vm/√2",
+      "√2Vm"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-007b1d5c3aed405fbfdd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "83",
+    "question": "The average value of a symmetrical sine wave over one complete cycle is",
+    "options": [
+      "Vm",
+      "Vm/2",
+      "zero",
+      "Vm/√2"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bade40be9e60458eaf1c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "84",
+    "question": "A 10 V peak sinusoidal voltage has RMS value",
+    "options": [
+      "5 V",
+      "7.07 V",
+      "10 V",
+      "14.14 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-19b83055479f49018072",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "85",
+    "question": "A 100 V RMS sinusoidal source has peak value",
+    "options": [
+      "50 V",
+      "70.7 V",
+      "100 V",
+      "141.4 V"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a282bbd13349489cbc09",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "86",
+    "question": "The angular frequency corresponding to 50 Hz is",
+    "options": [
+      "50 rad/s",
+      "100π rad/s",
+      "25π rad/s",
+      "2π/50 rad/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ea718c8c1fbf40358f3e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "87",
+    "question": "A sinusoid at 100 Hz has period",
+    "options": [
+      "0.1 s",
+      "0.01 s",
+      "0.001 s",
+      "10 s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a750f27c2477439abf18",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "88",
+    "question": "For impedance Z=3+j4 ohm, magnitude is",
+    "options": [
+      "3 ohm",
+      "4 ohm",
+      "5 ohm",
+      "7 ohm"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f82d8b4ee9a547759aa0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "89",
+    "question": "For impedance Z=3+j4 ohm, phase angle is approximately",
+    "options": [
+      "36.9°",
+      "53.1°",
+      "90°",
+      "-53.1°"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2af36a4101f249c08982",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "90",
+    "question": "A load with impedance 6-j8 ohm has",
+    "options": [
+      "lagging power factor",
+      "leading power factor",
+      "unity power factor",
+      "zero resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-19bcde09ff4e46199550",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "91",
+    "question": "For a series RLC circuit at resonance, impedance is",
+    "options": [
+      "maximum",
+      "minimum and equal to R",
+      "purely capacitive",
+      "purely inductive"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3b31ee33a3564714b924",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "92",
+    "question": "Series resonance occurs when",
+    "options": [
+      "ωL=1/(ωC)",
+      "R=ωL",
+      "R=1/(ωC)",
+      "ω=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-16ee4964ad3642b6b50e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "93",
+    "question": "Resonant angular frequency of an ideal series RLC circuit is",
+    "options": [
+      "LC",
+      "1/LC",
+      "1/√LC",
+      "√LC"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-060bad9d251540228795",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "94",
+    "question": "A series RLC with L=1 mH and C=1 µF has resonant angular frequency approximately",
+    "options": [
+      "100 rad/s",
+      "1000 rad/s",
+      "31623 rad/s",
+      "1e6 rad/s"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b955499cdb20472587e8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "95",
+    "question": "At series resonance, current is",
+    "options": [
+      "minimum",
+      "maximum",
+      "zero",
+      "independent of source voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-442f79b1887a42499c61",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "96",
+    "question": "At parallel resonance, input impedance ideally becomes",
+    "options": [
+      "minimum",
+      "maximum",
+      "zero",
+      "equal to capacitor impedance only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c14552f4be6e43729f6b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "97",
+    "question": "The quality factor of a series RLC circuit is",
+    "options": [
+      "R/(ω0L)",
+      "ω0L/R",
+      "1/(ω0CR)",
+      "both B and C"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a2e93430094141e88e07",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "98",
+    "question": "Bandwidth of a series RLC circuit in rad/s is",
+    "options": [
+      "R/L",
+      "L/R",
+      "1/RC",
+      "RC"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-afeed6619a8a4e08bbbb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "99",
+    "question": "For a high-Q resonant circuit, bandwidth is",
+    "options": [
+      "large",
+      "small",
+      "always zero",
+      "independent of Q"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d9cbe829ba4e438a9e19",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "100",
+    "question": "The time constant of an RC circuit is",
+    "options": [
+      "R/C",
+      "RC",
+      "1/RC",
+      "C/R"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5ce61d081481438f8138",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "101",
+    "question": "The time constant of an RL circuit is",
+    "options": [
+      "R/L",
+      "L/R",
+      "LR",
+      "1/LR"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99891d3e37574e8f8b46",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "102",
+    "question": "For an RC charging circuit, capacitor voltage at t=τ is approximately",
+    "options": [
+      "36.8% final",
+      "50% final",
+      "63.2% final",
+      "86.5% final"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1c6852987ae84a7f9533",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "103",
+    "question": "For an RC discharging circuit, voltage at t=τ is approximately",
+    "options": [
+      "63.2% initial",
+      "36.8% initial",
+      "50% initial",
+      "86.5% initial"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0c797459748a4d4aa5cd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "104",
+    "question": "After about 5 time constants, a first-order transient is approximately",
+    "options": [
+      "10% complete",
+      "50% complete",
+      "99.3% complete",
+      "36.8% complete"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3d9be9ad48e24090aa16",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "105",
+    "question": "The natural response of a first-order circuit is determined by",
+    "options": [
+      "source amplitude only",
+      "circuit poles/time constant",
+      "load label only",
+      "frequency of source only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-af5154d4a03348aa8624",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "106",
+    "question": "A capacitor voltage is continuous because an instantaneous change would require",
+    "options": [
+      "finite current",
+      "infinite current ideally",
+      "zero current",
+      "zero voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-25561a36d7d1429da2f9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "107",
+    "question": "An inductor current is continuous because an instantaneous change would require",
+    "options": [
+      "infinite voltage ideally",
+      "zero voltage",
+      "finite power only",
+      "zero current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0f3e654f56e94633988b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "108",
+    "question": "A first-order RC circuit has one independent energy storage element and therefore",
+    "options": [
+      "one independent state variable",
+      "two state variables",
+      "no state variable",
+      "three state variables"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c27354e4a9f84fd6922d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "109",
+    "question": "A source-free RC circuit capacitor voltage decays as",
+    "options": [
+      "e^(+t/RC)",
+      "e^(-t/RC)",
+      "sin(t/RC)",
+      "constant always"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-57a1aba3090a49409854",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "110",
+    "question": "A source-free RL circuit current decays as",
+    "options": [
+      "e^(-Rt/L)",
+      "e^(+Rt/L)",
+      "sin(Rt/L)",
+      "constant"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fa60d9ce7ea94025be98",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "111",
+    "question": "The natural frequency of an ideal LC circuit is",
+    "options": [
+      "1/√LC",
+      "√LC",
+      "1/LC",
+      "L/C"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f30e4437aad140e3989c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "112",
+    "question": "An ideal LC circuit without resistance has a response that is",
+    "options": [
+      "purely exponentially decaying",
+      "undamped oscillatory",
+      "always constant",
+      "aperiodic only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d48d5c8da53c405bb5d3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "113",
+    "question": "Damping in an RLC circuit is introduced by",
+    "options": [
+      "resistance",
+      "capacitance only",
+      "inductance only",
+      "an ideal voltage source only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4e5d937097d84d9e93e6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "114",
+    "question": "For a series RLC circuit, critical damping occurs when",
+    "options": [
+      "R=2√(L/C)",
+      "R=√(L/C)/2",
+      "R=√(LC)",
+      "R=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ae6bcaedca8d43aa9080",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "115",
+    "question": "An overdamped second-order response has",
+    "options": [
+      "two distinct real poles",
+      "complex conjugate poles",
+      "one repeated imaginary pole",
+      "no poles"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-24ee1ecedd6e49ac8794",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "116",
+    "question": "A critically damped response has",
+    "options": [
+      "two distinct real poles",
+      "a repeated real pole",
+      "two imaginary poles",
+      "one positive pole only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61b9c9147906488b90e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "117",
+    "question": "An underdamped response has",
+    "options": [
+      "two distinct real poles",
+      "complex conjugate poles with negative real part",
+      "only positive poles",
+      "no poles"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-21bf479c0d2e4a1a9f57",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "118",
+    "question": "The characteristic equation of a series RLC natural response is",
+    "options": [
+      "s²+Rs+1/LC=0",
+      "s²+Ls+RC=0",
+      "s+RLC=0",
+      "s²+1/RLC=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2b505c55b257493eb256",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "119",
+    "question": "For a stable continuous-time circuit, poles generally lie in the",
+    "options": [
+      "right half-plane",
+      "left half-plane",
+      "imaginary axis only",
+      "origin only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-10f6317f81c249c4ad8c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "120",
+    "question": "A pole at the origin corresponds to a factor",
+    "options": [
+      "s",
+      "1/s",
+      "s+1",
+      "1/(s+1)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4d2cf562c8c243109ec2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "121",
+    "question": "The Laplace transform of a derivative, assuming zero initial conditions, is",
+    "options": [
+      "sF(s)",
+      "F(s)/s",
+      "F(s)+s",
+      "1/F(s)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9b6eafc61bfd4f4ba7c4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "122",
+    "question": "The Laplace transform of a unit step is",
+    "options": [
+      "1",
+      "s",
+      "1/s",
+      "s²"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1ad963a36e194c25a3f2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "123",
+    "question": "The Laplace transform of a unit impulse is",
+    "options": [
+      "1",
+      "1/s",
+      "s",
+      ""
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a4c7f74ea60541aea64f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "124",
+    "question": "For zero initial conditions, capacitor impedance in the s-domain is",
+    "options": [
+      "sC",
+      "1/(sC)",
+      "s/C",
+      "C/s"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fa3cae65056744e5984f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "125",
+    "question": "For zero initial conditions, inductor impedance in the s-domain is",
+    "options": [
+      "1/(sL)",
+      "sL",
+      "L/s",
+      "s/L"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3a3083c6b47d4b14bf82",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "126",
+    "question": "The transfer function is defined as output-to-input ratio under",
+    "options": [
+      "zero initial conditions",
+      "maximum power conditions only",
+      "steady state only",
+      "short-circuit conditions"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-62980a1b38a446f298af",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "127",
+    "question": "Poles of a transfer function are roots of its",
+    "options": [
+      "numerator",
+      "denominator",
+      "gain constant only",
+      "input waveform"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5c69e70869454c3e820d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "128",
+    "question": "Zeros of a transfer function are roots of its",
+    "options": [
+      "numerator",
+      "denominator",
+      "time constant only",
+      "load resistance only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81884e6efb584f2f83b1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "129",
+    "question": "A stable causal rational network has poles in the",
+    "options": [
+      "right half-plane",
+      "left half-plane",
+      "upper half-plane only",
+      "positive real axis"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a6c1047306b4432aa463",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "130",
+    "question": "A first-order low-pass RC filter passes",
+    "options": [
+      "low frequencies and attenuates high frequencies",
+      "only high frequencies",
+      "only DC with no transition",
+      "no frequencies"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4d4ff5a870a544a3a8d9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "131",
+    "question": "A first-order high-pass RC filter passes",
+    "options": [
+      "low frequencies",
+      "high frequencies and attenuates low frequencies",
+      "only DC",
+      "only zero frequency"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2e6e23efc891491fbdaf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "132",
+    "question": "The cutoff frequency of a first-order RC network is",
+    "options": [
+      "1/(2πRC)",
+      "2πRC",
+      "R/C",
+      "C/R"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-98760f6843534b688f50",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "133",
+    "question": "For R=1 kΩ and C=1 µF, cutoff frequency is approximately",
+    "options": [
+      "15.9 Hz",
+      "159 Hz",
+      "1590 Hz",
+      "15900 Hz"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-19ad23b33c7c4d81aa83",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "134",
+    "question": "The magnitude of a first-order low-pass transfer function at cutoff is",
+    "options": [
+      "1",
+      "0.707",
+      "0.5",
+      "2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-24bf01c880cd4e37b854",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "135",
+    "question": "A first-order low-pass filter has asymptotic magnitude slope of",
+    "options": [
+      "20 dB/decade rise",
+      "20 dB/decade fall",
+      "40 dB/decade rise",
+      "0 dB/decade"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ef406dd2f8a34c439cb0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "136",
+    "question": "A first-order high-pass filter has asymptotic slope below cutoff of",
+    "options": [
+      "-20 dB/decade",
+      "+20 dB/decade",
+      "0 dB/decade",
+      "-40 dB/decade"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81a17469b3a84d488fae",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "137",
+    "question": "A band-pass network ideally passes",
+    "options": [
+      "a range of frequencies around a center frequency",
+      "only DC",
+      "all frequencies equally",
+      "only infinite frequency"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5149baec4786408887e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "138",
+    "question": "Bandwidth of a band-pass filter is",
+    "options": [
+      "f1+f2",
+      "f2-f1",
+      "f1f2",
+      "f2/f1"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2d2c3e692c834fbb8ca5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "139",
+    "question": "The center frequency of an ideal narrowband band-pass section is commonly",
+    "options": [
+      "arithmetic mean only",
+      "geometric mean √(f1f2)",
+      "difference f2-f1",
+      "sum f1+f2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-181ccd0622d54962966e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "140",
+    "question": "A notch filter is designed to",
+    "options": [
+      "reject a narrow range of frequencies",
+      "pass only DC",
+      "reject all frequencies",
+      "amplify only noise"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c72d0cfe1dcb4707bddc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "141",
+    "question": "The Bode magnitude plot uses a logarithmic scale for",
+    "options": [
+      "frequency",
+      "resistance only",
+      "voltage only",
+      "time only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f6d4ebdcdc674af69449",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "142",
+    "question": "A decade in frequency represents a factor of",
+    "options": [
+      "2",
+      "5",
+      "10",
+      "100"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-868e65d853624917a0b1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "143",
+    "question": "An octave in frequency represents a factor of",
+    "options": [
+      "2",
+      "10",
+      "100",
+      "π"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1bcc437a88bf446f845e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "144",
+    "question": "A slope of -40 dB/decade indicates approximately",
+    "options": [
+      "one pole",
+      "two poles",
+      "one zero",
+      "no poles"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-84d4293bdbd849778eb8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "145",
+    "question": "A zero contributes an asymptotic slope change of approximately",
+    "options": [
+      "+20 dB/decade",
+      "-20 dB/decade",
+      "+40 dB/decade",
+      "0 dB/decade"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-99eed317f7be4fdebf45",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "146",
+    "question": "A pole contributes an asymptotic slope change of approximately",
+    "options": [
+      "+20 dB/decade",
+      "-20 dB/decade",
+      "+40 dB/decade",
+      "0 dB/decade"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8e8df0ddc43d4bd381f5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "147",
+    "question": "The phase of a simple pole 1/(1+jω/ωp) approaches at very high frequency",
+    "options": [
+      "0°",
+      "-45°",
+      "-90°",
+      "+90°"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-906c2f6585664b3bbd81",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "148",
+    "question": "The phase of a simple zero 1+jω/ωz approaches at very high frequency",
+    "options": [
+      "+90°",
+      "0°",
+      "-90°",
+      "180°"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3cec6e366bd34ffb8399",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "149",
+    "question": "A resonant band-pass circuit has quality factor approximately equal to",
+    "options": [
+      "center frequency/bandwidth",
+      "bandwidth/center frequency",
+      "center frequency×bandwidth",
+      "1/(center frequency×bandwidth)"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c41b7725aaf34b37ae15",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "150",
+    "question": "A two-port network has how many external terminals",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "6"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6f5bb4902a9740abb28b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "151",
+    "question": "For a two-port network, port current convention commonly defines currents",
+    "options": [
+      "both entering the ports",
+      "both leaving the ports",
+      "only one entering",
+      "arbitrarily without sign"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3fd243a2ed9e46dbab1c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "152",
+    "question": "The z-parameters are called",
+    "options": [
+      "impedance parameters",
+      "admittance parameters",
+      "hybrid parameters",
+      "transmission parameters"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-819be87b154c4b6397e3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "153",
+    "question": "The y-parameters are called",
+    "options": [
+      "impedance parameters",
+      "admittance parameters",
+      "hybrid parameters",
+      "transmission parameters"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3a43ac5918fe4c978273",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "154",
+    "question": "The h-parameters are called",
+    "options": [
+      "hybrid parameters",
+      "impedance parameters",
+      "admittance parameters",
+      "scattering parameters"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9763f8ea259c4169b5c5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "155",
+    "question": "The ABCD parameters are also known as",
+    "options": [
+      "transmission parameters",
+      "impedance parameters",
+      "admittance parameters",
+      "hybrid parameters"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2af110add7024127bbd9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "156",
+    "question": "For z-parameters, z11 is determined with",
+    "options": [
+      "I1=0",
+      "V1=0",
+      "I2=0",
+      "V2=0"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-bb64282d9c3c4020bbea",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "157",
+    "question": "For z-parameters, z22 is determined with",
+    "options": [
+      "I1=0",
+      "I2=0",
+      "V1=0",
+      "V2=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f56619b765b34d049208",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "158",
+    "question": "For y-parameters, y11 is determined with",
+    "options": [
+      "I1=0",
+      "V1=0",
+      "I2=0",
+      "V2=0"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a9bbde452fb34ba1a2d3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "159",
+    "question": "For y-parameters, y22 is determined with",
+    "options": [
+      "I1=0",
+      "I2=0",
+      "V1=0",
+      "V2=0"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d3f524e1b03747e196e9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "160",
+    "question": "The units of z-parameters are",
+    "options": [
+      "ohm",
+      "siemens",
+      "dimensionless",
+      "henry"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f0c231340afc4388bd02",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "161",
+    "question": "The units of y-parameters are",
+    "options": [
+      "ohm",
+      "siemens",
+      "farad",
+      "dimensionless"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0cd7c5a5c9eb4f86b5b0",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "162",
+    "question": "For a reciprocal two-port network, z12 is",
+    "options": [
+      "equal to z21",
+      "equal to zero always",
+      "equal to z11",
+      "negative z21 always"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-34930cfe7e674a4aa1b4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "163",
+    "question": "For a reciprocal two-port network, y12 is",
+    "options": [
+      "equal to y21",
+      "equal to zero always",
+      "equal to y11",
+      "negative y21 always"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-316af81813274c559b27",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "164",
+    "question": "For a symmetrical two-port, the z-parameters satisfy",
+    "options": [
+      "z11=z22",
+      "z12=z21 only",
+      "z11=z12",
+      "z22=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9ef85346d7fe45b0bbb1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "165",
+    "question": "A reciprocal two-port network has determinant condition for ABCD parameters",
+    "options": [
+      "AD-BC=1",
+      "AD+BC=1",
+      "AB-CD=1",
+      "A+B+C+D=1"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-be3a45b9bd804f9d8136",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "166",
+    "question": "For a cascade of two two-port networks, the overall ABCD matrix is obtained by",
+    "options": [
+      "adding matrices",
+      "multiplying matrices in cascade order",
+      "subtracting matrices",
+      "inverting only the first matrix"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-35d2cd9160344acab965",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "167",
+    "question": "Open-circuit impedance parameter z11 is",
+    "options": [
+      "V1/I1 with I2=0",
+      "I1/V1 with I2=0",
+      "V2/I1 with V1=0",
+      "I2/V2 with I1=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a8a583cb883c4a0aaf64",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "168",
+    "question": "Open-circuit impedance parameter z21 is",
+    "options": [
+      "V1/I2 with I1=0",
+      "V2/I1 with I2=0",
+      "I2/V1 with I1=0",
+      "V2/I2 with I1=0"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a8942f2a7844463ab27a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "169",
+    "question": "Short-circuit admittance parameter y12 is",
+    "options": [
+      "I1/V2 with V1=0",
+      "I2/V1 with V2=0",
+      "V1/I2 with V1=0",
+      "I1/V1 with V2=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-221f3029edc347628e37",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "170",
+    "question": "Short-circuit admittance parameter y21 is",
+    "options": [
+      "I1/V2 with V1=0",
+      "I2/V1 with V2=0",
+      "V2/I2 with V1=0",
+      "I2/V2 with V1=0"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b9cd536abbac43c0a84d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "171",
+    "question": "A two-port is reciprocal if transfer from port 1 to port 2 is",
+    "options": [
+      "equal under reciprocal excitation conditions",
+      "always zero",
+      "always infinite",
+      "independent of all parameters"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81b8c6e3d3ff4b4d8163",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "172",
+    "question": "The condition for a symmetrical reciprocal two-port in z-parameters is",
+    "options": [
+      "z11=z22 and z12=z21",
+      "z11=z12 only",
+      "z22=0",
+      "z12=0"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-08a5d321ffd048d3ad68",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "173",
+    "question": "The hybrid parameter equations use variables including",
+    "options": [
+      "V1 and I2 as dependent variables",
+      "only currents",
+      "only voltages",
+      "only powers"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-02063de698d9403d933f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "174",
+    "question": "A common use of ABCD parameters is analysis of",
+    "options": [
+      "cascaded two-port networks",
+      "single resistors only",
+      "only parallel circuits",
+      "only DC sources"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7d165facdf3245f189cb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "175",
+    "question": "For a matched load in a transmission network, reflection is",
+    "options": [
+      "maximum",
+      "zero ideally",
+      "infinite",
+      "equal to 1 always"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f178b9013a8e42699f40",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "176",
+    "question": "The incidence matrix of a connected graph with n nodes has rows corresponding to",
+    "options": [
+      "branches",
+      "nodes",
+      "loops",
+      "sources"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6273e58a634c47dab383",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "177",
+    "question": "For a directed graph, an incidence matrix entry is commonly",
+    "options": [
+      "+1, -1, or 0",
+      "only 1",
+      "only -1",
+      "always 2"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3dbb93bcad8f4e3f8037",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "178",
+    "question": "A tree of a connected graph contains",
+    "options": [
+      "no closed path",
+      "at least one closed path",
+      "all graph branches",
+      "only links"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-406333d54eac46769518",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "179",
+    "question": "A co-tree contains the branches",
+    "options": [
+      "not in the selected tree",
+      "in every tree",
+      "connected to ground only",
+      "with zero resistance only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-84fa06cbe7ea47b7b0b7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "180",
+    "question": "The number of links in a connected graph with b branches and n nodes is",
+    "options": [
+      "b+n-1",
+      "b-n+1",
+      "n-b+1",
+      "bn"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a1303a0233204374bdf5",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "181",
+    "question": "A cut-set is a set of branches whose removal",
+    "options": [
+      "disconnects the graph",
+      "creates a tree",
+      "removes all nodes",
+      "makes every branch shorted"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81fe884e800648598d04",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "182",
+    "question": "A tie-set is associated with",
+    "options": [
+      "a fundamental loop",
+      "a cut-set only",
+      "a node voltage",
+      "a source transformation"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2df81572907a43c99ecd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "183",
+    "question": "The rank of the reduced incidence matrix of a connected graph is",
+    "options": [
+      "n",
+      "n-1",
+      "b",
+      "b-n"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b9eddac3208f4a4f936f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "184",
+    "question": "A planar graph can be drawn",
+    "options": [
+      "without branch crossings except at nodes",
+      "only as a tree",
+      "only with one loop",
+      "without nodes"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8c80d1842f95488f863e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "185",
+    "question": "The dual of a node in planar network is a",
+    "options": [
+      "mesh",
+      "branch",
+      "source",
+      "tree"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5382d48353724c97a1c3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "186",
+    "question": "The dual of a voltage source is a",
+    "options": [
+      "current source",
+      "resistor",
+      "capacitor",
+      "node"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a55051c8b4ce427ca357",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "187",
+    "question": "The dual of a capacitor is an",
+    "options": [
+      "inductor",
+      "resistor",
+      "voltage source",
+      "current source"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4ec681b357554655bd77",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "188",
+    "question": "The dual of KCL is",
+    "options": [
+      "KVL",
+      "Ohm's law",
+      "maximum power theorem",
+      "reciprocity"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-adf0e5020ff34bc28051",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "189",
+    "question": "A network function is meaningful when the circuit is",
+    "options": [
+      "linear and time invariant under stated conditions",
+      "always nonlinear",
+      "only mechanical",
+      "only digital"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2d2bb2e52101452eaddb",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "190",
+    "question": "For a passive network, poles of a stable driving-point impedance lie",
+    "options": [
+      "in the right half-plane only",
+      "in the left half-plane or on allowed boundary conditions",
+      "only at infinity",
+      "only at zero"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3a49681acebb4b1794cd",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "191",
+    "question": "A driving-point impedance is defined as",
+    "options": [
+      "V/I at the same port",
+      "V/I at different ports only",
+      "I/V at different ports only",
+      "power/voltage"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ada2da5f51bb47f596d1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "192",
+    "question": "A driving-point admittance is defined as",
+    "options": [
+      "I/V at the same port",
+      "V/I at the same port",
+      "V/I at different ports",
+      "power/current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-531541950e8440b8a7bc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "193",
+    "question": "The reciprocal of impedance is",
+    "options": [
+      "resistance",
+      "admittance",
+      "reactance",
+      "susceptance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f4ccb363280a4727a355",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "194",
+    "question": "The reciprocal of admittance is",
+    "options": [
+      "impedance",
+      "conductance",
+      "susceptance",
+      "reactance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5b7174b8e2024d29b034",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "195",
+    "question": "For a series circuit, impedances are",
+    "options": [
+      "added",
+      "multiplied",
+      "divided",
+      "subtracted"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ce9be8b9297a4fe4bfe2",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "196",
+    "question": "For parallel branches, admittances are",
+    "options": [
+      "added",
+      "subtracted",
+      "multiplied only",
+      "always equal"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ff59d53a7a9149bf9c0d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "197",
+    "question": "The impedance of a resistor R in polar form is",
+    "options": [
+      "R∠0°",
+      "R∠90°",
+      "R∠-90°",
+      "0∠R°"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d98e99560cb54c9c8bac",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "198",
+    "question": "The admittance of an inductor has",
+    "options": [
+      "positive imaginary part",
+      "negative imaginary part",
+      "zero imaginary part",
+      "infinite real part always"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6d143ace69334f808b62",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "199",
+    "question": "The admittance of a capacitor has",
+    "options": [
+      "positive imaginary part",
+      "negative imaginary part",
+      "zero imaginary part",
+      "negative real part always"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3ab951f874a54d02be5c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "200",
+    "question": "For a stable passive network, average real power absorbed by passive elements is generally",
+    "options": [
+      "negative",
+      "nonnegative",
+      "always infinite",
+      "always zero"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]

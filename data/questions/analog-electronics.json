@@ -1,0 +1,2602 @@
+[
+  {
+    "id": "Q-98d8727a839045f78252",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "1",
+    "question": "For an ideal op-amp operating with negative feedback, the voltage difference between its input terminals is",
+    "options": [
+      "Zero",
+      "Equal to output voltage",
+      "Infinite",
+      "Equal to supply voltage"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8fa9029bd4764caba593",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "2",
+    "question": "The input resistance of an ideal op-amp is",
+    "options": [
+      "Zero",
+      "1 kΩ",
+      "Infinite",
+      "100 kΩ"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0f8fb2df489049dabe53",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "3",
+    "question": "The output resistance of an ideal op-amp is",
+    "options": [
+      "Infinite",
+      "Zero",
+      "1 MΩ",
+      "Equal to input resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-89d5913ac7ac4499a8e7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "4",
+    "question": "The open-loop voltage gain of an ideal op-amp is",
+    "options": [
+      "Zero",
+      "One",
+      "Finite",
+      "Infinite"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2ddf3140dd7341888cfa",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "5",
+    "question": "For an ideal op-amp, the common-mode gain is",
+    "options": [
+      "Infinite",
+      "Zero",
+      "One",
+      "Equal to differential gain"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d48597cfcd90403db5c7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "6",
+    "question": "The CMRR of an ideal op-amp is",
+    "options": [
+      "Zero",
+      "One",
+      "Infinite",
+      "Negative"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fab64c30a7f84b829ff4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "7",
+    "question": "In an inverting amplifier, the input signal is applied through a resistor to the",
+    "options": [
+      "Non-inverting input",
+      "Inverting input",
+      "Output terminal",
+      "Power supply"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6d6709a13b1f46d4a116",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "8",
+    "question": "The voltage gain of an ideal inverting amplifier is",
+    "options": [
+      "Rf/Rin",
+      "-Rf/Rin",
+      "1+Rf/Rin",
+      "-Rin/Rf"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-77648167e695446f82e8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "9",
+    "question": "The voltage gain of an ideal non-inverting amplifier is",
+    "options": [
+      "-Rf/R1",
+      "Rf/R1",
+      "1+Rf/R1",
+      "-1-Rf/R1"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2cd784c7174c4ff2b88c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "10",
+    "question": "A voltage follower has voltage gain",
+    "options": [
+      "-1",
+      "",
+      "1",
+      "Infinite"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cef1200e822a442f98a8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "11",
+    "question": "The phase difference between input and output of an ideal inverting amplifier is",
+    "options": [
+      "0°",
+      "90°",
+      "180°",
+      "270°"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-19c2e10873944109b0c9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "12",
+    "question": "The phase difference between input and output of an ideal non-inverting amplifier is",
+    "options": [
+      "0°",
+      "90°",
+      "180°",
+      "270°"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e4c79a7426ea49a78dd8",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "13",
+    "question": "In an ideal op-amp with negative feedback, the input currents are approximately",
+    "options": [
+      "Equal to output current",
+      "Zero",
+      "Infinite",
+      "Equal to supply current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-66e36a6f996b4e898700",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "14",
+    "question": "The virtual ground concept is commonly used in an",
+    "options": [
+      "Inverting amplifier with grounded non-inverting input",
+      "Comparator only",
+      "Oscillator only",
+      "Differential input without feedback"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ddd355f109aa4431a680",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "15",
+    "question": "If Rin = 10 kΩ and Rf = 100 kΩ in an inverting amplifier, the voltage gain is",
+    "options": [
+      "-0.1",
+      "-10",
+      "10",
+      "11"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b71d2337e3164f1aa841",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "16",
+    "question": "If R1 = 10 kΩ and Rf = 40 kΩ in a non-inverting amplifier, the gain is",
+    "options": [
+      "4",
+      "5",
+      "-4",
+      "-5"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e89b57b699ce45548a51",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "17",
+    "question": "An inverting amplifier has gain -20 and input of 0.1 V. Its output is",
+    "options": [
+      "-2 V",
+      "2 V",
+      "-0.2 V",
+      "20 V"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-aaedc89460804cad9599",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "18",
+    "question": "A non-inverting amplifier has gain 11 and input 0.2 V. Output is",
+    "options": [
+      "1.1 V",
+      "2.2 V",
+      "-2.2 V",
+      "0.22 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3c3e4cfad99343b58849",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "19",
+    "question": "For an inverting amplifier with Rin = Rf, the voltage gain is",
+    "options": [
+      "",
+      "1",
+      "-1",
+      "2"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-db7daf8e0f98410687c1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "20",
+    "question": "For a non-inverting amplifier, the minimum closed-loop voltage gain using the standard topology is",
+    "options": [
+      "-1",
+      "",
+      "1",
+      "Infinite"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8ed469c861b74b199f32",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "21",
+    "question": "An op-amp integrator produces an output proportional to the",
+    "options": [
+      "Derivative of input",
+      "Integral of input",
+      "Square of input",
+      "Average only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3091ac25b99c4e4d9852",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "22",
+    "question": "An ideal differentiator produces an output proportional to the",
+    "options": [
+      "Integral of input",
+      "Derivative of input",
+      "DC level only",
+      "RMS value"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-457be24ef82e46469428",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "23",
+    "question": "In an ideal op-amp integrator, the feedback element is primarily a",
+    "options": [
+      "Resistor",
+      "Capacitor",
+      "Inductor",
+      "Diode"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5ef6d46c34fa408f930f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "24",
+    "question": "In an ideal differentiator, the input element is primarily a",
+    "options": [
+      "Capacitor",
+      "Resistor",
+      "Inductor",
+      "Zener diode"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8e0b4a6923704529b66c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "25",
+    "question": "A practical op-amp integrator often includes a resistor in parallel with the feedback capacitor mainly to",
+    "options": [
+      "Increase supply voltage",
+      "Limit DC gain and improve stability",
+      "Make input resistance zero",
+      "Eliminate all feedback"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fc61ce813b194c0d8464",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "26",
+    "question": "A practical differentiator includes additional resistive/capacitive elements mainly to",
+    "options": [
+      "Increase high-frequency noise",
+      "Limit bandwidth and improve stability",
+      "Make gain infinite",
+      "Remove negative feedback"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-55e7cf4e6fd5430593cf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "27",
+    "question": "A summing amplifier is used to",
+    "options": [
+      "Add multiple input signals with weighted gains",
+      "Generate only DC",
+      "Measure resistance directly",
+      "Eliminate feedback"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c1b904e50f814c74a867",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "28",
+    "question": "For an inverting summing amplifier with equal input resistors and Rf equal to them, the output is",
+    "options": [
+      "Sum of inputs",
+      "Negative sum of inputs",
+      "Average of inputs",
+      "Product of inputs"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e1246cd18697410cb00f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "29",
+    "question": "A differential amplifier ideally amplifies the",
+    "options": [
+      "Common-mode component only",
+      "Difference between two input voltages",
+      "Supply voltage only",
+      "Noise only"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-794df27a9c88491a9aa4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "30",
+    "question": "The differential input voltage is defined as",
+    "options": [
+      "V1+V2",
+      "V1-V2",
+      "V1V2",
+      "V1/V2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4e50e2d1ae2b454dab9e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "31",
+    "question": "The common-mode input voltage for two inputs is commonly defined as",
+    "options": [
+      "V1-V2",
+      "(V1+V2)/2",
+      "V1V2",
+      "V1/V2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b81c48f8710e4c77af7d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "32",
+    "question": "If V1 = 3 V and V2 = 2 V, the differential input voltage Vd = V1-V2 is",
+    "options": [
+      "1 V",
+      "5 V",
+      "6 V",
+      "0.5 V"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-09f3e3cc7d2c40d79f09",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "33",
+    "question": "If V1 = 3 V and V2 = 2 V, the common-mode voltage is",
+    "options": [
+      "1 V",
+      "2 V",
+      "2.5 V",
+      "5 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e8677b23a9114c2f8d8d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "34",
+    "question": "The output of a differential amplifier can be expressed as",
+    "options": [
+      "AdVd + AcmVcm",
+      "AdVcm + AcmVd",
+      "Ad/Vd",
+      "Ac/Vd"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8cc0302b930f49bca5f4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "35",
+    "question": "CMRR is defined as the ratio of",
+    "options": [
+      "Common-mode gain to differential gain",
+      "Differential gain to common-mode gain",
+      "Output to input resistance",
+      "Input resistance to output resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81e70cfec94d45ed8ac9",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "36",
+    "question": "CMRR in decibels is",
+    "options": [
+      "20 log10(Acm/Ad)",
+      "20 log10(Ad/Acm)",
+      "10 log10(Ad/Acm)",
+      "Ad-Acm"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e017f2685858457189ea",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "37",
+    "question": "If Ad = 1000 and Acm = 1, the CMRR is",
+    "options": [
+      "10",
+      "100",
+      "1000",
+      "0.001"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-566ee32193044f2b8d54",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "38",
+    "question": "If Ad = 100 and Acm = 0.01, CMRR in dB is",
+    "options": [
+      "20 dB",
+      "40 dB",
+      "80 dB",
+      "100 dB"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-81715eb6f91d4fc9aed4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "39",
+    "question": "A high CMRR is desirable because it",
+    "options": [
+      "Rejects common-mode interference",
+      "Increases common-mode gain",
+      "Reduces differential gain to zero",
+      "Eliminates input resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f251f1551a1349bfbb17",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "40",
+    "question": "The main purpose of a differential amplifier at an op-amp input is to",
+    "options": [
+      "Amplify supply noise",
+      "Provide differential operation and common-mode rejection",
+      "Provide zero gain",
+      "Remove all feedback"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1b692c65761145238d5a",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "41",
+    "question": "An instrumentation amplifier is characterized by",
+    "options": [
+      "Low input impedance and low CMRR",
+      "High input impedance and high CMRR",
+      "Zero gain only",
+      "No differential input"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e2d2590692dc4a9cb1b4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "42",
+    "question": "A three-op-amp instrumentation amplifier generally provides",
+    "options": [
+      "High input impedance and accurate differential gain",
+      "Only current amplification",
+      "No common-mode rejection",
+      "Only unity gain"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-368c1acd593b48f1bc13",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "43",
+    "question": "In a typical instrumentation amplifier, gain is commonly adjusted using",
+    "options": [
+      "A single resistor",
+      "Only a capacitor",
+      "The power supply",
+      "An inductor only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c96698415a074f459712",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "44",
+    "question": "Input offset voltage of an op-amp is the differential input voltage required to",
+    "options": [
+      "Produce infinite output",
+      "Make output zero",
+      "Make gain unity",
+      "Saturate both inputs"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b83d2411ae85476c9e87",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "45",
+    "question": "Input bias current is the",
+    "options": [
+      "Average of the two input currents",
+      "Difference of supply currents",
+      "Output current",
+      "Feedback current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d2eb90e7383d4048b793",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "46",
+    "question": "Input offset current is the",
+    "options": [
+      "Sum of input bias currents",
+      "Difference between the two input bias currents",
+      "Output current",
+      "Supply current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-298c1575324246d4a615",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "47",
+    "question": "For an ideal op-amp, input offset voltage is",
+    "options": [
+      "Infinite",
+      "Zero",
+      "1 V",
+      "Equal to VCC"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-2bce08f1958749ed8bcf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "48",
+    "question": "Input bias current of an ideal op-amp is",
+    "options": [
+      "Zero",
+      "Infinite",
+      "1 mA",
+      "Equal to output current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c1d6a0170c634d2dbbbc",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "49",
+    "question": "Output offset voltage can result from",
+    "options": [
+      "Input offset voltage and bias-current effects",
+      "Only load resistance",
+      "Only supply voltage",
+      "Only output capacitance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c4412c1004ad43558293",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "50",
+    "question": "Slew rate is the maximum rate of change of",
+    "options": [
+      "Input resistance",
+      "Output voltage with time",
+      "Open-loop gain",
+      "Input bias current"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-28664a92aaa44660917e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "51",
+    "question": "The unit of slew rate is",
+    "options": [
+      "V/s",
+      "V/µs",
+      "Ω/s",
+      "A/V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-8f6c457e0f2b48e4a2ae",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "52",
+    "question": "If an op-amp has slew rate 0.5 V/µs, the minimum time to change output by 5 V is",
+    "options": [
+      "0.1 µs",
+      "2.5 µs",
+      "10 µs",
+      "25 µs"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-ac0f19330aa2411ab03f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "53",
+    "question": "For a sine-wave output Vp sin(2πft), the required slew rate is",
+    "options": [
+      "Vp/(2πf)",
+      "2πfVp",
+      "Vp/f",
+      "2πVp/f"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5362405cdbe843628a4e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "54",
+    "question": "For Vp = 5 V and f = 10 kHz, the required slew rate is approximately",
+    "options": [
+      "0.031 V/µs",
+      "0.314 V/µs",
+      "3.14 V/µs",
+      "31.4 V/µs"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-508aeb7313024ecdb4e4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "55",
+    "question": "Gain-bandwidth product of a voltage-feedback op-amp is approximately",
+    "options": [
+      "Constant over its useful closed-loop gain range",
+      "Always zero",
+      "Equal to supply voltage",
+      "Equal to input resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-7cbcc68ac94348f289be",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "56",
+    "question": "If an op-amp has unity-gain bandwidth 1 MHz, a closed-loop gain of 10 gives an approximate bandwidth of",
+    "options": [
+      "10 Hz",
+      "10 kHz",
+      "100 kHz",
+      "10 MHz"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-262fedd59c86453cbd11",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "57",
+    "question": "The gain-bandwidth product is also called",
+    "options": [
+      "Unity-gain frequency product",
+      "Input offset voltage",
+      "Common-mode voltage",
+      "Slew rate"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6ad733a4c9334a7bbf0e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "58",
+    "question": "A finite open-loop gain causes the closed-loop gain of an amplifier to be",
+    "options": [
+      "Exactly ideal in all cases",
+      "Slightly different from the ideal value",
+      "Always zero",
+      "Always infinite"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-9f6dc8939c1d4b0e8670",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "59",
+    "question": "Negative feedback in an op-amp generally",
+    "options": [
+      "Increases gain without limit",
+      "Reduces sensitivity to parameter variations",
+      "Makes bandwidth zero",
+      "Eliminates input impedance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f388c4e077e64567848e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "60",
+    "question": "Negative feedback generally causes bandwidth to",
+    "options": [
+      "Decrease",
+      "Increase",
+      "Become zero",
+      "Become infinite in every case"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-fea4b83c312e491184e6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "61",
+    "question": "Negative feedback generally causes distortion to",
+    "options": [
+      "Increase",
+      "Decrease",
+      "Remain necessarily infinite",
+      "Become supply voltage"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6d3a1ee127ff490b877f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "62",
+    "question": "Negative feedback generally increases the",
+    "options": [
+      "Closed-loop gain sensitivity",
+      "Bandwidth",
+      "Common-mode gain only",
+      "Input offset voltage necessarily"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-61288baff5554f3883b6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "63",
+    "question": "An op-amp comparator is normally operated",
+    "options": [
+      "With strong negative feedback in linear mode",
+      "Without negative feedback as a switching circuit",
+      "Only as an integrator",
+      "Only as a follower"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3b8c324686304c0d84d4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "64",
+    "question": "A comparator output changes state when the input differential voltage",
+    "options": [
+      "Changes sign relative to its reference condition",
+      "Becomes exactly zero only",
+      "Equals supply current",
+      "Exceeds input resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e7f095128c2c4cc2bc7d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "65",
+    "question": "A zero-crossing detector is a comparator with reference voltage",
+    "options": [
+      "Equal to zero",
+      "Equal to VCC",
+      "Equal to output",
+      "Infinite"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d4ab3d185ba747ad9c50",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "66",
+    "question": "A Schmitt trigger uses",
+    "options": [
+      "Positive feedback",
+      "Only negative feedback",
+      "No feedback",
+      "Inductive feedback"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-b170554905164e209ba4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "67",
+    "question": "The hysteresis of a Schmitt trigger helps to",
+    "options": [
+      "Reduce noise-triggered switching",
+      "Increase input bias current",
+      "Eliminate thresholds",
+      "Make output analog only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-980b74dd02b24fa2969c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "68",
+    "question": "An ideal op-amp saturates when its required output exceeds",
+    "options": [
+      "Its available output voltage range",
+      "Its input resistance",
+      "Its CMRR",
+      "Its input bias current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4b93a575786c48d1bd34",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "69",
+    "question": "If the supply rails are ±15 V, an idealized op-amp cannot produce an output of",
+    "options": [
+      "+5 V",
+      "-10 V",
+      "+14 V",
+      "+20 V"
+    ],
+    "answer": 3,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-1f0bd9028a9f45d5941d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "70",
+    "question": "An op-amp buffer is mainly used to provide",
+    "options": [
+      "High input impedance and low output impedance",
+      "Low input impedance and high output impedance",
+      "Infinite current gain only",
+      "Negative voltage gain only"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cce99b38b0d540b8a02c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "71",
+    "question": "A voltage follower is especially useful for",
+    "options": [
+      "Impedance isolation",
+      "Increasing source loading",
+      "Creating zero input impedance",
+      "Generating only square waves"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0d6ec092c25a48278099",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "72",
+    "question": "An ideal op-amp with open-loop gain 100000 and differential input 20 µV would require an output of",
+    "options": [
+      "0.02 V",
+      "2 V",
+      "20 V",
+      "200 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-429381ebd952487ba59b",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "73",
+    "question": "If an op-amp has output saturation limits of ±12 V and closed-loop gain is 20, the maximum symmetric input magnitude before saturation is",
+    "options": [
+      "0.06 V",
+      "0.6 V",
+      "6 V",
+      "240 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6a91858c9cf643a18ef1",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "74",
+    "question": "A 1% resistor mismatch in a differential amplifier can cause",
+    "options": [
+      "Finite common-mode gain",
+      "Infinite CMRR",
+      "Zero differential gain",
+      "Infinite input resistance"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-160847917fc645279454",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "75",
+    "question": "CMRR degradation in a differential amplifier can result from",
+    "options": [
+      "Resistor ratio mismatch",
+      "Perfect resistor matching",
+      "Zero common-mode signal",
+      "Infinite supply voltage"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-c14f854cc9ab463eb824",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "76",
+    "question": "The output of an ideal difference amplifier is ideally proportional to",
+    "options": [
+      "V1+V2 only",
+      "V1-V2",
+      "V1V2",
+      "V1/V2"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a592c252e9fd43c1b47c",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "77",
+    "question": "For a balanced difference amplifier with gain 5, V1 = 1.2 V and V2 = 0.8 V, output is",
+    "options": [
+      "0.4 V",
+      "2 V",
+      "4 V",
+      "10 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-337f34fdebac439e868f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "78",
+    "question": "An inverting amplifier has Rin = 5 kΩ and Rf = 25 kΩ. Its gain is",
+    "options": [
+      "-5",
+      "5",
+      "-0.2",
+      "0.2"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-f4964b75941f4282bd75",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "79",
+    "question": "A non-inverting amplifier has R1 = 2 kΩ and Rf = 18 kΩ. Its gain is",
+    "options": [
+      "9",
+      "10",
+      "-9",
+      "20"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-646301315b9849b1aeb4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "80",
+    "question": "An inverting amplifier with gain -4 receives -0.5 V. Its output is",
+    "options": [
+      "-2 V",
+      "-0.125 V",
+      "2 V",
+      "4 V"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-e84dc50226374940992d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "81",
+    "question": "A non-inverting amplifier with gain 6 receives -0.2 V. Its output is",
+    "options": [
+      "-1.2 V",
+      "1.2 V",
+      "-0.033 V",
+      "0.033 V"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-082ea1144cf5443c82f7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "82",
+    "question": "A summing amplifier has equal input resistors and Rf equal to each. For inputs 1 V, 2 V, and -0.5 V, output is",
+    "options": [
+      "2.5 V",
+      "-2.5 V",
+      "1.5 V",
+      "-1.5 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-86b9e758c3f7435c99a4",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "83",
+    "question": "An averaging amplifier with three equal inputs can be formed by setting feedback resistance to",
+    "options": [
+      "Three times each input resistance",
+      "One-third of each input resistance",
+      "Equal to zero",
+      "Infinite"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4f4db7753412495a96b7",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "84",
+    "question": "A transimpedance amplifier converts",
+    "options": [
+      "Voltage to voltage",
+      "Current to voltage",
+      "Voltage to current only",
+      "Frequency to resistance"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-626ec8b434b4427282be",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "85",
+    "question": "The feedback element in an ideal transimpedance amplifier is usually a",
+    "options": [
+      "Resistor",
+      "Capacitor only",
+      "Inductor",
+      "Transformer"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-39f87ab80bf1494d9695",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "86",
+    "question": "For a transimpedance amplifier with feedback resistor 100 kΩ and input current 20 µA, ideal output magnitude is",
+    "options": [
+      "0.2 V",
+      "2 V",
+      "20 V",
+      "200 V"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-cba7b8449ddb4c0a9d13",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "87",
+    "question": "A current-to-voltage converter using an op-amp commonly operates with the photodiode current applied to the",
+    "options": [
+      "Inverting input with feedback resistor",
+      "Non-inverting input with no feedback",
+      "Power pin",
+      "Output pin"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-238c7b70b2774b148a3d",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "88",
+    "question": "An op-amp active low-pass filter differs from a passive RC filter because it can provide",
+    "options": [
+      "Gain and buffering",
+      "Only attenuation",
+      "No frequency selectivity",
+      "Only inductive behavior"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-63082d61edc34802a376",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "89",
+    "question": "The cutoff frequency of a first-order RC low-pass filter is",
+    "options": [
+      "1/(2πRC)",
+      "2πRC",
+      "R/C",
+      "C/R"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-6c033dd395e44b82a7da",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "90",
+    "question": "For R = 10 kΩ and C = 0.01 µF, the RC low-pass cutoff frequency is approximately",
+    "options": [
+      "15.9 Hz",
+      "159 Hz",
+      "1.59 kHz",
+      "15.9 kHz"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-5cf1769272134d1893cf",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "91",
+    "question": "A first-order active low-pass filter has a roll-off of approximately",
+    "options": [
+      "-6 dB/octave",
+      "-20 dB/decade",
+      "-40 dB/decade",
+      "+20 dB/decade"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d59a738d4bec4ba3b1de",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "92",
+    "question": "A first-order high-pass filter attenuates",
+    "options": [
+      "High frequencies only",
+      "Low frequencies below cutoff",
+      "All frequencies equally",
+      "Only DC gain above cutoff"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-3dce813ed1cb4ac5bde6",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "93",
+    "question": "At the cutoff frequency of a first-order low-pass filter, the magnitude is approximately",
+    "options": [
+      "0.1 of passband",
+      "0.5 of passband",
+      "0.707 of passband",
+      "1.414 of passband"
+    ],
+    "answer": 2,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-d93d23e7605945e4b760",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "94",
+    "question": "The -3 dB cutoff point corresponds to a voltage magnitude ratio of approximately",
+    "options": [
+      "0.707",
+      "0.5",
+      "2",
+      "10"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-11826c7b2fef4f5c845e",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "95",
+    "question": "A second-order low-pass filter has an asymptotic roll-off of approximately",
+    "options": [
+      "-20 dB/decade",
+      "-40 dB/decade",
+      "+20 dB/decade",
+      "0 dB/decade"
+    ],
+    "answer": 1,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-157f4bbf2776454b8ac3",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "96",
+    "question": "A precision rectifier using an op-amp is useful because it",
+    "options": [
+      "Can rectify signals smaller than a typical diode forward drop",
+      "Always needs no diode",
+      "Eliminates all resistors",
+      "Works only with DC"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4831e445f57349f3bf1f",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "97",
+    "question": "An op-amp peak detector is designed to",
+    "options": [
+      "Store or track a peak signal level",
+      "Differentiate all inputs",
+      "Reject all DC",
+      "Generate only a triangular wave"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-a0ee187413c04318a028",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "98",
+    "question": "A sample-and-hold circuit is used to",
+    "options": [
+      "Capture and hold an analog voltage",
+      "Increase CMRR directly",
+      "Measure resistance without a source",
+      "Create infinite bandwidth"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-4e4cc69573b14c76a4ff",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "99",
+    "question": "The input common-mode range specifies",
+    "options": [
+      "The range of common-mode input voltage for proper operation",
+      "The output current limit only",
+      "The feedback resistance range",
+      "The maximum resistor value"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "Q-0b8058cd822542e78094",
+    "year": "2026",
+    "state": "TS",
+    "questionNumber": "100",
+    "question": "An op-amp with insufficient common-mode range may",
+    "options": [
+      "Produce erroneous or saturated output",
+      "Always improve CMRR",
+      "Increase ideal gain",
+      "Have zero supply current"
+    ],
+    "answer": 0,
+    "answerText": "",
+    "topic": "",
+    "exam": "",
+    "marks": 1,
+    "type": "MCQ",
+    "image": "",
+    "optionImages": [
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+]
