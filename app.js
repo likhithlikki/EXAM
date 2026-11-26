@@ -1,0 +1,3016 @@
+
+// Load the shared FIB rules library for the main exam engine; the local
+// fallback remains available if offline before the script finishes loading.
+let _fibRulesReady_=Promise.resolve();
+(function loadFibRules_(){
+  if(window.PracticeRules)return;
+  _fibRulesReady_=new Promise(resolve=>{
+    const existing=document.getElementById("sharedFibRules");
+    if(existing){existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",resolve,{once:true});return;}
+    const script=document.createElement("script");script.id="sharedFibRules";script.src="practice-rules.js";script.onload=resolve;script.onerror=resolve;document.head.appendChild(script);
+  });
+})();
+/* ===================== ECET Quiz App ===================== */
+const app = document.getElementById("app");
+const API = (window.APP_CONFIG && window.APP_CONFIG.APPS_SCRIPT_URL) || "";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const clock = sec => { sec=Math.max(0,Math.floor(sec||0)); const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60; return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"); };
+const isoDate = d => { const x=new Date(d); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); };
+const formatDateTime = v => { const d=new Date(v); return isNaN(d)?String(v||"—"):d.toLocaleString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}); };
+const formatSeconds = s => { s=Math.max(0,Math.round(Number(s)||0)); return s<60 ? `${s}s` : `${Math.floor(s/60)}m ${s%60}s`; };
+const formatCooldown = ms => { ms=Math.max(0,ms); const d=Math.floor(ms/86400000),h=Math.floor((ms%86400000)/3600000),m=Math.floor((ms%3600000)/60000); if(d>0)return `${d}d ${h}h`; if(h>0)return `${h}h ${m}m`; return `${m}m`; };
+const addDays = (v,n) => { const d=new Date(v); d.setDate(d.getDate()+n); return d; };
+const dueDate = m => new Date(m.revisionDueIso || m.revisionDueDate);
+const shuffle = arr => { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+/* ACCESSIBILITY FIX: every question/option/admin-preview image on the site
+ * is rendered through this one helper, so giving it a real `alt` here fixes
+ * missing alt text everywhere at once instead of touching each call site.
+ * Default alt is short and generic on purpose — these are exam content
+ * images (diagrams, circuits, code snippets) supplied by admins via a URL
+ * field with no separate "describe this image" field, so a truly
+ * descriptive alt isn't available; an explicit `altText` can be passed by
+ * any caller that does have better context (see reviewListHTML/mistakes_).
+ * A non-empty, non-generic alt is still far better for screen-reader users
+ * than the previous alt="" (which caused the filename/URL to be read aloud
+ * as a fallback in several browsers) or the missing attribute entirely. */
+const imgHTML = (url,cls,altText) => url ? `<img src="${esc(url)}" class="${cls||"q-img"}" alt="${esc(altText||"Question image")}" loading="lazy" decoding="async" onerror="this.style.display='none'">` : "";
+const connBannerHTML = () => '<div id="connBanner" class="note" style="margin-bottom:10px">🔄 Updating… showing your last saved data.</div>';
+
+const store = {
+  profile:()=>JSON.parse(localStorage.getItem("ecet_profile")||"null"),
+  setProfile:p=>localStorage.setItem("ecet_profile",JSON.stringify(p)),
+  progressKey:id=>"ecet_progress_"+id,
+  getProgress:id=>JSON.parse(localStorage.getItem(store.progressKey(id))||"null"),
+  setProgress:(id,data)=>localStorage.setItem(store.progressKey(id),JSON.stringify(data)),
+  clearProgress:id=>localStorage.removeItem(store.progressKey(id)),
+  mistakesCache:()=>JSON.parse(localStorage.getItem("ecet_mistakes_cache")||"[]"),
+  setMistakesCache:a=>localStorage.setItem("ecet_mistakes_cache",JSON.stringify(a)),
+  dashboardCache:()=>JSON.parse(localStorage.getItem("ecet_dashboard_cache")||"null"),
+  setDashboardCache:d=>localStorage.setItem("ecet_dashboard_cache",JSON.stringify(d)),
+  historyCache:()=>{try{return JSON.parse(localStorage.getItem("ecet_history_cache")||"null");}catch(e){return null;}},
+  setHistoryCache:a=>{try{localStorage.setItem("ecet_history_cache",JSON.stringify(a));}catch(e){}},
+  remindersCache:()=>JSON.parse(localStorage.getItem("ecet_reminders_cache")||"[]"),
+  setRemindersCache:a=>localStorage.setItem("ecet_reminders_cache",JSON.stringify(a)),
+  customSubjectsCache:()=>JSON.parse(localStorage.getItem("ecet_customsubjects_cache")||"[]"),
+  setCustomSubjectsCache:a=>localStorage.setItem("ecet_customsubjects_cache",JSON.stringify(a)),
+  profileDataCache:()=>JSON.parse(localStorage.getItem("ecet_profiledata_cache")||"null"),
+  setProfileDataCache:d=>localStorage.setItem("ecet_profiledata_cache",JSON.stringify(d))
+};
+
+/* ===================== GLOBAL LOADING INDICATOR ===================== */
+// Every apiGet/apiPost call already funnels through loadingShow()/loadingHide(),
+// so toggling a body-level class here is enough to fade + disable every button
+// on screen (even ones re-rendered mid-request) without touching each call site.
+let _loadingCount=0;
+function loadingShow(){
+  _loadingCount++;
+  const bar=document.getElementById("loadBar");
+  if(bar)bar.classList.add("active");
+  document.body.classList.add("app-busy");
+}
+function loadingHide(){
+  _loadingCount=Math.max(0,_loadingCount-1);
+  if(_loadingCount===0){
+    const bar=document.getElementById("loadBar");
+    if(bar)bar.classList.remove("active");
+    document.body.classList.remove("app-busy");
+  }
+}
+
+/* ===================== NETWORK LAYER =====================
+   Apps Script backends largely serialize requests rather than truly running
+   them in parallel, so firing many GETs "at once" from the browser just makes
+   them queue behind each other until each one individually times out. This
+   layer fixes that on the client side with three things:
+   1. In-flight de-duplication: two callers asking for the same action+params
+      at the same time share one network call instead of firing two.
+   2. A small concurrency gate (max 2 requests in flight to the backend at a
+      time) so bursts (e.g. Home's startup calls) queue client-side instead
+      of all hitting Apps Script together and each blowing its own timeout.
+   3. Backoff before retrying, instead of retrying instantly into a backend
+      that's already behind. */
+const _inFlightGET=new Map();
+let _activeRequests=0;
+const _requestQueue=[];
+const MAX_CONCURRENT_REQUESTS=2;
+function _runQueued(){
+  if(_activeRequests>=MAX_CONCURRENT_REQUESTS||!_requestQueue.length)return;
+  _activeRequests++;
+  const job=_requestQueue.shift();
+  job().finally(()=>{_activeRequests--;_runQueued();});
+}
+function _enqueue(job){
+  return new Promise((resolve)=>{
+    _requestQueue.push(()=>job().then(resolve,()=>resolve(null)));
+    _runQueued();
+  });
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+// opts.silent=true: background refresh — no top loading bar and no disabled buttons.
+async function apiGet(action,params={},timeoutMs=12000,retries=1,opts={}){
+  if(!API)return null;
+  const key=action+"?"+new URLSearchParams(params).toString();
+  if(_inFlightGET.has(key))return _inFlightGET.get(key); // de-dupe identical concurrent calls
+  const promise=_enqueue(()=>_doGet(action,params,timeoutMs,retries,opts))
+    .finally(()=>_inFlightGET.delete(key));
+  _inFlightGET.set(key,promise);
+  return promise;
+}
+async function _doGet(action,params,timeoutMs,retries,opts={}){
+  const silent=!!(opts&&opts.silent);
+  for(let attempt=0;attempt<=retries;attempt++){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    if(!silent)loadingShow();
+    try{
+      const r=await fetch(API+"?"+new URLSearchParams({action,...params}),{method:"GET",cache:"no-store",signal:controller.signal});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return await r.json();
+    }catch(e){
+      console.warn("GET "+action+" failed (attempt "+(attempt+1)+"/"+(retries+1)+"):",e);
+      if(attempt===retries)return null;
+      await sleep(600*(attempt+1)); // backoff before retrying into a possibly-overloaded backend
+    }finally{clearTimeout(timer);if(!silent)loadingHide();}
+  }
+}
+async function apiPost(action,payload={},timeoutMs=15000){
+  if(!API)return null;
+  return _enqueue(async()=>{
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeoutMs);
+    loadingShow();
+    try{
+      const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload}),cache:"no-store",signal:controller.signal});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return await r.json();
+    }catch(e){console.warn("POST "+action+" failed:",e);return null;}
+    finally{clearTimeout(timer);loadingHide();}
+  });
+}
+
+/* ===================== STATIC-FIRST DATA LOADER =====================
+ * Rarely-changing content (subjects, topic counts, sheet-imported questions) is
+ * published by a GitHub job as static files under data/ (see tools/sync-from-sheets.js)
+ * and read from there instead of waking up Apps Script. Every read has a fallback to the
+ * old Apps Script / localStorage path, so a missing file, a bad file or being offline
+ * never breaks the app. Set USE_STATIC_DATA:false in config.js to switch it all off. */
+const staticDataOn_=()=>!(window.APP_CONFIG&&window.APP_CONFIG.USE_STATIC_DATA===false);
+let _dataMeta=null,_dataMetaAt=0,_dataMetaFailAt=0,_dataMetaP=null;
+// data/export-meta.json is tiny; it is always revalidated (cache:"no-cache") and its hash
+// is used as ?v= so every other data file can be cached for a long time yet updates instantly.
+function dataMeta_(force){
+  if(!force){
+    if(_dataMeta&&Date.now()-_dataMetaAt<60000)return Promise.resolve(_dataMeta);
+    if(!_dataMeta&&Date.now()-_dataMetaFailAt<60000)return Promise.resolve(null);
+    if(_dataMetaP)return _dataMetaP;
+  }
+  _dataMetaP=(async()=>{
+    try{
+      const r=await fetch("data/export-meta.json",{cache:"no-cache"});
+      if(r.ok){const m=await r.json();if(m&&typeof m.hash==="string"&&m.hash){_dataMeta=m;_dataMetaAt=Date.now();return m;}}
+    }catch(e){}
+    _dataMetaFailAt=Date.now();
+    return _dataMeta; // keep an older hash if we had one (e.g. now offline)
+  })().finally(()=>{_dataMetaP=null;});
+  return _dataMetaP;
+}
+async function loadData(path,fallbackFn){
+  if(staticDataOn_()){
+    try{
+      const m=await dataMeta_();
+      if(m&&m.hash){
+        const r=await fetch("data/"+path+"?v="+encodeURIComponent(m.hash));
+        if(r.ok)return await r.json();
+      }
+    }catch(e){/* fall through to the old path */}
+  }
+  return fallbackFn?fallbackFn():null;
+}
+// Sheet-imported questions of one subject, in the same shape the "questions" API returns.
+async function loadQuestions_(subjectId){
+  const live=async()=>{
+    const r=API?await apiGet("questions",{subjectId}).catch(()=>null):null;
+    return r?.ok&&Array.isArray(r.data)?r.data:null;
+  };
+  const data=await loadData("questions/"+encodeURIComponent(subjectId)+".json",live);
+  return Array.isArray(data)?data:null;
+}
+// Static custom subjects never contain the exam password (it is never published). Keep the
+// passwords we already know from the live server so cards keep working.
+function withKnownPasswords_(list){
+  const known=new Map();
+  [...(customSubjects||[]),...store.customSubjectsCache()].forEach(s=>{
+    if(s&&s.id!==undefined&&s.password!==undefined&&s.password!==null)known.set(String(s.id),s.password);
+  });
+  return list.map(s=>(s&&s.password===undefined&&known.has(String(s.id)))?{...s,password:known.get(String(s.id))}:s);
+}
+let _liveCustomApplied=false; // true once live (Apps Script) subject data has been applied this visit
+// Custom subjects + topic summary from data/*.json. On a normal Home visit it only fills what is
+// still empty (first visit / cold cache) and never overwrites newer live data; force=true is used
+// after "Update content" finishes.
+async function loadStaticHome_(force){
+  if(!staticDataOn_())return;
+  const needCustom=force||!(customSubjects&&customSubjects.length);
+  const needTopics=force||!Object.keys(_serverTopics||{}).length;
+  if(!needCustom&&!needTopics)return;
+  const [cs,ts]=await Promise.all([
+    needCustom?loadData("custom-subjects.json",()=>null):null,
+    needTopics?loadData("topic-summary.json",()=>null):null
+  ]);
+  if(!force&&_liveCustomApplied)return;
+  let changed=false;
+  if(needCustom&&Array.isArray(cs)&&cs.length){customSubjects=withKnownPasswords_(cs);store.setCustomSubjectsCache(customSubjects);changed=true;}
+  if(needTopics&&ts&&typeof ts==="object"&&!Array.isArray(ts)){setServerTopics(ts);changed=true;}
+  if(changed)refreshSubjectCardStats();
+}
+// Live password lookup, used only when the static list has no password for a custom subject.
+async function liveCustomPassword_(id){
+  if(!API)return undefined;
+  const cs=await apiGet("customSubjects",{},15000,1);
+  if(cs?.ok&&Array.isArray(cs.data)){
+    customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);_liveCustomApplied=true;
+    if(cs.topicSummary)setServerTopics(cs.topicSummary);
+    const f=cs.data.find(x=>String(x.id)===String(id));
+    return f?f.password:undefined;
+  }
+  return undefined;
+}
+/* ===================== "UPDATE CONTENT" (publish now) =====================
+ * Asks Apps Script to start the GitHub sync job. The browser never talks to GitHub and never
+ * holds a token. The server throttles: visitors once per 5 min, admins once per 60 s. */
+let _publishBusy=false,_publishUntil=0,_publishTick=null;
+function setPublishMsg_(t){document.querySelectorAll("[data-publish-msg]").forEach(el=>{el.textContent=t||"";el.style.display=t?"":"none";});}
+function setPublishBtns_(disabled){document.querySelectorAll("[data-publish-btn]").forEach(b=>{b.disabled=!!disabled;b.classList.toggle("busy",!!disabled);});}
+async function reloadStaticData_(){
+  _staticTopicsChecked=false;
+  await loadStaticHome_(true);   // custom subjects + topic summary
+  await ensureStaticTopics();    // built-in topic counts (data/subjects.json)
+  checkServerStatusAndBundle(true); // quietly bring back live-only items (passwords, private tests)
+}
+async function pollForNewContent_(baseline){
+  const end=Date.now()+3*60*1000;
+  while(Date.now()<end){
+    await sleep(15000);
+    try{
+      const r=await fetch("data/export-meta.json?t="+Date.now(),{cache:"no-store"});
+      const m=r.ok?await r.json():null;
+      if(m&&m.hash&&m.hash!==baseline){
+        _dataMeta=m;_dataMetaAt=Date.now();
+        await reloadStaticData_();
+        return true;
+      }
+    }catch(e){/* keep waiting */}
+  }
+  return false;
+}
+function publishWait_(sec){
+  _publishUntil=Date.now()+sec*1000;
+  setPublishBtns_(true);
+  clearInterval(_publishTick);
+  const tick=()=>{
+    const left=Math.ceil((_publishUntil-Date.now())/1000);
+    if(left<=0){clearInterval(_publishTick);setPublishMsg_("");setPublishBtns_(false);return;}
+    setPublishMsg_(`Please wait ${left} seconds and try again`);
+  };
+  tick();_publishTick=setInterval(tick,1000);
+}
+async function publishNow(){
+  if(_publishBusy||Date.now()<_publishUntil||!API)return;
+  _publishBusy=true;setPublishBtns_(true);
+  setPublishMsg_("Publishing… new content will appear in about 1 to 2 minutes");
+  try{
+    const before=await dataMeta_(true).catch(()=>null);
+    const baseline=before&&before.hash?before.hash:null;
+    const p=store.profile();
+    const res=await apiPost("publishNow",{...adminAuth_(),email:p?.email||""},25000);
+    if(res?.ok){
+      const live=await pollForNewContent_(baseline);
+      setPublishMsg_(live?"✅ New content is live":"Update started. If nothing changed yet, it will appear within 15 minutes.");
+    }else if(res&&res.error==="wait"){
+      _publishBusy=false;
+      publishWait_(Math.max(1,Number(res.retryInSec)||60));
+      return;
+    }else{
+      setPublishMsg_("Could not start the update. It will still update automatically within 15 minutes.");
+    }
+  }catch(e){
+    setPublishMsg_("Could not start the update. It will still update automatically within 15 minutes.");
+  }
+  _publishBusy=false;
+  if(Date.now()>=_publishUntil)setPublishBtns_(false);
+}
+
+/* ===================== OFFLINE QUESTION BANK CACHE =====================
+ * Saves a subject's full question set to localStorage the first time it's
+ * loaded while online, so the SAME device can open that exam again later
+ * with zero connectivity. This is separate from the in-progress-exam
+ * autosave (store.getProgress/setProgress) — that one saves answers, this
+ * one saves the questions themselves, which is what's actually missing
+ * when you're offline and haven't attempted the subject before. */
+function bankCacheKey_(subjectId){ return "ecet_bankcache_"+subjectId; }
+function cacheBankForOffline_(subjectId,bankData){
+  try{ localStorage.setItem(bankCacheKey_(subjectId), JSON.stringify({bank:bankData,cachedAt:Date.now()})); }
+  catch(e){ console.warn("Offline bank cache failed (storage full?)",e); }
+}
+function getCachedBank_(subjectId){
+  try{ const raw=localStorage.getItem(bankCacheKey_(subjectId)); return raw?(JSON.parse(raw).bank||null):null; }
+  catch(e){ return null; }
+}
+
+/* ===================== OFFLINE SUBMISSION OUTBOX =====================
+ * Holds COMPLETED exam payloads that couldn't reach the backend yet
+ * (no internet, or the request failed). This is distinct from persist()'s
+ * in-progress-exam autosave: an outbox entry is a fully finished exam that
+ * is just waiting to be uploaded. It survives closing the app entirely and
+ * is flushed automatically the instant connectivity returns, on every app
+ * launch, and on a 60s safety-net interval in case the 'online' browser
+ * event doesn't fire reliably on some devices. Nothing about scoring,
+ * submission logic, or existing online behavior changes — this only adds
+ * a place for a finished exam to wait when submitExam_ can't be reached. */
+function getOutbox_(){ try{return JSON.parse(localStorage.getItem("ecet_outbox")||"[]");}catch(e){return [];} }
+function setOutbox_(items){ try{localStorage.setItem("ecet_outbox",JSON.stringify(items));}catch(e){console.warn("Outbox save failed",e);} }
+function outboxCount_(){ return getOutbox_().length; }
+function queueForOfflineSubmit_(payload){
+  const items=getOutbox_();
+  items.push({localId:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(16).slice(2)),payload,queuedAt:Date.now()});
+  setOutbox_(items);
+  refreshOutboxBadge_();
+}
+let _flushingOutbox=false;
+async function flushOutbox_(){
+  if(_flushingOutbox||!navigator.onLine||!API)return;
+  const items=getOutbox_();
+  if(!items.length)return;
+  _flushingOutbox=true;
+  const remaining=[];
+  for(const item of items){
+    const resp=await apiPost("submitExam",item.payload);
+    // A rejected-for-cooldown submission (someone attempted the same
+    // locked subject twice while offline) can never succeed by retrying —
+    // drop it instead of retrying it forever, same as it would have been
+    // handled live.
+    if(!resp?.ok && !resp?.cooldown?.locked){ remaining.push(item); continue; }
+  }
+  setOutbox_(remaining);
+  _flushingOutbox=false;
+  refreshOutboxBadge_();
+  if(remaining.length<items.length){
+    store.setDashboardCache(null); // stats just changed server-side — force a fresh fetch next dashboard visit
+  }
+}
+function refreshOutboxBadge_(){
+  const el=document.getElementById("outboxBadge");
+  if(!el)return;
+  const n=outboxCount_();
+  el.innerHTML=n?`<div class="note" style="background:#fff3cd;padding:8px;border-radius:7px">📡 ${n} result${n>1?"s":""} saved offline — will upload automatically when you're back online.</div>`:"";
+}
+function armOutboxAutoSync_(){
+  window.addEventListener("online",flushOutbox_);
+  flushOutbox_();
+  setInterval(flushOutbox_,60000);
+}
+
+/* ===================== BACK NAVIGATION STACK =====================
+   Every top-level "page" function pushes itself here as it renders. The
+   top-left Back button pops the current page, then re-renders whatever
+   came before it (which pushes itself again). During an active exam or
+   revision test it defers to the same leave-confirmation used by Home. */
+let navStack=[];
+function pushNav(fn){
+  if(navStack[navStack.length-1]!==fn)navStack.push(fn);
+  if(navStack.length>40)navStack.shift();
+  // Back button visibility is driven explicitly by "is this Home?" rather
+  // than stack depth (which was fragile — e.g. depth could be >1 while
+  // still logically on Home after certain navigation sequences).
+  const btn=document.getElementById("backFab");
+  if(btn)btn.style.display=(fn!==home)?"flex":"none";
+}
+function replaceNav(fn){
+  // Like pushNav, but replaces the current top-of-stack entry instead of
+  // stacking on top of it — used when a screen (e.g. the admin password
+  // prompt) is logically "consumed" by what comes next, so Back skips it.
+  if(navStack.length)navStack.pop();
+  pushNav(fn);
+}
+function goBack(){
+  if(examActive){safeGoHome();return;}
+  navStack.pop();
+  const prev=navStack.pop();
+  (prev||home)();
+}
+
+let subjects=[],customSubjects=[],bank=[],test=[],answers=[],marked=[],qTime=[];
+let current=0,left=0,timer=null,questionStartedAt=0,examStartedAt=0,activeSubject=null,saveTick=0,isSubmitting=false;
+let examSessionId="";
+let revisionMode=false, revisionItems=[];
+/* ===================== STRICT EXAM-ACTIVE STATE =====================
+ * BUG THIS FIXES: previously "is an exam running?" was recomputed from
+ * activeSubject/test.length/left/isSubmitting/revisionMode every time a
+ * guard needed an answer. submit() and submitRevisionTest() only ever
+ * reset isSubmitting — they never cleared test/answers/activeSubject/left
+ * — so as soon as ANY later navigation (home/dashboard/mistakes) called
+ * clearExam() and flipped isSubmitting back to false, those stale
+ * leftovers made the guards think an exam was still running. That's why
+ * clicking Home (or the back button) after seeing your result could pop
+ * "Exam is in progress... submitted automatically" and shove you back
+ * into the test, sometimes even re-submitting it.
+ *
+ * Fix: examActive is the ONLY thing any guard is allowed to check. It is
+ * set true in exactly two places (start(), startRevisionTest()) and set
+ * false in exactly two places (submit(), submitRevisionTest()) — the
+ * instant you click Submit, not after the network call resolves. Once
+ * it's false, it STAYS false through any amount of navigation, stale
+ * variables, or re-renders, until a brand new exam is explicitly started.
+ * This makes "submitted = done, permanently, for this attempt" a hard
+ * guarantee instead of something re-derived (and re-breakable) on every
+ * navigation.
+ */
+let examActive=false;
+let _afterProfile=null;
+/* SECURITY FIX: the admin password used to be a hard-coded constant ("123")
+ * in this public file and in config.js, compared locally in the browser —
+ * anyone reading the repo had full admin access. It is now typed by the
+ * admin, verified by the SERVER (Code.gs isAdmin_, secret kept in Apps
+ * Script Properties, never in source), and held only in sessionStorage so
+ * it disappears when the tab closes. Nothing secret is embedded here. */
+function adminPw_(){try{return sessionStorage.getItem("ecet_admin_pw")||"";}catch(e){return "";}}
+let isAdminUnlocked=!!adminPw_();
+localStorage.removeItem("ecet_admin_unlocked"); // old persistent flag from the insecure version
+
+
+function newSessionId(){ return crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2); }
+function clearExam(){
+  clearInterval(timer); timer=null; isSubmitting=false;
+  window.removeEventListener("beforeunload",handleBeforeUnload);
+  window.removeEventListener("pagehide",handlePageHide);
+  window.removeEventListener("beforeunload",handleRevisionBeforeUnload);
+  window.removeEventListener("pagehide",handleRevisionPageHide);
+  disarmBackGuard();
+}
+
+/* ===================== BROWSER BACK GUARD (during an active test) =====================
+   Browsers do not let scripts fully block the back button, but pushState + popstate lets
+   us intercept the very first back action, ask for confirmation, and auto-submit if the
+   person confirms. Refresh/close/tab-close are handled separately by beforeunload/pagehide
+   (see handleBeforeUnload/handlePageHide and their revision equivalents) — those cannot
+   guarantee interception either; browsers only allow a generic "leave site?" prompt there. */
+function safeGoHome(){
+  if(examActive){
+    const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
+    if(!leave)return;
+    if(revisionMode)submitRevisionTest();else submit();
+    return;
+  }
+  home();
+}
+function armBackGuard(){
+  try{ history.pushState({ecetGuard:true},""); }catch(e){}
+  window.addEventListener("popstate",handleBackGuard);
+}
+function disarmBackGuard(){
+  window.removeEventListener("popstate",handleBackGuard);
+}
+function handleBackGuard(){
+  if(!examActive){ disarmBackGuard(); return; }
+  const leave=confirm("Exam is in progress. Do you want to go back? Your test will be submitted automatically.");
+  if(leave){
+    disarmBackGuard();
+    if(revisionMode)submitRevisionTest();else submit();
+  } else {
+    try{ history.pushState({ecetGuard:true},""); }catch(e){}
+  }
+}
+function persist(){
+  if(!activeSubject||revisionMode)return;
+  const p=store.profile();
+  try{
+    store.setProgress(activeSubject.id,{
+      email:p?.email,answers,marked,qTime,current,left,examStartedAt,examSessionId,
+      questionOrder:test.map(q=>q.id),
+      optionOrders:test.map(q=>Array.isArray(q.optionOrder)?q.optionOrder:q.options.map((_,i)=>i)),
+      savedAt:Date.now()
+    });
+  }catch(e){console.warn("Autosave failed",e);}
+}
+function commitTime(){ if(!test.length)return; const spent=(Date.now()-questionStartedAt)/1000; qTime[current]=(qTime[current]||0)+spent; questionStartedAt=Date.now(); }
+
+function gradeFib(userText, answerSpec){
+  if(window.PracticeRules&&typeof window.PracticeRules.gradeFib==='function')return window.PracticeRules.gradeFib(userText,answerSpec);
+  const typed=String(userText??'').trim(); if(!typed)return {correct:false};
+  const clean=s=>String(s??'').toLowerCase().replace(/[^a-z0-9.\s-]/g,' ').replace(/([a-z])-(?=[a-z])/g,'$1 ').replace(/\.+(?=\s|$)/g,'').replace(/(^|\s)[.-]+(?=\s|$)/g,' ').replace(/\s+/g,' ').trim();
+  const num=s=>{const t=String(s??'').trim().replace(/,/g,'').replace(/\s+/g,'');return /^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(t)?Number(t):null;};
+  const range=s=>{const m=/^\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*(?:to|\.\.|~)\s*([+-]?(?:\d+\.?\d*|\.\d+))\s*$/i.exec(String(s??''));return m?[Math.min(+m[1],+m[2]),Math.max(+m[1],+m[2])]:null;};
+  for(const expected of String(answerSpec??'').split(';').map(x=>x.trim()).filter(Boolean)){
+    const t=clean(typed),e=clean(expected); if(t&&t===e)return {correct:true}; if(t&&t.replace(/\s/g,'')===e.replace(/\s/g,''))return {correct:true};
+    const n=num(typed),r=range(expected),en=num(expected);if(n!==null&&((r&&n>=r[0]&&n<=r[1])||(!r&&en!==null&&Math.abs(n-en)<=1e-9)))return {correct:true};
+    const stop=['the','a','an','of','is','are','to','and','in','on'],w=e.split(' ').filter(x=>x&&!stop.includes(x)),h=t.split(' ').filter(x=>x&&!stop.includes(x));if(w.length>=2&&w.filter(x=>h.includes(x)).length/w.length>=.6)return {correct:true};
+  }return {correct:false};
+}
+function answeredValue_(q,v){return String(q.type||'').toUpperCase()==='FIB'?String(v??'').trim()!=='' : v!==null&&v!==undefined;}
+
+function submissionPayload(compact=false){
+  commitTime();
+  const p=store.profile();
+  const detail=test.map((q,n)=>{
+    const isFib=String(q.type||'').toUpperCase()==='FIB';
+    const selected=answers[n];
+    const selectedText=isFib?String(selected??''):'';
+    const correctText=isFib?String(q.answerText||q.correctText||''):'';
+    const isCorrect=isFib?gradeFib(selectedText,correctText).correct:(selected!==null&&selected!==undefined&&Number(selected)===Number(q.answer));
+    const d={id:q.id,year:q.year,state:q.state,questionNumber:q.questionNumber,topic:q.topic||'',type:isFib?'FIB':'MCQ',marks:Number(q.marks)>0?Number(q.marks):1,correct:isFib?'':q.answer,selected:isFib?'':selected,selectedText,correctText,marked:marked[n],time:Math.round(qTime[n]||0)};
+    if(!compact || (!isCorrect && answeredValue_(q,selected))){d.question=q.question;d.options=q.options||[];d.image=q.image||'';d.optionImages=q.optionImages||[];}
+    return d;
+  });
+  const isFibTest=test.length>0&&test.every(q=>String(q.type||'').toUpperCase()==='FIB');
+  const correctCount=detail.filter(d=>d.type==='FIB'?gradeFib(d.selectedText,d.correctText).correct:(d.selected!==null&&d.selected!==undefined&&Number(d.selected)===Number(d.correct))).length;
+  const wrong=detail.filter(d=>d.type==='FIB'?(String(d.selectedText||'').trim()!==''&&!gradeFib(d.selectedText,d.correctText).correct):(d.selected!==null&&d.selected!==undefined&&Number(d.selected)!==Number(d.correct))).length;
+  const unanswered=detail.filter(d=>d.type==='FIB'?String(d.selectedText||'').trim()==='':(d.selected===null||d.selected===undefined)).length;
+  const total=isFibTest?detail.reduce((sum,d)=>sum+(Number(d.marks)>0?Number(d.marks):1),0):test.length;
+  const score=isFibTest?detail.reduce((sum,d)=>sum+(gradeFib(d.selectedText,d.correctText).correct?(Number(d.marks)>0?Number(d.marks):1):0),0):correctCount;
+  const percentage=total?Math.round(score/total*1000)/10:0;
+  return {name:p.name,email:p.email,subject:activeSubject.name,subjectId:activeSubject.parentId||activeSubject.id,testType:isFibTest?'FIB':'MCQ',score,total,percentage,correct:correctCount,wrong,unanswered,totalTime:Math.round((Date.now()-examStartedAt)/1000),startTime:new Date(examStartedAt).toISOString(),testUrl:(window.APP_CONFIG&&window.APP_CONFIG.SITE_URL)||location.href.split("#")[0],detail,examSessionId,autoSubmitted:!!compact};
+}
+// NOTE: Closing the tab, refreshing, or losing connectivity must NOT finalize the
+// exam — it must only save progress so "Resume Exam" on Home has something to
+// restore. (Previously this fired a sendBeacon submitExam on every close/refresh,
+// which "succeeds" from the browser's point of view almost immediately regardless
+// of whether the backend ever receives it, and then wiped the saved progress — so
+// the exam looked auto-submitted and there was nothing left to resume, even though
+// Home still advertised "Test in progress — resume any time.") The timer keeps
+// counting against the wall clock while you're away (see start()'s elapsed-time
+// recompute), so leaving does not let you pause the clock — it just lets you
+// actually come back to your answers instead of losing them.
+function handleBeforeUnload(e){
+  if(!examActive||isSubmitting||revisionMode||!test.length||left<=0)return;
+  persist();
+  e.preventDefault();
+  e.returnValue="Your exam is still in progress. It will be waiting for you to resume when you come back.";
+  return e.returnValue;
+}
+function handlePageHide(){
+  if(!examActive||isSubmitting||revisionMode||!test.length||left<=0)return;
+  persist();
+}
+
+
+/* ===================== TOPIC-WISE TESTS =====================
+ * The same subject can be practised for more than one exam (say Digital
+ * Electronics for ECET *and* for GATE), and inside each exam it can have topic
+ * tests (Basics, Capacitors & Inductors, Two-Ports …). Every question carries an
+ * optional `exam` and `topic`. A question without an exam belongs to its
+ * subject's "home" exam: the Exam typed when a custom subject was created, or
+ * ECET for the built-in subjects.
+ *
+ * For each exam of a subject the Home page offers:
+ *   • a Full Subject Test (all that exam's questions) — the only row when the
+ *     exam has no topics, and
+ *   • one numbered topic test per topic.
+ *
+ * Every test is a "test unit": a copy of the subject with its own name and id.
+ * Password, autosave/resume, the wait after an exam, results, rank, mistakes,
+ * dashboard and emails all key on that name/id, so each test automatically gets
+ * its own attempts, best score and wait. Names stay stable:
+ *   home exam  → "Subject"   and  "Subject — Topic"        (what older results used)
+ *   other exam → "Subject (GATE)"  and  "Subject (GATE) — Topic"
+ * Results go to the backend with the PARENT subject id so reports can group them. */
+const TOPIC_SEP=" — ";
+const cleanTopic=t=>String(t??"").replace(/\s+/g," ").trim();
+const topicKey=t=>cleanTopic(t).toLowerCase();
+const topicSlug=t=>topicKey(t).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"topic";
+const hashStr=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);};
+const readJsonLS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return v&&typeof v==="object"&&!Array.isArray(v)?v:d;}catch(e){return d;}};
+let _serverTopics=readJsonLS("ecet_topic_summary_cache_v2",{}); // {subjectId:{total,exams:[{name,total}],topics:[{name,count,exam}]}}
+let _staticTopics=readJsonLS("ecet_static_topics_cache_v2",{}); // same shape, counted from the static JSON banks
+let _staticTopicsChecked=false;
+let _expandedSubjects=new Set(); // Home cards whose test list is open
+let _unlockedSubjects=new Set(); // subjects whose password was entered this visit (so other tests of it don't ask again)
+
+function findSubjectById(id){return subjects.find(s=>s.id===id)||customSubjects.find(s=>s.id===id);}
+// The exam a question belongs to when it has none of its own.
+function homeExam(s){
+  const p=(s&&findSubjectById(s.parentId||s.id))||s;
+  if(!p)return "";
+  return subjects.some(x=>x.id===p.id)?"ECET":cleanTopic(p.exam);
+}
+function tallyTopics(list){
+  const m=new Map();
+  (list||[]).forEach(q=>{const k=topicKey(q&&q.topic);if(!k)return;const e=m.get(k);if(e)e.count++;else m.set(k,{name:cleanTopic(q.topic),count:1});});
+  return [...m.values()];
+}
+// {exams:[{name,total}],topics:[{name,count,exam}]} for a list of questions
+function tallyBank(list,home){
+  const exams=new Map(),topics=new Map();
+  (list||[]).forEach(q=>{
+    const ex=cleanTopic(q&&q.exam)||home,ek=topicKey(ex);
+    const e=exams.get(ek)||{name:ex,total:0};e.total++;exams.set(ek,e);
+    const tk=topicKey(q&&q.topic);if(!tk)return;
+    const key=ek+"|"+tk,t=topics.get(key)||{name:cleanTopic(q.topic),exam:ex,count:0};t.count++;topics.set(key,t);
+  });
+  return {exams:[...exams.values()],topics:[...topics.values()]};
+}
+function setServerTopics(map){
+  if(!map||typeof map!=="object"||Array.isArray(map))return;
+  _serverTopics=map;
+  try{localStorage.setItem("ecet_topic_summary_cache_v2",JSON.stringify(map));}catch(e){}
+}
+// Built-in subjects' topic counts. Read from data/subjects.json (tiny, counted on the server side by the
+// sync job) instead of downloading every subject's question file on each Home visit. The old eager
+// download is kept only as a fallback when that file is missing / unreadable / switched off.
+async function ensureStaticTopics(){
+  if(_staticTopicsChecked)return;
+  _staticTopicsChecked=true;
+  const list=await loadData("subjects.json",()=>null);
+  if(Array.isArray(list)&&list.length){
+    let changed=false;
+    list.forEach(e=>{
+      if(!e||!e.id||!e.available||!e.file)return;
+      const next={total:Number(e.total)||0,exams:Array.isArray(e.exams)?e.exams:[],topics:Array.isArray(e.topics)?e.topics:[]};
+      if(JSON.stringify(_staticTopics[e.id])!==JSON.stringify(next)){_staticTopics[e.id]=next;changed=true;}
+    });
+    if(changed){
+      try{localStorage.setItem("ecet_static_topics_cache_v2",JSON.stringify(_staticTopics));}catch(e){}
+      refreshSubjectCardStats();
+    }
+    return;
+  }
+  await ensureStaticTopicsLegacy_();
+}
+async function ensureStaticTopicsLegacy_(){
+  let changed=false;
+  await Promise.all(subjects.filter(s=>s.available&&s.file).map(async s=>{
+    try{
+      const arr=await fetch(s.file).then(r=>r.json());
+      if(!Array.isArray(arr))return;
+      const next={total:arr.length,...tallyBank(arr,"ECET")};
+      if(JSON.stringify(_staticTopics[s.id])!==JSON.stringify(next)){_staticTopics[s.id]=next;changed=true;}
+    }catch(e){}
+  }));
+  if(changed){
+    try{localStorage.setItem("ecet_static_topics_cache_v2",JSON.stringify(_staticTopics));}catch(e){}
+    refreshSubjectCardStats();
+  }
+}
+// One entry per exam of the subject (home exam first): {exam,examKey,isHome,total,topics:[{name,count}]}
+function subjectGroups(s){
+  const home=homeExam(s),homeKey=topicKey(home),m=new Map();
+  const grp=name=>{const k=topicKey(name);let g=m.get(k);if(!g){g={exam:cleanTopic(name),examKey:k,total:0,topics:[]};m.set(k,g);}return g;};
+  [_staticTopics[s.id],_serverTopics[s.id]].forEach(src=>{
+    if(!src)return;
+    const hasExams=Array.isArray(src.exams)&&src.exams.length>0;
+    (src.exams||[]).forEach(x=>{grp(x.name).total+=Number(x.total)||0;});
+    (src.topics||[]).forEach(t=>{
+      const g=grp(t.exam===undefined?home:t.exam),k=topicKey(t.name),ex=g.topics.find(x=>topicKey(x.name)===k),c=Number(t.count)||0;
+      if(ex)ex.count+=c;else g.topics.push({name:cleanTopic(t.name),count:c});
+      if(!hasExams)g.total+=c; // older cached summaries had no exam totals
+    });
+  });
+  const list=[...m.values()];
+  list.forEach(g=>{g.isHome=g.examKey===homeKey;const t=g.topics.reduce((n,x)=>n+x.count,0);if(g.total<t)g.total=t;});
+  return list.sort((a,b)=>(b.isHome?1:0)-(a.isHome?1:0));
+}
+// Flat topic list, exam list and the question total of a subject.
+function subjectTopicInfo(s){
+  const groups=subjectGroups(s),st=_staticTopics[s.id],sv=_serverTopics[s.id];
+  const topics=[];groups.forEach(g=>g.topics.forEach(t=>topics.push({...t,exam:g.exam,examKey:g.examKey,isHome:g.isHome})));
+  const total=s.file
+    ?(st?st.total:(s.questionCount||0))+(sv?sv.total:0)
+    :(s.questionCount!==undefined?s.questionCount:(sv?sv.total:0));
+  return {groups,topics,total,topicCount:topics.length};
+}
+// A subject gets the expandable test list when it has topic tests or more than one exam.
+function hasTestList(s){const i=subjectTopicInfo(s);return i.topicCount>0||i.groups.length>1;}
+function fullUnit(parent,g){
+  if(g.isHome)return {...parent,exam:g.exam,examKey:g.examKey,questionCount:g.total};
+  return {...parent,id:parent.id+"::x-"+topicSlug(g.exam)+"-"+hashStr(g.examKey),name:parent.name+" ("+g.exam+")",parentId:parent.id,parentName:parent.name,exam:g.exam,examKey:g.examKey,description:"Full test — "+g.exam,questionCount:g.total};
+}
+function topicUnit(parent,g,t){
+  const home=g.isHome,base=home?parent.name:parent.name+" ("+g.exam+")";
+  const id=home?parent.id+"::"+topicSlug(t.name)+"-"+hashStr(topicKey(t.name))
+              :parent.id+"::"+topicSlug(g.exam)+"~"+topicSlug(t.name)+"-"+hashStr(g.examKey+"|"+topicKey(t.name));
+  return {...parent,id,name:base+TOPIC_SEP+t.name,parentId:parent.id,parentName:parent.name,exam:g.exam,examKey:g.examKey,topic:t.name,topicKey:topicKey(t.name),description:"Topic test — "+t.name+(g.exam?" ("+g.exam+")":""),questionCount:t.count};
+}
+// gi = which exam group, ti = -1 for that exam's full test, else the topic index inside the group
+function unitFor(sid,gi,ti){
+  const parent=findSubjectById(sid);if(!parent)return null;
+  const g=subjectGroups(parent)[gi];if(!g)return null;
+  if(ti<0)return fullUnit(parent,g);
+  const t=g.topics[ti];
+  return t?topicUnit(parent,g,t):null;
+}
+function allUnitsOf(s){
+  const out=[];
+  subjectGroups(s).forEach(g=>{out.push(fullUnit(s,g));g.topics.forEach(t=>out.push(topicUnit(s,g,t)));});
+  if(!out.length)out.push(s);
+  return out;
+}
+// every test name of a subject (used where an admin picks a test, e.g. locks)
+function unitNames(s){const n=allUnitsOf(s).map(u=>u.name);if(!n.includes(s.name))n.unshift(s.name);return n;}
+// exam shown in the exam header: a test's own exam, or the subject's home exam
+function examLabel(s){if(!s)return "";return s.examKey!==undefined?(s.exam||""):homeExam(s);}
+// Home card: only how many topic tests the subject has — no exam, no topic names.
+function cardTagsHTML(s,showCount){
+  if(!showCount)return "";
+  const n=subjectTopicInfo(s).topicCount;
+  return `<div class="card-tags"><span class="count-pill${n?"":" zero"}">📚 ${n?`${n} topic test${n===1?"":"s"}`:"No topic tests yet"}</span></div>`;
+}
+function testRowHTML(parent,g,gi,ti){
+  const unit=ti<0?fullUnit(parent,g):topicUnit(parent,g,g.topics[ti]);
+  const unfinished=store.getProgress(unit.id);
+  // A wait never blocks resuming a test already in progress — only starting a new attempt.
+  const lock=!unfinished?subjectLockInfo(unit.name):{locked:false};
+  const best=subjectBest(unit.name),count=ti<0?g.total:g.topics[ti].count;
+  const bits=[];if(count)bits.push(`${count} Q`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
+  const btn=lock.locked?`<button disabled title="You can retake this after the wait">Locked</button>`:`<button onclick="openTestUnit('${esc(parent.id)}',${gi},${ti})">${unfinished?"Resume":"Start"}</button>`;
+  const remind=unfinished?`<button class="ghost" onclick="quickRemindUnit('${esc(parent.id)}',${gi},${ti})">Remind me later</button>`:"";
+  return `<div class="topic-row${ti<0?" full":""}"><span class="topic-num">${ti<0?"★":ti+1}</span><div class="topic-info"><b>${ti<0?"Full Subject Test":esc(g.topics[ti].name)}</b><small>${bits.join(" • ")}${unfinished?" • In progress":""}</small>${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}</div><div class="topic-actions">${btn}${remind}</div></div>`;
+}
+// One exam of the subject: a heading with the exam, then its tests. An exam with no topics is
+// just its Full Subject Test; an exam with topics lists the Full Subject Test and then 1, 2, 3 …
+function groupHTML(s,g,gi,multi){
+  const head=(multi||g.exam)?`<div class="topic-panel-head"><span class="exam-badge">${esc(g.exam||"General")}</span>${g.topics.length?`<span>${g.topics.length} topic test${g.topics.length===1?"":"s"}</span>`:""}</div>`:"";
+  const rows=testRowHTML(s,g,gi,-1)+g.topics.map((t,ti)=>testRowHTML(s,g,gi,ti)).join("");
+  return `<div class="exam-group">${head}${rows}</div>`;
+}
+function topicCardHTML(s,i){
+  const info=subjectTopicInfo(s),open=_expandedSubjects.has(s.id);
+  const inProgress=allUnitsOf(s).some(u=>store.getProgress(u.id));
+  const panel=open?`<div class="topic-panel">${info.groups.map((g,gi)=>groupHTML(s,g,gi,info.groups.length>1)).join("")}</div>`:"";
+  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p><button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
+}
+function toggleTopics(sid){
+  if(_expandedSubjects.has(sid))_expandedSubjects.delete(sid);else _expandedSubjects.add(sid);
+  refreshSubjectCardStats();
+  if(_expandedSubjects.has(sid)){
+    const card=[...document.querySelectorAll('.subject-card')].find(c=>c.dataset.sid===sid);
+    if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+}
+function openTestUnit(sid,gi,ti){
+  const unit=unitFor(sid,gi,ti);if(!unit)return;
+  _pwSubject=unit;
+  if(guardSubjectLock_(unit))return;
+  // The subject password was already entered this visit → go straight to the test.
+  if(_unlockedSubjects.has(unit.parentId||unit.id)){loadBankAndEnroll_(unit);return;}
+  renderPasswordCard();
+}
+function quickRemindUnit(sid,gi,ti){const u=unitFor(sid,gi,ti);if(u)quickRemindLater(u.id,u.name);}
+// Per-topic score table, shown on the result page of a test that mixes topics (a full subject test).
+function topicBreakdownHTML(detail){
+  const m=new Map();
+  detail.forEach(d=>{
+    const k=topicKey(d.topic);if(!k)return;
+    const e=m.get(k)||{name:cleanTopic(d.topic),total:0,correct:0};
+    const marks=Number(d.marks)>0?Number(d.marks):1;
+    e.total+=marks;
+    if(d.type==='FIB'?gradeFib(d.selectedText,d.correctText).correct:(d.selected!==null&&d.selected!==undefined&&Number(d.selected)===Number(d.correct)))e.correct+=marks;
+    m.set(k,e);
+  });
+  if(m.size<2)return "";
+  const rows=[...m.values()].map(e=>({...e,pct:Math.round(e.correct/e.total*100)})).sort((a,b)=>a.pct-b.pct||b.total-a.total);
+  return `<h2>Topic-wise performance</h2><p class="note">Weakest topics first — a good place to focus your next practice.</p>${rows.map(e=>`<div class="subjbar-row"><div class="subjbar-label">${esc(e.name)} (${e.correct}/${e.total})</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${e.pct}%"></div></div><div>${e.pct}%</div></div>`).join("")}`;
+}
+
+/* ===================== HOME: SUBJECT SEARCH / JUMP ===================== */
+let _jumpActive=-1,_jumpItems=[];
+function jumpAllSubjects_(){
+  // Every topic test is searchable too ("Networks — Two-Ports"); picking one opens its subject card.
+  const out=[];
+  const add=(s,soon)=>{out.push({id:s.id,name:s.name,soon});if(!soon)subjectGroups(s).forEach(g=>g.topics.forEach(t=>out.push({id:s.id,name:topicUnit(s,g,t).name,topic:t.name})));};
+  subjects.forEach(s=>add(s,!s.available));
+  customSubjects.forEach(s=>add(s,s.questionCount===0));
+  return out;
+}
+function renderJumpList(showAll){
+  const list=document.getElementById('jumpList'),input=document.getElementById('subjectJump');
+  if(!list||!input)return;
+  const q=showAll===true?'':input.value.trim().toLowerCase();
+  _jumpItems=jumpAllSubjects_().filter(s=>!q||s.name.toLowerCase().includes(q));
+  _jumpActive=_jumpItems.length&&q?0:-1;
+  list.innerHTML=_jumpItems.length?_jumpItems.map((s,i)=>`<div class="jump-item${i===_jumpActive?' active':''}${s.topic?' is-topic':''}" data-i="${i}" onmousedown="event.preventDefault();jumpToSubject(${i})">${s.topic?'<span class="jump-arrow">↳</span>':''}${esc(s.name)}${s.soon?' <span class="jump-soon">coming soon</span>':''}</div>`).join(''):'<div class="jump-empty">No subject matches your search</div>';
+  list.hidden=false;
+}
+function toggleJumpList(){
+  const list=document.getElementById('jumpList');if(!list)return;
+  if(list.hidden){document.getElementById('subjectJump').value='';renderJumpList(true);}else list.hidden=true;
+}
+function jumpKey(ev){
+  const list=document.getElementById('jumpList');if(!list)return;
+  if(ev.key==='Escape'){list.hidden=true;return;}
+  if(list.hidden&&(ev.key==='ArrowDown'))renderJumpList(true);
+  if(!_jumpItems.length)return;
+  if(ev.key==='ArrowDown'||ev.key==='ArrowUp'){
+    ev.preventDefault();
+    _jumpActive=(_jumpActive+(ev.key==='ArrowDown'?1:-1)+_jumpItems.length)%_jumpItems.length;
+    list.querySelectorAll('.jump-item').forEach((el,i)=>el.classList.toggle('active',i===_jumpActive));
+    list.querySelector('.jump-item.active')?.scrollIntoView({block:'nearest'});
+  }else if(ev.key==='Enter'){ev.preventDefault();jumpToSubject(_jumpActive>=0?_jumpActive:0);}
+}
+function jumpToSubject(i){
+  const s=_jumpItems[i];if(!s)return;
+  const list=document.getElementById('jumpList'),input=document.getElementById('subjectJump');
+  if(list)list.hidden=true;
+  if(input){input.value=s.name;input.blur();}
+  if(s.topic){_expandedSubjects.add(s.id);refreshSubjectCardStats();}
+  const card=[...document.querySelectorAll('.subject-card')].find(c=>c.dataset.sid===s.id);
+  if(!card)return;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash');
+  setTimeout(()=>card.classList.remove('flash'),2600);
+  // Put the cursor on the card's main button so Enter opens it straight away.
+  const btn=card.querySelector('button:not([disabled])');
+  if(btn)setTimeout(()=>btn.focus({preventScroll:true}),450);
+}
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('subjectJumpWrap'),list=document.getElementById('jumpList');
+  if(list&&wrap&&!wrap.contains(e.target))list.hidden=true;
+});
+
+
+/* ===================== HOME ===================== */
+function customSubjectsHTML(){
+  return customSubjects.length?customSubjects.map((s,i)=>{
+    const unfinished=store.getProgress(s.id);
+    const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
+    if(!hasQuestions){
+      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+    }
+    if(hasTestList(s))return topicCardHTML(s,i);
+    const best=subjectBest(s.name);
+    const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
+    // A cooldown never blocks resuming an exam already in progress — only starting a brand-new attempt.
+    const lock=!unfinished?subjectLockInfo(s.name):{locked:false};
+    const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
+    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
+}
+async function home(){
+  pushNav(home);
+  clearExam(); revisionMode=false;
+  // Render instantly from whatever we already know (static subject list + last cached
+  // custom subjects) instead of waiting on the network — the network refresh below then
+  // patches the page in place, so clicking Home never looks stuck or "broken".
+  if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
+  customSubjects=store.customSubjectsCache();
+  const p=store.profile();
+  // Anything saved from an earlier visit? Then the page is already showing real data, so the status pill
+  // just says "Updating…" instead of "Checking server…".
+  const haveCache_=!!(customSubjects.length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
+  app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><div class="home-title-actions"><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload"><span class="rf-ico" aria-hidden="true">⟳</span><span>Refresh Data</span></button><button id="publishBtn" data-publish-btn onclick="publishNow()" title="Fetch the newest subjects and questions now"><span class="rf-ico" aria-hidden="true">🔄</span><span>Update content</span></button></div></div>
+    <div class="note" data-publish-msg role="status" aria-live="polite" style="display:none"></div>
+    ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
+    <div id="outboxBadge"></div>
+    <p class="subtitle">${homeSubtitle()}</p>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div>
+    <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
+    <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
+    <h2 style="margin-top:34px">Additional Tests <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
+    <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
+    <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
+    <div class="app-legal-footer" style="margin-top:36px;padding-top:16px;border-top:1px solid #e3e8f5;font-size:13px;color:#65708a">
+      <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> ·
+      <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> ·
+      <a href="cookies.html" target="_blank" rel="noopener">Cookies</a> ·
+      <a href="refund.html" target="_blank" rel="noopener">Refunds</a>
+    </div>
+  </div>`;
+  loadStaticHome_();        // static-first: fills an empty list/topic summary without waiting for Apps Script
+  checkServerStatusAndBundle();
+  handleRevisionLink();
+  armCooldownTicker();
+  ensureStaticTopics();
+  refreshOutboxBadge_();
+}
+function homeSubtitle(){
+  const total=subjects.length+customSubjects.length;
+  const hist=store.dashboardCache();
+  const practiced=hist?.subjects?.length;
+  if(practiced!==undefined&&practiced!==null)return `${total} subjects available • ${practiced} subject${practiced===1?"":"s"} practiced so far`;
+  return `${total} subjects available — pick one to begin practicing.`;
+}
+function subjectCardHTML(s,i){
+  if(s.available&&hasTestList(s))return topicCardHTML(s,i);
+  const unfinished=s.available&&store.getProgress(s.id);
+  // A cooldown never blocks resuming an exam already in progress — only
+  // starting a brand-new attempt.
+  const lock=(s.available&&!unfinished)?subjectLockInfo(s.name):{locked:false};
+  const btn=!s.available?`<button disabled>Coming Soon</button>`
+    :lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`
+    :`<button onclick="openPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
+  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,s.available)}<p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+}
+function subjectCardMeta(s){
+  const unfinished=s.available&&store.getProgress(s.id);
+  if(!s.available)return "Question bank coming soon";
+  const count=s.questionCount;
+  const mins=count?count:50;
+  const best=subjectBest(s.name);
+  const bits=[];
+  if(count)bits.push(`${count} Questions`);
+  bits.push(`${mins} min`);
+  bits.push(best!=null?`Best: ${best}%`:"Best: —");
+  return unfinished?`Test in progress — resume any time<br>${bits.join(" • ")}`:bits.join(" • ");
+}
+function subjectBest(name){
+  const d=store.dashboardCache();
+  const row=d?.subjects?.find(x=>x.subject===name);
+  return row?row.best:null;
+}
+// Reads the 1-day cooldown state for a subject straight out of the same
+// precomputed dashboard stats already cached locally — no extra request and
+// no recalculation, just a lookup + one date comparison. This is only used
+// for the *display* of locked cards on Home; the actual gate that stops the
+// timer from starting lives in beginExam()/retryExam() below, which always
+// re-checks against the live server instead of trusting this cache.
+let _defaultCooldownMin=24*60; // the server's default wait; 24 hours unless changed in the Control Centre
+function lockInfoFromLastAttempt_(lastAttempt){
+  if(!lastAttempt)return{locked:false};
+  const unlockAt=new Date(lastAttempt).getTime()+_defaultCooldownMin*60*1000;
+  const remaining=unlockAt-Date.now();
+  return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
+}
+// The server now sends the real unlock time (unlockAt) for every subject,
+// which already includes any admin adjustment. Older cached data without it
+// falls back to the plain 24-hour rule.
+function lockInfoFromRow_(row){
+  if(!row)return{locked:false};
+  if(row.unlockAt!==undefined){
+    if(!row.unlockAt)return{locked:false};
+    const unlockAt=new Date(row.unlockAt).getTime(),remaining=unlockAt-Date.now();
+    return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
+  }
+  return lockInfoFromLastAttempt_(row.lastAttempt);
+}
+function subjectLockInfo(name){
+  const d=store.dashboardCache();
+  return lockInfoFromRow_(d?.subjects?.find(x=>x.subject===name));
+}
+function lockBadgeHTML(unlockAt){
+  return `<span class="cooldown-badge" data-unlock="${unlockAt}">Locked — retake in ${formatCooldown(unlockAt-Date.now())}</span>`;
+}
+// Re-renders just the meta text / lock state on already-painted subject
+// cards once fresh precomputed stats arrive from homeBundle, instead of a
+// full home() re-render (which would also reset scroll position).
+function refreshSubjectCardStats(){
+  const grid=document.querySelector('.home .subject-grid');
+  if(grid)grid.innerHTML=subjects.map((s,i)=>subjectCardHTML(s,i)).join("");
+  const cgrid=document.getElementById('customSubjectGrid');
+  if(cgrid)cgrid.innerHTML=customSubjectsHTML();
+  armCooldownTicker();
+}
+let _cooldownTicker=null;
+// One shared interval updates every locked card's countdown text in place —
+// cheap even with many locked subjects, since it's just formatting a stored
+// timestamp difference, not a network call or recompute.
+function armCooldownTicker(){
+  clearInterval(_cooldownTicker);
+  if(!document.querySelector('.cooldown-badge'))return;
+  _cooldownTicker=setInterval(()=>{
+    const badges=document.querySelectorAll('.cooldown-badge');
+    if(!badges.length){clearInterval(_cooldownTicker);return;}
+    badges.forEach(b=>{
+      const unlockAt=Number(b.dataset.unlock);
+      const remaining=unlockAt-Date.now();
+      if(remaining<=0){refreshSubjectCardStats();return;}
+      b.textContent=`Locked — retake in ${formatCooldown(remaining)}`;
+    });
+  },30000);
+}
+function hardRefresh(){
+  if(!confirm("Clear locally cached data and reload fresh from the server?"))return;
+  ["ecet_dashboard_cache","ecet_profiledata_cache","ecet_mistakes_cache","ecet_reminders_cache","ecet_customsubjects_cache","ecet_history_cache","ecet_topic_summary_cache","ecet_static_topics_cache","ecet_topic_summary_cache_v2","ecet_static_topics_cache_v2"].forEach(k=>localStorage.removeItem(k));
+  const b=document.getElementById("hardRefreshBtn");if(b)b.classList.add("busy");
+  setTimeout(()=>location.reload(),350);
+}
+async function refreshCustomSubjects(manual){
+  if(!API)return;
+  const iconBtn=manual?document.querySelector('.icon-btn'):null;
+  if(iconBtn){iconBtn.disabled=true;iconBtn.classList.add('spinning');}
+  try{
+    const cs=await apiGet("customSubjects",{},SERVER_STATUS_TIMEOUT_MS,1,{silent:!manual});
+    if(cs?.ok&&Array.isArray(cs.data)){
+      _liveCustomApplied=true;
+      customSubjects=cs.data;
+      store.setCustomSubjectsCache(cs.data);
+      if(cs.topicSummary)setServerTopics(cs.topicSummary);
+      refreshSubjectCardStats();
+    }
+  }catch(e){console.warn("Custom subjects load failed",e);}
+  finally{if(iconBtn){iconBtn.disabled=false;iconBtn.classList.remove('spinning');}}
+}
+// Replaces the old 3-way burst (ping + isAdmin + customSubjects fired
+// separately and concurrently) with one Apps Script execution, so Home
+// makes a single round trip instead of piling three onto the backend at once.
+// Cached for SERVER_STATUS_TTL_MS so navigating Home <-> Dashboard <-> Mistakes
+// repeatedly doesn't re-check the server (and re-flash "Checking server...")
+// on every single visit — only the first Home visit in a while pays for it.
+let _serverStatusCache=null; // {online,isAdmin,customSubjects,checkedAt}
+const SERVER_STATUS_TTL_MS=3*60*1000;
+// Cold Apps Script containers routinely take 10-11s to answer doGet (see
+// execution log), so the status check's timeout has to comfortably clear
+// that or the frontend gives up right before the real response lands.
+const SERVER_STATUS_TIMEOUT_MS=15000;
+let _offlineRetryTimer=null;
+// "retry" is a real clickable control, not just static text in the offline
+// message — clicking it forces a fresh check instead of waiting for the
+// cache TTL or for the user to navigate Home again.
+function offlineStatusHTML_(){return 'Server offline — <span class="retry-link" onclick="checkServerStatusAndBundle(true)">retry</span>';}
+function applyServerStatus_(status,statusEl,slot){
+  if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
+  if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  let changed=false;
+  if(status.topicSummary){setServerTopics(status.topicSummary);changed=true;}
+  if(status.online&&Array.isArray(status.customSubjects))_liveCustomApplied=true;
+  if(Array.isArray(status.customSubjects)){
+    customSubjects=status.customSubjects;
+    store.setCustomSubjectsCache(customSubjects);
+    changed=true;
+  }
+  if(changed)refreshSubjectCardStats(); // re-renders both grids (built-in subjects can have topics too)
+}
+async function checkServerStatusAndBundle(force){
+  const statusEl=document.getElementById('serverStatus');
+  const slot=document.getElementById('adminNavSlot');
+  if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
+  if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
+  const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
+  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
+  const haveCache_=!!(store.customSubjectsCache().length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
+  if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>'+(haveCache_?'Updating…':'Checking server…')+'</span>';}
+  if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  const p=store.profile();
+  // Background refresh: never shows the top loading bar or disables the page.
+  const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS,1,{silent:true});
+  if(res?.ok){
+    if(Number.isFinite(res.data?.cooldownMinutes))_defaultCooldownMin=res.data.cooldownMinutes;
+    _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
+    applyServerStatus_(_serverStatusCache,statusEl,slot);
+    // homeBundle already carries the same pre-aggregated stats dashboard_()
+    // would return (a single-row UserStats lookup, not a recompute) — cache
+    // it here too so subject cards show real Best/Worst/cooldown data on
+    // every home visit, not only after the user has opened My Dashboard once.
+    if(p&&res.data?.dashboard){store.setDashboardCache(res.data.dashboard);refreshSubjectCardStats();}
+  }else{
+    _serverStatusCache={online:false,isAdmin:isAdminUnlocked,customSubjects,checkedAt:Date.now()};
+    if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML=`<span class="server-dot"></span><span>${offlineStatusHTML_()}</span>`;}
+    // Don't just sit on "offline" until the user manually revisits Home —
+    // keep quietly re-checking in the background, but only while the status
+    // pill is still on screen (stop once the user has navigated away).
+    _offlineRetryTimer=setTimeout(()=>{
+      _offlineRetryTimer=null;
+      if(document.getElementById('serverStatus'))checkServerStatusAndBundle(true);
+    },12000);
+  }
+}
+function handleRevisionLink(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('revision')!=='1')return;
+  history.replaceState({},'',location.pathname+location.hash);
+  requireProfile(async ()=>{
+    await mistakes();
+    const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);
+    if(items.length)startRevisionTest();
+  });
+}
+function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",email:""};
+  // Email is intentionally locked here. Every piece of a user's data (dashboard,
+  // mistakes, reminders, history, progress) is keyed by email on the backend, so
+  // silently letting someone edit it here would look up (or create) a different
+  // account and make all their existing data appear to vanish — like a brand new
+  // account. Name is just a display label and is always safe to change freely.
+  app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label for="pname">Name</label><input id="pname" name="name" autocomplete="name" required value="${esc(p.name)}"><label for="pemail">Email</label><input id="pemail" name="email" type="email" autocomplete="email" value="${esc(p.email)}" disabled aria-disabled="true" title="To change your email, log out and sign in with the new email."><p class="note">Your data (results, mistakes, reminders, history) is tied to your email. To switch to a different email, log out and sign in again with the new one — it will start as a separate account.</p><div id="pErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
+async function saveProfileEdit(){
+  const n=document.getElementById("pname").value.trim();
+  const p=store.profile()||{name:"",email:""};
+  const e=p.email; // email is locked in this form — never taken from the input
+  if(!n){document.getElementById("pErr").textContent="Enter a valid name.";return;}
+  const errEl=document.getElementById("pErr");errEl.textContent="";
+  const btn=document.querySelector('.enroll-card .buttons button[onclick="saveProfileEdit()"]');
+  if(btn){btn.disabled=true;btn.textContent="Saving…";}
+  // Persist to the backend Users sheet too (keyed by email), not just localStorage —
+  // otherwise a name change never reaches the account record, so the same email
+  // keeps showing the old name everywhere the backend is the source of truth
+  // (dashboard, rankings, result emails, admin views). Email is always the
+  // existing one, so this always updates the SAME account row, never creates
+  // a new one.
+  const res=API?await apiPost("register",{name:n,email:e,consent:!!(store.profile()&&store.profile().consent)}):null;
+  if(API&&!res?.ok){
+    errEl.textContent=res?.error||"Could not save your details. Please try again.";
+    if(btn){btn.disabled=false;btn.textContent="Save";}
+    return;
+  }
+  store.setProfile({name:n,email:e});
+  home();
+}
+function goProfile(){requireProfile(renderProfile);}
+function subjectStatusCellHTML(s){
+  const lock=lockInfoFromRow_(s);
+  if(!lock.locked)return '<span class="correct">Available</span>';
+  return `<span class="cooldown-badge" data-unlock="${lock.unlockAt}">Locked — ${formatCooldown(lock.remaining)}</span>`;
+}
+function renderProfileBody(d,connecting){
+  app.innerHTML=`<div class="card"><h1>My Profile</h1>${connecting?connBannerHTML():""}<p class="meta">${esc(d.name)} • ${esc(d.email)}</p><p class="note">Member since ${d.createdAt?esc(formatDateTime(d.createdAt)):"—"}</p>
+    <div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Exams attended</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average marks</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best marks</span></div><div class="dash-tile"><b>${d.attempts}</b><span>Total attempts</span></div></div>
+    <div class="dash-grid"><div class="dash-tile"><b>${d.mistakes}</b><span>Mistakes count</span></div><div class="dash-tile"><b>${d.reminders}</b><span>Reminders count</span></div></div>
+    <h2>Subjects attended</h2>
+    ${d.subjects?.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Subject</th><th>Times attended</th><th>Best %</th><th>Worst %</th><th>Average %</th><th>Status</th></tr></thead><tbody>${d.subjects.map(s=>`<tr><td>${esc(s.subject)}</td><td>${s.attempts}</td><td>${s.best}%</td><td>${s.worst!=null?s.worst+"%":"—"}</td><td>${s.avg}%</td><td>${subjectStatusCellHTML(s)}</td></tr>`).join("")}</tbody></table></div>
+    <p class="note">A subject is locked for 1 day after you complete an attempt on it, then unlocks automatically — no email is sent about this.</p>`:'<p class="note">No attempts yet.</p>'}
+    <p class="note">See Dashboard for recent activity and test frequency.</p>
+    <div class="buttons"><button onclick="editProfile()">Edit Profile</button><button onclick="goDashboard()">Dashboard</button><button onclick="logoutUser()">Logout</button><button onclick="deleteAccountPrompt()">Delete Account</button><button onclick="home()">Home</button></div></div>`;
+  armCooldownTicker();
+}
+async function renderProfile(){
+  pushNav(renderProfile);
+  clearExam();
+  const p=store.profile(),cached=store.profileDataCache();
+  // Paint instantly with the last known profile stats (if any) instead of a bare
+  // "Loading…" card, then quietly refresh from the server.
+  if(cached&&cached.email===p.email){renderProfileBody(cached,true);}else{app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">Loading…</p></div>`;}
+  const res=API?await apiGet("profile",{email:p.email},15000,2):null;
+  if(!res?.ok){
+    if(cached&&cached.email===p.email){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="renderProfile()">Retry</button>`;return;}
+    app.innerHTML=`<div class="card"><h1>My Profile</h1><p class="note">${API?"Could not load profile.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="goProfile()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
+  }
+  const d=res.data;store.setProfileDataCache(d);
+  renderProfileBody(d,false);
+}
+function logoutUser(){
+  if(!confirm("Log out? You'll need to re-enter your name and email next time."))return;
+  localStorage.removeItem("ecet_profile");localStorage.removeItem("ecet_mistakes_cache");
+  Object.keys(localStorage).filter(k=>k.startsWith("ecet_progress_")).forEach(k=>localStorage.removeItem(k));
+  home();
+}
+async function deleteAccountPrompt(){
+  if(!confirm("This will permanently delete your account and all your results, mistakes, reminders, and history. This cannot be undone. Continue?"))return;
+  const p=store.profile();
+  app.innerHTML=`<div class="card"><h1>Deleting account…</h1><p class="note">Please wait.</p></div>`;
+  const res=API?await apiPost("deleteAccount",{email:p.email},25000):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Could not delete account</h1><p class="note">${esc(res?.error||"Please try again.")}</p><div class="buttons"><button onclick="goProfile()">Back</button></div></div>`;return;}
+  localStorage.removeItem("ecet_profile");localStorage.removeItem("ecet_mistakes_cache");
+  Object.keys(localStorage).filter(k=>k.startsWith("ecet_progress_")).forEach(k=>localStorage.removeItem(k));
+  home();
+}
+
+/* ===================== ADMIN QUESTION IMPORT ===================== */
+/* ===================== ADMIN — TOPIC FIELD (shared) =====================
+ * A dropdown of the subject's existing topics, plus "New topic…" which reveals a
+ * text box. Used by Add Questions, Add a Single Question, Edit Question and the
+ * bulk "move to topic" tool. `pfx` keeps each instance's element ids apart;
+ * `cb` is the name of a global function to call whenever the choice changes. */
+function topicsForSubjectId(sid,exam){
+  const s=findSubjectById(sid);if(!s)return [];
+  const key=topicKey(exam||homeExam(s)),g=subjectGroups(s).find(x=>x.examKey===key);
+  return g?g.topics:[];
+}
+// Exam dropdown: the subject's default, exams it already uses, GATE / ECET, or another one.
+// current === null (bulk tool only) means "keep each question's current exam".
+function examFieldHTML(pfx,sid,current,cb,keepOption){
+  const s=findSubjectById(sid),home=s?homeExam(s):"",hk=topicKey(home),seen=new Set(),opts=[];
+  [...(s?subjectGroups(s).map(g=>g.exam):[]),"GATE","ECET"].forEach(n=>{const k=topicKey(n);if(!k||k===hk||seen.has(k))return;seen.add(k);opts.push(n);});
+  const cur=current===null?null:cleanTopic(current);
+  const chosen=cur===null?"__keep__":!cur||topicKey(cur)===hk?"":(opts.find(n=>topicKey(n)===topicKey(cur))||"__new__");
+  return `<select id="${pfx}ExamSel" onchange="examSelChanged('${pfx}')">${keepOption?`<option value="__keep__" ${chosen==="__keep__"?"selected":""}>— Keep each question's current exam —</option>`:""}<option value="" ${chosen===""?"selected":""}>Subject default${home?` (${esc(home)})`:" (no exam)"}</option>${opts.map(n=>`<option value="${esc(n)}" ${chosen===n?"selected":""}>${esc(n)}</option>`).join("")}<option value="__new__" ${chosen==="__new__"?"selected":""}>➕ Another exam…</option></select><input id="${pfx}ExamNew" type="text" maxlength="40" placeholder="Exam name, e.g. TS PGECET" value="${chosen==="__new__"?esc(cur):""}" style="${chosen==="__new__"?"":"display:none;"}margin-top:8px" oninput="topicInputChanged('${cb||""}')">`;
+}
+function topicFieldHTML(pfx,sid,current,cb,exam){
+  const topics=topicsForSubjectId(sid,exam),cur=cleanTopic(current);
+  const match=cur?topics.find(t=>topicKey(t.name)===topicKey(cur)):null;
+  const chosen=!cur?"":match?match.name:"__new__";
+  return `<select id="${pfx}TopicSel" onchange="topicSelChanged('${pfx}'${cb?`,'${cb}'`:""})"><option value="">— No topic (general subject question) —</option>${topics.map(t=>`<option value="${esc(t.name)}" ${chosen===t.name?"selected":""}>${esc(t.name)} (${t.count} question${t.count===1?"":"s"})</option>`).join("")}<option value="__new__" ${chosen==="__new__"?"selected":""}>➕ New topic…</option></select><input id="${pfx}TopicNew" type="text" maxlength="80" placeholder="New topic name, e.g. Capacitors &amp; Inductors" value="${chosen==="__new__"?esc(cur):""}" style="${chosen==="__new__"?"":"display:none;"}margin-top:8px" oninput="topicInputChanged(${cb?`'${cb}'`:""})">`;
+}
+// Both fields together; the topic list follows the chosen exam.
+function examTopicHTML(pfx,sid,curExam,curTopic,cb,keepOption){
+  const ex=curExam===null?"":cleanTopic(curExam);
+  return `<div id="${pfx}ET" data-sid="${esc(sid)}" data-cb="${cb||""}"><label>Exam</label>${examFieldHTML(pfx,sid,curExam,cb,keepOption)}<label>Topic (optional)</label><div id="${pfx}TopicSub">${topicFieldHTML(pfx,sid,curTopic,cb,ex)}</div></div>`;
+}
+function examSelChanged(pfx){
+  const wrap=document.getElementById(pfx+"ET"),sel=document.getElementById(pfx+"ExamSel"),inp=document.getElementById(pfx+"ExamNew");
+  if(!wrap||!sel||!inp)return;
+  const isNew=sel.value==="__new__";inp.style.display=isNew?"":"none";if(isNew)inp.focus();
+  const ex=readExamField(pfx);
+  document.getElementById(pfx+"TopicSub").innerHTML=topicFieldHTML(pfx,wrap.dataset.sid,readTopicField(pfx),wrap.dataset.cb,ex==="__keep__"?"":ex);
+  const cb=wrap.dataset.cb;if(cb&&typeof window[cb]==="function")window[cb]();
+}
+function readExamField(pfx){
+  const sel=document.getElementById(pfx+"ExamSel");if(!sel)return "";
+  if(sel.value==="__new__")return cleanTopic(document.getElementById(pfx+"ExamNew")?.value);
+  return sel.value==="__keep__"?"__keep__":cleanTopic(sel.value);
+}
+function examFieldIncomplete(pfx){
+  const sel=document.getElementById(pfx+"ExamSel");
+  return !!sel&&sel.value==="__new__"&&!cleanTopic(document.getElementById(pfx+"ExamNew")?.value);
+}
+function topicSelChanged(pfx,cb){
+  const sel=document.getElementById(pfx+"TopicSel"),inp=document.getElementById(pfx+"TopicNew");
+  if(!sel||!inp)return;
+  const isNew=sel.value==="__new__";
+  inp.style.display=isNew?"":"none";
+  if(isNew)inp.focus();
+  if(cb&&typeof window[cb]==="function")window[cb]();
+}
+function topicInputChanged(cb){if(cb&&typeof window[cb]==="function")window[cb]();}
+function readTopicField(pfx){
+  const sel=document.getElementById(pfx+"TopicSel");if(!sel)return "";
+  return cleanTopic(sel.value==="__new__"?document.getElementById(pfx+"TopicNew")?.value:sel.value);
+}
+// "New topic…" chosen but nothing typed yet.
+function topicFieldIncomplete(pfx){
+  const sel=document.getElementById(pfx+"TopicSel");
+  return !!sel&&sel.value==="__new__"&&!cleanTopic(document.getElementById(pfx+"TopicNew")?.value);
+}
+function refreshAdminTopicField(keep){
+  const sel=document.getElementById("adminSubject"),wrap=document.getElementById("adminTopicWrap");
+  if(!sel||!wrap)return;
+  const e=keep?readExamField("at"):"",t=keep?readTopicField("at"):"";
+  wrap.innerHTML=examTopicHTML("at",sel.value,e==="__keep__"?"":e,t,"adminTopicChanged");
+}
+function adminTopicChanged(){refreshAiPrompt();renderImportPreview();}
+
+function adminSubjectOptions(){
+  const staticOpts=subjects.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
+  const customOpts=customSubjects.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
+  return `${staticOpts?`<optgroup label="Existing Subjects">${staticOpts}</optgroup>`:""}${customOpts?`<optgroup label="Custom Subjects">${customOpts}</optgroup>`:'<optgroup label="Custom Subjects"><option disabled>None yet — create one above</option></optgroup>'}`;
+}
+// Section menu on the admin page: scroll to a section, and highlight the section currently on screen.
+function adminJump_(id){
+  const el=document.getElementById(id);if(!el)return;
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+  el.classList.remove("admin-flash");void el.offsetWidth;el.classList.add("admin-flash");
+}
+let _admObs=null;
+function adminNavWatch_(){
+  if(_admObs){_admObs.disconnect();_admObs=null;}
+  const nav=document.querySelector(".admin-nav");
+  if(!nav||!("IntersectionObserver" in window))return;
+  const mark=id=>nav.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.adm===id));
+  mark("adm-publish");
+  _admObs=new IntersectionObserver(es=>{
+    if(!document.body.contains(nav)){_admObs.disconnect();_admObs=null;return;}
+    const vis=es.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if(vis)mark(vis.target.id);
+  },{rootMargin:"-15% 0px -70% 0px"});
+  document.querySelectorAll(".admin-sec").forEach(el=>_admObs.observe(el));
+}
+async function adminQuestionsPage(){
+  pushNav(adminQuestionsPage);
+  requireProfile(async ()=>{
+    const p=store.profile();
+    const access=isAdminUnlocked?null:(API?await apiGet('isAdmin',{email:p.email},5000):null);
+    if(!isAdminUnlocked&&(!access?.ok||!access.isAdmin)){
+      app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Use the Admin button on the homepage and enter the admin password.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
+      return;
+    }
+    if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data)){customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);if(cs.topicSummary)setServerTopics(cs.topicSummary);}}catch(e){console.warn("Custom subjects load failed",e);}}
+    const curYear=new Date().getFullYear();
+    app.innerHTML=`<div class="admin-page">
+    <nav class="admin-nav" aria-label="Admin sections">
+      <button type="button" data-adm="adm-publish" onclick="adminJump_('adm-publish')">Publish</button>
+      <button type="button" data-adm="adm-subject" onclick="adminJump_('adm-subject')">New subject</button>
+      <button type="button" data-adm="adm-import" onclick="adminJump_('adm-import')">Add questions</button>
+      <button type="button" data-adm="adm-single" onclick="adminJump_('adm-single')">Single question</button>
+      <button type="button" data-adm="adm-manage" onclick="adminJump_('adm-manage')">Manage</button>
+      <button type="button" onclick="location.href='fib-admin.html'">FIB question upload ↗</button>
+    </nav>
+    <div class="card admin-sec" id="adm-publish" data-tone="publish"><h1>Publish content</h1>
+      <p class="note">Changes you make in Google Sheets go live on the website automatically within 15 minutes. Press the button to publish them right now.</p>
+      <div class="buttons"><button data-publish-btn onclick="publishNow()">🚀 Publish to website now</button></div>
+      <div class="note" data-publish-msg role="status" aria-live="polite" style="display:none"></div>
+    </div>
+    <div class="card admin-sec" id="adm-subject" data-tone="subject"><h1>Admin — Create New Subject</h1>
+      <p class="note">Create a brand-new test subject with no code or GitHub changes. It appears immediately in "Additional Tests" on the homepage, and below in the Subject dropdown so you can bulk-import its questions.</p>
+      <label>Subject Name</label><input id="newSubjectName" placeholder="e.g. Machine Learning Basics">
+      <label>Subject Password</label><input id="newSubjectPassword" placeholder="Password students will enter">
+      <label>Exam / category</label><input id="newSubjectExam" list="examChoices" placeholder="GATE, ECET or anything else" autocomplete="off"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
+      <label>Description (optional)</label><input id="newSubjectDesc" placeholder="Shown as the subject's tagline on the homepage">
+      <div id="newSubjectStatus" class="note"></div>
+      <div class="buttons"><button onclick="createNewSubject()">Create Subject</button></div>
+    </div>
+    <div class="card admin-sec" id="adm-import" data-tone="import"><h1>Admin — Add Questions</h1>
+      <div class="callout" style="background:#fff4e0;border:1px solid #f4a62a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13.5px">⚠️ <b>Copyright reminder:</b> only add questions, text, and image URLs you have the right to use — your own material, licensed content, or genuine public domain. Do not paste content copied verbatim from a paid course, textbook, or another copyrighted question bank. See <a href="terms.html#admin" target="_blank" rel="noopener">Terms §6</a>.</div>
+      <p class="note">Select an existing subject to add its questions, or pick "Create New Subject" to make a brand-new one above first.</p>
+      <div class="admin-step"><b>Step 1</b><span>Choose where the questions go</span></div>
+      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAdminTopicField();refreshAiPrompt();renderImportPreview();">
+        ${adminSubjectOptions()}
+        <option value="__new__">➕ Create New Subject…</option>
+      </select>
+      <label style="margin-top:14px">Exam &amp; topic (optional) — makes a topic-wise test</label>
+      <div id="adminTopicWrap"></div>
+      <p class="note">The same subject can be used for more than one exam: pick the <b>Exam</b> these questions are for (GATE, ECET or another), and a <b>Topic</b> to make a topic-wise test — for example <b>Networks → GATE → Basics, Capacitors &amp; Inductors, Two-Ports</b>. On the Home page each exam gets its own list inside the subject; an exam with no topics is just its Full Subject Test. An Excel file can also carry its own <b>Topic</b> and <b>Exam</b> columns; rows with a blank value use what is chosen here.</p>
+      <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026" onchange="refreshAiPrompt()">
+      <p class="note">Used for any row whose Year column is left blank in the Excel file, and filled into the AI prompt below.</p>
+
+      <div class="admin-step optional"><b>Step 2</b><span>Optional — let an AI write the questions</span></div>
+      <h2>Don't want to type questions by hand? Ask an AI</h2>
+      <label>Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
+      <p class="note">The prompt below now asks the AI to hand back a ready-to-upload Excel (.xlsx) file directly — no copy-pasting rows.</p>
+      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Marks, Type, Year. &nbsp; <b>Optional:</b> Topic, State, Question Number, and all Image URL columns — leave blank if unused.</p>
+      <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
+      <label>Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
+        <option value="subject">Whole subject (broad coverage)</option>
+        <option value="topic">Specific topic(s) / subtopic(s)</option>
+      </select>
+      <div id="aiTopicRow" style="display:none"><label>Topic / Subtopics</label><input id="aiTopic" placeholder="e.g. Boolean Algebra & K-Maps" onchange="refreshAiPrompt()"></div>
+      <label>Type of questions</label><select id="aiQType" onchange="refreshAiPrompt()">
+        <option value="Conceptual/theory-based">Conceptual / theory-based</option>
+        <option value="Numerical/problem-solving">Numerical / problem-solving</option>
+        <option value="Mixed" selected>Mixed (concept + numerical)</option>
+        <option value="Previous-year exam style">Previous-year exam style</option>
+        <option value="Application/scenario-based">Application / scenario-based</option>
+      </select>
+      <label>Difficulty</label><select id="aiDifficulty" onchange="refreshAiPrompt()"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Super Hard">Super Hard</option><option value="Mixed">Mixed (all levels)</option></select>
+      <label>Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
+      <label>Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. avoid repeats from last year, favor diagrams-based questions" onchange="refreshAiPrompt()">
+      <p class="note">Copy the prompt below, paste it into any AI chat, then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
+      <textarea id="aiPromptBox" readonly rows="13" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
+      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
+      <div id="aiCopyStatus" class="note"></div>
+
+      <div class="admin-step"><b>Step 3</b><span>Upload the filled Excel file</span></div>
+      <label>Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
+      <div id="importStatus" class="note"></div><div id="importPreview"></div>
+      <div class="buttons"><button id="importQuestionsBtn" onclick="importPreviewedQuestions()" disabled>Import Questions</button></div>
+    </div>
+    <div class="card admin-sec" id="adm-single" data-tone="single">${questionFormHTML('add',null)}</div>
+    <div class="card admin-sec" id="adm-manage" data-tone="manage"><h1>Admin — Manage Questions</h1>
+      <p class="note">Edit existing questions in place, or review the audit log of every edit made.</p>
+      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="openControlCentre()">🎛 Control Centre</button><button onclick="home()">Back to Home</button></div>
+    </div></div>`;
+    refreshAdminTopicField();
+    refreshAiPrompt();
+    adminNavWatch_();
+  });
+}
+
+
+/* ===================== ADMIN — CONTROL CENTRE =====================
+ * Opened from the admin page with its own password (checked on the server — the
+ * password is never in this file). Tabs:
+ *   🔒 Locks & Timers — default wait for everyone + lock/unlock any subject for one student
+ *   🔑 Passwords      — every subject password and the admin passwords
+ *   🗂 Subjects       — set a subject's exam, select and delete several subjects at once */
+let _tcSubjects=[],_tcUsers=[],_controlPw="",_ccTab="locks",_ccData=null,_ccShowPw=false,_ccSel=new Set();
+function adminAuth_(){const p=store.profile();return{adminEmail:p?.email||"",adminPassword:adminPw_()};}
+function controlAuth_(){return{...adminAuth_(),controlPassword:_controlPw};}
+const DURATION_PRESETS=[["24 hours",1440],["3 days",4320],["7 days",10080],["1 month",43200]];
+function fmtMinutes(m){
+  m=Math.round(Number(m)||0);
+  if(m<=0)return "no wait";
+  if(m%43200===0)return m===43200?"1 month":(m/43200)+" months";
+  if(m%1440===0){const d=m/1440;return d===1?"24 hours":d+" days";}
+  if(m%60===0){const h=m/60;return h+" hour"+(h===1?"":"s");}
+  return m+" minutes";
+}
+// Preset chips (24 hours / 3 days / 7 days / 1 month) + a Custom amount. `pfx` keeps instances apart.
+function durationPickerHTML(pfx,minutes){
+  const preset=DURATION_PRESETS.some(([,m])=>m===minutes),custom=!preset;
+  const unit=preset?1:(minutes%1440===0?1440:minutes%60===0?60:1); // a fresh Custom box starts in minutes, so a typed 221 can't become 221 days
+  return `<div class="dur-chips" id="${pfx}Chips" data-sel="${custom?"custom":minutes}">${DURATION_PRESETS.map(([l,m])=>`<button type="button" class="dur-chip${minutes===m?" on":""}" data-min="${m}" onclick="durPick('${pfx}',${m})">${l}</button>`).join("")}<button type="button" class="dur-chip${custom?" on":""}" data-min="custom" onclick="durPick('${pfx}','custom')">Custom</button></div><div class="tc-amount" id="${pfx}Custom" style="${custom?"":"display:none;"}margin-top:10px"><input id="${pfx}Amount" type="number" min="0" step="1" placeholder="e.g. 5" value="${custom&&minutes>0?minutes/unit:""}"><select id="${pfx}Unit"><option value="1" ${unit===1?"selected":""}>minutes</option><option value="60" ${unit===60?"selected":""}>hours</option><option value="1440" ${unit===1440?"selected":""}>days</option></select></div>`;
+}
+function durPick(pfx,m){
+  const chips=document.getElementById(pfx+"Chips");if(!chips)return;
+  chips.dataset.sel=String(m);
+  chips.querySelectorAll(".dur-chip").forEach(b=>b.classList.toggle("on",b.dataset.min===String(m)));
+  const c=document.getElementById(pfx+"Custom");if(c)c.style.display=m==="custom"?"":"none";
+}
+// minutes chosen in a picker, or null when a custom amount is missing/invalid
+function readDuration(pfx){
+  const chips=document.getElementById(pfx+"Chips");if(!chips)return null;
+  const sel=chips.dataset.sel;
+  if(sel!=="custom")return Number(sel);
+  const raw=document.getElementById(pfx+"Amount").value,val=Number(raw);
+  if(raw===""||!isFinite(val)||val<0)return null;
+  return Math.round(val*Number(document.getElementById(pfx+"Unit").value));
+}
+// A Control Centre call was refused because the password is missing/wrong → ask for it again.
+function ccDenied(res){
+  if(res&&res.ok===false&&/Control Centre password/i.test(res.error||"")){_controlPw="";_ccData=null;renderControlGate("Please enter the Control Centre password again.");return true;}
+  return false;
+}
+function openControlCentre(){_controlPw="";_ccData=null;_ccShowPw=false;_ccSel=new Set();controlCentrePage();}
+function controlCentrePage(){
+  pushNav(controlCentrePage);
+  if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+  if(!_controlPw){renderControlGate();return;}
+  requireProfile(()=>ccRender());
+}
+function renderControlGate(msg){
+  app.innerHTML=`<div class="card password-card"><h1>🎛 Control Centre</h1><p>Enter the Control Centre password.</p><input id="ccPassword" type="password" inputmode="numeric" placeholder="Password" autocomplete="off" onkeydown="if(event.key==='Enter')controlLogin()"><div id="ccGateError" class="error">${msg?esc(msg):""}</div><div class="buttons"><button onclick="adminQuestionsPage()">Back</button><button onclick="controlLogin()">Unlock</button></div></div>`;
+  document.getElementById("ccPassword")?.focus();
+}
+async function controlLogin(){
+  const pw=(document.getElementById("ccPassword")?.value||"").trim(),err=document.getElementById("ccGateError");
+  if(!pw){err.textContent="Enter the password.";return;}
+  err.textContent="Checking…";
+  const res=await apiPost("controlLogin",{...adminAuth_(),controlPassword:pw},20000);
+  if(!res?.ok){err.textContent=res?res.error||"Incorrect password.":"Could not reach the server. Check your connection and try again.";return;}
+  _controlPw=pw;
+  requireProfile(()=>ccRender());
+}
+function ccRender(){
+  const tabs=[["locks","🔒 Locks & Timers"],["passwords","🔑 Passwords"],["subjects","🗂 Subjects"],["tests","🧩 Topic Tests"],["history","🕘 History"]];
+  app.innerHTML=`<div class="card cc"><h1>🎛 Control Centre</h1><div class="cc-undo" id="ccUndoBar"></div><div id="ccTopMsg" class="note"></div><div class="cc-tabs">${tabs.map(([k,l])=>`<button class="${_ccTab===k?"on":""}" data-tab="${k}" onclick="ccTab('${k}')">${l}</button>`).join("")}</div><div id="ccBody"></div><div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
+  ccTab(_ccTab);
+}
+async function ccTab(tab){
+  _ccTab=tab;
+  document.querySelectorAll(".cc-tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const body=document.getElementById("ccBody");if(!body)return;
+  const top=document.getElementById("ccTopMsg");if(top)top.innerHTML="";
+  if(!_ccData){
+    body.innerHTML='<p class="note">Loading…</p>';
+    const res=await apiPost("controlData",controlAuth_(),30000);
+    if(ccDenied(res))return;
+    if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||"Could not load. Check your connection and try again.")}</p>`;return;}
+    _ccData=res;
+    if(Array.isArray(res.subjects)){customSubjects=res.subjects;store.setCustomSubjectsCache(res.subjects);}
+    if(res.topicSummary)setServerTopics(res.topicSummary);
+    _defaultCooldownMin=res.cooldownMinutes;
+  }
+  ccUpdateUndoBar();
+  if(_ccTab!==tab)return; // the admin clicked another tab while this one was loading
+  if(tab==="locks")ccLocksTab();else if(tab==="passwords")ccPasswordsTab();else if(tab==="tests")ccTestsTab();else if(tab==="history")ccHistoryTab();else ccSubjectsTab();
+  const rest=ccFlashHTML();if(rest&&top)top.innerHTML=rest; // a message the open tab did not show itself
+}
+
+/* ---------- ↶ Undo / ↷ Redo ---------- */
+function ccUpdateUndoBar(){
+  const bar=document.getElementById("ccUndoBar");if(!bar||!_ccData)return;
+  const h=_ccData.history||{},u=h.undo,r=h.redo;
+  bar.innerHTML=`<button class="undo-btn" ${u?"":"disabled"} onclick="ccUndo()" title="${esc(u?"Undo: "+u.title:"Nothing to undo")}">↶ Undo</button><button class="undo-btn" ${r?"":"disabled"} onclick="ccRedo()" title="${esc(r?"Redo: "+r.title:"Nothing to redo")}">↷ Redo</button><span class="undo-note">${u?`Last change: <b>${esc(u.title)}</b>`:"No changes to undo yet"}</span>`;
+}
+async function ccUndoRedo_(which){
+  const h=_ccData?.history||{},item=which==="undo"?h.undo:h.redo;
+  if(!item)return;
+  if(!confirm(`${which==="undo"?"Undo":"Redo"} this change?\n\n${item.title}`))return;
+  const res=await apiPost(which==="undo"?"undoOperation":"redoOperation",controlAuth_(),120000);
+  if(ccDenied(res))return;
+  if(!res?.ok){const top=document.getElementById("ccTopMsg");if(top)top.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not do that. Please try again.")}</span>`;return;}
+  ccForget_([..._expandedSubjects]);   // the subject list may look different now
+  await ccReload(`<span class="correct">${esc(res.message||"Done.")}</span>`);
+}
+function ccUndo(){return ccUndoRedo_("undo");}
+function ccRedo(){return ccUndoRedo_("redo");}
+
+/* ---------- 🕘 History ---------- */
+async function ccHistoryTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  body.innerHTML='<p class="note">Loading…</p>';
+  const res=await apiPost("controlHistory",controlAuth_(),30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||"Could not load the history. Check your connection and try again.")}</p>`;return;}
+  if(_ccTab!=="history")return;
+  _ccData.history={undo:res.undo,redo:res.redo};ccUpdateUndoBar();
+  const label={done:"Done",undone:"Undone",info:"Note",expired:"Too old to undo",discarded:"Replaced"};
+  body.innerHTML=`<p class="note">Every change made from the Control Centre is noted here, newest first. Use <b>↶ Undo</b> / <b>↷ Redo</b> at the top to step back or forward one change at a time; making a new change after an undo clears Redo. The newest 30 changes can be undone. <b>Note</b> entries (student locks, new subjects) are records only.</p>
+    ${res.entries.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>When</th><th>Who</th><th>Change</th><th>Status</th></tr></thead><tbody>${res.entries.map(e=>`<tr><td>${e.time?esc(formatDateTime(e.time)):"—"}</td><td>${esc(e.admin||"—")}</td><td>${esc(e.title)}</td><td><span class="st st-${esc(e.status)}">${esc(label[e.status]||e.status)}</span></td></tr>`).join("")}</tbody></table></div>`:'<p class="note">No changes yet.</p>'}`;
+}
+
+/* ---------- 🔒 Locks & Timers ---------- */
+function ccLocksTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>unitNames(s).forEach(n=>_tcSubjects.push(n))); // each topic test has its own lock
+  body.innerHTML=`<h2>Default wait after an exam</h2>
+    <p class="note">A subject stays locked for <b id="ccDefaultLabel">${esc(fmtMinutes(_ccData.cooldownMinutes))}</b> after a student finishes it. Choose a new wait for everyone. Students who finished recently are re-checked against it straight away.</p>
+    ${durationPickerHTML("dw",_ccData.cooldownMinutes)}
+    <div class="buttons"><button onclick="ccSaveDefault()">Save default wait</button></div><div id="ccDefaultMsg" class="note"></div>
+    <hr class="cc-hr">
+    <h2>Lock or unlock a subject for one student</h2>
+    <label>Student</label>
+    <input id="tcFilter" placeholder="Type a name or email to filter…" oninput="tcFilterUsers()" autocomplete="off">
+    <select id="tcUser" size="6" onchange="tcLoadStatus()" style="margin-top:8px"><option disabled>Loading students…</option></select>
+    <h2 style="margin-top:22px">How long?</h2>
+    <p class="note">Used by <b>Lock</b> (locked for exactly this long from now), <b>＋ Add</b> and <b>－ Reduce</b> (change the wait that is left).</p>
+    ${durationPickerHTML("tc",1440)}
+    <div id="tcMsg" class="note"></div>
+    <div id="tcBody"></div>`;
+  (async()=>{
+    const res=await apiPost("adminCooldownList",{...controlAuth_(),includeUsers:true},30000);
+    if(ccDenied(res))return;
+    if(!res?.ok){const u=document.getElementById("tcUser");if(u)u.innerHTML="";const m=document.getElementById("tcMsg");if(m)m.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not load students. Check your connection and try again.")}</span>`;return;}
+    _tcUsers=res.users||[];tcFilterUsers();
+  })();
+}
+async function ccSaveDefault(){
+  const msg=document.getElementById("ccDefaultMsg"),m=readDuration("dw");
+  if(m===null){msg.innerHTML='<span class="wronganswer">Enter a valid wait (0 or more) first.</span>';return;}
+  if(!confirm(`Lock every subject for ${fmtMinutes(m)} after a student finishes it?`))return;
+  msg.textContent="Saving…";
+  const res=await apiPost("setDefaultCooldown",{...controlAuth_(),minutes:m},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
+  _ccData.cooldownMinutes=res.cooldownMinutes;_defaultCooldownMin=res.cooldownMinutes;
+  document.getElementById("ccDefaultLabel").textContent=fmtMinutes(res.cooldownMinutes);
+  msg.innerHTML=`<span class="correct">Saved — subjects now lock for ${esc(fmtMinutes(res.cooldownMinutes))} after an exam.</span>`;
+  if(document.getElementById("tcUser")?.value)tcLoadStatus();
+}
+function tcFilterUsers(){
+  const q=(document.getElementById("tcFilter")?.value||"").trim().toLowerCase(),sel=document.getElementById("tcUser");
+  if(!sel)return;
+  const keep=sel.value;
+  const list=_tcUsers.filter(u=>!q||u.name.toLowerCase().includes(q)||u.email.includes(q));
+  sel.innerHTML=list.length?list.map(u=>`<option value="${esc(u.email)}" ${u.email===keep?"selected":""}>${esc(u.name||"(no name)")} — ${esc(u.email)}</option>`).join(""):"<option disabled>No student found</option>";
+}
+async function tcLoadStatus(){
+  const email=document.getElementById("tcUser")?.value,body=document.getElementById("tcBody");
+  if(!email||!body)return;
+  const keepFilter=document.getElementById("tcSubFilter")?.value||""; // the list reloads after every Lock/Unlock — keep what was typed
+  body.innerHTML='<p class="note">Loading…</p>';
+  const res=await apiPost("adminCooldownList",{...controlAuth_(),targetEmail:email,subjects:_tcSubjects},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||"Could not load this student.")}</p>`;return;}
+  const def=fmtMinutes(_ccData.cooldownMinutes);
+  const btns=i=>`<button class="lock" onclick="tcAct(${i},'set')">🔒 Lock</button><button onclick="tcAct(${i},'unlock')">🔓 Unlock now</button><button class="ghost" onclick="tcAct(${i},'add')">＋ Add</button><button class="ghost" onclick="tcAct(${i},'sub')">－ Reduce</button><button class="ghost" onclick="tcAct(${i},'default')" title="Remove admin changes — back to the default wait">Normal (${esc(def)})</button>`;
+  const rows=(res.statuses||[]).map((s,i)=>`<div class="cc-row" data-name="${esc(s.subject.toLowerCase())}"><div class="cc-row-main"><b>${esc(s.subject)}</b><small>${s.lastAttempt?"Last attempt "+esc(formatDateTime(s.lastAttempt)):"Never attempted"}</small><div>${s.locked?`<span class="cooldown-badge">Locked — ${formatCooldown(s.remainingMinutes*60000)}</span>`:'<span class="correct">Available</span>'}${s.overridden?' <span class="note">adjusted by admin</span>':""}</div></div><div class="tc-btns">${btns(i)}</div></div>`).join("");
+  body.innerHTML=`<h2 style="margin-top:22px">Subjects</h2><input id="tcSubFilter" placeholder="Filter subjects or topic tests…" oninput="tcFilterSubjects()" autocomplete="off"><div class="cc-list" id="tcRows"><div class="cc-row all"><div class="cc-row-main"><b>All subjects</b><small>Applies to every subject at once</small></div><div class="tc-btns">${btns(-1)}</div></div>${rows}</div>`;
+  const f=document.getElementById("tcSubFilter");
+  if(f&&keepFilter){f.value=keepFilter;tcFilterSubjects();}
+}
+function tcFilterSubjects(){
+  const q=(document.getElementById("tcSubFilter")?.value||"").trim().toLowerCase();
+  document.querySelectorAll("#tcRows .cc-row[data-name]").forEach(r=>{r.style.display=!q||r.dataset.name.includes(q)?"":"none";});
+}
+async function tcAct(i,mode){
+  const email=document.getElementById("tcUser")?.value,msg=document.getElementById("tcMsg");
+  if(!email){msg.innerHTML='<span class="wronganswer">Select a student first.</span>';return;}
+  const subject=i<0?"*":_tcSubjects[i];
+  let minutes=0,apiMode=mode;
+  if(mode==="set"||mode==="add"||mode==="sub"){
+    const m=readDuration("tc");
+    if(m===null){msg.innerHTML='<span class="wronganswer">Choose how long first (or enter a valid custom amount).</span>';return;}
+    minutes=m;
+    if(mode==="sub"){minutes=-minutes;apiMode="add";}
+  }
+  msg.innerHTML='<span class="note">Saving…</span>';
+  const res=await apiPost("adminCooldownAdjust",{...controlAuth_(),targetEmail:email,subject,mode:apiMode,minutes},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
+  const what=mode==="set"?`Locked for ${fmtMinutes(minutes)}.`:res.message||"Saved.";
+  msg.innerHTML=`<span class="correct">${esc(what)}</span>`;
+  tcLoadStatus();
+}
+
+/* ---------- 🔑 Passwords ---------- */
+function ccTogglePw(){_ccShowPw=!_ccShowPw;ccPasswordsTab();}
+function ccPasswordsTab(){
+  const body=document.getElementById("ccBody");if(!body)return;
+  const show=v=>_ccShowPw?`<code>${esc(v)}</code>`:"••••••";
+  const all=[...subjects.map(s=>({name:s.name,exam:homeExam(s),pw:s.password,kind:s.available?"Built-in":"Built-in (coming soon)"})),..._ccData.subjects.map(s=>({name:s.name,exam:homeExam(s),pw:s.password,kind:"Custom"}))];
+  body.innerHTML=`<p class="note">These are the passwords students type to open a subject, plus the admin passwords. They stay hidden until you press the button.</p>
+    <div class="buttons"><button onclick="ccTogglePw()">${_ccShowPw?"🙈 Hide passwords":"👁 Show passwords"}</button></div>
+    <h2>Subject passwords</h2>
+    <div class="table-scroll"><table class="simple"><thead><tr><th>#</th><th>Subject</th><th>Default exam</th><th>Type</th><th>Password</th></tr></thead><tbody>${all.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td>${r.exam?esc(r.exam):"—"}</td><td>${esc(r.kind)}</td><td>${show(r.pw)}</td></tr>`).join("")}</tbody></table></div>
+    <h2>Admin</h2>
+    <div class="table-scroll"><table class="simple"><tbody>
+      <tr><td><b>Admin panel password</b></td><td>${show(_ccData.adminPanelPassword)}</td></tr>
+      <tr><td><b>Control Centre password</b></td><td>${show(_ccData.controlPassword)}</td></tr>
+      <tr><td><b>Admin email${(_ccData.adminEmails||[]).length===1?"":"s"}</b></td><td>${(_ccData.adminEmails||[]).length?_ccData.adminEmails.map(esc).join("<br>"):"—"}</td></tr>
+    </tbody></table></div>`;
+}
+
+/* ---------- shared: a small dialog ---------- */
+const byId_=id=>document.getElementById(id);
+function ccModalKey_(e){if(e.key==="Escape")ccModalClose();}
+function ccModal(html){
+  ccModalClose();
+  const d=document.createElement("div");d.className="cc-modal-back";d.id="ccModal";
+  d.innerHTML=`<div class="cc-modal" role="dialog" aria-modal="true">${html}</div>`;
+  d.addEventListener("mousedown",e=>{if(e.target===d)ccModalClose();});
+  document.body.appendChild(d);
+  document.addEventListener("keydown",ccModalKey_);
+}
+function ccModalClose(){const d=byId_("ccModal");if(d)d.remove();document.removeEventListener("keydown",ccModalKey_);}
+
+let _ccFlash="",_ccTests=[],_ccTestSel=new Set(),_ccDragId="";
+function ccFlashHTML(){const m=_ccFlash;_ccFlash="";return m;}
+function ccTargets_(){return [...subjects.map(s=>({id:s.id,name:s.name,builtin:true})),..._ccData.subjects.map(s=>({id:s.id,name:s.name}))];}
+// <option>s of every subject, grouped so it is obvious which are built-in
+function ccTargetOptions_(selected,exceptId){
+  const opt=t=>`<option value="${esc(t.id)}" ${t.id===selected?"selected":""}>${esc(t.name)}</option>`;
+  const all=ccTargets_().filter(t=>t.id!==exceptId);
+  return `<optgroup label="Built-in subjects">${all.filter(t=>t.builtin).map(opt).join("")}</optgroup><optgroup label="Your additional test subjects">${all.filter(t=>!t.builtin).map(opt).join("")}</optgroup>`;
+}
+function ccMsg_(html){const m=byId_("ccDelMsg");if(m)m.innerHTML=html;}
+// reload everything from the server, then show a message on the tab that is open
+async function ccReload(flashHTML){_ccFlash=flashHTML||"";_ccData=null;_ccSel=new Set();await ccTab(_ccTab);}
+function ccForget_(ids){ids.forEach(id=>{_expandedSubjects.delete(id);_unlockedSubjects.delete(id);});}
+function ccOk_(m){return `<span class="correct">${esc(m)}</span>`;}
+function ccBad_(m){return `<span class="wronganswer">${esc(m)}</span>`;}
+function ccCount_(n,word){return `${n} ${word}${n===1?"":"s"}`;}
+
+/* ---------- 🗂 Subjects ---------- */
+function ccSubjectsTab(){
+  const body=byId_("ccBody");if(!body)return;
+  const custom=_ccData.subjects,n=_ccSel.size;
+  const info=s=>{const t=subjectTopicInfo(s).topicCount;return `${ccCount_(s.questionCount||0,"question")} • ${ccCount_(t,"topic test")}`;};
+  const drop=id=>`ondragover="ccDragOver(event,this)" ondragleave="ccDragLeave(this)" ondrop="ccDrop(event,'${esc(id)}')"`;
+  body.innerHTML=`<datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
+    <div class="cc-help"><b>What can I do here?</b>
+      <ul><li><b>➡️ Move…</b> puts one of your subjects <i>inside</i> another subject — as a topic test (a chapter), or merged into its questions. The other subject can be one of the <b>built-in</b> subjects below.</li>
+      <li>You can also <b>drag a subject and drop it on another subject</b> (on a computer).</li>
+      <li><b>✏️ Rename</b> changes a subject's name. <b>🗑 Delete</b> removes subjects for good (you can undo it at the top).</li></ul></div>
+    <input id="ccSubSearch" placeholder="Find a subject…" oninput="ccSubFilter(this.value)" autocomplete="off">
+    <div id="ccDelMsg" class="note">${ccFlashHTML()}</div>
+    <h2>Your additional test subjects</h2>
+    <div class="cc-delbar"><button class="danger" id="ccDelBtn" onclick="ccDeleteSelected()">🗑 Delete ticked (${n})</button><button class="ghost" onclick="ccSelectAll(true)">Tick all</button><button class="ghost" onclick="ccSelectAll(false)">Clear</button></div>
+    <div class="cc-list">${custom.length?custom.map((s,i)=>`<div class="cc-row cc-sub" draggable="true" data-name="${esc(s.name.toLowerCase())}" data-sid="${esc(s.id)}" ondragstart="ccDragStart(event,'${esc(s.id)}')" ondragend="ccDragEnd()" ${drop(s.id)}><input type="checkbox" class="cc-check" ${_ccSel.has(s.id)?"checked":""} onchange="ccToggle('${esc(s.id)}',this.checked)" aria-label="Tick ${esc(s.name)}"><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${info(s)}</small></div><div class="cc-actions"><button class="ghost" onclick="ccOpenRenameSubject('${esc(s.id)}')">✏️ Rename</button><button class="mv" onclick="ccOpenMove('${esc(s.id)}','')">➡️ Move…</button></div><input class="cc-exam" list="examChoices" value="${esc(s.exam||"")}" placeholder="Default exam" maxlength="40" autocomplete="off" onchange="ccSetExam('${esc(s.id)}',this.value)" title="Default exam — the exam of this subject's questions that have none of their own"></div>`).join(""):'<p class="note">You have no additional test subjects yet.</p>'}</div>
+    <h2>Built-in subjects</h2>
+    <p class="note">These come with the website. You can't rename or delete them here, but you <b>can move your subjects into them</b> — for example as a chapter (topic test).</p>
+    <div class="cc-list">${subjects.map((s,i)=>`<div class="cc-row cc-sub builtin" data-name="${esc(s.name.toLowerCase())}" data-sid="${esc(s.id)}" ${drop(s.id)}><div class="cc-row-main"><b>${i+1}. ${esc(s.name)}</b><small>${s.available?info(s):"coming soon"}</small></div><div class="cc-actions"><button class="mv" onclick="ccOpenMove('','${esc(s.id)}')" ${custom.length?"":"disabled"}>📥 Move a subject in…</button></div></div>`).join("")}</div>`;
+}
+function ccSubFilter(v){const q=cleanTopic(v).toLowerCase();document.querySelectorAll("#ccBody .cc-sub").forEach(r=>{r.style.display=!q||r.dataset.name.includes(q)?"":"none";});}
+function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const d=byId_("ccDelBtn");if(d)d.textContent=`🗑 Delete ticked (${_ccSel.size})`;}
+function ccSelectAll(on){_ccSel=new Set(on?_ccData.subjects.map(s=>s.id):[]);ccSubjectsTab();}
+async function ccSetExam(id,val){
+  const res=await apiPost("setSubjectExam",{...controlAuth_(),subjectId:id,exam:val.trim()},30000);
+  if(ccDenied(res))return;
+  if(!res?.ok){ccMsg_(ccBad_(res?.error||"Could not save the exam."));return;}
+  [_ccData.subjects.find(s=>s.id===id),customSubjects.find(s=>s.id===id)].forEach(s=>{if(s)s.exam=res.exam;});
+  store.setCustomSubjectsCache(customSubjects);
+  ccMsg_(ccOk_(res.message||"Saved."));
+}
+async function ccDeleteSelected(){
+  const ids=[..._ccSel];
+  if(!ids.length){ccMsg_(ccBad_("Tick at least one subject first."));return;}
+  const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean);
+  const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
+  if(!confirm(`Delete ${ccCount_(list.length,"subject")}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${ccCount_(qs,"question")}. Students' past results are kept. You can undo this from the top of the Control Centre.`))return;
+  ccMsg_('<span class="note">Deleting…</span>');
+  const res=await apiPost("deleteSubjects",{...controlAuth_(),subjectIds:ids},120000);
+  if(ccDenied(res))return;
+  if(!res?.ok){ccMsg_(ccBad_(res?.error||"Could not delete. Please try again."));return;}
+  const gone=new Set(res.deletedIds||ids);
+  ccForget_([...gone]);
+  gone.forEach(id=>{delete _serverTopics[id];try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});
+  setServerTopics(_serverTopics);
+  await ccReload(ccOk_(res.message||"Deleted."));
+}
+
+/* ---------- drag a subject onto another subject ---------- */
+function ccDragStart(e,id){_ccDragId=id;try{e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="move";}catch(x){}}
+function ccDragEnd(){_ccDragId="";document.querySelectorAll(".cc-sub.drag-over").forEach(r=>r.classList.remove("drag-over"));}
+function ccDragOver(e,el){if(!_ccDragId||el.dataset.sid===_ccDragId)return;e.preventDefault();el.classList.add("drag-over");}
+function ccDragLeave(el){el.classList.remove("drag-over");}
+function ccDrop(e,targetId){
+  e.preventDefault();
+  const src=_ccDragId;ccDragEnd();
+  if(src&&src!==targetId)ccOpenMove(src,targetId);
+}
+
+/* ---------- exam choice used by the move dialogs ---------- */
+// <select> + "another exam" box. `keepLabel` is the first option (leave the questions' exam as it is).
+function ccExamPickHTML(pfx,tgt,keepLabel,refresh){
+  const seen=new Set(),opts=[];
+  [...(tgt?subjectGroups(tgt).map(g=>g.exam):[]),tgt?homeExam(tgt):"","GATE","ECET"].forEach(n=>{const k=topicKey(n);if(!k||seen.has(k))return;seen.add(k);opts.push(cleanTopic(n));});
+  return `<select id="${pfx}Exam" onchange="${refresh}()"><option value="__keep__">${esc(keepLabel)}</option>${opts.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("")}<option value="__new__">Another exam…</option></select><input id="${pfx}ExamNew" type="text" maxlength="40" placeholder="Exam name" style="display:none;margin-top:8px" oninput="${refresh}()">`;
+}
+// "__keep__", an exam name, or null when "Another exam…" is chosen but empty
+function ccExamValue_(pfx){
+  const sel=byId_(pfx+"Exam");if(!sel)return "__keep__";
+  if(sel.value==="__new__"){const v=cleanTopic(byId_(pfx+"ExamNew").value);return v||null;}
+  return sel.value;
+}
+function ccExamBox_(pfx){const sel=byId_(pfx+"Exam"),inp=byId_(pfx+"ExamNew");if(sel&&inp)inp.style.display=sel.value==="__new__"?"":"none";}
+// topic tests of a subject as <option value="group:test"> for joining one
+function ccTopicJoinOptions_(tgt){
+  const out=[];
+  if(tgt)subjectGroups(tgt).forEach((g,gi)=>g.topics.forEach((t,ti)=>out.push(`<option value="${gi}:${ti}">Add to the existing topic test “${esc(t.name)}”${g.exam?" ("+esc(g.exam)+")":""} — ${ccCount_(t.count,"question")}</option>`)));
+  return out.join("");
+}
+function ccJoinTarget_(tgt,pick){
+  if(!pick||!tgt)return null;
+  const [gi,ti]=pick.split(":").map(Number),g=subjectGroups(tgt)[gi],t=g&&g.topics[ti];
+  return t?{topic:t.name,exam:g.exam}:null;
+}
+
+/* ---------- ➡️ Move a subject into another subject ---------- */
+function ccOpenMove(sourceId,targetId){
+  const custom=_ccData.subjects;
+  if(!custom.length){ccMsg_(ccBad_("You have no additional test subjects to move."));return;}
+  const src=custom.find(s=>s.id===sourceId)||custom[0];
+  const others=ccTargets_().filter(t=>t.id!==src.id);
+  const tgt=(targetId&&others.find(t=>t.id===targetId))||others[0];
+  ccModal(`<h2>Move a subject into another subject</h2>
+    <div class="mv-sentence"><span>Move</span><select id="mvSource" onchange="mvSourceChanged()">${custom.map(s=>`<option value="${esc(s.id)}" ${s.id===src.id?"selected":""}>${esc(s.name)}</option>`).join("")}</select><span>into</span><select id="mvTarget" onchange="mvRefresh(true)">${ccTargetOptions_(tgt&&tgt.id,src.id)}</select></div>
+    <p class="mv-q">What should happen to it?</p>
+    <label class="mv-opt"><input type="radio" name="mvKind" value="topic" checked onchange="mvRefresh()"><span><b>Make it a topic test</b><small>It stays a separate test, listed inside that subject (Choose Test), numbered like the other topic tests. Best for chapters.</small></span></label>
+    <div id="mvTopicBox" class="mv-box">
+      <label>Topic test</label><select id="mvTopicPick" onchange="mvRefresh()"></select>
+      <input id="mvTopicName" type="text" maxlength="80" placeholder="Name of the topic test, e.g. Chapter 1" oninput="this.dataset.touched=1;mvRefresh()">
+      <div id="mvExamRow"><label>Exam</label><span id="mvExamSlot"></span></div>
+      <label id="mvKeepWrap" class="mv-check"><input type="checkbox" id="mvKeepTopics" onchange="mvRefresh()"> It already has topic tests — keep them (only questions without a topic go under the name above)</label>
+    </div>
+    <label class="mv-opt"><input type="radio" name="mvKind" value="merge" onchange="mvRefresh()"><span><b>Merge its questions in</b><small>Its questions simply become part of that subject's questions. No separate topic test is made.</small></span></label>
+    <div id="mvPreview" class="mv-preview"></div><div id="mvMsg" class="note"></div>
+    <div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="mvGo" onclick="ccDoMove()">Move</button></div>`);
+  byId_("mvTopicName").value=src.name;
+  mvRefresh(true);
+}
+function mvSourceChanged(){
+  const srcId=byId_("mvSource").value,cur=byId_("mvTarget").value;
+  byId_("mvTarget").innerHTML=ccTargetOptions_(cur===srcId?"":cur,srcId);
+  const nm=byId_("mvTopicName");
+  if(!nm.dataset.touched){const s=_ccData.subjects.find(x=>x.id===srcId);if(s)nm.value=s.name;}
+  mvRefresh(true);
+}
+function mvState_(){
+  const src=_ccData.subjects.find(s=>s.id===byId_("mvSource").value),tgt=findSubjectById(byId_("mvTarget").value);
+  const kind=document.querySelector('input[name="mvKind"]:checked').value;
+  const join=ccJoinTarget_(tgt,byId_("mvTopicPick").value);
+  return {src,tgt,kind,join,name:cleanTopic(byId_("mvTopicName").value),exam:ccExamValue_("mv"),keep:byId_("mvKeepTopics").checked};
+}
+function mvRefresh(targetChanged){
+  const srcId=byId_("mvSource").value,src=_ccData.subjects.find(s=>s.id===srcId),tgt=findSubjectById(byId_("mvTarget").value);
+  if(!src||!tgt)return;
+  if(targetChanged){
+    byId_("mvTopicPick").innerHTML=`<option value="">A new topic test (type its name)</option>${ccTopicJoinOptions_(tgt)}`;
+    byId_("mvExamSlot").innerHTML=ccExamPickHTML("mv",tgt,`Keep the exam its questions have now${cleanTopic(src.exam)?" ("+cleanTopic(src.exam)+")":" ("+(homeExam(tgt)||"none")+")"}`,"mvRefresh");
+  }
+  ccExamBox_("mv");
+  const st=mvState_(),topicKind=st.kind==="topic";
+  byId_("mvTopicBox").style.display=topicKind?"":"none";
+  byId_("mvTopicName").style.display=st.join?"none":"";
+  byId_("mvExamRow").style.display=st.join?"none":"";
+  byId_("mvKeepWrap").style.display=subjectTopicInfo(src).topicCount>0?"":"none";
+  const n=src.questionCount||0,qs=ccCount_(n,"question");
+  let text;
+  if(!topicKind)text=`The ${qs} of “${src.name}” become part of “${st.tgt.name}”'s own questions. “${src.name}” disappears from your additional test subjects. No topic test is made.`;
+  else{
+    const ex=st.join?st.join.exam:(st.exam==="__keep__"?(cleanTopic(src.exam)||homeExam(st.tgt)):(st.exam||""));
+    text=`“${src.name}” (${qs}) will appear inside “${st.tgt.name}” as ${st.join?`part of the existing topic test “${st.join.topic}”`:`the new topic test “${st.name||"…"}”`}${ex?` for ${ex}`:""}. Students will find it under “${st.tgt.name}” → Choose Test. “${src.name}” disappears from your additional test subjects.`;
+  }
+  byId_("mvPreview").innerHTML=text.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+async function ccDoMove(){
+  const st=mvState_(),msg=byId_("mvMsg");
+  if(!st.src||!st.tgt)return;
+  if(st.kind==="topic"){
+    if(!st.join&&!st.name){msg.innerHTML=ccBad_("Type a name for the topic test first.");return;}
+    if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
+  }
+  msg.innerHTML='<span class="note">Moving…</span>';byId_("mvGo").disabled=true;
+  const base={...controlAuth_(),targetId:st.tgt.id,targetName:st.tgt.name,sourceIds:[st.src.id]};
+  let res;
+  if(st.kind==="merge")res=await apiPost("mergeSubjects",base,120000);
+  else{
+    const payload={...base,mode:st.keep?"keep":"single",targetTopic:st.join?st.join.topic:st.name};
+    if(st.join)payload.targetExam=st.join.exam;else if(st.exam!=="__keep__")payload.targetExam=st.exam;
+    res=await apiPost("nestSubjects",payload,120000);
+  }
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not move. Please try again.");byId_("mvGo").disabled=false;return;}
+  ccModalClose();
+  ccForget_(res.movedIds||res.mergedIds||[st.src.id]);
+  await ccReload(ccOk_(res.message||"Moved."));
+}
+
+/* ---------- ✏️ Rename a subject ---------- */
+function ccOpenRenameSubject(id){
+  const s=_ccData.subjects.find(x=>x.id===id);if(!s)return;
+  ccModal(`<h2>Rename subject</h2><label>New name</label><input id="rnName" type="text" maxlength="80" value="${esc(s.name)}" onkeydown="if(event.key==='Enter')ccDoRenameSubject('${esc(id)}')"><p class="note">Its questions move with it. Past results stay under the old name, so students' wait for this subject starts fresh.</p><div id="rnMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rnGo" onclick="ccDoRenameSubject('${esc(id)}')">Rename</button></div>`);
+  byId_("rnName").select();
+}
+async function ccDoRenameSubject(id){
+  const s=_ccData.subjects.find(x=>x.id===id),name=cleanTopic(byId_("rnName").value),msg=byId_("rnMsg");
+  if(!s)return;
+  if(!name||name===s.name){msg.innerHTML=ccBad_("Type a different name.");return;}
+  msg.innerHTML='<span class="note">Renaming…</span>';byId_("rnGo").disabled=true;
+  const res=await apiPost("renameSubject",{...controlAuth_(),subjectId:id,newName:name},30000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not rename. Please try again.");byId_("rnGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Renamed."));
+}
+
+/* ---------- 🧩 Topic Tests ---------- */
+function ccTestsTab(){
+  const body=byId_("ccBody");if(!body)return;
+  _ccTests=[];
+  const sections=ccTargets_().map(sub=>{
+    const list=(_serverTopics[sub.id]||{}).topics||[];
+    if(!list.length)return "";
+    const rows=list.map(t=>{
+      const i=_ccTests.length;_ccTests.push({sid:sub.id,sname:sub.name,topic:t.name,exam:t.exam||"",count:t.count});
+      return `<div class="cc-row"><div class="cc-row-main"><b>${esc(t.name)}</b><small>${t.exam?`<span class="exam-badge sm">${esc(t.exam)}</span> `:""}${ccCount_(t.count,"question")}</small></div><div class="cc-actions"><button class="ghost" onclick="ccOpenRenameTest(${i})">✏️ Rename</button><button class="mv" onclick="ccOpenMoveTest(${i})">➡️ Move…</button><button class="ghost" onclick="ccOpenPromote(${i})">⬆️ Make it a subject</button></div></div>`;
+    }).join("");
+    return `<h2>${esc(sub.name)}${sub.builtin?' <span class="note">(built-in)</span>':""}</h2><div class="cc-list">${rows}</div>`;
+  }).join("");
+  body.innerHTML=`<div class="cc-help"><b>What can I do here?</b>
+      <ul><li><b>✏️ Rename</b> a topic test, or change the exam it belongs to.</li>
+      <li><b>➡️ Move…</b> sends a topic test to another subject — keeping its name, adding it to one of that subject's topic tests, or under a new name.</li>
+      <li><b>⬆️ Make it a subject</b> turns a topic test into a subject of its own (in Additional Tests).</li></ul>
+      <span class="note">Only topic tests made from questions stored in the sheet can be changed here — topics tagged inside <code>subjects.json</code> stay as they are.</span></div>
+    <div id="ccDelMsg" class="note">${ccFlashHTML()}</div>
+    ${sections||'<p class="note">No topic tests yet. Move a subject into another one from the Subjects tab, or add questions with a topic in Admin → Add Questions.</p>'}`;
+}
+function ccExamSlot_(pfx,tgt,keepLabel,refresh){return ccExamPickHTML(pfx,tgt,keepLabel,refresh);}
+function ccOpenRenameTest(i){
+  const t=_ccTests[i];if(!t)return;
+  ccModal(`<h2>Rename topic test</h2><p class="note">In “${esc(t.sname)}”</p><label>Name</label><input id="rtName" type="text" maxlength="80" value="${esc(t.topic)}"><label>Exam</label><input id="rtExam" list="examChoices" type="text" maxlength="40" value="${esc(t.exam)}" placeholder="GATE, ECET or another (empty = the subject's default)"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist><p class="note">If a topic test with this name already exists in the same exam, the two are combined. Past results stay under the old name, so the wait for this test starts fresh.</p><div id="rtMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rtGo" onclick="ccDoRenameTest(${i})">Save</button></div>`);
+  byId_("rtName").select();
+}
+async function ccDoRenameTest(i){
+  const t=_ccTests[i],newTopic=cleanTopic(byId_("rtName").value),newExam=cleanTopic(byId_("rtExam").value),msg=byId_("rtMsg");
+  if(!t)return;
+  if(!newTopic){msg.innerHTML=ccBad_("Type a name.");return;}
+  if(newTopic===t.topic&&newExam===t.exam){msg.innerHTML=ccBad_("Nothing changed.");return;}
+  msg.innerHTML='<span class="note">Saving…</span>';byId_("rtGo").disabled=true;
+  const res=await apiPost("renameTopicTest",{...controlAuth_(),subjectId:t.sid,topic:t.topic,exam:t.exam,newTopic,newExam},30000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not save. Please try again.");byId_("rtGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Saved."));
+}
+
+/* ---------- ➡️ Move a topic test to another subject ---------- */
+function ccOpenMoveTest(i,targetId){
+  const t=_ccTests[i];if(!t)return;
+  const all=ccTargets_(),tgt=(targetId&&all.find(x=>x.id===targetId))||all.find(x=>x.id!==t.sid)||all[0];
+  ccModal(`<h2>Move a topic test</h2>
+    <p class="mv-line">“<b>${esc(t.topic)}</b>”${t.exam?` <span class="exam-badge sm">${esc(t.exam)}</span>`:""} — now in “${esc(t.sname)}” (${ccCount_(t.count,"question")})</p>
+    <div class="mv-sentence"><span>Move it to</span><select id="mtTarget" onchange="mtRefresh(true)">${ccTargetOptions_(tgt.id,"")}</select></div>
+    <p class="mv-q">What should it be called there?</p>
+    <select id="mtPick" onchange="mtRefresh()"></select>
+    <input id="mtName" type="text" maxlength="80" placeholder="New name of the topic test" style="display:none;margin-top:8px" oninput="mtRefresh()">
+    <div id="mtExamRow"><label>Exam</label><span id="mtExamSlot"></span></div>
+    <div id="mtPreview" class="mv-preview"></div><div id="mtMsg" class="note"></div>
+    <div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="mtGo" onclick="ccDoMoveTest(${i})">Move</button></div>`);
+  mtRefresh(true,i);
+  window._mtIndex=i;
+}
+function mtState_(){
+  const i=window._mtIndex,t=_ccTests[i],tgt=findSubjectById(byId_("mtTarget").value),pick=byId_("mtPick").value;
+  const join=pick&&pick!=="__keep__"&&pick!=="__new__"?ccJoinTarget_(tgt,pick):null;
+  return {t,tgt,pick,join,name:cleanTopic(byId_("mtName").value),exam:ccExamValue_("mt")};
+}
+function mtRefresh(targetChanged,i){
+  if(i!==undefined)window._mtIndex=i;
+  const t=_ccTests[window._mtIndex],tgt=findSubjectById(byId_("mtTarget").value);
+  if(!t||!tgt)return;
+  if(targetChanged){
+    byId_("mtPick").innerHTML=`<option value="__keep__">Keep the name “${esc(t.topic)}”</option>${ccTopicJoinOptions_(tgt)}<option value="__new__">A new name…</option>`;
+    byId_("mtExamSlot").innerHTML=ccExamPickHTML("mt",tgt,`Keep its exam${t.exam?" ("+t.exam+")":""}`,"mtRefresh");
+  }
+  ccExamBox_("mt");
+  const st=mtState_();
+  byId_("mtName").style.display=st.pick==="__new__"?"":"none";
+  byId_("mtExamRow").style.display=st.join?"none":"";
+  const ex=st.join?st.join.exam:(st.exam==="__keep__"?t.exam:(st.exam||""));
+  const called=st.join?`part of the existing topic test “${st.join.topic}”`:st.pick==="__new__"?`the topic test “${st.name||"…"}”`:`the topic test “${t.topic}”`;
+  const same=st.tgt.id===t.sid&&st.pick==="__keep__";
+  byId_("mtPreview").innerHTML=(same?"It is already in that subject — choose another subject, or a topic test to add it to.":`Its ${ccCount_(t.count,"question")} will appear in “${st.tgt.name}” as ${called}${ex?` for ${ex}`:""}.`).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+async function ccDoMoveTest(i){
+  const st=mtState_(),msg=byId_("mtMsg");
+  if(!st.t||!st.tgt)return;
+  if(st.tgt.id===st.t.sid&&st.pick==="__keep__"){msg.innerHTML=ccBad_("It is already in that subject — choose another subject, or a topic test to add it to.");return;}
+  if(st.pick==="__new__"&&!st.name){msg.innerHTML=ccBad_("Type the new name first.");return;}
+  if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
+  const payload={...controlAuth_(),fromSubjectId:st.t.sid,items:[{topic:st.t.topic,exam:st.t.exam}],toSubjectId:st.tgt.id,toSubjectName:st.tgt.name};
+  if(st.join){payload.toTopic=st.join.topic;payload.toExam=st.join.exam;}
+  else{if(st.pick==="__new__")payload.toTopic=st.name;if(st.exam!=="__keep__")payload.toExam=st.exam;}
+  msg.innerHTML='<span class="note">Moving…</span>';byId_("mtGo").disabled=true;
+  const res=await apiPost("moveTopicTests",payload,60000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not move. Please try again.");byId_("mtGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Moved."));
+}
+
+/* ---------- ⬆️ Make a topic test a subject ---------- */
+function ccOpenPromote(i){
+  const t=_ccTests[i];if(!t)return;
+  const src=findSubjectById(t.sid);
+  ccModal(`<h2>Make a topic test a subject</h2>
+    <p class="mv-line">“<b>${esc(t.topic)}</b>”${t.exam?` <span class="exam-badge sm">${esc(t.exam)}</span>`:""} in “${esc(t.sname)}” (${ccCount_(t.count,"question")}) becomes a subject of its own.</p>
+    <label>Name of the new subject</label><input id="pmName" type="text" maxlength="80" value="${esc(t.topic)}">
+    <label>Password for the new subject</label><input id="pmPass" type="text" value="${esc(src&&src.password?src.password:"")}" autocomplete="off">
+    <p class="note">The new subject appears in Additional Tests. Its questions leave “${esc(t.sname)}” and lose their topic (they keep their exam). Past results stay under the old name.</p>
+    <div id="pmMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="pmGo" onclick="ccDoPromote(${i})">Make it a subject</button></div>`);
+  byId_("pmName").select();
+}
+async function ccDoPromote(i){
+  const t=_ccTests[i],name=cleanTopic(byId_("pmName").value),pw=byId_("pmPass").value.trim(),msg=byId_("pmMsg");
+  if(!t)return;
+  if(!name){msg.innerHTML=ccBad_("Type a name for the new subject.");return;}
+  if(!pw){msg.innerHTML=ccBad_("A password is required for the new subject.");return;}
+  msg.innerHTML='<span class="note">Working…</span>';byId_("pmGo").disabled=true;
+  const res=await apiPost("promoteTopicTest",{...controlAuth_(),fromSubjectId:t.sid,topic:t.topic,exam:t.exam,newName:name,password:pw},60000);
+  if(ccDenied(res)){ccModalClose();return;}
+  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not do that. Please try again.");byId_("pmGo").disabled=false;return;}
+  ccModalClose();
+  await ccReload(ccOk_(res.message||"Done."));
+}
+
+/* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */
+function questionFormHTML(mode,q){
+  const isEdit=mode==='edit';
+  const v=(k,d)=>esc(q&&q[k]!==undefined?q[k]:(d||''));
+  return `<h1>Admin — ${isEdit?'Edit Question':'Add a Single Question'}</h1>
+    <p class="note">${isEdit?'Editing question <b>'+esc(q.id)+'</b>. Saving updates this exact row — it cannot duplicate or affect another row.':'Fill in one question directly, without an Excel file.'}</p>
+    ${isEdit?'':`<label>Subject</label><select id="qfSubject" onchange="qfSubjectChanged()">${adminSubjectOptions()}</select>`}
+    <div id="qfTopicWrap">${examTopicHTML('qf',isEdit?_editSubjectId:((subjects[0]||customSubjects[0]||{}).id||''),isEdit?q.exam:'',isEdit?q.topic:'','')}</div>
+    <label>Question</label><textarea id="qfQuestion" rows="2">${v('question')}</textarea>
+    <label>Option A</label><input id="qfA" value="${q?esc((q.options||[])[0]||''):''}">
+    <label>Option B</label><input id="qfB" value="${q?esc((q.options||[])[1]||''):''}">
+    <label>Option C</label><input id="qfC" value="${q?esc((q.options||[])[2]||''):''}">
+    <label>Option D</label><input id="qfD" value="${q?esc((q.options||[])[3]||''):''}">
+    <label>Correct Answer</label><select id="qfCorrect">${['A','B','C','D'].map(l=>`<option value="${l}" ${q&&"ABCD"[q.answer]===l?'selected':''}>${l}</option>`).join('')}</select>
+    <label>Year</label><input id="qfYear" value="${v('year',new Date().getFullYear())}">
+    <label>State (optional)</label><input id="qfState" value="${v('state','TS')}">
+    <label>Question Number (optional)</label><input id="qfQno" value="${v('questionNumber')}">
+    <label>Question Image URL (optional)</label><input id="qfQImg" value="${v('image')}">
+    <label>Option A/B/C/D Image URLs (optional)</label>
+    <input id="qfAImg" placeholder="Option A image" value="${q?esc((q.optionImages||[])[0]||''):''}">
+    <input id="qfBImg" placeholder="Option B image" value="${q?esc((q.optionImages||[])[1]||''):''}">
+    <input id="qfCImg" placeholder="Option C image" value="${q?esc((q.optionImages||[])[2]||''):''}">
+    <input id="qfDImg" placeholder="Option D image" value="${q?esc((q.optionImages||[])[3]||''):''}">
+    <div id="qfStatus" class="note"></div>
+    <div class="buttons">${isEdit?`<button onclick="editQuestionsPage()">Cancel</button><button onclick="saveQuestionEdit('${esc(q.id)}')">Save Changes</button>`:`<button onclick="saveManualQuestion()">Save Question</button>`}</div>`;
+}
+function readQuestionForm(){
+  return {
+    question:document.getElementById('qfQuestion').value.trim(),
+    optionA:document.getElementById('qfA').value.trim(),
+    optionB:document.getElementById('qfB').value.trim(),
+    optionC:document.getElementById('qfC').value.trim(),
+    optionD:document.getElementById('qfD').value.trim(),
+    correctAnswer:document.getElementById('qfCorrect').value,
+    year:document.getElementById('qfYear').value.trim(),
+    state:document.getElementById('qfState').value.trim(),
+    questionNumber:document.getElementById('qfQno').value.trim(),
+    questionImage:document.getElementById('qfQImg').value.trim(),
+    optionAImage:document.getElementById('qfAImg').value.trim(),
+    optionBImage:document.getElementById('qfBImg').value.trim(),
+    optionCImage:document.getElementById('qfCImg').value.trim(),
+    optionDImage:document.getElementById('qfDImg').value.trim(),
+    topic:readTopicField('qf'),
+    exam:readExamField('qf')
+  };
+}
+function qfSubjectChanged(){
+  const sel=document.getElementById('qfSubject'),wrap=document.getElementById('qfTopicWrap');
+  if(sel&&wrap)wrap.innerHTML=examTopicHTML('qf',sel.value,'','','');
+}
+async function saveManualQuestion(){
+  const statusEl=document.getElementById('qfStatus');
+  const sel=document.getElementById('qfSubject'),subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);
+  if(!sel.value||sel.value==='__new__'){statusEl.innerHTML='<span class="wronganswer">Pick a subject first.</span>';return;}
+  const row=readQuestionForm();
+  if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
+  if(topicFieldIncomplete('qf')||examFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  statusEl.textContent='Saving…';
+  const p=store.profile();
+  const res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:adminPw_(),subjectId:sel.value,subject:subject?.name||sel.value,questions:[row]});
+  if(res?.ok){statusEl.innerHTML=`<span class="correct">Question saved successfully${row.topic?' under topic “'+esc(row.topic)+'”':''} — available immediately in Additional Tests.</span>`;['qfQuestion','qfA','qfB','qfC','qfD','qfQno','qfQImg','qfAImg','qfBImg','qfCImg','qfDImg'].forEach(id=>document.getElementById(id).value='');
+    // Keep home/admin question counts and topic lists in sync right away. The topic just used stays
+    // selected, so a run of questions for the same topic needs no re-picking.
+    const keepTopic=row.topic;
+    await refreshCustomSubjects();
+    const wrap=document.getElementById('qfTopicWrap');
+    if(wrap)wrap.innerHTML=examTopicHTML('qf',sel.value,row.exam,keepTopic,'');
+    refreshAdminTopicField(true);
+  }
+  else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||(res?.errors?.[0]?.errors?.join(', '))||'Could not save.')}</span>`;}
+}
+
+/* ===================== ADMIN — EDIT QUESTIONS ===================== */
+let _editQuestionsCache=[],_editSubjectId='',_editSelected=new Set();
+async function editQuestionsPage(){
+  pushNav(editQuestionsPage);
+  requireProfile(async ()=>{
+    if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+    if(API&&!customSubjects.length){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data))customSubjects=cs.data;}catch(e){}}
+    app.innerHTML=`<div class="card"><h1>Admin — Edit Questions</h1>
+      <p class="note">Pick a subject, load its questions, then click Edit on any row.</p>
+      <label>Subject</label><select id="editSubject">${adminSubjectOptions()}</select>
+      <div class="buttons"><button onclick="loadAdminQuestions()">Load Questions</button><button onclick="adminQuestionsPage()">Back</button></div>
+      <div id="editQuestionsList" class="note"></div>
+    </div>`;
+  });
+}
+async function loadAdminQuestions(){
+  const sel=document.getElementById('editSubject'),listEl=document.getElementById('editQuestionsList');
+  if(!sel.value||sel.value==='__new__'){listEl.innerHTML='<span class="wronganswer">Pick a subject.</span>';return;}
+  _editSubjectId=sel.value;
+  listEl.textContent='Loading…';
+  const res=await apiGet('questions',{subjectId:sel.value});
+  if(!res?.ok||!Array.isArray(res.data)){listEl.innerHTML='<span class="wronganswer">Could not load questions.</span>';return;}
+  _editQuestionsCache=res.data;
+  _editSelected=new Set();
+  renderEditQuestionsList();
+}
+function editExamOf_(q){return cleanTopic(q.exam)||homeExam(findSubjectById(_editSubjectId));}
+function renderEditQuestionsList(){
+  const listEl=document.getElementById('editQuestionsList');
+  if(!listEl)return;
+  listEl.className='';
+  if(!_editQuestionsCache.length){listEl.className='note';listEl.innerHTML='<p class="note">No questions found for this subject.</p>';return;}
+  const combos=new Map();
+  _editQuestionsCache.forEach(q=>{const t=cleanTopic(q.topic);if(!t)return;const ex=editExamOf_(q),k=topicKey(ex)+'|'+topicKey(t),e=combos.get(k)||{topic:t,exam:ex,count:0};e.count++;combos.set(k,e);});
+  const untagged=_editQuestionsCache.filter(q=>!cleanTopic(q.topic)).length;
+  listEl.innerHTML=`<div class="topic-bulk">
+    <label>Show</label>
+    <select id="editTopicFilter" onchange="renderEditTable()"><option value="">All questions (${_editQuestionsCache.length})</option><option value="__none__">No topic yet (${untagged})</option>${[...combos].map(([k,e])=>`<option value="${esc(k)}">${esc(e.topic)}${e.exam?' — '+esc(e.exam):''} (${e.count})</option>`).join('')}</select>
+    <label>Move the ticked questions to an exam / topic</label>
+    ${examTopicHTML('bk',_editSubjectId,null,'','',true)}
+    <div class="buttons"><button id="bulkTopicBtn" onclick="bulkAssignTopic()">Apply to ticked (0)</button></div>
+    <div id="bulkTopicStatus" class="note">Tick questions in the table (or the box in the header to tick everything shown), pick an exam and topic, then apply. Choose “No topic” to take them out of a topic.</div>
+  </div><div id="editTableWrap"></div>`;
+  renderEditTable();
+}
+function visibleEditRows_(){
+  const f=document.getElementById('editTopicFilter')?.value||'';
+  return _editQuestionsCache.filter(q=>{
+    if(!f)return true;
+    const t=cleanTopic(q.topic);
+    if(f==='__none__')return !t;
+    return !!t&&(topicKey(editExamOf_(q))+'|'+topicKey(t))===f;
+  });
+}
+function renderEditTable(){
+  const wrap=document.getElementById('editTableWrap');if(!wrap)return;
+  const rows=visibleEditRows_(),allTicked=rows.length>0&&rows.every(q=>_editSelected.has(q.id));
+  wrap.innerHTML=rows.length?`<div class="table-scroll"><table class="simple"><tr><th><input type="checkbox" ${allTicked?'checked':''} onchange="toggleEditAll(this.checked)" title="Tick / untick everything shown"></th><th>Question</th><th>Topic</th><th>Exam</th><th>Year</th><th></th></tr>
+  ${rows.map(q=>`<tr><td><input type="checkbox" ${_editSelected.has(q.id)?'checked':''} onchange="toggleEditSel('${esc(q.id)}',this.checked)"></td><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${q.topic?esc(q.topic):'—'}</td><td>${editExamOf_(q)?esc(editExamOf_(q)):'—'}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
+  </table></div>`:'<p class="note">No questions match this filter.</p>';
+  updateBulkBtn();
+}
+function toggleEditAll(on){visibleEditRows_().forEach(q=>{if(on)_editSelected.add(q.id);else _editSelected.delete(q.id);});renderEditTable();}
+function toggleEditSel(id,on){if(on)_editSelected.add(id);else _editSelected.delete(id);updateBulkBtn();}
+function updateBulkBtn(){const b=document.getElementById('bulkTopicBtn');if(b)b.textContent=`Apply to ticked (${_editSelected.size})`;}
+async function bulkAssignTopic(){
+  const st=document.getElementById('bulkTopicStatus'),ids=[..._editSelected];
+  if(!ids.length){st.innerHTML='<span class="wronganswer">Tick at least one question first.</span>';return;}
+  if(topicFieldIncomplete('bk')||examFieldIncomplete('bk')){st.innerHTML='<span class="wronganswer">Type the new name, or choose an existing exam / topic.</span>';return;}
+  const topic=readTopicField('bk'),exam=readExamField('bk');
+  if(!topic&&!confirm(`Take ${ids.length} question(s) out of their topic?`))return;
+  st.textContent='Saving…';
+  const payload={...adminAuth_(),subjectId:_editSubjectId,questionIds:ids,topic};
+  if(exam!=='__keep__')payload.exam=exam;
+  const res=await apiPost('setQuestionTopic',payload,60000);
+  if(!res?.ok){st.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save. Please check your connection and try again.')}</span>`;return;}
+  const finalTopic=res.topic!==undefined?res.topic:topic;
+  _editQuestionsCache.forEach(q=>{if(_editSelected.has(q.id)){q.topic=finalTopic;if(exam!=='__keep__')q.exam=res.exam!==undefined?res.exam:exam;}});
+  _editSelected=new Set();
+  await refreshCustomSubjects(); // Home and the dropdowns pick up the change straight away
+  renderEditQuestionsList();
+  const st2=document.getElementById('bulkTopicStatus');
+  if(st2)st2.innerHTML=`<span class="correct">${esc(res.message||'Saved.')}</span>`;
+}
+function editQuestionRow(id){
+  const q=_editQuestionsCache.find(x=>x.id===id);
+  if(!q)return;
+  pushNav(()=>editQuestionRow(id));
+  app.innerHTML=`<div class="card">${questionFormHTML('edit',q)}</div>`;
+}
+async function saveQuestionEdit(id){
+  const statusEl=document.getElementById('qfStatus');
+  const row=readQuestionForm();
+  if(!row.question||!row.optionA||!row.optionB||!row.optionC||!row.optionD||!row.year){statusEl.innerHTML='<span class="wronganswer">Question, all 4 options, and Year are required.</span>';return;}
+  if(topicFieldIncomplete('qf')||examFieldIncomplete('qf')){statusEl.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  statusEl.textContent='Saving…';
+  const p=store.profile();
+  const res=await apiPost('updateQuestion',{adminEmail:p.email,adminPassword:adminPw_(),questionId:id,...row});
+  if(res?.ok){
+    statusEl.innerHTML='<span class="correct">Saved. Updating list…</span>';
+    const idx=_editQuestionsCache.findIndex(x=>x.id===id);
+    refreshCustomSubjects(); // topic list on Home / in the dropdowns follows the edit
+    if(idx!==-1)_editQuestionsCache[idx]={...row,id,options:[row.optionA,row.optionB,row.optionC,row.optionD],answer:'ABCD'.indexOf(row.correctAnswer),image:row.questionImage,optionImages:[row.optionAImage,row.optionBImage,row.optionCImage,row.optionDImage]};
+    setTimeout(editQuestionsPage,600);
+  }else{statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||'Could not save.')}</span>`;}
+}
+
+/* ===================== ADMIN — RECENT CHANGES (audit log) ===================== */
+async function recentChangesPage(){
+  pushNav(recentChangesPage);
+  requireProfile(async ()=>{
+    if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+    app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="note">Loading…</p></div>`;
+    const res=await apiGet('questionChangeLog',{});
+    if(!res?.ok||!Array.isArray(res.data)){app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="note">Could not load the change log.</p><div class="buttons"><button onclick="recentChangesPage()">Retry</button><button onclick="adminQuestionsPage()">Back</button></div></div>`;return;}
+    const rows=res.data;
+    app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="meta">Last ${rows.length} edit(s) to questions, newest first.</p>
+    <div class="table-scroll"><table class="simple"><tr><th>Date</th><th>Subject</th><th>Question</th><th>Edited by</th><th>What changed</th></tr>
+    ${rows.map(r=>`<tr><td>${esc(formatDateTime(r.timestamp))}</td><td>${esc(r.subject)}</td><td>${esc(r.questionSnippet.slice(0,60))}${r.questionSnippet.length>60?'…':''}</td><td>${esc(r.editedBy)}</td><td>${esc(r.summary)}</td></tr>`).join('')||'<tr><td colspan="5">No edits recorded yet.</td></tr>'}
+    </table></div>
+    <div class="buttons"><button onclick="adminQuestionsPage()">Back</button></div></div>`;
+  });
+}
+async function createNewSubject(){
+  const p=store.profile();
+  const name=document.getElementById("newSubjectName").value.trim();
+  const password=document.getElementById("newSubjectPassword").value.trim();
+  const description=document.getElementById("newSubjectDesc").value.trim();
+  const exam=document.getElementById("newSubjectExam").value.trim();
+  const statusEl=document.getElementById("newSubjectStatus");
+  if(!name||!password){statusEl.innerHTML='<span class="wronganswer">Subject name and password are both required.</span>';return;}
+  statusEl.textContent="Creating…";
+  const res=await apiPost("createSubject",{adminEmail:p.email,adminPassword:adminPw_(),name,password,description,exam});
+  if(!res?.ok){statusEl.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not create subject.")}</span>`;return;}
+  customSubjects.push(res.subject);
+  statusEl.innerHTML=`<span class="correct">"${esc(res.subject.name)}" created. It's now on the homepage and in the Subject dropdown below.</span>`;
+  document.getElementById("newSubjectName").value="";document.getElementById("newSubjectPassword").value="";document.getElementById("newSubjectDesc").value="";document.getElementById("newSubjectExam").value="";
+  const sel=document.getElementById("adminSubject");
+  if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
+}
+function buildAiPrompt(){
+  // Built fresh from the admin's actual answers each time (coverage, question
+  // type, difficulty, count, exam name) — not a single fixed template
+  // regardless of input. This version asks the AI to hand back an actual
+  // .xlsx file (for AI tools that can generate files) instead of TSV text to
+  // paste in — upload the returned file straight into the importer above.
+  const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
+  const scope=document.getElementById("aiScope")?.value||"subject";
+  const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the selected subject";
+  const topic=document.getElementById("aiTopic")?.value?.trim();
+  const qtype=document.getElementById("aiQType")?.value||"Mixed";
+  const count=document.getElementById("aiCount")?.value||20;
+  const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
+  const extra=document.getElementById("aiExtra")?.value?.trim();
+  const topicSel=readTopicField("at"); // the topic-wise test these questions will be filed under (may be empty)
+  const examSel=readExamField("at");   // the exam they are for (empty = the subject's default exam)
+  const examName=document.getElementById("aiExamName")?.value?.trim()||examSel||homeExam(findSubjectById(sel?.value))||subjName;
+
+  const subtopicsLine=scope==='topic'&&topic
+    ? (topicSel?topicSel+' — focusing on: '+topic:topic)
+    : scope==='topic'
+      ? (topicSel?'Everything commonly tested under "'+topicSel+'" in '+subjName:'Pick one well-defined, commonly-tested subtopic within '+subjName+' and stay within it.')
+      : topicSel
+        ? 'Everything commonly tested under "'+topicSel+'" in '+subjName
+        : 'All major topics of '+subjName+' — spread broadly, not just one chapter.';
+
+  const qtypeLines={
+    'Conceptual/theory-based':'Focus on conceptual / theory-based questions — test definitions, principles, and understanding rather than heavy calculation.',
+    'Numerical/problem-solving':'Focus on numerical / problem-solving questions — most should require a calculation or worked step, with plausible numeric distractors as the wrong options.',
+    'Mixed':'Include a balanced mix of conceptual and numerical/problem-solving questions.',
+    'Previous-year exam style':'Match the style, phrasing, and difficulty pattern typically seen in previous-year competitive exam papers for this subject.',
+    'Application/scenario-based':'Frame questions around a short real-world scenario the student must reason through (application / scenario-based).'
+  };
+
+  return [
+    'You are creating practice questions for a competitive-exam-style mock test. Generate exam questions in an Excel (.xlsx) file.',
+    '',
+    'Topic: '+subjName,
+    'Subtopics: '+subtopicsLine,
+    ...(topicSel?['Topic (value for the Topic column): '+topicSel]:[]),
+    ...(examSel?['Exam (value for the Exam column): '+examSel]:[]),
+    'Number of questions: '+count,
+    'Difficulty level: '+difficulty,
+    'Year: '+year,
+    'Exam: '+examName,
+    '',
+    'Excel format — mandatory',
+    '',
+    'Create an Excel file with exactly 18 columns in this order:',
+    '',
+    '1. Question',
+    '2. Option A',
+    '3. Option B',
+    '4. Option C',
+    '5. Option D',
+    '6. Correct Answer',
+    '7. Marks',
+    '8. Type',
+    '9. Year',
+    '10. State',
+    '11. Question Number',
+    '12. Question Image URL',
+    '13. Option A Image URL',
+    '14. Option B Image URL',
+    '15. Option C Image URL',
+    '16. Option D Image URL',
+    '17. Topic',
+    '18. Exam',
+    '',
+    'Each question must occupy one row. Include a header row with the 18 column names. Preserve this exact column order and structure.',
+    '',
+    'Question requirements',
+    '',
+    '1. Generate exactly '+count+' unique questions using the requested Type format: '+(qtype==='Previous-year exam style'?'MCQ unless the requested exam explicitly requires MSQ/NAT':(qtype==='Mixed'?'MCQ by default unless MSQ/NAT are explicitly requested':qtype))+'.',
+    '2. '+(qtypeLines[qtype]||qtypeLines['Mixed']),
+    '3. Ensure the difficulty is '+difficulty+', suitable for competitive exams.',
+    '4. Cover '+(scope==='topic'?'the specified subtopic(s)':'all specified subtopics')+' thoroughly.',
+    '5. Do not create duplicate or near-duplicate questions.',
+    '6. Every question must have exactly four options: A, B, C, and D.',
+    '7. Correct Answer must contain exactly one letter: A, B, C, or D, matching the correct option.',
+    '8. Marks must be a numeric value: use 1 or 2 for GATE-style questions; use 1 for ordinary MCQs unless the requested exam specifies another scheme.',
+    '9. Type must be exactly one of MCQ, MSQ, or NAT. If Type is MCQ, Correct Answer is one letter (A/B/C/D). If Type is MSQ, Correct Answer may contain multiple letters such as A,C and the question may have multiple correct options. If Type is NAT, use a numeric Correct Answer and leave the option fields empty when appropriate.',
+    '10. Verify every numerical answer, formula, and correct option before finalizing.',
+    '11. Use '+year+' in the Year column for every question.',
+    '12. Fill Question Number sequentially from 1 to '+count+'.',
+    '13. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
+    '14. Leave all image URL columns empty unless image URLs are explicitly requested.',
+    '15. '+(topicSel?'Fill the Topic column with exactly "'+topicSel+'" for every question (same spelling and capitalization).':'Leave the Topic column empty.'),
+    '16. '+(examSel?'Fill the Exam column with exactly "'+examSel+'" for every question.':'Leave the Exam column empty.'),
+    '17. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
+    ...(extra?['18. Additional instructions: '+extra]:[]),
+    '',
+    'Output requirements',
+    '',
+    '- Return ONLY the completed Excel (.xlsx) file.',
+    '- Do not output the questions as plain text, TSV, CSV, or Markdown.',
+    '- Do not provide explanations, answers, or any other text outside the Excel file.',
+    '- Ensure the file contains exactly '+count+' question rows plus the header row.',
+    '- Check that all 18 columns are present and in the correct order.',
+    '- Ensure every mandatory field is filled for every question.',
+    '- Make the Excel file ready to download and use directly.'
+  ].join('\n');
+}
+function refreshAiPrompt(){
+  const box=document.getElementById("aiPromptBox");
+  if(box)box.value=buildAiPrompt();
+}
+function copyAiPrompt(){
+  const box=document.getElementById("aiPromptBox"),status=document.getElementById("aiCopyStatus");
+  if(!box)return;
+  const announce=()=>{if(status)status.innerHTML='<span class="correct">Copied! Paste it into ChatGPT, Claude, or any AI chat.</span>';};
+  const fallback=()=>{try{box.focus();box.select();document.execCommand("copy");announce();}catch(e){if(status)status.innerHTML='<span class="wronganswer">Could not copy automatically — select the text above and copy it manually.</span>';}};
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(box.value).then(announce).catch(fallback);}else{fallback();}
+}
+let _questionImportRows=[];
+
+/* PERFORMANCE: lazy-loads the SheetJS (XLSX) library on first actual use
+ * instead of on every page load (see index.html for why). Concurrent calls
+ * share one in-flight load instead of injecting the script twice. Returns
+ * a rejected promise with a user-readable message on failure (e.g. offline)
+ * so callers can show a real error state instead of a silent break. */
+let _xlsxLoadPromise=null;
+function ensureXLSX(){
+  if(window.XLSX)return Promise.resolve();
+  if(_xlsxLoadPromise)return _xlsxLoadPromise;
+  _xlsxLoadPromise=new Promise((resolve,reject)=>{
+    const s=document.createElement("script");
+    s.src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+    s.onload=()=>resolve();
+    s.onerror=()=>{_xlsxLoadPromise=null;reject(new Error("Could not load Excel support. Check your internet connection and try again."));};
+    document.head.appendChild(s);
+  });
+  return _xlsxLoadPromise;
+}
+
+async function downloadQuestionTemplate(){
+  const btn=document.querySelector('button[onclick="downloadQuestionTemplate()"]');
+  const originalLabel=btn?btn.textContent:null;
+  if(btn){btn.disabled=true;btn.textContent="Loading Excel tools…";}
+  try{
+    await ensureXLSX();
+    const rows=[['Question','Option A','Option B','Option C','Option D','Correct Answer','Marks','Type','Year','State','Question Number','Question Image URL','Option A Image URL','Option B Image URL','Option C Image URL','Option D Image URL','Topic','Exam'],['Example question?','Option 1','Option 2','Option 3','Option 4','A',1,'MCQ','2026','TS','101','','','','','','','']];
+    const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Questions');XLSX.writeFile(wb,'ECET-Question-Template.xlsx');
+  }catch(err){
+    alert(err.message||"Could not load Excel support. Please try again.");
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=originalLabel;}
+  }
+}
+function normalizeQuestionRow(r,defaultYear){
+  const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
+  const marksRaw=get('Marks','marks','Mark','mark');const marks=String(marksRaw??'').trim();
+  const type=String(get('Type','type','Question Type','questionType')||'MCQ').trim().toUpperCase();
+  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),marks, type, year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name')),exam:cleanTopic(get('Exam','exam','Exam Name'))};
+}
+function validateImportRows(rows){
+  const errs=[],seen=new Set();
+  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');const mark=Number(r.marks);if(!Number.isFinite(mark)||mark<=0)e.push('Marks must be a positive number');if(!['MCQ','MSQ','NAT'].includes(r.type))e.push('Type must be MCQ/MSQ/NAT');if(r.type!=='MCQ'&&r.type!=='MSQ'&&r.type!=='NAT'){}if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('Exam longer than 40 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
+}
+async function previewQuestionFile(ev){
+  const file=ev.target.files?.[0];if(!file)return;
+  const statusEl=document.getElementById('importStatus');
+  if(statusEl)statusEl.textContent="Loading Excel support…";
+  try{
+    await ensureXLSX();
+  }catch(err){
+    if(statusEl)statusEl.textContent=err.message||"Could not load Excel support. Please try again.";
+    return;
+  }
+  if(statusEl)statusEl.textContent="Reading file…";
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''}),defaultYear=document.getElementById('adminYear')?.value||'';
+      _questionImportRows=raw.map(r=>normalizeQuestionRow(r,defaultYear));
+      renderImportPreview();
+    }catch(err){
+      _questionImportRows=[];
+      document.getElementById('importQuestionsBtn').disabled=true;
+      document.getElementById('importPreview').innerHTML='';
+      document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';
+      console.warn(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+// The rows as they will actually be saved: a row's own Topic column wins, otherwise the topic picked above.
+function effectiveImportRows_(){const t=readTopicField('at'),e=readExamField('at');return _questionImportRows.map(r=>({...r,topic:cleanTopic(r.topic)||t,exam:cleanTopic(r.exam)||e}));}
+function renderImportPreview(){
+  const statusEl=document.getElementById('importStatus'),prevEl=document.getElementById('importPreview'),btn=document.getElementById('importQuestionsBtn');
+  if(!statusEl||!prevEl||!btn||!_questionImportRows.length)return;
+  const rows=effectiveImportRows_(),errors=validateImportRows(rows),preview=rows.slice(0,20);
+  const tally=new Map();
+  rows.forEach(r=>{const k=topicKey(r.exam)+'|'+topicKey(r.topic),e=tally.get(k)||{name:r.topic,exam:r.exam,n:0};e.n++;tally.set(k,e);});
+  const topicLine=[...tally.values()].map(e=>`${e.name?esc(e.name):'<i>no topic</i>'}${e.exam?' ('+esc(e.exam)+')':''} × ${e.n}`).join(' • ');
+  statusEl.innerHTML=`<b>${rows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}<br><span class="note">Topic tests in this import: ${topicLine}</span>`;
+  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Marks</th><th>Type</th><th>Topic</th><th>Exam</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.marks)}</td><td>${esc(r.type)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${r.exam?esc(r.exam):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
+  btn.disabled=errors.length>0||!rows.length||(topicFieldIncomplete('at')||examFieldIncomplete('at'));
+}
+async function importPreviewedQuestions(){
+  const btn=document.getElementById('importQuestionsBtn'),status=document.getElementById('importStatus');
+  if(!_questionImportRows.length||btn.disabled)return;
+  if((topicFieldIncomplete('at')||examFieldIncomplete('at'))){status.innerHTML='<span class="wronganswer">Type the new topic name, or choose an existing topic / No topic.</span>';return;}
+  btn.disabled=true;
+  const p=store.profile(),sel=document.getElementById('adminSubject');
+  const subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);
+  const rows=effectiveImportRows_(),total=rows.length,BATCH=50;
+  let done=0,lastRes=null;
+  /* Importing is sent in small batches with a long timeout. If the browser stops
+     waiting (slow Apps Script) the batch may STILL have been saved, so we never
+     report "failed" from silence: we re-send the same batch, and the server
+     answers "already imported" if it had gone through the first time. */
+  for(let i=0;i<total;i+=BATCH){
+    const batch=rows.slice(i,i+BATCH);
+    btn.textContent=`Importing ${Math.min(i+BATCH,total)} / ${total}…`;
+    let res=null;
+    for(let attempt=0;attempt<3&&!res;attempt++){
+      if(attempt){status.innerHTML=`<span class="note">Server is slow — confirming the last batch was saved…</span>`;await sleep(4000*attempt);}
+      res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:adminPw_(),subjectId:sel.value,subject:subject?.name||sel.value,questions:batch},90000);
+    }
+    lastRes=res;
+    if(!res?.ok)break;
+    done+=batch.length;
+  }
+  if(done===total){
+    status.innerHTML=`<span class="correct"><b>${total}</b> question(s) imported successfully — available immediately in Additional Tests.</span>`;
+    _questionImportRows=[];document.getElementById('importPreview').innerHTML='';
+    await refreshCustomSubjects(); // keep home/admin question counts and topic lists in sync
+    refreshAdminTopicField(true);  // a topic created by this import is now selectable, and stays selected
+  }else{
+    const msg=lastRes?lastRes.error||'Import failed.':'Could not reach the server, so the last batch could not be confirmed. Wait a minute and use “Import Questions” again — questions already saved are detected automatically.';
+    status.innerHTML=`<span class="wronganswer">${esc(msg)}</span>${done?`<br><span class="note">${done} of ${total} question(s) were already saved before this happened.</span>`:''}`;
+    if(lastRes?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${lastRes.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;
+  }
+  btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
+}
+
+/* ===================== ADMIN PASSWORD UNLOCK =====================
+   The Admin button is always visible on the homepage. Entering the admin
+   password unlocks the admin panel on this device even if the server-side
+   isAdmin check (which needs a working backend + a registered admin email)
+   is slow or unreachable. */
+function openAdminPassword(){
+  clearExam();pushNav(openAdminPassword);
+  app.innerHTML=`<div class="card password-card"><h1>Admin Access</h1><p>Enter the admin password to manage subjects and questions.</p><input id="adminPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPassword()"><div id="adminPassErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkAdminPassword()">Continue</button></div></div>`;
+  document.getElementById("adminPass").focus();
+}
+async function checkAdminPassword(){
+  const v=document.getElementById("adminPass").value;
+  const errEl=document.getElementById("adminPassErr");
+  if(!v){errEl.textContent="Enter the admin password.";return;}
+  errEl.textContent="Checking…";
+  const p=store.profile();
+  // Verified by the server, not compared against anything in this file.
+  const res=API?await apiGet("isAdmin",{email:p?.email||"",password:v},15000,1):null;
+  if(!res?.ok||!res.isAdmin){errEl.textContent=res?"Incorrect password.":"Could not reach the server. Try again.";return;}
+  try{sessionStorage.setItem("ecet_admin_pw",v);}catch(e){}
+  isAdminUnlocked=true;
+  // Replace the password-screen stack entry so Back goes straight Home,
+  // instead of pushing the admin page on top of the password screen.
+  navStack.pop();
+  adminQuestionsPage();
+}
+
+/* ===================== PASSWORD ===================== */
+let _pwSubject=null;
+let _lockCountdownTimer=null;
+function openPassword(i){_pwSubject=subjects[i];if(guardSubjectLock_(subjects[i]))return;renderPasswordCard();}
+function openCustomPassword(i){_pwSubject=customSubjects[i];if(guardSubjectLock_(customSubjects[i]))return;renderPasswordCard();}
+// Defense in depth: the subject cards already hide/disable "Open Exam" while
+// locked, but this re-checks the same precomputed lastAttempt right before
+// the password screen too, in case a card was rendered before fresh stats
+// arrived. Never blocks resuming an in-progress exam. Returns true if blocked.
+function guardSubjectLock_(s){
+  if(!s||store.getProgress(s.id))return false;
+  const lock=subjectLockInfo(s.name);
+  if(!lock.locked)return false;
+  pushNav(()=>guardSubjectLock_(s));
+  app.innerHTML=`<div class="card"><h1>${esc(s.name)} is locked</h1><p class="note">You already attempted this subject recently. You can retake it in <b id="lockCountdown" data-unlock="${lock.unlockAt}">${formatCooldown(lock.remaining)}</b>.</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
+  clearInterval(_lockCountdownTimer);
+  _lockCountdownTimer=setInterval(()=>{const el=document.getElementById("lockCountdown");if(!el){clearInterval(_lockCountdownTimer);return;}const remaining=Number(el.dataset.unlock)-Date.now();if(remaining<=0){home();return;}el.textContent=formatCooldown(remaining);},30000);
+  return true;
+}
+function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
+async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;
+  let expected=s.password;
+  // Subject lists loaded from the static data/ files carry no password. For a custom subject, get it
+  // live from Apps Script when it is missing (or when the saved one did not match and nothing live was loaded yet).
+  const pid=s.parentId||s.id;
+  if(customSubjects.some(c=>String(c.id)===String(pid))&&(expected===undefined||expected===null||(v!==String(expected)&&!_liveCustomApplied))){
+    const fresh=await liveCustomPassword_(pid);
+    if(fresh!==undefined&&fresh!==null)expected=fresh;
+  }
+  if(v!==String(expected)){document.getElementById("passError").textContent="Incorrect password.";return;}
+  _unlockedSubjects.add(s.parentId||s.id);
+  await loadBankAndEnroll_(s);
+}
+/* ===================== OFFLINE-AWARE BANK LOADING =====================
+ * Unchanged behavior when online: fetches the static file + backend
+ * questions exactly as before, then ADDITIONALLY caches the merged, final
+ * bank locally (see cacheBankForOffline_) so this exact subject can be
+ * opened again later with no connection at all. When there is genuinely no
+ * connection, this skips the network entirely and serves the last cached
+ * copy for this subject instead of failing — if nothing was ever cached
+ * for it, it says so plainly rather than pretending the bank is empty. */
+async function loadBankAndEnroll_(s){
+  const parentId=s.parentId||s.id; // a topic test loads its parent subject's questions, then keeps only its topic
+  const cacheKey=parentId;
+
+  if(!navigator.onLine){
+    const cached=getCachedBank_(cacheKey);
+    if(!cached||!cached.length){
+      app.innerHTML=`<div class="card"><h2>This exam isn't available offline yet.</h2><p class="note">Open it once while connected to the internet so it's saved on this device for offline use.</p><div class="buttons"><button onclick="home()">Back</button></div></div>`;
+      return;
+    }
+    bank=cached;
+    const homeOffline=homeExam(s);
+    bank=bank.map(q=>({...q,exam:cleanTopic(q.exam)||homeOffline}));
+    if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
+    if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
+    if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available offline."}</h2><button onclick="home()">Back</button></div>`;return;}
+    activeSubject=s;enroll();
+    return;
+  }
+
+  // These two are independent — the static question-bank file and the
+  // admin-imported questions from the backend — so fetch them in parallel
+  // instead of waiting on the file before even starting the API call.
+  const [staticBank,imported]=await Promise.all([
+    s.file?fetch(s.file).then(r=>r.json()).catch(()=>[]):Promise.resolve([]),
+    loadQuestions_(parentId).catch(()=>null) // static data/questions/<id>.json first, Apps Script as fallback
+  ]);
+  bank=Array.isArray(staticBank)?staticBank:[];
+  if(Array.isArray(imported)&&imported.length)bank=bank.concat(imported);
+  // every question gets its effective exam (its own, else the subject's home exam) so a test can pick its exam
+  const home=homeExam(s);
+  bank.forEach(q=>{q.exam=cleanTopic(q.exam)||home;});
+  if(bank.length)cacheBankForOffline_(cacheKey,bank); // save the FULL merged bank (pre-filter) for offline reuse by any topic under this subject
+  if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
+  if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
+  if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
+/* ===================== DATA-COLLECTION CONSENT (DPDP Act, 2023) =====================
+ * Name + email are the only personal data this app collects at account
+ * creation, and they're collected in exactly two places: here (enroll, for
+ * a first-time exam) and requireProfile() (for Dashboard/Mistakes/
+ * Reminders without taking an exam first). Before either form can submit,
+ * the student must explicitly tick a consent checkbox that links to the
+ * actual Privacy Policy and Terms — this is the "notice + explicit
+ * consent before collection" pattern the DPDP Act requires for personal
+ * data. The checkbox uses native `required` so it's enforced for keyboard
+ * users and announced by screen readers without any extra JS, and
+ * submitEnroll_()/submitProfileAndContinue_() additionally re-check it and
+ * show a specific, visible error rather than silently proceeding either
+ * way. Consent is also recorded SERVER-SIDE with a timestamp (see
+ * register_() in Code.gs) so there's a durable, auditable record — not
+ * just a client-side box that leaves no trace once localStorage clears. */
+function consentFieldsHTML_(idPrefix){
+  return `<label class="consent-row" for="${idPrefix}Consent" style="display:flex;gap:9px;align-items:flex-start;font-weight:400;cursor:pointer;margin:14px 0;text-align:left">
+    <input type="checkbox" id="${idPrefix}Consent" required style="margin-top:3px;width:16px;height:16px;flex:none">
+    <span>I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a>, and consent to my name and email being stored to provide this service.</span>
+  </label>`;
+}
+function readConsentOrShowError_(idPrefix,errElId){
+  const box=document.getElementById(idPrefix+"Consent");
+  if(box&&!box.checked){
+    document.getElementById(errElId).textContent="Please agree to the Privacy Policy and Terms to continue.";
+    box.focus();
+    return false;
+  }
+  return true;
+}
+function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label for="ename">Name</label><input id="ename" name="name" placeholder="Full name" autocomplete="name" required><label for="eemail">Email</label><input id="eemail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>${consentFieldsHTML_("enr")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
+function submitEnroll(){
+  const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();
+  if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}
+  if(!readConsentOrShowError_("enr","eErr"))return;
+  store.setProfile({name:n,email:e,consent:true});
+  confirmExamStart();
+}
+function confirmExamStart(){
+  pushNav(confirmExamStart);
+  const p=store.profile(),mins=bank.length;
+  app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1>${activeSubject.description?`<p class="note">${esc(activeSubject.description)}</p>`:""}
+    <div class="dash-grid"><div class="dash-tile"><b>${bank.length}</b><span>Questions</span></div><div class="dash-tile"><b>${mins} min</b><span>Time limit</span></div><div class="dash-tile"><b>1 min</b><span>Per question</span></div><div class="dash-tile"><b>No</b><span>Extra time</span></div></div>
+    <p class="note">You'll be entered as <b>${esc(p.name)}</b> (${esc(p.email)}). The timer starts the moment you click Start Exam and keeps running even if you leave the page.</p>
+    <div class="buttons"><button onclick="editProfile()">Change details</button><button onclick="home()">Back</button><button onclick="beginExam()">Start Exam</button></div></div>`;
+}
+/* ===================== STRICT PRE-START LOCK CHECK =====================
+ * BUG THIS FIXES: the "1-day locked" check on Home only ever looked at a
+ * locally cached dashboard snapshot (store.dashboardCache()), which can be
+ * stale right after a submit. Worse, the Result page's "Retry Test" button
+ * called start() directly, skipping the password screen (and therefore
+ * guardSubjectLock_()) entirely — so a freshly-submitted, locked subject
+ * could still be reopened with a running timer with zero lock check.
+ *
+ * Fix: start() is only ever reached for a NEW attempt through this one
+ * gate. It asks the backend for the live, authoritative lock state for
+ * this exact (email, subject) — not the cache — and refuses to render the
+ * exam or start the timer if it's still locked. Resuming an in-progress
+ * exam is never subject to this (there's nothing "new" being started), so
+ * the check is skipped whenever saved progress exists for the subject. */
+async function gateStartNewAttempt_(subject){
+  if(store.getProgress(subject.id))return true; // resuming — never gated
+  if(!API)return true; // no backend configured, nothing to check against
+  const p=store.profile();
+  const status=await apiGet("subjectStatus",{email:p.email,subject:subject.name},8000,1);
+  if(status?.ok&&status.data?.locked){
+    showSubjectLockedScreen_(subject.name,status.data.unlockAt);
+    return false;
+  }
+  return true;
+}
+
+function showSubjectLockedScreen_(name,unlockAtIso){
+  const unlockAt=new Date(unlockAtIso).getTime();
+  const remaining=Math.max(0,unlockAt-Date.now());
+  pushNav(()=>showSubjectLockedScreen_(name,unlockAtIso));
+  app.innerHTML=`<div class="card"><h1>${esc(name)} is locked</h1><p class="note">You already attempted this subject. You can retake it in <b id="lockCountdown" data-unlock="${unlockAt}">${formatCooldown(remaining)}</b>.</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
+  clearInterval(_lockCountdownTimer);
+  _lockCountdownTimer=setInterval(()=>{
+    const el=document.getElementById("lockCountdown");
+    if(!el){clearInterval(_lockCountdownTimer);return;}
+    const remaining=Number(el.dataset.unlock)-Date.now();
+    if(remaining<=0){home();return;}
+    el.textContent=formatCooldown(remaining);
+  },30000);
+}
+async function beginExam(){
+  if(bank.some(q=>String(q.type||'').toUpperCase()==='FIB'))await _fibRulesReady_;
+  const p=store.profile();
+  if(!(await gateStartNewAttempt_(activeSubject)))return;
+  apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name,consent:!!p.consent});
+  start();
+}
+async function retryExam(){
+  if(bank.some(q=>String(q.type||'').toUpperCase()==='FIB'))await _fibRulesReady_;
+  if(!(await gateStartNewAttempt_(activeSubject)))return;
+  start();
+}
+
+/* ===================== EXAM ===================== */
+function start(){
+  revisionMode=false; clearExam();
+  const saved=store.getProgress(activeSubject.id),p=store.profile();
+  const bankById=new Map(bank.map(q=>[String(q.id),q]));
+  if(saved&&saved.email===p.email&&saved.left>0&&saved.answers?.length===bank.length&&Array.isArray(saved.questionOrder)&&saved.questionOrder.length===bank.length){
+    const restored=saved.questionOrder.map((id,pos)=>{
+      const q=bankById.get(String(id));
+      return q?restoreQuestionOrder(q,saved.optionOrders?.[pos]):null;
+    }).filter(Boolean);
+    if(restored.length===bank.length){
+      test=restored;answers=saved.answers;marked=saved.marked;qTime=saved.qTime;current=Math.max(0,Math.min(test.length-1,saved.current||0));examStartedAt=saved.examStartedAt;examSessionId=saved.examSessionId||newSessionId();
+      // Recompute the remaining time from the wall clock instead of trusting the
+      // frozen "left" that was saved before the tab closed. This is what makes
+      // "resume any time" safe to allow: the clock keeps running against real
+      // elapsed time while you're away, so closing the tab can't be used to pause
+      // it, and if time actually ran out while you were gone, resuming submits
+      // whatever was answered instead of reopening an already-expired exam.
+      left=Math.max(0,test.length*60-Math.floor((Date.now()-examStartedAt)/1000));
+      if(left<=0){
+        questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
+        submit();
+        return;
+      }
+    } else { startFreshExam(); }
+  } else { startFreshExam(); }
+  questionStartedAt=Date.now();isSubmitting=false;saveTick=0;
+  examActive=true;
+  window.addEventListener("beforeunload",handleBeforeUnload);
+  window.addEventListener("pagehide",handlePageHide);
+  armBackGuard();
+  persist();render();
+  timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el){el.textContent=clock(left);el.classList.toggle("low",left<=60);}if(++saveTick%5===0)persist();if(left<=0){left=0;submit();}},1000);
+}
+function randomizeQuestionOptions(q){
+  if(String(q.type||'').toUpperCase()==='FIB')return {...q,options:[],optionImages:[]};
+  const pairs=(q.options||[]).map((text,index)=>({text,index,img:(q.optionImages||[])[index]||""}));
+  const shuffled=shuffle(pairs);
+  return {...q,options:shuffled.map(x=>x.text),optionImages:shuffled.map(x=>x.img),answer:shuffled.findIndex(x=>x.index===Number(q.answer)),optionOrder:shuffled.map(x=>x.index)};
+}
+function restoreQuestionOrder(q,order){
+  if(String(q.type||'').toUpperCase()==='FIB')return {...q,options:[],optionImages:[]};
+  if(!Array.isArray(order)||order.length!==(q.options||[]).length)return randomizeQuestionOptions(q);
+  const pairs=order.map(i=>({text:q.options[i],img:(q.optionImages||[])[i]||"",index:i}));
+  if(pairs.some(x=>x.text===undefined))return randomizeQuestionOptions(q);
+  return {...q,options:pairs.map(x=>x.text),optionImages:pairs.map(x=>x.img),answer:pairs.findIndex(x=>x.index===Number(q.answer)),optionOrder:order.slice()};
+}
+function startFreshExam(){
+  test=shuffle(bank).map(randomizeQuestionOptions);
+  // Time rule: exactly 1 minute per question. No extra time is added.
+  answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60;examStartedAt=Date.now();examSessionId=newSessionId();
+}
+function choose(v){answers[current]=v;persist();render();}
+function chooseText(v){answers[current]=String(v??'');persist();const el=document.getElementById("fibAnswer");if(el&&el.value!==String(v??''))el.value=String(v??'');updatePaletteCount_();}
+function updatePaletteCount_(){const el=document.getElementById("answeredCount");if(el)el.textContent=answers.filter((v,i)=>answeredValue_(test[i],v)).length;}
+function toggleReview(){marked[current]=!marked[current];persist();render();}
+function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
+function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
+function confirmSubmit(){const u=answers.filter((x,i)=>!answeredValue_(test[i],x)).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
+function render(){const q=test[current],answered=answers.filter((x,i)=>answeredValue_(test[i],x)).length,markedCount=marked.filter(Boolean).length,isFib=String(q.type||'').toUpperCase()==='FIB';app.innerHTML=`<div class="top"><h1>${examLabel(activeSubject)&&!activeSubject.name.includes("("+examLabel(activeSubject)+")")?esc(examLabel(activeSubject))+" ":""}${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered <span id="answeredCount">${answered}</span>/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${isFib?`<label class="fib-answer-label" for="fibAnswer">Your answer</label><input id="fibAnswer" class="fib-answer" type="text" style="width:100%;box-sizing:border-box;padding:12px;font-size:17px;margin:12px 0;border:1px solid #9aa4b2;border-radius:8px" autocomplete="off" value="${esc(answers[current]??"")}" placeholder="Type your answer" oninput="chooseText(this.value)">`:(q.options||[]).map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("") }<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answeredValue_(test[k],answers[k])?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
+
+/* ===================== RESULT ===================== */
+async function submit(){
+  // IMPORTANT: clearExam() also resets isSubmitting=false (it's a general-purpose
+  // "leaving an exam context" reset used elsewhere). It must run BEFORE we set
+  // isSubmitting=true, not after — otherwise isSubmitting flips back to false the
+  // instant this function returns, and the Result page gets treated as an active
+  // exam again (stale activeSubject/test/left are all still populated), so the
+  // Back button wrongly shows "Exam is in progress..." and can call submit() a
+  // second time for the same attempt.
+  if(isSubmitting||!test.length)return; clearExam();isSubmitting=true;
+
+  /* STRICT: the instant Submit is clicked, the exam is over — permanently,
+   * not just until the next clearExam() call resets isSubmitting. This is
+   * what makes it safe for the Result page's Retry/Dashboard/Subjects
+   * buttons, and any later Back navigation, to never again ask "exam in
+   * progress?" for this attempt. We build the payload FIRST (it captures
+   * everything it needs into its own local object), then clear the exam
+   * runtime state, so nothing stale is left for a later guard to trip on. */
+  const payload=submissionPayload();
+  store.clearProgress(activeSubject.id);
+  examActive=false;
+  test=[];answers=[];marked=[];qTime=[];left=0;current=0;
+
+  const score=payload.score,total=payload.total,percentage=payload.percentage,wrong=payload.wrong,unanswered=payload.unanswered;
+
+  if(!navigator.onLine){
+    /* OFFLINE SUBMIT: don't even attempt the network call — queue it in the
+     * outbox (see armOutboxAutoSync_) and show the result screen from the
+     * LOCAL calculation. score/percentage/wrong/unanswered/detail are all
+     * already computed by submissionPayload() on-device, so the student
+     * sees their result immediately without needing the server. Only
+     * server-computed fields (practice rank, students count) are
+     * unavailable until it syncs, and are shown as "—" with a clear notice
+     * instead of silently failing or blocking the student from moving on. */
+    queueForOfflineSubmit_(payload);
+    isSubmitting=false;
+    renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
+    return;
+  }
+
+  app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
+  const resp=await apiPost("submitExam",payload);
+  if(!resp?.ok){
+    isSubmitting=false;
+    if(resp?.cooldown?.locked){
+      // This only happens if a fresh attempt somehow got started during the
+      // cooldown (the "Open Exam" screen already blocks that normally). The
+      // progress isn't restored here since the cooldown means a new attempt
+      // shouldn't have been possible in the first place.
+      store.clearProgress(activeSubject.id);
+      app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+      return;
+    }
+    /* The connection genuinely dropped mid-request (was online a second
+     * ago, or the backend timed out) rather than being offline from the
+     * start. Rather than leaving the student stuck on a dead-end error
+     * screen, queue it the same as a true offline submit — it'll sync
+     * automatically — and still show them their result right away. */
+    queueForOfflineSubmit_(payload);
+    renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
+    return;
+  }
+  // Reflect the new cooldown in the local cache immediately, so Home's
+  // subject card (and guardSubjectLock_) shows "Locked" without waiting
+  // on the next dashboard refresh. This is a display convenience only —
+  // gateStartNewAttempt_() above is what actually enforces the lock.
+  const dc=store.dashboardCache();
+  if(dc){
+    dc.subjects=dc.subjects||[];
+    const nowIso=new Date().toISOString();
+    let srow=dc.subjects.find(s=>s.subject===activeSubject.name);
+    if(srow)srow.lastAttempt=nowIso;
+    else dc.subjects.push({subject:activeSubject.name,best:percentage,worst:percentage,avg:percentage,attempts:1,lastAttempt:nowIso});
+    store.setDashboardCache(dc);
+  }
+  renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
+}
+async function retrySubmit(payload){
+  if(!navigator.onLine){
+    queueForOfflineSubmit_(payload);
+    renderResult({score:payload.score,total:payload.total,percentage:payload.percentage,wrong:payload.wrong,unanswered:payload.unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
+    return;
+  }
+  app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Retrying…</p></div>`;
+  const resp=await apiPost("submitExam",payload);
+  if(!resp?.ok){
+    isSubmitting=false;
+    if(resp?.cooldown?.locked){
+      store.clearProgress(activeSubject.id);
+      app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+      return;
+    }
+    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    return;
+  }
+  renderResult({score:payload.score,total:payload.total,percentage:payload.percentage,wrong:payload.wrong,unanswered:payload.unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
+}
+function pieHTML(r){const fib=r.detail&&r.detail.length&&r.detail.every(d=>d.type==="FIB");const total=Math.max(1,fib?r.detail.reduce((s,d)=>s+(Number(d.marks)>0?Number(d.marks):1),0):r.total),c=fib?r.detail.reduce((s,d)=>s+(gradeFib(d.selectedText,d.correctText).correct?(Number(d.marks)>0?Number(d.marks):1):0),0)/total*100:r.score/total*100,w=fib?r.detail.reduce((s,d)=>s+(String(d.selectedText||"").trim()!==""&&!gradeFib(d.selectedText,d.correctText).correct?(Number(d.marks)>0?Number(d.marks):1):0),0)/total*100:r.wrong/total*100,u=fib?r.detail.reduce((s,d)=>s+(String(d.selectedText||"").trim()===""?(Number(d.marks)>0?Number(d.marks):1):0),0)/total*100:r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
+function timeChart(detail){const max=Math.max(60,...detail.map(d=>d.time||0));const ticks=[0,Math.round(max/4),Math.round(max/2),Math.round(max*3/4),max];return `<div class="chart-area"><div class="y-axis">${ticks.slice().reverse().map(v=>`<span>${formatSeconds(v)}</span>`).join("")}</div><div class="chart-main"><div class="gridlines">${ticks.map(()=>`<i></i>`).join("")}</div><div class="bars">${detail.map((d,i)=>{const h=Math.max(3,(d.time/max)*100);return `<button class="bar-col ${(d.type==="FIB"?String(d.selectedText||"").trim()==="":d.selected===null)?"unansbar":(d.type==="FIB"?!gradeFib(d.selectedText,d.correctText).correct:d.selected!==d.correct)?"wrongbar":""}" style="height:${h}%" onclick="showQuestionTime(${i})" title="Q${i+1}: ${formatSeconds(d.time)}"><span>${i+1}</span></button>`;}).join("")}</div><div class="x-axis">${detail.map((_,i)=>`<span>${i+1}</span>`).join("")}</div></div></div><div id="timeDetail" class="chart-detail">Click any question bar to see exact time.</div>`;}
+function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;const el=document.getElementById("timeDetail");if(el)el.innerHTML=`<b>Question ${i+1}</b> — time spent: <b>${formatSeconds(d.time)}</b><br>${esc(d.question)}`;}
+function renderResult(r){
+  window._lastResultDetail=r.detail;
+  const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1>${r.offlinePending?'<div class="note" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">📡 No internet — this result is saved on your device and will upload automatically once you\'re back online. Rank and students-count will appear after it syncs.</div>':''}<div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+}
+function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
+function reviewListHTML(detail,filter){return detail.map((d,n)=>{const fib=d.type==="FIB",iu=fib?String(d.selectedText||"").trim()==="":d.selected===null||d.selected===undefined,iw=fib?!iu&&!gradeFib(d.selectedText,d.correctText).correct:!iu&&Number(d.selected)!==Number(d.correct);if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";const yours=fib?(iu?"Unanswered":esc(d.selectedText)): (iu?"Unanswered":"ABCD"[d.selected]+". "+esc((d.options||[])[d.selected]));const correct=fib?esc(d.correctText):"ABCD"[d.correct]+". "+esc((d.options||[])[d.correct]);return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${yours}</span></div><div>Correct answer: <span class="correct">${correct}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
+
+/* ===================== PROFILE / DASHBOARD ===================== */
+function goDashboard(){requireProfile(dashboard);} function goMistakes(){requireProfile(mistakes);}
+function requireProfile(next){if(store.profile())return next();_afterProfile=next;pushNav(()=>requireProfile(next));app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label for="ename">Name</label><input id="ename" name="name" autocomplete="name" required><label for="eemail">Email</label><input id="eemail" name="email" type="email" autocomplete="email" required>${consentFieldsHTML_("req")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
+function submitProfileAndContinue(){
+  const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();
+  if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}
+  if(!readConsentOrShowError_("req","eErr"))return;
+  store.setProfile({name:n,email:e,consent:true});
+  const next=_afterProfile;_afterProfile=null;if(next)next();
+}
+function renderDashboardBody(d,p,connecting){
+  app.innerHTML=`<div class="card"><h1>My Dashboard</h1>${connecting?connBannerHTML():""}<p class="meta">${esc(p.name)} • ${esc(p.email)}</p><div class="dash-grid"><div class="dash-tile"><b>${d.attempts}</b><span>Tests taken</span></div><div class="dash-tile"><b>${d.avg}%</b><span>Average %</span></div><div class="dash-tile"><b>${d.best}%</b><span>Best %</span></div><div class="dash-tile"><b>${d.mistakes}</b><span>Active mistakes</span></div></div>
+    ${d.subjects?.length?`<div class="advice"><b>Subject performance</b> is shown below.</div>`:""}
+    <h2>Subject-wise performance</h2>${d.subjects.map(s=>`<div class="subjbar-row"><div class="subjbar-label">${esc(s.subject)}</div><div class="subjbar-track"><div class="subjbar-fill" style="width:${Math.min(100,s.avg)}%"></div></div><div>${s.best}%</div></div>`).join("")||'<p class="note">No attempts yet.</p>'}
+    <h2>Recent tests</h2><div id="dashRecent" class="note">Loading…</div>
+    <h2>Test frequency</h2><div id="dashFreq" class="note">Loading…</div>
+    <div class="buttons"><button onclick="goMistakes()">My Mistakes</button><button onclick="goAttemptHistory()">Attempt History</button><button onclick="home()">Subjects</button></div></div>`;
+}
+async function dashboard(){
+  pushNav(dashboard);
+  clearExam();const p=store.profile(),cached=store.dashboardCache(),cachedHist=store.historyCache();
+  if(cached){renderDashboardBody(cached,p,true);if(Array.isArray(cachedHist))fillDashExtras_(cachedHist);}else{app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">Loading…</p></div>`;}
+  // Fetch dashboard + history in parallel (instead of sequentially) so the
+  // full page is roughly twice as fast to settle.
+  // With saved data already on screen this refresh is silent (no loading bar, nothing disabled).
+  const quiet={silent:!!cached};
+  const [res,hres]=API?await Promise.all([apiGet("dashboard",{email:p.email},25000,1,quiet),apiGet("history",{email:p.email},25000,1,quiet)]):[null,null];
+  if(!res?.ok){
+    if(cached){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="dashboard()">Retry</button>`;return;}
+    app.innerHTML=`<div class="card"><h1>My Dashboard</h1><p class="note">${API?"Could not load dashboard.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="dashboard()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
+  }
+  const d=res.data;store.setDashboardCache(d);
+  renderDashboardBody(d,p,false);
+  const hist=(hres?.ok&&Array.isArray(hres.data))?hres.data:[];
+  if(hres?.ok&&Array.isArray(hres.data))store.setHistoryCache(hres.data);
+  fillDashExtras_(hist);
+}
+// Fills the 'Recent tests' and 'Test frequency' blocks (used for cached data first, then fresh data).
+function fillDashExtras_(hist){
+  const recentEl=document.getElementById("dashRecent");
+  if(recentEl){
+    const recent=hist.slice(0,5);
+    recentEl.innerHTML=recent.length?`<div class="table-scroll"><table class="simple"><thead><tr><th>Date</th><th>Subject</th><th>Score</th><th>%</th></tr></thead><tbody>${recent.map(r=>`<tr><td>${esc(formatDateTime(r.timestamp))}</td><td>${esc(r.subject)}</td><td>${esc(r.correct)}/${esc(r.total)}</td><td>${esc(r.percentage)}%</td></tr>`).join("")}</tbody></table></div>`:'<p class="note">No attempts yet.</p>';
+  }
+  const freqEl=document.getElementById("dashFreq");
+  if(freqEl){
+    const now=Date.now(),weekMs=7*24*60*60*1000,monthMs=30*24*60*60*1000;
+    const ts=r=>{const d=r.timestamp?new Date(r.timestamp).getTime():NaN;return isNaN(d)?null:d;};
+    const thisWeek=hist.filter(r=>{const d=ts(r);return d&&now-d<=weekMs;}).length;
+    const thisMonth=hist.filter(r=>{const d=ts(r);return d&&now-d<=monthMs;}).length;
+    freqEl.innerHTML=`<div class="dash-grid"><div class="dash-tile"><b>${thisWeek}</b><span>Tests this week</span></div><div class="dash-tile"><b>${thisMonth}</b><span>Tests this month</span></div></div>`;
+  }
+}
+
+/* ===================== ATTEMPT HISTORY (full list + compare) ===================== */
+let _historyCache=[],_compareIds=[];
+function goAttemptHistory(){requireProfile(attemptHistory);}
+async function attemptHistory(){
+  pushNav(attemptHistory);
+  clearExam();
+  const cachedH=store.historyCache(),haveH=Array.isArray(cachedH)&&cachedH.length>0;
+  if(haveH){_historyCache=cachedH;_compareIds=[];renderAttemptHistory(true);}
+  else app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="note">Loading…</p></div>`;
+  const p=store.profile(),res=API?await apiGet("history",{email:p.email},12000,1,{silent:haveH}):null;
+  if(!res?.ok&&haveH){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="attemptHistory()">Retry</button>`;return;}
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Attempt History</h1><p class="note">${API?"Could not load attempt history.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="attemptHistory()">Retry</button><button onclick="goDashboard()">Back</button></div></div>`;return;}
+  _historyCache=res.data||[];store.setHistoryCache(_historyCache);
+  _compareIds=_compareIds.filter(id=>_historyCache.some(h=>h.resultId===id));
+  renderAttemptHistory(false);
+}
+function renderAttemptHistory(connecting){
+  const rows=_historyCache;
+  app.innerHTML=`<div class="card"><h1>Attempt History</h1>${connecting?connBannerHTML():""}<p class="meta">Every attempt is kept — nothing is overwritten. Tick two rows to compare them.</p>
+  <div class="table-scroll"><table class="simple"><tr><th></th><th>Date</th><th>Subject</th><th>Score</th><th>%</th><th>Correct</th><th>Wrong</th><th>Unattempted</th><th>Total time</th><th>Rank</th></tr>
+  ${rows.map(h=>`<tr><td><input type="checkbox" ${_compareIds.includes(h.resultId)?"checked":""} onchange="toggleCompare('${h.resultId}',this.checked)"></td><td>${esc(formatDateTime(h.endTime||h.timestamp))}</td><td>${esc(h.subject)}</td><td>${h.score}/${h.total}</td><td>${h.percentage}%</td><td>${h.correct}</td><td>${h.wrong}</td><td>${h.unanswered}</td><td>${clock(h.totalTimeSec)}</td><td>${h.rank?`#${h.rank}${h.rankOutOf?" / "+h.rankOutOf:""}`:"—"}</td></tr>`).join("")||'<tr><td colspan="10">No attempts yet.</td></tr>'}
+  </table></div>
+  <div id="compareBox">${compareHTML()}</div>
+  <div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
+}
+function toggleCompare(id,checked){
+  if(checked){ if(!_compareIds.includes(id)){ if(_compareIds.length>=2)_compareIds.shift(); _compareIds.push(id); } }
+  else { _compareIds=_compareIds.filter(x=>x!==id); }
+  renderAttemptHistory();
+}
+function compareHTML(){
+  if(_compareIds.length!==2)return'<p class="note">Select exactly two attempts above to compare improvement.</p>';
+  const [a,b]=_compareIds.map(id=>_historyCache.find(h=>h.resultId===id)).sort((x,y)=>new Date(x.endTime||x.timestamp)-new Date(y.endTime||y.timestamp));
+  if(!a||!b)return"";
+  const diff=(x,y)=>{const d=(Number(y)-Number(x));return `${d>0?"+":""}${Math.round(d*100)/100}`;};
+  const rows=[
+    ["Subject",esc(a.subject),esc(b.subject),""],
+    ["Date",esc(formatDateTime(a.endTime||a.timestamp)),esc(formatDateTime(b.endTime||b.timestamp)),""],
+    ["Score",`${a.score}/${a.total}`,`${b.score}/${b.total}`,diff(a.score,b.score)],
+    ["%",`${a.percentage}%`,`${b.percentage}%`,diff(a.percentage,b.percentage)+"%"],
+    ["Correct",a.correct,b.correct,diff(a.correct,b.correct)],
+    ["Wrong",a.wrong,b.wrong,diff(a.wrong,b.wrong)],
+    ["Unanswered",a.unanswered,b.unanswered,diff(a.unanswered,b.unanswered)],
+    ["Time",clock(a.totalTimeSec),clock(b.totalTimeSec),""]
+  ];
+  return `<div class="advice ${b.percentage>=a.percentage?"good":"weak"}"><b>Comparing two attempts</b></div>
+  <div class="table-scroll"><table class="simple"><tr><th>Metric</th><th>Attempt 1</th><th>Attempt 2</th><th>Change</th></tr>
+  ${rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}
+  </table></div>`;
+}
+
+/* ===================== REMINDERS (standalone, not test-dependent) ===================== */
+const REMINDER_FREQUENCIES=[["once","One-time"],["hourly","Hourly"],["daily","Daily"],["weekly","Weekly"],["monthly","Monthly"]];
+let _remindersCache=[];
+function goReminders(){requireProfile(remindersPage);}
+async function remindersPage(){
+  pushNav(remindersPage);
+  clearExam();const cached=store.remindersCache();
+  if(cached&&cached.length){_remindersCache=cached;renderReminders(null,true);}else{app.innerHTML=`<div class="card"><h1>Reminders</h1><p class="note">Loading…</p></div>`;}
+  const p=store.profile(),res=API?await apiGet("reminders",{email:p.email}):null;
+  if(!res?.ok){
+    if(cached&&cached.length){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="remindersPage()">Retry</button>`;return;}
+    app.innerHTML=`<div class="card"><h1>Reminders</h1><p class="note">${API?"Could not load reminders.":"Connect Apps Script in config.js first."}</p><div class="buttons"><button onclick="remindersPage()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
+  }
+  _remindersCache=res.data||[];store.setRemindersCache(_remindersCache);renderReminders();
+}
+function renderReminders(saveError,connecting){
+  const p=store.profile();
+  const groups={Active:[],Paused:[],Completed:[]};
+  _remindersCache.forEach(r=>{const key=r.status==="Paused"?"Paused":r.status==="Completed"?"Completed":"Active";groups[key].push(r);});
+  const row=r=>`<div class="mistake-card"><div><span class="mistake-tag ${r.status==="Active"?"tag-due":"tag-wait"}">${esc(r.status)}</span> <span class="mistake-tag">${esc(r.frequency)}</span></div>
+    <p><b>${esc(r.name)}</b></p><p>${esc(r.message)}</p>
+    ${r.relatedTask?`<p class="note">Task: ${esc(r.relatedTask)}</p>`:""}${r.relatedUrl?`<p class="note"><a href="${esc(r.relatedUrl)}" target="_blank" rel="noopener">${esc(r.relatedUrl)}</a></p>`:""}
+    <p class="meta">Next: ${r.nextRunAt?esc(formatDateTime(r.nextRunAt)):"—"}${r.lastSentAt?` • Last sent: ${esc(formatDateTime(r.lastSentAt))}`:""}</p>
+    <div class="buttons"><button onclick="openEditReminder('${r.id}')">Edit</button><button onclick="reminderToggle('${r.id}',${!r.enabled})">${r.enabled?"Pause":"Resume"}</button><button onclick="reminderDelete('${r.id}')">Delete</button></div></div>`;
+  app.innerHTML=`<div class="card"><h1>Reminders</h1>${connecting?connBannerHTML():""}<p class="meta">Registered email: <b>${esc(p.email)}</b>. Standalone reminders — not tied to any specific test.</p>
+  ${saveError?`<div class="error">${esc(saveError)}</div>`:""}
+  <div class="buttons"><button onclick="openCreateReminder()">+ New reminder</button><button onclick="notificationsPage()">Notification history</button></div>
+  <h2>Active (${groups.Active.length})</h2>${groups.Active.map(row).join("")||'<p class="note">No active reminders.</p>'}
+  <h2>Paused (${groups.Paused.length})</h2>${groups.Paused.map(row).join("")||'<p class="note">None paused.</p>'}
+  <h2>Completed (${groups.Completed.length})</h2>${groups.Completed.map(row).join("")||'<p class="note">None completed yet.</p>'}
+  <div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+}
+function reminderFormHTML(existing){
+  const r=existing||{};
+  const in1h=new Date(Date.now()+3600e3),in3h=new Date(Date.now()+3*3600e3),tomorrow=new Date(Date.now()+24*3600e3);
+  const toLocal=d=>{const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;};
+  return `<div class="card enroll-card"><h1>${existing?"Edit reminder":"New reminder"}</h1>
+  <label for="rName">Related task/name</label><input id="rName" name="reminderName" value="${esc(r.name||"")}" placeholder="e.g. Revise Digital Electronics" required>
+  <label for="rMessage">Message</label><input id="rMessage" name="reminderMessage" value="${esc(r.message||"")}" placeholder="What should the reminder say?" required>
+  <label for="rUrl">Related URL (optional)</label><input id="rUrl" name="reminderUrl" type="url" value="${esc(r.relatedUrl||"")}" placeholder="https://…">
+  <label for="rWhen">When</label>
+  <div class="buttons" style="justify-content:flex-start">
+    <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in1h)}'">In 1 hour</button>
+    <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in3h)}'">In 3 hours</button>
+    <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(tomorrow)}'">Tomorrow</button>
+  </div>
+  <input id="rWhen" name="reminderWhen" type="datetime-local" aria-label="Reminder date and time" value="${r.nextRunAt?toLocal(new Date(r.nextRunAt)):""}" required>
+  <label for="rFreq">Repeat</label>
+  <select id="rFreq" name="reminderFrequency">${REMINDER_FREQUENCIES.map(([v,l])=>`<option value="${v}" ${((r.frequency||"once")===v)?"selected":""}>${l}</option>`).join("")}</select>
+  <div id="rErr" class="error" role="alert"></div>
+  <div class="buttons"><button onclick="remindersPage()">Cancel</button><button onclick="saveReminder(${existing?`'${existing.id}'`:"null"})">${existing?"Save changes":"Create reminder"}</button></div></div>`;
+}
+function openCreateReminder(){pushNav(openCreateReminder);clearExam();app.innerHTML=reminderFormHTML(null);}
+function quickRemindLater(subjectId,subjectName){requireProfile(()=>{clearExam();app.innerHTML=reminderFormHTML({name:"Finish "+subjectName,message:"You have an unfinished "+subjectName+" test waiting — come back and finish it.",relatedUrl:location.href.split("#")[0]});});}
+function openEditReminder(id){pushNav(()=>openEditReminder(id));clearExam();app.innerHTML=reminderFormHTML(_remindersCache.find(r=>r.id===id));}
+async function saveReminder(id){
+  const p=store.profile();
+  const name=document.getElementById("rName").value.trim();
+  const message=document.getElementById("rMessage").value.trim();
+  const relatedUrl=document.getElementById("rUrl").value.trim();
+  const whenLocal=document.getElementById("rWhen").value;
+  const frequency=document.getElementById("rFreq").value;
+  const errEl=document.getElementById("rErr");
+  if(!name||!message){errEl.textContent="Name and message are required.";return;}
+  const when=whenLocal?new Date(whenLocal):null;
+  if(!when||isNaN(when)||when<=new Date()){errEl.textContent="Pick a valid future date/time.";return;}
+  const payload={email:p.email,userName:p.name,name,message,relatedTask:name,relatedUrl,frequency,nextRunAt:when.toISOString()};
+  const res=await apiPost(id?"updateReminder":"createReminder",id?{...payload,id}:payload);
+  if(!res?.ok){errEl.textContent=res?.error||"Could not save reminder. Check your connection and try again.";return;}
+  const fresh=API?await apiGet("reminders",{email:p.email}):null;
+  _remindersCache=fresh?.data||_remindersCache;store.setRemindersCache(_remindersCache);renderReminders();
+}
+async function reminderToggle(id,enabled){
+  const p=store.profile();const res=await apiPost("toggleReminder",{email:p.email,id,enabled});
+  if(res?.ok){const fresh=await apiGet("reminders",{email:p.email});_remindersCache=fresh?.data||_remindersCache;}
+  renderReminders(res?.ok?null:(res?.error||"Could not update reminder."));
+}
+async function reminderDelete(id){
+  if(!confirm("Delete this reminder? This cannot be undone."))return;
+  const p=store.profile();const res=await apiPost("deleteReminder",{email:p.email,id});
+  if(res?.ok)_remindersCache=_remindersCache.filter(r=>r.id!==id);
+  renderReminders(res?.ok?null:(res?.error||"Could not delete reminder."));
+}
+
+/* ===================== NOTIFICATION HISTORY ===================== */
+async function notificationsPage(){
+  pushNav(notificationsPage);
+  clearExam();app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="note">Loading…</p></div>`;
+  const p=store.profile(),res=API?await apiGet("notifications",{email:p.email}):null;
+  if(!res?.ok){app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="note">${API?"Could not load notification history.":"Connect Apps Script first."}</p><div class="buttons"><button onclick="notificationsPage()">Retry</button><button onclick="remindersPage()">Back</button></div></div>`;return;}
+  renderNotifications(res.data||[]);
+}
+function renderNotifications(items){
+  const statusClass=s=>s==="Sent"?"tag-due":s==="Failed"?"tag-wait":"tag-wait";
+  app.innerHTML=`<div class="card"><h1>Notification History</h1><p class="meta">Every reminder send attempt, separate from your active reminders list.</p>
+  ${items.map(n=>`<div class="mistake-card"><div><span class="mistake-tag ${statusClass(n.status)}">${esc(n.status||"Pending")}</span></div>
+    <p><b>${esc(n.name)}</b></p><p>${esc(n.message)}</p>
+    <p class="meta">Scheduled: ${esc(formatDateTime(n.scheduledAt))}${n.sentAt?` • Sent: ${esc(formatDateTime(n.sentAt))}`:""}</p>
+    ${n.status==="Failed"?`<p class="note">Reason: ${esc(n.error||"Unknown error")}</p><div class="buttons"><button onclick="retryNotificationUI('${n.id}')">Retry</button></div>`:""}
+    </div>`).join("")||'<p class="note">No notifications yet.</p>'}
+  <div class="buttons"><button onclick="remindersPage()">Reminders</button><button onclick="home()">Subjects</button></div></div>`;
+}
+async function retryNotificationUI(id){
+  const p=store.profile();const res=await apiPost("retryNotification",{email:p.email,id});
+  const fresh=API?await apiGet("notifications",{email:p.email}):null;
+  renderNotifications(fresh?.data||[]);
+  if(!res?.ok)alert(res?.error||"Retry failed. Check your connection and try again.");
+}
+
+/* ===================== MY MISTAKES + REVISION ===================== */
+async function mistakes(){
+  pushNav(mistakes);
+  clearExam();const cached=store.mistakesCache();
+  if(cached&&cached.length){renderMistakes(cached,true);}else{app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="note">Loading…</p></div>`;}
+  const p=store.profile(),res=API?await apiGet("mistakes",{email:p.email},12000,1,{silent:!!(cached&&cached.length)}):null;
+  if(!res?.ok){
+    if(cached&&cached.length){const b=document.getElementById("connBanner");if(b)b.innerHTML=`Could not refresh — showing your last saved data. <button onclick="mistakes()">Retry</button>`;return;}
+    app.innerHTML=`<div class="card"><h1>My Mistakes</h1><p class="note">${API?"Could not load mistakes.":"Connect Apps Script first."}</p><div class="buttons"><button onclick="mistakes()">Retry</button><button onclick="home()">Back</button></div></div>`;return;
+  }
+  store.setMistakesCache(res.data);renderMistakes(res.data,false);
+}
+function renderMistakes(items,connecting){
+  const now=new Date();
+  const due=items.filter(m=>dueDate(m)<=now);
+  const next=items.filter(m=>dueDate(m)>now).sort((a,b)=>dueDate(a)-dueDate(b))[0];
+  let countdown="";
+  if(next){const ms=Math.max(0,dueDate(next)-now);countdown=`<div class="countdown"><b>Next revision test:</b> ${formatCountdown(ms)}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small></div>`;}
+  app.innerHTML=`<div class="card"><h1>My Mistakes</h1>${connecting?connBannerHTML():""}<p class="meta">Active mistakes: <b>${items.length}</b> • Due now: <b>${due.length}</b>. A mistake stays here until you answer it correctly.</p>${items.length?`${countdown}<div class="buttons"><button ${due.length?"":"disabled"} onclick="startRevisionTest()">Start revision test ${due.length?`(${due.length})`:"(not due yet)"}</button></div>${items.map(m=>{const isDue=dueDate(m)<=now;return `<div class="mistake-card"><div><span class="mistake-tag">${esc(m.subject)}</span> <span class="mistake-tag ${isDue?"tag-due":"tag-wait"}">${isDue?"Due now":"Due "+formatDateTime(m.revisionDueIso||m.revisionDueDate)}</span></div><p><b>${esc(m.question)}</b></p>${imgHTML(m.image)}${m.type==="FIB"?`<div>Your answer: <b>${esc(m.selectedText||"Unanswered")}</b></div><div>Correct answer: <b class="correct">${esc(m.correctText||"")}</b></div>`:m.options.map((o,k)=>`<div>${"ABCD"[k]}. ${esc(o)} ${imgHTML((m.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")} ${k===m.correctIndex?"<b class='correct'>(correct)</b>":""} ${k===m.selectedIndex?"<i>(last answer)</i>":""}</div>`).join("")}</div>`;}).join("")}`:'<p class="note">No active mistakes — excellent. 🎉</p>'}<div class="buttons"><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div></div>`;
+  if(next)setTimeout(()=>mistakeCountdownLoop(),1000);
+}
+function formatCountdown(ms){let s=Math.ceil(ms/1000);const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60),sec=s%60;return `${d}d ${String(h).padStart(2,"0")}h ${String(m).padStart(2,"0")}m ${String(sec).padStart(2,"0")}s`;}
+function mistakeCountdownLoop(){const el=document.querySelector(".countdown");if(!el)return;const items=store.mistakesCache(),next=items.filter(m=>dueDate(m)>new Date()).sort((a,b)=>dueDate(a)-dueDate(b))[0];if(!next){mistakes();return;}el.innerHTML=`<b>Next revision test:</b> ${formatCountdown(dueDate(next)-new Date())}<br><small>Due: ${formatDateTime(next.revisionDueIso||next.revisionDueDate)}</small>`;setTimeout(mistakeCountdownLoop,1000);}
+async function startRevisionTest(){const items=store.mistakesCache().filter(m=>dueDate(m)<=new Date()&&!m.revised);if(!items.length){mistakes();return;}revisionMode=true;revisionItems=shuffle(items).map(m=>({...m,options:m.type==="FIB"?[]:shuffle((m.options||[]).map((text,index)=>({text,index,img:(m.optionImages||[])[index]||""})))}));revisionItems=revisionItems.map(m=>{if(m.type==="FIB")return {...m,options:[],optionImages:[]};const order=m.options.map(x=>x.index),opts=m.options.map(x=>x.text),imgs=m.options.map(x=>x.img);return {...m,options:opts,optionImages:imgs,correctIndex:order.indexOf(Number(m.correctIndex)),optionOrder:order};});test=revisionItems.map(m=>({id:m.wrongId,year:m.year,state:m.state,questionNumber:m.questionNumber,question:m.question,options:m.options,image:m.image||"",optionImages:m.optionImages||[],answer:m.correctIndex,answerText:m.correctText||"",type:m.type||"MCQ",wrongId:m.wrongId}));answers=Array(test.length).fill(null);marked=Array(test.length).fill(false);qTime=Array(test.length).fill(0);current=0;left=test.length*60;/* 1 min/question, no extra time */examStartedAt=Date.now();questionStartedAt=Date.now();clearInterval(timer);timer=setInterval(()=>{left--;const el=document.querySelector(".timer");if(el)el.textContent=clock(left);if(left<=0){left=0;submitRevisionTest();}},1000);examActive=true;window.addEventListener("beforeunload",handleRevisionBeforeUnload);window.addEventListener("pagehide",handleRevisionPageHide);armBackGuard();renderRevision();}
+function sendRevisionAutoSubmit(){
+  if(isSubmitting||!revisionMode||!revisionItems.length||!API)return false;
+  const marker="ecet_revision_auto_submit_"+(revisionItems.map(x=>x.wrongId).join("|")||Date.now());
+  if(sessionStorage.getItem(marker)==="1")return true;
+  isSubmitting=true;
+  commitTime();
+  const p=store.profile();
+  const payload={action:"submitRevision",email:p.email,items:revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],selectedText:m.type==='FIB'?String(answers[i]??''):'',time:qTime[i]})),autoSubmitted:true};
+  const body=JSON.stringify(payload);
+  let accepted=false;
+  try{if(navigator.sendBeacon)accepted=navigator.sendBeacon(API,new Blob([body],{type:"text/plain;charset=UTF-8"}));}catch(e){console.warn("Revision beacon failed",e);}
+  if(!accepted){try{fetch(API,{method:"POST",body,keepalive:true});accepted=true;}catch(e){console.warn("Revision keepalive failed",e);}}
+  if(accepted)sessionStorage.setItem(marker,"1");
+  return accepted;
+}
+function handleRevisionBeforeUnload(e){
+  if(!examActive||isSubmitting||!revisionMode||!revisionItems.length)return;
+  sendRevisionAutoSubmit();
+  e.preventDefault();e.returnValue="Your revision test is still running. It will be submitted automatically.";return e.returnValue;
+}
+function handleRevisionPageHide(){if(examActive&&!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
+
+function renderRevision(){const q=test[current],answered=answers.filter((x,i)=>answeredValue_(test[i],x)).length,isFib=q.type==="FIB";app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${isFib?`<input class="fib-answer" id="revisionFibAnswer" type="text" style="width:100%;box-sizing:border-box;padding:12px;font-size:17px;margin:12px 0;border:1px solid #9aa4b2;border-radius:8px" value="${esc(answers[current]??"")}" placeholder="Type your answer" oninput="revisionChooseText(this.value)">`:(q.options||[]).map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
+function revisionChoose(v){answers[current]=v;renderRevision();}
+function revisionChooseText(v){answers[current]=String(v??'');}
+function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}
+async function submitRevisionTest(){if(isSubmitting)return;isSubmitting=true;clearInterval(timer);window.removeEventListener("beforeunload",handleRevisionBeforeUnload);window.removeEventListener("pagehide",handleRevisionPageHide);disarmBackGuard();commitTime();
+  /* STRICT: same reasoning as submit() above — revisionMode/revisionItems
+   * used to be left populated after finishing, so any later navigation
+   * that reset isSubmitting (via clearExam()) made the guards think a
+   * revision test was still running. Clearing here makes "finished" final. */
+  const p=store.profile();const items=revisionItems.map((m,i)=>({wrongId:m.wrongId,selected:answers[i],selectedText:m.type==='FIB'?String(answers[i]??''):'',time:qTime[i]}));
+  examActive=false;
+  revisionMode=false;revisionItems=[];test=[];answers=[];marked=[];qTime=[];left=0;current=0;
+  app.innerHTML=`<div class="card"><h1>Checking revision…</h1><p class="note">Updating your mistakes.</p></div>`;const res=await apiPost("submitRevision",{email:p.email,items});if(res?.ok){const fresh=await apiGet("mistakes",{email:p.email});store.setMistakesCache(fresh?.data||[]);app.innerHTML=`<div class="card"><h1>Revision result</h1><div class="stats"><div class="stat"><b>${res.correct}</b>Correct</div><div class="stat"><b>${res.wrong}</b>Wrong again</div><div class="stat"><b>${res.unanswered}</b>Unanswered</div><div class="stat"><b>${(fresh?.data||[]).length}</b>Active mistakes</div></div><p class="note">Correct answers are removed from My Mistakes. Wrong or unanswered questions are scheduled again for 1 day.</p><div class="buttons"><button onclick="mistakes()">My Mistakes</button><button onclick="home()">Subjects</button></div></div>`;}else{isSubmitting=false;app.innerHTML=`<div class="card"><h2>Could not save revision.</h2><button onclick="mistakes()">Back</button></div>`;}}
+
+
+/* ===================== PWA: SERVICE WORKER + OFFLINE OUTBOX INIT =====================
+ * Registering the service worker is what lets the app open at all with no
+ * connection (cached app shell) and is required for "Add to Home Screen"
+ * to behave like a real installed app instead of a bookmark that fails
+ * offline. Guarded with a feature check so this is a no-op (not an error)
+ * in any environment that doesn't support it — nothing else in the app
+ * depends on it succeeding. armOutboxAutoSync_ starts the background loop
+ * that uploads any exam finished while offline as soon as a connection is
+ * available; see its definition near apiPost above for details.
+ */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(e=>console.warn("Service worker registration failed",e));
+  });
+}
+armOutboxAutoSync_();
+
+home();

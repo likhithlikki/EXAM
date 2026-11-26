@@ -1,0 +1,20 @@
+{
+  "name": "ecet-mock-test",
+  "version": "1.0.0",
+  "description": "ECET Online Mock Test \u2014 PWA wrapped with Capacitor for Android (APK).",
+  "private": true,
+  "scripts": {
+    "cap:add-android": "cap add android",
+    "cap:sync": "node build-www.js && cap sync android",
+    "cap:open-android": "cap open android",
+    "build:apk": "npm run cap:sync && echo Now open Android Studio with: npm run cap:open-android",
+    "build:www": "node build-www.js"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  }
+}

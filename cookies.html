@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cookie &amp; Local Storage Policy — Online Mock Test</title>
+<meta name="description" content="Online Mock Test uses no cookies — only your browser's local storage, to save your exam progress and preferences on your own device.">
+<link rel="canonical" href="https://YOUR-PRODUCTION-DOMAIN/cookies.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cookie & Local Storage Policy — Online Mock Test">
+<meta property="og:description" content="Online Mock Test uses no cookies — only your browser's local storage, to save your exam progress and preferences on your own device.">
+<meta property="og:url" content="https://YOUR-PRODUCTION-DOMAIN/cookies.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cookie & Local Storage Policy — Online Mock Test">
+<meta name="twitter:description" content="Online Mock Test uses no cookies — only your browser's local storage, to save your exam progress and preferences on your own device.">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3b1c3f">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="about.html"><i>✎</i> Online Mock Test</a>
+    <nav>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="cookies.html" aria-current="page">Cookies</a>
+      <a href="refund.html">Refunds</a>
+      <a href="index.html">Open the tests</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main"><div class="wrap">
+  <div class="doc-head">
+    <h1>Cookie &amp; Local Storage Policy</h1>
+    <p class="updated">Last updated: <b><span class="fill-in">[DATE YOU PUBLISH THIS]</span></b></p>
+  </div>
+
+  <div class="callout">
+    <p><b>Short version:</b> this app does not use cookies at all — no session cookies, no tracking cookies, no advertising cookies, no third-party cookies. It uses your browser's <code>localStorage</code> (a similar but different browser feature) to save your progress and preferences <b>on your own device only</b>. Nothing described here is shared between users or sent to an advertiser.</p>
+  </div>
+
+  <section id="why-no-banner">
+    <h2>Why there's no cookie-consent banner</h2>
+    <p>Cookie-consent banners exist because cookies (and similar tracking technologies) are often used to track people across sites for advertising, or to set session identifiers a server reads on every request. This app does neither: it sets no HTTP cookies whatsoever, and everything below is stored locally on your device and read only by this app, for its own functionality — not shared with us until you take an action that sends it (like submitting a test).</p>
+  </section>
+
+  <section id="what-stored">
+    <h2>What's stored in your browser's localStorage</h2>
+    <table>
+      <tr><th>Key (prefix)</th><th>What it holds</th><th>Why</th></tr>
+      <tr><td><code>ecet_profile</code></td><td>Your name and email</td><td>So you don't have to retype them every visit</td></tr>
+      <tr><td><code>ecet_progress_*</code></td><td>Your in-progress exam answers, timer state</td><td>So closing the tab mid-exam doesn't lose your answers</td></tr>
+      <tr><td><code>ecet_dashboard_cache</code>, <code>ecet_mistakes_cache</code>, <code>ecet_reminders_cache</code>, <code>ecet_customsubjects_cache</code>, <code>ecet_profiledata_cache</code></td><td>A local copy of your own stats, mistakes, reminders, and subject list</td><td>So the app can show something instantly while it refreshes from the server, and still show your last-known data if you're offline</td></tr>
+      <tr><td><code>ecet_bankcache_*</code></td><td>A copy of a subject's questions</td><td>So that subject can be opened and taken with no internet connection, once you've opened it online at least once</td></tr>
+      <tr><td><code>ecet_outbox</code></td><td>A finished exam result that hasn't reached our server yet</td><td>So an exam finished offline isn't lost — it uploads automatically once you're back online</td></tr>
+      <tr><td><code>ecet_admin_unlocked</code></td><td>Whether this device has unlocked the Admin panel</td><td>Local convenience only — the real access check happens on the server</td></tr>
+    </table>
+    <p class="muted">None of this data leaves your device except when the app itself sends it to our backend as part of using a feature (e.g. submitting a test sends your answers; loading the dashboard fetches your stats). It is never read by an advertiser or third-party tracker.</p>
+  </section>
+
+  <section id="thirdparty-cookies">
+    <h2>Cookies set by third parties we load</h2>
+    <p>Two external resources are loaded by the app (see <a href="privacy.html#thirdparty">Privacy Policy §5</a> for the full list): Google Fonts, and — only inside the Admin panel — a JavaScript library from cdn.sheetjs.com. Neither is known to set cookies for this kind of simple asset request, but because they are served from Google's and a third party's own infrastructure, we can't fully control or guarantee their behavior. If this matters to you, most browsers let you inspect or block third-party requests in their developer tools or privacy settings.</p>
+  </section>
+
+  <section id="managing">
+    <h2>Clearing this data yourself</h2>
+    <p>You're always in control of what's stored on your device:</p>
+    <ul>
+      <li>The app has a <b>"Refresh Data"</b> button on the Home screen that clears the local cache and reloads fresh from the server.</li>
+      <li>Logging out (Profile → Logout) clears your saved profile and progress from this device.</li>
+      <li>Deleting your account (Profile → Delete Account) removes your data from our servers <i>and</i> clears what's stored locally.</li>
+      <li>You can also clear it manually any time through your browser's own "Clear browsing data" / site settings.</li>
+    </ul>
+  </section>
+
+</div></main>
+
+<footer><div class="wrap">Online Mock Test · <a href="about.html">About</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="index.html">Open the tests</a></div></footer>
+</body>
+</html>

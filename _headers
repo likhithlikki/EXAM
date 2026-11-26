@@ -1,0 +1,51 @@
+# CONFIGURATION NOTE: this file follows Netlify's _headers convention.
+# It has NO EFFECT on GitHub Pages (which does not support custom response
+# headers at all) or on most other static hosts without an equivalent
+# mechanism — see IMPLEMENTATION/REPORT "Configuration required" for the
+# real hosting platform this project uses, which was not provided.
+#
+# Lighthouse flagged ~57 KiB of "inefficient cache lifetimes" — a minor
+# finding relative to the render-blocking/unused-JS issues fixed elsewhere.
+# Deliberately conservative here rather than aggressive: this project has
+# NO filename-hashing/cache-busting (app.js, style.css, config.js are
+# always requested by the same plain name), so a long `immutable` cache on
+# them would mean a real risk of this Priority-0 outcome: after you deploy
+# a fix, returning visitors keep running OLD cached JS/CSS until the cache
+# expires — effectively breaking the app's update mechanism to chase a
+# minor score. Short/moderate lifetimes here instead; if you later add a
+# build step with hashed filenames, these can safely become long + immutable.
+
+# HTML: always revalidate — this is the entry point and must always be current.
+/*.html
+  Cache-Control: no-cache
+
+/
+  Cache-Control: no-cache
+
+# App code/styles: short cache, revalidate often. Safe default without cache-busting.
+/app.js
+  Cache-Control: public, max-age=3600
+
+/style.css
+  Cache-Control: public, max-age=3600
+
+/legal.css
+  Cache-Control: public, max-age=3600
+
+/config.js
+  Cache-Control: public, max-age=3600
+
+# Question-bank JSON: content that changes when admins add questions —
+# short cache so updates show up same-day without a hard refresh.
+/*.json
+  Cache-Control: public, max-age=3600
+
+# Icons: genuinely static binary assets, safe to cache longer.
+/icon-*.png
+  Cache-Control: public, max-age=604800
+
+# Service worker: must NEVER be cached by the browser's HTTP cache — it has
+# its own versioned internal cache (see sw.js CACHE_VERSION) and the browser
+# needs to re-check it on every load to detect updates promptly.
+/sw.js
+  Cache-Control: no-cache

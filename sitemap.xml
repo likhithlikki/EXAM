@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  CONFIGURATION PLACEHOLDER: every <loc> below uses YOUR-PRODUCTION-DOMAIN
+  because the real production domain was not provided. Replace it with the
+  actual deployed domain (and update the matching canonical/og:url tags in
+  index.html and about.html, plus robots.txt's Sitemap: line) before this
+  file is actually useful to search engines.
+
+  Only genuine public, indexable pages are listed. The exam-taking flow,
+  dashboard, mistakes, reminders, profile, and Admin/Control Centre are all
+  rendered client-side inside index.html behind a name/email prompt and/or
+  a password, not separate crawlable URLs, so they are intentionally
+  excluded — the same reasoning as robots.txt.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://YOUR-PRODUCTION-DOMAIN/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://YOUR-PRODUCTION-DOMAIN/about.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://YOUR-PRODUCTION-DOMAIN/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://YOUR-PRODUCTION-DOMAIN/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://YOUR-PRODUCTION-DOMAIN/cookies.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://YOUR-PRODUCTION-DOMAIN/refund.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

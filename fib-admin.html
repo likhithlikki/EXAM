@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FIB Test Admin — Add Questions</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="fib-admin.css">
+</head>
+<body>
+<div class="px-wrap">
+  <div class="px-top">
+    <a class="px-link" href="index.html">← Home</a>
+    <span>
+      <a class="px-link" href="index.html">Main exam home</a>
+      <a class="px-link" href="fib-tests.js" download>Download grading test cases</a>
+    </span>
+  </div>
+  <div id="gate" class="px-card" hidden>
+    <h1>FIB Test Admin</h1>
+    <p class="px-note">Enter the admin password (the same one used for the exam Admin page).</p>
+    <input type="password" id="pw" placeholder="Admin password" autocomplete="current-password">
+    <div id="gateMsg"></div>
+    <div class="px-btns"><button class="px-b" id="unlock">Unlock</button></div>
+  </div>
+  <div id="panel" hidden>
+    <div class="px-card">
+      <h1>Add FIB questions</h1>
+      <p class="px-note">FIB-only questions are saved to the normal Questions sheet and appear in the main exam list as a separate test.</p>
+      <div class="px-row">
+        <div><label class="px-l" for="dSub">Subject (default)</label><input type="text" id="dSub" placeholder="e.g. Digital Electronics"></div>
+        <div><label class="px-l" for="dTopic">Topic (default, optional)</label><input type="text" id="dTopic" placeholder="e.g. Flip-flops"></div>
+      </div>
+      <p class="px-note" style="margin-top:10px">These two are used in the AI prompt and fill in any question that has no subject or topic.</p>
+    </div>
+
+    <div class="px-card">
+      <h2>Step 1 — Get questions from an AI</h2>
+      <p class="px-note">The prompt below already tells the AI how to write blanks that our checker can mark.</p>
+      <div class="px-row">
+        <div><label class="px-l" for="pType">Question type</label>
+          <select id="pType"><option value="FIB">Fill in the blank (FIB only)</option></select></div>
+        <div><label class="px-l" for="pCount">How many</label><input type="number" id="pCount" value="20" min="1" max="100"></div>
+        <div><label class="px-l" for="pLevel">Level</label>
+          <select id="pLevel"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+      </div>
+      <label class="px-l" for="prompt">Prompt (copy it into any AI chat)</label>
+      <textarea id="prompt" class="px-mono" readonly></textarea>
+      <div class="px-btns"><button class="px-b" id="copyPrompt">Copy prompt</button></div>
+      <div id="copyMsg"></div>
+    </div>
+
+    <div class="px-card">
+      <h2>Step 2 — Paste the AI answer and check it</h2>
+      <p class="px-note">Paste the JSON the AI gave you. Every question is checked against our rules before anything is saved.</p>
+      <textarea id="paste" class="px-mono" placeholder='[ { "type": "FIB", "question": "The ______ stores one bit.", "answer": "flip-flop;flip flop", "explanation": "..." } ]'></textarea>
+      <div class="px-btns"><button class="px-b" id="check">Check questions</button><button class="px-b alt" id="clearPaste">Clear</button></div>
+      <div id="preview"></div>
+    </div>
+
+    <div class="px-card">
+      <h2>Add a single FIB question</h2>
+      <div class="px-row">
+        <div><label class="px-l" for="sType">Type</label><select id="sType"><option value="FIB">Fill in the blank (FIB only)</option></select></div>
+      </div>
+      <label class="px-l" for="sQ">Question <span id="sHint">(write the blank as ______)</span></label>
+      <textarea id="sQ" placeholder="The ______ is the part of a computer that executes instructions."></textarea>
+      <div id="mcqBox" hidden>
+        <div class="px-row">
+          <div><label class="px-l" for="oA">Option A</label><input type="text" id="oA"></div>
+          <div><label class="px-l" for="oB">Option B</label><input type="text" id="oB"></div>
+          <div><label class="px-l" for="oC">Option C</label><input type="text" id="oC"></div>
+          <div><label class="px-l" for="oD">Option D</label><input type="text" id="oD"></div>
+        </div>
+      </div>
+      <label class="px-l" for="sMarks">Marks</label><input type="number" id="sMarks" min="0.1" step="0.1" value="1">
+      <label class="px-l" for="sA" id="sALabel">Accepted answer(s), separated by ;  — or a range like 0.9 to 1.1</label>
+      <input type="text" id="sA" placeholder="CPU;processor">
+      <label class="px-l" for="sE">Explanation (optional)</label>
+      <input type="text" id="sE">
+      <div id="singleMsg"></div>
+      <div class="px-btns"><button class="px-b" id="addSingle">Check and add</button></div>
+    </div>
+
+    <div class="px-card">
+      <h2>Manage saved questions</h2>
+      <div class="px-row">
+        <div><label class="px-l" for="mFilter">Search</label><input type="text" id="mFilter" placeholder="word in question or subject"></div>
+        <div><label class="px-l" for="mType">Type</label><select id="mType"><option value="FIB">Fill in the blank</option></select></div>
+      </div>
+      <p class="px-note" id="mCount" style="margin-top:10px">Loading…</p>
+      <div class="px-scroll"><table class="px-t" id="mTable"></table></div>
+      <div class="px-btns"><button class="px-b danger" id="delSel" disabled hidden>Delete selected</button><button class="px-b alt" id="reload">Reload</button></div>
+      <div id="manageMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="practice-rules.js"></script>
+<script src="fib-admin-api.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = function (id) { return document.getElementById(id); };
+  const esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+  const msg = function (id, cls, text) { $(id).innerHTML = text ? '<div class="px-msg ' + cls + '" role="status">' + text + '</div>' : ''; };
+
+  /* ================= admin gate ================= */
+  async function tryAccess() {
+    try {
+      const r = await FibAdminAPI.adminCheck();
+      return !!(r && r.ok);
+    } catch (e) { return false; }
+  }
+  function showPanel() { $('gate').hidden = true; $('panel').hidden = false; buildPrompt(); loadManage(); }
+  async function init() {
+    if (await tryAccess()) { showPanel(); return; }
+    $('gate').hidden = false; $('pw').focus();
+  }
+  $('unlock').onclick = async function () {
+    const pw = $('pw').value;
+    if (!pw) { msg('gateMsg', 'err', 'Enter the password.'); return; }
+    FibAdminAPI.setAdminPw(pw);
+    msg('gateMsg', 'info', 'Checking…');
+    if (await tryAccess()) { showPanel(); }
+    else { FibAdminAPI.setAdminPw(''); msg('gateMsg', 'err', 'Wrong password, or the server could not be reached.'); }
+  };
+  $('pw').onkeydown = function (e) { if (e.key === 'Enter') $('unlock').click(); };
+
+  /* ================= Step 1: AI prompt ================= */
+  function buildPrompt() {
+    const sub = $('dSub').value.trim() || '[SUBJECT]';
+    const topic = $('dTopic').value.trim();
+    const type = $('pType').value, n = Math.max(1, Math.min(100, Number($('pCount').value) || 20)), level = $('pLevel').value;
+    const fibN = type === 'FIB' ? n : type === 'MCQ' ? 0 : Math.ceil(n / 2);
+    const mcqN = n - fibN;
+    let p = 'You are writing FIB questions for a diploma/engineering entrance exam.\n';
+    p += 'Subject: ' + sub + '\n' + (topic ? 'Topic: ' + topic + '\n' : '') + 'Level: ' + level + '\n';
+    p += 'Every object must include a positive numeric marks field (default 1). Write exactly ' + n + ' questions' + (type === 'BOTH' ? ' (' + fibN + ' fill-in-the-blank "FIB" and ' + mcqN + ' "MCQ")' : type === 'FIB' ? ' (all fill-in-the-blank "FIB")' : ' (all "MCQ")') + '.\n\n';
+    if (fibN) {
+      p += 'RULES FOR FILL-IN-THE-BLANK (FIB) QUESTIONS — these decide whether our automatic checker can mark the answer:\n';
+      PracticeRules.AI_FIB_RULES.forEach(function (r, i) { p += (i + 1) + '. ' + r + '\n'; });
+      p += '\nGood FIB example:\n{"type":"FIB","question":"In digital electronics, a ______ gate gives output 1 only when all of its inputs are 1.","answer":"AND","marks":1,"explanation":"An AND gate outputs 1 only when every input is 1."}\n';
+      p += 'Good phrase example (several accepted answers):\n{"type":"FIB","question":"The memory that loses its contents when power is switched off is called ______ memory.","answer":"volatile","explanation":"RAM is volatile: it needs power to keep data."}\n';
+      p += 'Good number example:\n{"type":"FIB","question":"How many bits are in one byte? Answer as a whole number: ______","answer":"8","explanation":"1 byte = 8 bits."}\n';
+      p += 'Bad (do NOT write): "The ______ and ______ are used in logic." (two blanks, vague); an answer such as "x^2 + 1" or "1/2" or a long sentence.\n\n';
+    }
+    if (mcqN) {
+      p += 'RULES FOR MCQ QUESTIONS:\n';
+      p += '1. Exactly four options A, B, C, D. Exactly one is correct. The other three must be plausible but clearly wrong.\n';
+      p += '2. "answer" is one letter: A, B, C or D. Spread the correct letter around.\n';
+      p += '3. No "all of the above" or "none of the above". Plain text only.\n';
+      p += 'MCQ example:\n{"type":"MCQ","question":"Which gate is called a universal gate?","options":{"A":"AND","B":"OR","C":"NAND","D":"XOR"},"answer":"C","explanation":"NAND alone can build every other gate."}\n\n';
+    }
+    p += 'GENERAL RULES:\n- Only questions you are certain are correct. Do not copy text from textbooks, paid courses or other question banks; write your own wording.\n- No duplicate questions.\n';
+    p += '- Include "subject" and "topic" in every item.\n\n';
+    p += 'OUTPUT FORMAT: reply with ONLY a JSON array, no explanation before or after, no markdown fences. Every item has these keys: type, subject, topic, question, answer, explanation (MCQ items also have "options").\n';
+    p += 'Use subject "' + sub + '"' + (topic ? ' and topic "' + topic + '"' : '') + ' in every item.';
+    $('prompt').value = p;
+  }
+  ['dSub', 'dTopic', 'pType', 'pCount', 'pLevel'].forEach(function (id) { $(id).addEventListener('input', buildPrompt); $(id).addEventListener('change', buildPrompt); });
+  $('copyPrompt').onclick = async function () {
+    try { await navigator.clipboard.writeText($('prompt').value); msg('copyMsg', 'ok', 'Prompt copied. Paste it into your AI chat.'); }
+    catch (e) { $('prompt').select(); msg('copyMsg', 'info', 'Select all and copy it by hand (Ctrl+C).'); }
+  };
+
+  /* ================= Step 2: paste, check, upload ================= */
+  let checked = [];   // [{q, errors, warnings}]
+  function parsePasted(text) {
+    let t = String(text || '').trim().replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim();
+    const a = t.indexOf('['), b = t.lastIndexOf(']');
+    if (a === -1 || b === -1) throw new Error('No JSON list found. It must start with [ and end with ].');
+    const arr = JSON.parse(t.slice(a, b + 1));
+    if (!Array.isArray(arr)) throw new Error('Expected a list of questions.');
+    return arr;
+  }
+  function normalize(q) {
+    q = q || {};
+    const out = {
+      type: String(q.type || '').toUpperCase().trim(),
+      subject: String(q.subject || $('dSub').value || '').trim(),
+      topic: String(q.topic || $('dTopic').value || '').trim(),
+      question: String(q.question || '').trim(),
+      answer: String(q.answer == null ? '' : q.answer).trim(),
+      marks: Number(q.marks) > 0 ? Number(q.marks) : 1,
+      explanation: String(q.explanation || '').trim()
+    };
+    if (out.type === 'MCQ') {
+      const o = q.options || {};
+      out.options = { A: String(o.A == null ? '' : o.A).trim(), B: String(o.B == null ? '' : o.B).trim(), C: String(o.C == null ? '' : o.C).trim(), D: String(o.D == null ? '' : o.D).trim() };
+      out.answer = out.answer.toUpperCase();
+    }
+    return out;
+  }
+  function validate(q) {
+    const v = PracticeRules.validateQuestion(q);
+    if (!q.subject) v.errors.push('Subject is empty. Fill the Subject (default) box above.');
+    return v;
+  }
+  $('check').onclick = function () {
+    let arr;
+    try { arr = parsePasted($('paste').value); }
+    catch (e) { $('preview').innerHTML = '<div class="px-msg err">' + esc(e.message) + '</div>'; checked = []; return; }
+    checked = arr.map(function (raw) { const q = normalize(raw); const v = validate(q); return { q: q, errors: v.errors, warnings: v.warnings }; });
+    renderPreview();
+  };
+  $('clearPaste').onclick = function () { $('paste').value = ''; $('preview').innerHTML = ''; checked = []; };
+  function renderPreview() {
+    const good = checked.filter(function (c) { return !c.errors.length; });
+    let h = '<div class="px-msg ' + (good.length ? 'info' : 'err') + '">' + good.length + ' of ' + checked.length + ' questions are valid.' +
+      (checked.length - good.length ? ' Fix the others in your AI chat (ask it to follow the rules) and paste again.' : '') + '</div>';
+    h += '<div class="px-scroll"><table class="px-t"><tr><th>#</th><th>Type</th><th>Question</th><th>Answer</th><th>Check</th></tr>' +
+      checked.map(function (c, i) {
+        const st = c.errors.length ? '<span class="px-err">' + c.errors.map(esc).join('<br>') + '</span>'
+          : (c.warnings.length ? '<span class="px-warn">OK, but:<br>' + c.warnings.map(esc).join('<br>') + '</span>' : '<span class="px-ok">OK</span>');
+        return '<tr><td>' + (i + 1) + '</td><td>' + esc(c.q.type) + '</td><td>' + esc(c.q.question) + '</td><td>' + esc(c.q.answer) + '</td><td>' + st + '</td></tr>';
+      }).join('') + '</table></div>';
+    h += '<div class="px-btns"><button class="px-b" id="uploadGood"' + (good.length ? '' : ' disabled') + '>Save ' + good.length + ' valid question' + (good.length === 1 ? '' : 's') + '</button></div><div id="uploadMsg"></div>';
+    $('preview').innerHTML = h;
+    $('uploadGood').onclick = upload;
+  }
+  async function upload() {
+    const good = checked.filter(function (c) { return !c.errors.length; }).map(function (c) { return c.q; });
+    if (!good.length) return;
+    $('uploadGood').disabled = true; msg('uploadMsg', 'info', 'Saving…');
+    let added = 0, dup = 0, rej = 0, failed = '';
+    try {
+      for (let i = 0; i < good.length; i += 200) {
+        const r = await FibAdminAPI.addQuestions({ questions: good.slice(i, i + 200) });
+        if (!r || !r.ok) { failed = (r && r.error) || 'Server did not answer.'; break; }
+        added += r.added || 0; dup += r.duplicates || 0; rej += (r.rejected || []).length;
+      }
+    } catch (e) { failed = e.message; }
+    if (failed) { msg('uploadMsg', 'err', esc(failed) + (added ? ' (' + added + ' saved before the error.)' : '')); $('uploadGood').disabled = false; }
+    else {
+      msg('uploadMsg', 'ok', 'Saved ' + added + ' new question' + (added === 1 ? '' : 's') + (dup ? ', ' + dup + ' duplicate(s) skipped' : '') + (rej ? ', ' + rej + ' rejected by the server' : '') + '.');
+      $('paste').value = ''; checked = []; loadManage();
+    }
+  }
+
+  /* ================= single question ================= */
+  function syncSingle() {
+    const mcq = $('sType').value === 'MCQ';
+    $('mcqBox').hidden = !mcq;
+    $('sHint').textContent = mcq ? '' : '(write the blank as ______)';
+    $('sALabel').textContent = mcq ? 'Correct option (A, B, C or D)' : 'Accepted answer(s), separated by ;  — or a range like 0.9 to 1.1';
+    $('sA').placeholder = mcq ? 'B' : 'CPU;processor';
+  }
+  $('sType').onchange = syncSingle; syncSingle();
+  $('addSingle').onclick = async function () {
+    const raw = { type: $('sType').value, subject: $('dSub').value, topic: $('dTopic').value, question: $('sQ').value, answer: $('sA').value, marks: Number($('sMarks').value)||1, explanation: $('sE').value,
+      options: { A: $('oA').value, B: $('oB').value, C: $('oC').value, D: $('oD').value } };
+    const q = normalize(raw), v = validate(q);
+    if (v.errors.length) { msg('singleMsg', 'err', v.errors.map(esc).join('<br>')); return; }
+    msg('singleMsg', 'info', 'Saving…');
+    try {
+      const r = await FibAdminAPI.addQuestions({ questions: [q] });
+      if (!r || !r.ok) { msg('singleMsg', 'err', esc((r && r.error) || 'Server did not answer.')); return; }
+      if (r.added) {
+        msg('singleMsg', 'ok', 'Saved.' + (v.warnings.length ? ' Note: ' + v.warnings.map(esc).join(' ') : ''));
+        ['sQ', 'sA', 'sE', 'oA', 'oB', 'oC', 'oD'].forEach(function (id) { $(id).value = ''; }); loadManage();
+      } else if (r.duplicates) msg('singleMsg', 'info', 'That question already exists.');
+      else msg('singleMsg', 'err', esc(((r.rejected || [])[0] || {}).errors ? r.rejected[0].errors.join(' ') : 'Rejected by the server.'));
+    } catch (e) { msg('singleMsg', 'err', esc(e.message)); }
+  };
+
+  /* ================= manage ================= */
+  let all = [];
+  async function loadManage() {
+    $('mCount').textContent = 'Loading…';
+    try { all = await FibAdminAPI.list(); renderManage(); }
+    catch (e) { $('mCount').textContent = ''; msg('manageMsg', 'err', esc(e.message)); }
+  }
+  function renderManage() {
+    const f = $('mFilter').value.trim().toLowerCase(), t = $('mType').value;
+    const rows = all.filter(function (q) {
+      return (!t || q.type === t) && (!f || (q.question + ' ' + q.subject + ' ' + q.topic).toLowerCase().indexOf(f) !== -1);
+    });
+    $('mCount').textContent = rows.length + ' shown, ' + all.length + ' saved in total.';
+    $('mTable').innerHTML = '<tr><th></th><th>Type</th><th>Subject / topic</th><th>Question</th><th>Answer</th></tr>' +
+      rows.slice(0, 300).map(function (q) {
+        return '<tr><td><input type="checkbox" class="mchk" value="' + esc(q.id) + '" aria-label="Select"></td><td>' + esc(q.type) + '</td><td>' + esc(q.subject) + (q.topic ? '<br>' + esc(q.topic) : '') + '</td><td>' + esc(q.question) + '</td><td>' + esc(q.answer) + '</td></tr>';
+      }).join('');
+    if (rows.length > 300) $('mCount').textContent += ' (first 300 listed — use search)';
+    document.querySelectorAll('.mchk').forEach(function (c) { c.onchange = updDel; });
+    updDel();
+  }
+  function updDel() {
+    const n = document.querySelectorAll('.mchk:checked').length;
+    $('delSel').disabled = !n; $('delSel').textContent = n ? 'Delete selected (' + n + ')' : 'Delete selected';
+  }
+  $('mFilter').oninput = renderManage; $('mType').onchange = renderManage; $('reload').onclick = loadManage;
+  $('delSel').onclick = async function () {
+    const ids = Array.prototype.map.call(document.querySelectorAll('.mchk:checked'), function (c) { return c.value; });
+    if (!ids.length || !confirm('Delete ' + ids.length + ' question(s)? This cannot be undone.')) return;
+    try {
+      const r = await FibAdminAPI.deleteQuestions({ ids: ids });
+      if (!r || !r.ok) { msg('manageMsg', 'err', esc((r && r.error) || 'Server did not answer.')); return; }
+      msg('manageMsg', 'ok', 'Deleted ' + r.deleted + '.'); loadManage();
+    } catch (e) { msg('manageMsg', 'err', esc(e.message)); }
+  };
+
+  init();
+})();
+</script>
+</body>
+</html>
