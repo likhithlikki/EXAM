@@ -82,8 +82,8 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .password-card input:focus,.enroll-card input:focus,input:focus{outline:none;border-color:var(--primary)}
 
 /* ---------- Generic form fields inside any card (admin forms, etc.) ---------- */
-.card label{display:block;font-weight:700;font-size:13px;color:var(--muted);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.4px}
-.card label:first-of-type{margin-top:6px}
+.card label.field,.card label.px-l{display:block;font-weight:700;font-size:13px;color:var(--muted);margin:16px 0 6px;text-transform:uppercase;letter-spacing:.4px}
+.card label.field:first-of-type,.card label.px-l:first-of-type{margin-top:6px}
 .card input[type=text],.card input[type=number],.card input[type=email],.card input[type=password],.card input:not([type]),.card select,.card textarea{
   width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:9px;font-size:15px;background:#fbfcff;color:var(--ink);font-family:inherit;transition:border-color .15s ease
 }
@@ -501,3 +501,18 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
     font-size:17px !important;
   }
 }
+
+/* Accessibility and responsive exam layout */
+html,body{max-width:100%;overflow-x:hidden}body{font-size:clamp(16px,1.1vw,17px)}
+button,.subject-card button,.examfoot button{font-size:16px;min-height:44px}input,select,textarea{font-size:16px!important;max-width:100%}.question{font-size:clamp(18px,1.55vw,22px)}.option{font-size:clamp(17px,1.25vw,18px);font-weight:400;color:var(--ink);line-height:1.5}.option>b{font-weight:800}.meta,.palette-legend,.qtime{font-size:14px}.option{min-height:48px}.card label.option{display:flex;align-items:flex-start;gap:8px;text-transform:none;letter-spacing:normal;font-weight:400;color:var(--ink);font-size:clamp(17px,1.25vw,18px);margin:10px 0}.card label.option:first-of-type{margin-top:10px}
+:focus-visible{outline:3px solid var(--primary)!important;outline-offset:3px}
+@media(min-width:1024px){.wrap{max-width:1200px}.exam-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}.exam-main{min-width:0}.exam-side{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding-bottom:20px}.exam-side .palette{grid-template-columns:repeat(6,1fr)}.examfoot{position:static;transform:none;width:100%;margin-top:18px;box-shadow:none}}
+@media(min-width:600px) and (max-width:1023px){.subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.exam-layout{display:block}.exam-side{margin-top:18px}.palette{grid-template-columns:repeat(8,1fr)}}
+@media(max-width:599px){.wrap{padding:12px 10px calc(100px + env(safe-area-inset-bottom))}.subject-grid{grid-template-columns:1fr}.exam-layout{display:block}.exam-side{margin-top:16px}.exam-side .palette{grid-template-columns:repeat(5,1fr)}.examfoot{position:fixed;left:0;right:0;bottom:0;transform:none;width:100%;border-radius:14px 14px 0 0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.examfoot button{min-height:48px;padding:8px 5px}.examfoot .submit{grid-column:span 1}.top{flex-direction:row;align-items:center}.top h1{font-size:19px}.question{font-size:19px}.palette-legend{font-size:14px}.card{padding:16px}.password-card,.enroll-card{margin:16px auto}.stats,.dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.questions-drawer-toggle{display:none}
+@media(max-width:599px){.questions-drawer-toggle{display:inline-flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 12px;color:var(--primary-dark)}.exam-side{display:none}.exam-side.open{display:block}.exam-side.open .card{margin-top:10px}.examfoot button:nth-child(2){display:none}}
+@media(max-width:599px){.examfoot button:nth-child(2){display:inline-flex}.meta{display:flex;flex-wrap:wrap;gap:6px}.meta>span{min-width:0}}
+body:has(.exam-layout) #homeFab{display:none}
+@media(min-width:600px) and (max-width:1023px){.examfoot{position:static;transform:none;width:100%;margin-top:18px;box-shadow:none}}
+body:has(.stats) #backFab,body:has(.stats) #homeFab{display:none}
+body:has(.stats) #backFab,body:has(.stats) #homeFab{display:none!important}

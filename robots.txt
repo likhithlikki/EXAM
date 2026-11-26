@@ -1,12 +1,7 @@
-# This site has no separate admin URL to disallow — the Admin panel and
-# Control Centre are password-gated views rendered INSIDE index.html by
-# JavaScript (app.js), not separate crawlable routes, so there is nothing
-# at the URL level that needs to be blocked from indexing.
+# The Admin panel and Control Centre are password-gated views rendered inside
+# index.html; there are no separate admin routes to disallow.
 
 User-agent: *
 Allow: /
 
-# PLACEHOLDER: replace YOUR-PRODUCTION-DOMAIN with the real deployed domain
-# (same value used in index.html/about.html's canonical and og:url tags,
-# and in sitemap.xml) before launch.
-Sitemap: https://YOUR-PRODUCTION-DOMAIN/sitemap.xml
+# Add a Sitemap directive with the absolute production hostname before launch.

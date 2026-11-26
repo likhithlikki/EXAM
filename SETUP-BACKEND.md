@@ -86,3 +86,23 @@ The script adds missing columns to existing sheets. It does not intentionally de
 - Built-in move targets are now accepted without any server-side name list, so subjects you add to `subjects.json` later work immediately.
 - All of these are recorded in History and can be undone from the top of the Control Centre.
 
+
+## Subject password storage and cooldown recovery (November 2026)
+
+Subject passwords are no longer published in `subjects.json` or returned by public custom-subject endpoints. Configure the built-in subject passwords in Apps Script **Project Settings → Script Properties** using the property name `SUBJECT_PASSWORDS_JSON` and this JSON value (preserve the exact subject IDs):
+
+```json
+{"digital-electronics":"18","software-engineering":"19","computer-organisation-microprocessors":"20","data-structures-c":"21","computer-networks-cyber-security":"22","operating-systems":"23","dbms":"24","java-programming":"25","web-technologies":"26","big-data-cloud-computing":"27","android-programming":"28","internet-of-things":"29","python-programming":"30"}
+```
+
+Custom-subject passwords remain in the private `Subjects` sheet and are verified by Apps Script. A blank `Password` cell means no password and skips the password screen.
+
+Set the same real, lowercase tester/admin email list in `ADMIN_EMAILS` in both `Code.gs` and `config.js`. The placeholder `admin@example.com` must be replaced before relying on the bypass.
+
+### Reset a long subject cooldown
+
+Deploy the updated `Code.gs` as a new Apps Script Web App version. Sign in to the app's Control Centre, open **Locks & Timers**, and select **Reset to default 24h and clear overrides**. This removes the `COOLDOWN_MINUTES` Script Property (restoring the built-in 1,440-minute default), deletes all data rows in `CooldownOverrides` while retaining its header, and clears cached dashboards. It is a global reset, not a per-student reset.
+
+The same reset can be performed manually in Apps Script Project Settings → Script Properties by deleting `COOLDOWN_MINUTES`, then clearing all data rows (not the header) from the `CooldownOverrides` sheet. The updated server also rejects newly configured cooldowns above 90 days; waits above 30 days are explicitly warned about in the Control Centre.
+
+Canonical URLs, `og:url`, the sitemap and the `Sitemap:` directive in `robots.txt` are intentionally left unset until the real production hostname is supplied. Add absolute URLs for that hostname before launch.

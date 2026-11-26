@@ -134,6 +134,16 @@ async function _doGet(action,params,timeoutMs,retries,opts={}){
     }finally{clearTimeout(timer);if(!silent)loadingHide();}
   }
 }
+async function apiGetBounded_(action,params={},timeoutMs=4000){
+  if(!API)return null;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{const r=await fetch(API+"?"+new URLSearchParams({action,...params}),{method:"GET",cache:"no-store",signal:controller.signal});if(!r.ok)return null;return await r.json();}
+  catch(e){console.warn("Bounded GET "+action+" failed:",e);return null;}finally{clearTimeout(timer);}
+}
+async function apiPostBounded_(action,payload={},timeoutMs=6000){
+  if(!API)return null;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{const r=await fetch(API,{method:"POST",body:JSON.stringify({action,...payload}),cache:"no-store",signal:controller.signal});if(!r.ok)return null;return await r.json();}
+  catch(e){console.warn("Bounded POST "+action+" failed:",e);return null;}finally{clearTimeout(timer);}
+}
 async function apiPost(action,payload={},timeoutMs=15000){
   if(!API)return null;
   return _enqueue(async()=>{
@@ -156,13 +166,14 @@ async function apiPost(action,payload={},timeoutMs=15000){
  * old Apps Script / localStorage path, so a missing file, a bad file or being offline
  * never breaks the app. Set USE_STATIC_DATA:false in config.js to switch it all off. */
 const staticDataOn_=()=>!(window.APP_CONFIG&&window.APP_CONFIG.USE_STATIC_DATA===false);
-let _dataMeta=null,_dataMetaAt=0,_dataMetaFailAt=0,_dataMetaP=null;
+let _dataMeta=null,_dataMetaAt=0,_dataMetaFailAt=0,_dataMetaP=null,_dataMetaFailedSession=false;
 // data/export-meta.json is tiny; it is always revalidated (cache:"no-cache") and its hash
 // is used as ?v= so every other data file can be cached for a long time yet updates instantly.
 function dataMeta_(force){
+  if(_dataMetaFailedSession)return Promise.resolve(null);
   if(!force){
     if(_dataMeta&&Date.now()-_dataMetaAt<60000)return Promise.resolve(_dataMeta);
-    if(!_dataMeta&&Date.now()-_dataMetaFailAt<60000)return Promise.resolve(null);
+    if(_dataMetaFailedSession||(!_dataMeta&&Date.now()-_dataMetaFailAt<60000))return Promise.resolve(null);
     if(_dataMetaP)return _dataMetaP;
   }
   _dataMetaP=(async()=>{
@@ -170,13 +181,13 @@ function dataMeta_(force){
       const r=await fetch("data/export-meta.json",{cache:"no-cache"});
       if(r.ok){const m=await r.json();if(m&&typeof m.hash==="string"&&m.hash){_dataMeta=m;_dataMetaAt=Date.now();return m;}}
     }catch(e){}
-    _dataMetaFailAt=Date.now();
+    _dataMetaFailAt=Date.now();_dataMetaFailedSession=true;
     return _dataMeta; // keep an older hash if we had one (e.g. now offline)
   })().finally(()=>{_dataMetaP=null;});
   return _dataMetaP;
 }
 async function loadData(path,fallbackFn){
-  if(staticDataOn_()){
+  if(staticDataOn_()&&!_dataMetaFailedSession){
     try{
       const m=await dataMeta_();
       if(m&&m.hash){
@@ -196,15 +207,8 @@ async function loadQuestions_(subjectId){
   const data=await loadData("questions/"+encodeURIComponent(subjectId)+".json",live);
   return Array.isArray(data)?data:null;
 }
-// Static custom subjects never contain the exam password (it is never published). Keep the
-// passwords we already know from the live server so cards keep working.
-function withKnownPasswords_(list){
-  const known=new Map();
-  [...(customSubjects||[]),...store.customSubjectsCache()].forEach(s=>{
-    if(s&&s.id!==undefined&&s.password!==undefined&&s.password!==null)known.set(String(s.id),s.password);
-  });
-  return list.map(s=>(s&&s.password===undefined&&known.has(String(s.id)))?{...s,password:known.get(String(s.id))}:s);
-}
+// Passwords are never restored from localStorage or public static subject data;
+// password verification is performed by the Apps Script endpoint only.
 let _liveCustomApplied=false; // true once live (Apps Script) subject data has been applied this visit
 // Custom subjects + topic summary from data/*.json. On a normal Home visit it only fills what is
 // still empty (first visit / cold cache) and never overwrites newer live data; force=true is used
@@ -220,21 +224,9 @@ async function loadStaticHome_(force){
   ]);
   if(!force&&_liveCustomApplied)return;
   let changed=false;
-  if(needCustom&&Array.isArray(cs)&&cs.length){customSubjects=withKnownPasswords_(cs);store.setCustomSubjectsCache(customSubjects);changed=true;}
+  if(needCustom&&Array.isArray(cs)&&cs.length){customSubjects=cs.map(({password,...safe})=>safe);store.setCustomSubjectsCache(customSubjects);changed=true;}
   if(needTopics&&ts&&typeof ts==="object"&&!Array.isArray(ts)){setServerTopics(ts);changed=true;}
   if(changed)refreshSubjectCardStats();
-}
-// Live password lookup, used only when the static list has no password for a custom subject.
-async function liveCustomPassword_(id){
-  if(!API)return undefined;
-  const cs=await apiGet("customSubjects",{},15000,1);
-  if(cs?.ok&&Array.isArray(cs.data)){
-    customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);_liveCustomApplied=true;
-    if(cs.topicSummary)setServerTopics(cs.topicSummary);
-    const f=cs.data.find(x=>String(x.id)===String(id));
-    return f?f.password:undefined;
-  }
-  return undefined;
 }
 /* ===================== "UPDATE CONTENT" (publish now) =====================
  * Asks Apps Script to start the GitHub sync job. The browser never talks to GitHub and never
@@ -249,6 +241,7 @@ async function reloadStaticData_(){
   checkServerStatusAndBundle(true); // quietly bring back live-only items (passwords, private tests)
 }
 async function pollForNewContent_(baseline){
+  if(!staticDataOn_()||_dataMetaFailedSession)return false;
   const end=Date.now()+3*60*1000;
   while(Date.now()<end){
     await sleep(15000);
@@ -704,8 +697,8 @@ function allUnitsOf(s){
   if(!out.length)out.push(s);
   return out;
 }
-// every test name of a subject (used where an admin picks a test, e.g. locks)
-function unitNames(s){const n=allUnitsOf(s).map(u=>u.name);if(!n.includes(s.name))n.unshift(s.name);return n;}
+// Stable parent subject identity for admin cooldown controls (topic tests share the subject lock).
+function unitNames(s){return [{id:String(s.parentId||s.id),name:s.parentName||s.name}];}
 // exam shown in the exam header: a test's own exam, or the subject's home exam
 function examLabel(s){if(!s)return "";return s.examKey!==undefined?(s.exam||""):homeExam(s);}
 // Home card: only how many topic tests the subject has — no exam, no topic names.
@@ -851,7 +844,8 @@ async function home(){
   // custom subjects) instead of waiting on the network — the network refresh below then
   // patches the page in place, so clicking Home never looks stuck or "broken".
   if(!subjects.length){try{subjects=await fetch("subjects.json").then(r=>r.json());}catch(e){subjects=subjects||[];}}
-  customSubjects=store.customSubjectsCache();
+  customSubjects=store.customSubjectsCache().map(({password,...safe})=>safe);
+  store.setCustomSubjectsCache(customSubjects);
   const p=store.profile();
   // Anything saved from an earlier visit? Then the page is already showing real data, so the status pill
   // just says "Updating…" instead of "Checking server…".
@@ -942,6 +936,7 @@ function lockInfoFromRow_(row){
   return lockInfoFromLastAttempt_(row.lastAttempt);
 }
 function subjectLockInfo(name){
+  const me=store.profile()?.email?.toLowerCase();if(me&&(window.APP_CONFIG?.ADMIN_EMAILS||[]).map(x=>String(x).toLowerCase()).includes(me))return {locked:false,adminBypass:true};
   const d=store.dashboardCache();
   return lockInfoFromRow_(d?.subjects?.find(x=>x.subject===name));
 }
@@ -1014,7 +1009,7 @@ let _offlineRetryTimer=null;
 // "retry" is a real clickable control, not just static text in the offline
 // message — clicking it forces a fresh check instead of waiting for the
 // cache TTL or for the user to navigate Home again.
-function offlineStatusHTML_(){return 'Server offline — <span class="retry-link" onclick="checkServerStatusAndBundle(true)">retry</span>';}
+function offlineStatusHTML_(){return 'Server offline. Check your internet connection, then <button class="inline-retry" onclick="checkServerStatusAndBundle(true)">Retry connection</button>.';}
 function applyServerStatus_(status,statusEl,slot){
   if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
   if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
@@ -1032,7 +1027,7 @@ async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
   const slot=document.getElementById('adminNavSlot');
   if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
-  if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — API not configured</span>';}return;}
+  if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — configure the Apps Script URL in config.js, then retry <button class="inline-retry" onclick="checkServerStatusAndBundle(true)">Retry</button></span>';}return;}
   const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
   if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
   const haveCache_=!!(store.customSubjectsCache().length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
@@ -1078,7 +1073,7 @@ function editProfile(){pushNav(editProfile);const p=store.profile()||{name:"",em
   // silently letting someone edit it here would look up (or create) a different
   // account and make all their existing data appear to vanish — like a brand new
   // account. Name is just a display label and is always safe to change freely.
-  app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label for="pname">Name</label><input id="pname" name="name" autocomplete="name" required value="${esc(p.name)}"><label for="pemail">Email</label><input id="pemail" name="email" type="email" autocomplete="email" value="${esc(p.email)}" disabled aria-disabled="true" title="To change your email, log out and sign in with the new email."><p class="note">Your data (results, mistakes, reminders, history) is tied to your email. To switch to a different email, log out and sign in again with the new one — it will start as a separate account.</p><div id="pErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
+  app.innerHTML=`<div class="card enroll-card"><h1>Your details</h1><label class="field" for="pname">Name</label><input id="pname" name="name" autocomplete="name" required value="${esc(p.name)}"><label class="field" for="pemail">Email</label><input id="pemail" name="email" type="email" autocomplete="email" value="${esc(p.email)}" disabled aria-disabled="true" title="To change your email, log out and sign in with the new email."><p class="note">Your data (results, mistakes, reminders, history) is tied to your email. To switch to a different email, log out and sign in again with the new one — it will start as a separate account.</p><div id="pErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="saveProfileEdit()">Save</button></div></div>`;}
 async function saveProfileEdit(){
   const n=document.getElementById("pname").value.trim();
   const p=store.profile()||{name:"",email:""};
@@ -1180,7 +1175,7 @@ function topicFieldHTML(pfx,sid,current,cb,exam){
 // Both fields together; the topic list follows the chosen exam.
 function examTopicHTML(pfx,sid,curExam,curTopic,cb,keepOption){
   const ex=curExam===null?"":cleanTopic(curExam);
-  return `<div id="${pfx}ET" data-sid="${esc(sid)}" data-cb="${cb||""}"><label>Exam</label>${examFieldHTML(pfx,sid,curExam,cb,keepOption)}<label>Topic (optional)</label><div id="${pfx}TopicSub">${topicFieldHTML(pfx,sid,curTopic,cb,ex)}</div></div>`;
+  return `<div id="${pfx}ET" data-sid="${esc(sid)}" data-cb="${cb||""}"><label class="field">Exam</label>${examFieldHTML(pfx,sid,curExam,cb,keepOption)}<label class="field">Topic (optional)</label><div id="${pfx}TopicSub">${topicFieldHTML(pfx,sid,curTopic,cb,ex)}</div></div>`;
 }
 function examSelChanged(pfx){
   const wrap=document.getElementById(pfx+"ET"),sel=document.getElementById(pfx+"ExamSel"),inp=document.getElementById(pfx+"ExamNew");
@@ -1277,10 +1272,10 @@ async function adminQuestionsPage(){
     </div>
     <div class="card admin-sec" id="adm-subject" data-tone="subject"><h1>Admin — Create New Subject</h1>
       <p class="note">Create a brand-new test subject with no code or GitHub changes. It appears immediately in "Additional Tests" on the homepage, and below in the Subject dropdown so you can bulk-import its questions.</p>
-      <label>Subject Name</label><input id="newSubjectName" placeholder="e.g. Machine Learning Basics">
-      <label>Subject Password</label><input id="newSubjectPassword" placeholder="Password students will enter">
-      <label>Exam / category</label><input id="newSubjectExam" list="examChoices" placeholder="GATE, ECET or anything else" autocomplete="off"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
-      <label>Description (optional)</label><input id="newSubjectDesc" placeholder="Shown as the subject's tagline on the homepage">
+      <label class="field">Subject Name</label><input id="newSubjectName" placeholder="e.g. Machine Learning Basics">
+      <label class="field">Subject Password</label><input id="newSubjectPassword" placeholder="Password students will enter">
+      <label class="field">Exam / category</label><input id="newSubjectExam" list="examChoices" placeholder="GATE, ECET or anything else" autocomplete="off"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist>
+      <label class="field">Description (optional)</label><input id="newSubjectDesc" placeholder="Shown as the subject's tagline on the homepage">
       <div id="newSubjectStatus" class="note"></div>
       <div class="buttons"><button onclick="createNewSubject()">Create Subject</button></div>
     </div>
@@ -1288,44 +1283,44 @@ async function adminQuestionsPage(){
       <div class="callout" style="background:#fff4e0;border:1px solid #f4a62a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13.5px">⚠️ <b>Copyright reminder:</b> only add questions, text, and image URLs you have the right to use — your own material, licensed content, or genuine public domain. Do not paste content copied verbatim from a paid course, textbook, or another copyrighted question bank. See <a href="terms.html#admin" target="_blank" rel="noopener">Terms §6</a>.</div>
       <p class="note">Select an existing subject to add its questions, or pick "Create New Subject" to make a brand-new one above first.</p>
       <div class="admin-step"><b>Step 1</b><span>Choose where the questions go</span></div>
-      <label>Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAdminTopicField();refreshAiPrompt();renderImportPreview();">
+      <label class="field">Subject</label><select id="adminSubject" onchange="if(this.value==='__new__'){document.getElementById('newSubjectName').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('newSubjectName').focus();this.value=this.options[0].value;}refreshAdminTopicField();refreshAiPrompt();renderImportPreview();">
         ${adminSubjectOptions()}
         <option value="__new__">➕ Create New Subject…</option>
       </select>
-      <label style="margin-top:14px">Exam &amp; topic (optional) — makes a topic-wise test</label>
+      <label class="field" style="margin-top:14px">Exam &amp; topic (optional) — makes a topic-wise test</label>
       <div id="adminTopicWrap"></div>
       <p class="note">The same subject can be used for more than one exam: pick the <b>Exam</b> these questions are for (GATE, ECET or another), and a <b>Topic</b> to make a topic-wise test — for example <b>Networks → GATE → Basics, Capacitors &amp; Inductors, Two-Ports</b>. On the Home page each exam gets its own list inside the subject; an exam with no topics is just its Full Subject Test. An Excel file can also carry its own <b>Topic</b> and <b>Exam</b> columns; rows with a blank value use what is chosen here.</p>
-      <label>Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026" onchange="refreshAiPrompt()">
+      <label class="field">Exam Year</label><input id="adminYear" type="number" value="${curYear}" placeholder="e.g. 2026" onchange="refreshAiPrompt()">
       <p class="note">Used for any row whose Year column is left blank in the Excel file, and filled into the AI prompt below.</p>
 
       <div class="admin-step optional"><b>Step 2</b><span>Optional — let an AI write the questions</span></div>
       <h2>Don't want to type questions by hand? Ask an AI</h2>
-      <label>Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
+      <label class="field">Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
       <p class="note">The prompt below now asks the AI to hand back a ready-to-upload Excel (.xlsx) file directly — no copy-pasting rows.</p>
       <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Marks, Type, Year. &nbsp; <b>Optional:</b> Topic, State, Question Number, and all Image URL columns — leave blank if unused.</p>
       <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
-      <label>Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
+      <label class="field">Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
         <option value="subject">Whole subject (broad coverage)</option>
         <option value="topic">Specific topic(s) / subtopic(s)</option>
       </select>
-      <div id="aiTopicRow" style="display:none"><label>Topic / Subtopics</label><input id="aiTopic" placeholder="e.g. Boolean Algebra & K-Maps" onchange="refreshAiPrompt()"></div>
-      <label>Type of questions</label><select id="aiQType" onchange="refreshAiPrompt()">
+      <div id="aiTopicRow" style="display:none"><label class="field">Topic / Subtopics</label><input id="aiTopic" placeholder="e.g. Boolean Algebra & K-Maps" onchange="refreshAiPrompt()"></div>
+      <label class="field">Type of questions</label><select id="aiQType" onchange="refreshAiPrompt()">
         <option value="Conceptual/theory-based">Conceptual / theory-based</option>
         <option value="Numerical/problem-solving">Numerical / problem-solving</option>
         <option value="Mixed" selected>Mixed (concept + numerical)</option>
         <option value="Previous-year exam style">Previous-year exam style</option>
         <option value="Application/scenario-based">Application / scenario-based</option>
       </select>
-      <label>Difficulty</label><select id="aiDifficulty" onchange="refreshAiPrompt()"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Super Hard">Super Hard</option><option value="Mixed">Mixed (all levels)</option></select>
-      <label>Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
-      <label>Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. avoid repeats from last year, favor diagrams-based questions" onchange="refreshAiPrompt()">
+      <label class="field">Difficulty</label><select id="aiDifficulty" onchange="refreshAiPrompt()"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Super Hard">Super Hard</option><option value="Mixed">Mixed (all levels)</option></select>
+      <label class="field">Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
+      <label class="field">Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. avoid repeats from last year, favor diagrams-based questions" onchange="refreshAiPrompt()">
       <p class="note">Copy the prompt below, paste it into any AI chat, then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
       <textarea id="aiPromptBox" readonly rows="13" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
       <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
       <div id="aiCopyStatus" class="note"></div>
 
       <div class="admin-step"><b>Step 3</b><span>Upload the filled Excel file</span></div>
-      <label>Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
+      <label class="field">Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
       <div id="importStatus" class="note"></div><div id="importPreview"></div>
       <div class="buttons"><button id="importQuestionsBtn" onclick="importPreviewedQuestions()" disabled>Import Questions</button></div>
     </div>
@@ -1378,7 +1373,7 @@ function readDuration(pfx){
   if(sel!=="custom")return Number(sel);
   const raw=document.getElementById(pfx+"Amount").value,val=Number(raw);
   if(raw===""||!isFinite(val)||val<0)return null;
-  return Math.round(val*Number(document.getElementById(pfx+"Unit").value));
+  const minutes=Math.round(val*Number(document.getElementById(pfx+"Unit").value));return minutes<=90*1440?minutes:null;
 }
 // A Control Centre call was refused because the password is missing/wrong → ask for it again.
 function ccDenied(res){
@@ -1467,14 +1462,15 @@ async function ccHistoryTab(){
 /* ---------- 🔒 Locks & Timers ---------- */
 function ccLocksTab(){
   const body=document.getElementById("ccBody");if(!body)return;
-  _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>unitNames(s).forEach(n=>_tcSubjects.push(n))); // each topic test has its own lock
+  _tcSubjects=[];[...subjects,...customSubjects].forEach(s=>unitNames(s).forEach(n=>_tcSubjects.push(n))); // cooldowns are keyed by stable parent SubjectId
   body.innerHTML=`<h2>Default wait after an exam</h2>
     <p class="note">A subject stays locked for <b id="ccDefaultLabel">${esc(fmtMinutes(_ccData.cooldownMinutes))}</b> after a student finishes it. Choose a new wait for everyone. Students who finished recently are re-checked against it straight away.</p>
     ${durationPickerHTML("dw",_ccData.cooldownMinutes)}
-    <div class="buttons"><button onclick="ccSaveDefault()">Save default wait</button></div><div id="ccDefaultMsg" class="note"></div>
+    <p class="note" id="ccCooldownWarning" role="status">${_ccData.cooldownMinutes>43200?"Warning: active wait exceeds 30 days.":""}</p>
+    <div class="buttons"><button onclick="ccSaveDefault()">Save default wait</button><button class="secondary" onclick="ccResetDefault()">Reset to default 24h and clear overrides</button></div><div id="ccDefaultMsg" class="note"></div>
     <hr class="cc-hr">
     <h2>Lock or unlock a subject for one student</h2>
-    <label>Student</label>
+    <label class="field">Student</label>
     <input id="tcFilter" placeholder="Type a name or email to filter…" oninput="tcFilterUsers()" autocomplete="off">
     <select id="tcUser" size="6" onchange="tcLoadStatus()" style="margin-top:8px"><option disabled>Loading students…</option></select>
     <h2 style="margin-top:22px">How long?</h2>
@@ -1489,15 +1485,26 @@ function ccLocksTab(){
     _tcUsers=res.users||[];tcFilterUsers();
   })();
 }
+async function ccResetDefault(){
+  if(!confirm('Restore the default 24-hour wait and permanently clear all CooldownOverrides rows?'))return;
+  const msg=document.getElementById('ccDefaultMsg');if(msg)msg.textContent='Resetting…';
+  const res=await apiPost('resetCooldownDefaults',{...controlAuth_()},30000);if(ccDenied(res))return;
+  if(!res?.ok){if(msg)msg.textContent=res?.error||'Reset failed.';return;}
+  _ccData.cooldownMinutes=1440;_defaultCooldownMin=1440;
+  const label=document.getElementById('ccDefaultLabel');if(label)label.textContent='24 hours';
+  const warn=document.getElementById('ccCooldownWarning');if(warn)warn.textContent='';
+  if(msg)msg.textContent='Reset complete. 24-hour default restored; '+(res.overridesCleared||0)+' override rows cleared.';
+}
 async function ccSaveDefault(){
   const msg=document.getElementById("ccDefaultMsg"),m=readDuration("dw");
-  if(m===null){msg.innerHTML='<span class="wronganswer">Enter a valid wait (0 or more) first.</span>';return;}
+  if(m===null){msg.innerHTML='<span class="wronganswer">Enter a valid wait from 0 to 90 days. Values above 30 days will trigger a warning.</span>';return;}
   if(!confirm(`Lock every subject for ${fmtMinutes(m)} after a student finishes it?`))return;
   msg.textContent="Saving…";
   const res=await apiPost("setDefaultCooldown",{...controlAuth_(),minutes:m},30000);
   if(ccDenied(res))return;
   if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
   _ccData.cooldownMinutes=res.cooldownMinutes;_defaultCooldownMin=res.cooldownMinutes;
+  const warning=document.getElementById("ccCooldownWarning");if(warning)warning.textContent=res.cooldownMinutes>43200?"Warning: active wait exceeds 30 days.":"";
   document.getElementById("ccDefaultLabel").textContent=fmtMinutes(res.cooldownMinutes);
   msg.innerHTML=`<span class="correct">Saved — subjects now lock for ${esc(fmtMinutes(res.cooldownMinutes))} after an exam.</span>`;
   if(document.getElementById("tcUser")?.value)tcLoadStatus();
@@ -1519,7 +1526,7 @@ async function tcLoadStatus(){
   if(!res?.ok){body.innerHTML=`<p class="wronganswer">${esc(res?.error||"Could not load this student.")}</p>`;return;}
   const def=fmtMinutes(_ccData.cooldownMinutes);
   const btns=i=>`<button class="lock" onclick="tcAct(${i},'set')">🔒 Lock</button><button onclick="tcAct(${i},'unlock')">🔓 Unlock now</button><button class="ghost" onclick="tcAct(${i},'add')">＋ Add</button><button class="ghost" onclick="tcAct(${i},'sub')">－ Reduce</button><button class="ghost" onclick="tcAct(${i},'default')" title="Remove admin changes — back to the default wait">Normal (${esc(def)})</button>`;
-  const rows=(res.statuses||[]).map((s,i)=>`<div class="cc-row" data-name="${esc(s.subject.toLowerCase())}"><div class="cc-row-main"><b>${esc(s.subject)}</b><small>${s.lastAttempt?"Last attempt "+esc(formatDateTime(s.lastAttempt)):"Never attempted"}</small><div>${s.locked?`<span class="cooldown-badge">Locked — ${formatCooldown(s.remainingMinutes*60000)}</span>`:'<span class="correct">Available</span>'}${s.overridden?' <span class="note">adjusted by admin</span>':""}</div></div><div class="tc-btns">${btns(i)}</div></div>`).join("");
+  const rows=(res.statuses||[]).map((s,i)=>`<div class="cc-row" data-name="${esc(s.subject.toLowerCase())}"><div class="cc-row-main"><b>${esc(s.subject)}</b><small>${s.lastAttempt?"Last attempt "+esc(formatDateTime(s.lastAttempt)):"Never attempted"}</small><div>${s.locked?`<span class="cooldown-badge">Locked — ${formatCooldown(s.remainingMinutes*60000)}</span>${s.remainingMinutes>43200?'<span class="wronganswer">Warning: lock exceeds 30 days</span>':''}`:'<span class="correct">Available</span>'}${s.overridden?' <span class="note">adjusted by admin</span>':""}</div></div><div class="tc-btns">${btns(i)}</div></div>`).join("");
   body.innerHTML=`<h2 style="margin-top:22px">Subjects</h2><input id="tcSubFilter" placeholder="Filter subjects or topic tests…" oninput="tcFilterSubjects()" autocomplete="off"><div class="cc-list" id="tcRows"><div class="cc-row all"><div class="cc-row-main"><b>All subjects</b><small>Applies to every subject at once</small></div><div class="tc-btns">${btns(-1)}</div></div>${rows}</div>`;
   const f=document.getElementById("tcSubFilter");
   if(f&&keepFilter){f.value=keepFilter;tcFilterSubjects();}
@@ -1531,7 +1538,7 @@ function tcFilterSubjects(){
 async function tcAct(i,mode){
   const email=document.getElementById("tcUser")?.value,msg=document.getElementById("tcMsg");
   if(!email){msg.innerHTML='<span class="wronganswer">Select a student first.</span>';return;}
-  const subject=i<0?"*":_tcSubjects[i];
+  const subject=i<0?"*":_tcSubjects[i].id;const subjectName=i<0?"*":_tcSubjects[i].name;
   let minutes=0,apiMode=mode;
   if(mode==="set"||mode==="add"||mode==="sub"){
     const m=readDuration("tc");
@@ -1540,7 +1547,7 @@ async function tcAct(i,mode){
     if(mode==="sub"){minutes=-minutes;apiMode="add";}
   }
   msg.innerHTML='<span class="note">Saving…</span>';
-  const res=await apiPost("adminCooldownAdjust",{...controlAuth_(),targetEmail:email,subject,mode:apiMode,minutes},30000);
+  const res=await apiPost("adminCooldownAdjust",{...controlAuth_(),targetEmail:email,subject,subjectId:subject,subjectName,mode:apiMode,minutes},30000);
   if(ccDenied(res))return;
   if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
   const what=mode==="set"?`Locked for ${fmtMinutes(minutes)}.`:res.message||"Saved.";
@@ -1693,9 +1700,9 @@ function ccOpenMove(sourceId,targetId){
     <p class="mv-q">What should happen to it?</p>
     <label class="mv-opt"><input type="radio" name="mvKind" value="topic" checked onchange="mvRefresh()"><span><b>Make it a topic test</b><small>It stays a separate test, listed inside that subject (Choose Test), numbered like the other topic tests. Best for chapters.</small></span></label>
     <div id="mvTopicBox" class="mv-box">
-      <label>Topic test</label><select id="mvTopicPick" onchange="mvRefresh()"></select>
+      <label class="field">Topic test</label><select id="mvTopicPick" onchange="mvRefresh()"></select>
       <input id="mvTopicName" type="text" maxlength="80" placeholder="Name of the topic test, e.g. Chapter 1" oninput="this.dataset.touched=1;mvRefresh()">
-      <div id="mvExamRow"><label>Exam</label><span id="mvExamSlot"></span></div>
+      <div id="mvExamRow"><label class="field">Exam</label><span id="mvExamSlot"></span></div>
       <label id="mvKeepWrap" class="mv-check"><input type="checkbox" id="mvKeepTopics" onchange="mvRefresh()"> It already has topic tests — keep them (only questions without a topic go under the name above)</label>
     </div>
     <label class="mv-opt"><input type="radio" name="mvKind" value="merge" onchange="mvRefresh()"><span><b>Merge its questions in</b><small>Its questions simply become part of that subject's questions. No separate topic test is made.</small></span></label>
@@ -1765,7 +1772,7 @@ async function ccDoMove(){
 /* ---------- ✏️ Rename a subject ---------- */
 function ccOpenRenameSubject(id){
   const s=_ccData.subjects.find(x=>x.id===id);if(!s)return;
-  ccModal(`<h2>Rename subject</h2><label>New name</label><input id="rnName" type="text" maxlength="80" value="${esc(s.name)}" onkeydown="if(event.key==='Enter')ccDoRenameSubject('${esc(id)}')"><p class="note">Its questions move with it. Past results stay under the old name, so students' wait for this subject starts fresh.</p><div id="rnMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rnGo" onclick="ccDoRenameSubject('${esc(id)}')">Rename</button></div>`);
+  ccModal(`<h2>Rename subject</h2><label class="field">New name</label><input id="rnName" type="text" maxlength="80" value="${esc(s.name)}" onkeydown="if(event.key==='Enter')ccDoRenameSubject('${esc(id)}')"><p class="note">Its questions move with it. Past results stay under the old name, so students' wait for this subject starts fresh.</p><div id="rnMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rnGo" onclick="ccDoRenameSubject('${esc(id)}')">Rename</button></div>`);
   byId_("rnName").select();
 }
 async function ccDoRenameSubject(id){
@@ -1804,7 +1811,7 @@ function ccTestsTab(){
 function ccExamSlot_(pfx,tgt,keepLabel,refresh){return ccExamPickHTML(pfx,tgt,keepLabel,refresh);}
 function ccOpenRenameTest(i){
   const t=_ccTests[i];if(!t)return;
-  ccModal(`<h2>Rename topic test</h2><p class="note">In “${esc(t.sname)}”</p><label>Name</label><input id="rtName" type="text" maxlength="80" value="${esc(t.topic)}"><label>Exam</label><input id="rtExam" list="examChoices" type="text" maxlength="40" value="${esc(t.exam)}" placeholder="GATE, ECET or another (empty = the subject's default)"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist><p class="note">If a topic test with this name already exists in the same exam, the two are combined. Past results stay under the old name, so the wait for this test starts fresh.</p><div id="rtMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rtGo" onclick="ccDoRenameTest(${i})">Save</button></div>`);
+  ccModal(`<h2>Rename topic test</h2><p class="note">In “${esc(t.sname)}”</p><label class="field">Name</label><input id="rtName" type="text" maxlength="80" value="${esc(t.topic)}"><label class="field">Exam</label><input id="rtExam" list="examChoices" type="text" maxlength="40" value="${esc(t.exam)}" placeholder="GATE, ECET or another (empty = the subject's default)"><datalist id="examChoices"><option value="GATE"><option value="ECET"></datalist><p class="note">If a topic test with this name already exists in the same exam, the two are combined. Past results stay under the old name, so the wait for this test starts fresh.</p><div id="rtMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="rtGo" onclick="ccDoRenameTest(${i})">Save</button></div>`);
   byId_("rtName").select();
 }
 async function ccDoRenameTest(i){
@@ -1830,7 +1837,7 @@ function ccOpenMoveTest(i,targetId){
     <p class="mv-q">What should it be called there?</p>
     <select id="mtPick" onchange="mtRefresh()"></select>
     <input id="mtName" type="text" maxlength="80" placeholder="New name of the topic test" style="display:none;margin-top:8px" oninput="mtRefresh()">
-    <div id="mtExamRow"><label>Exam</label><span id="mtExamSlot"></span></div>
+    <div id="mtExamRow"><label class="field">Exam</label><span id="mtExamSlot"></span></div>
     <div id="mtPreview" class="mv-preview"></div><div id="mtMsg" class="note"></div>
     <div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="mtGo" onclick="ccDoMoveTest(${i})">Move</button></div>`);
   mtRefresh(true,i);
@@ -1881,8 +1888,8 @@ function ccOpenPromote(i){
   const src=findSubjectById(t.sid);
   ccModal(`<h2>Make a topic test a subject</h2>
     <p class="mv-line">“<b>${esc(t.topic)}</b>”${t.exam?` <span class="exam-badge sm">${esc(t.exam)}</span>`:""} in “${esc(t.sname)}” (${ccCount_(t.count,"question")}) becomes a subject of its own.</p>
-    <label>Name of the new subject</label><input id="pmName" type="text" maxlength="80" value="${esc(t.topic)}">
-    <label>Password for the new subject</label><input id="pmPass" type="text" value="${esc(src&&src.password?src.password:"")}" autocomplete="off">
+    <label class="field">Name of the new subject</label><input id="pmName" type="text" maxlength="80" value="${esc(t.topic)}">
+    <label class="field">Password for the new subject</label><input id="pmPass" type="text" value="${esc(src&&src.password?src.password:"")}" autocomplete="off">
     <p class="note">The new subject appears in Additional Tests. Its questions leave “${esc(t.sname)}” and lose their topic (they keep their exam). Past results stay under the old name.</p>
     <div id="pmMsg" class="note"></div><div class="buttons"><button class="ghost" onclick="ccModalClose()">Cancel</button><button id="pmGo" onclick="ccDoPromote(${i})">Make it a subject</button></div>`);
   byId_("pmName").select();
@@ -1906,19 +1913,19 @@ function questionFormHTML(mode,q){
   const v=(k,d)=>esc(q&&q[k]!==undefined?q[k]:(d||''));
   return `<h1>Admin — ${isEdit?'Edit Question':'Add a Single Question'}</h1>
     <p class="note">${isEdit?'Editing question <b>'+esc(q.id)+'</b>. Saving updates this exact row — it cannot duplicate or affect another row.':'Fill in one question directly, without an Excel file.'}</p>
-    ${isEdit?'':`<label>Subject</label><select id="qfSubject" onchange="qfSubjectChanged()">${adminSubjectOptions()}</select>`}
+    ${isEdit?'':`<label class="field">Subject</label><select id="qfSubject" onchange="qfSubjectChanged()">${adminSubjectOptions()}</select>`}
     <div id="qfTopicWrap">${examTopicHTML('qf',isEdit?_editSubjectId:((subjects[0]||customSubjects[0]||{}).id||''),isEdit?q.exam:'',isEdit?q.topic:'','')}</div>
-    <label>Question</label><textarea id="qfQuestion" rows="2">${v('question')}</textarea>
-    <label>Option A</label><input id="qfA" value="${q?esc((q.options||[])[0]||''):''}">
-    <label>Option B</label><input id="qfB" value="${q?esc((q.options||[])[1]||''):''}">
-    <label>Option C</label><input id="qfC" value="${q?esc((q.options||[])[2]||''):''}">
-    <label>Option D</label><input id="qfD" value="${q?esc((q.options||[])[3]||''):''}">
-    <label>Correct Answer</label><select id="qfCorrect">${['A','B','C','D'].map(l=>`<option value="${l}" ${q&&"ABCD"[q.answer]===l?'selected':''}>${l}</option>`).join('')}</select>
-    <label>Year</label><input id="qfYear" value="${v('year',new Date().getFullYear())}">
-    <label>State (optional)</label><input id="qfState" value="${v('state','TS')}">
-    <label>Question Number (optional)</label><input id="qfQno" value="${v('questionNumber')}">
-    <label>Question Image URL (optional)</label><input id="qfQImg" value="${v('image')}">
-    <label>Option A/B/C/D Image URLs (optional)</label>
+    <label class="field">Question</label><textarea id="qfQuestion" rows="2">${v('question')}</textarea>
+    <label class="field">Option A</label><input id="qfA" value="${q?esc((q.options||[])[0]||''):''}">
+    <label class="field">Option B</label><input id="qfB" value="${q?esc((q.options||[])[1]||''):''}">
+    <label class="field">Option C</label><input id="qfC" value="${q?esc((q.options||[])[2]||''):''}">
+    <label class="field">Option D</label><input id="qfD" value="${q?esc((q.options||[])[3]||''):''}">
+    <label class="field">Correct Answer</label><select id="qfCorrect">${['A','B','C','D'].map(l=>`<option value="${l}" ${q&&"ABCD"[q.answer]===l?'selected':''}>${l}</option>`).join('')}</select>
+    <label class="field">Year</label><input id="qfYear" value="${v('year',new Date().getFullYear())}">
+    <label class="field">State (optional)</label><input id="qfState" value="${v('state','TS')}">
+    <label class="field">Question Number (optional)</label><input id="qfQno" value="${v('questionNumber')}">
+    <label class="field">Question Image URL (optional)</label><input id="qfQImg" value="${v('image')}">
+    <label class="field">Option A/B/C/D Image URLs (optional)</label>
     <input id="qfAImg" placeholder="Option A image" value="${q?esc((q.optionImages||[])[0]||''):''}">
     <input id="qfBImg" placeholder="Option B image" value="${q?esc((q.optionImages||[])[1]||''):''}">
     <input id="qfCImg" placeholder="Option C image" value="${q?esc((q.optionImages||[])[2]||''):''}">
@@ -1981,7 +1988,7 @@ async function editQuestionsPage(){
     if(API&&!customSubjects.length){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data))customSubjects=cs.data;}catch(e){}}
     app.innerHTML=`<div class="card"><h1>Admin — Edit Questions</h1>
       <p class="note">Pick a subject, load its questions, then click Edit on any row.</p>
-      <label>Subject</label><select id="editSubject">${adminSubjectOptions()}</select>
+      <label class="field">Subject</label><select id="editSubject">${adminSubjectOptions()}</select>
       <div class="buttons"><button onclick="loadAdminQuestions()">Load Questions</button><button onclick="adminQuestionsPage()">Back</button></div>
       <div id="editQuestionsList" class="note"></div>
     </div>`;
@@ -2008,9 +2015,9 @@ function renderEditQuestionsList(){
   _editQuestionsCache.forEach(q=>{const t=cleanTopic(q.topic);if(!t)return;const ex=editExamOf_(q),k=topicKey(ex)+'|'+topicKey(t),e=combos.get(k)||{topic:t,exam:ex,count:0};e.count++;combos.set(k,e);});
   const untagged=_editQuestionsCache.filter(q=>!cleanTopic(q.topic)).length;
   listEl.innerHTML=`<div class="topic-bulk">
-    <label>Show</label>
+    <label class="field">Show</label>
     <select id="editTopicFilter" onchange="renderEditTable()"><option value="">All questions (${_editQuestionsCache.length})</option><option value="__none__">No topic yet (${untagged})</option>${[...combos].map(([k,e])=>`<option value="${esc(k)}">${esc(e.topic)}${e.exam?' — '+esc(e.exam):''} (${e.count})</option>`).join('')}</select>
-    <label>Move the ticked questions to an exam / topic</label>
+    <label class="field">Move the ticked questions to an exam / topic</label>
     ${examTopicHTML('bk',_editSubjectId,null,'','',true)}
     <div class="buttons"><button id="bulkTopicBtn" onclick="bulkAssignTopic()">Apply to ticked (0)</button></div>
     <div id="bulkTopicStatus" class="note">Tick questions in the table (or the box in the header to tick everything shown), pick an exam and topic, then apply. Choose “No topic” to take them out of a topic.</div>
@@ -2379,8 +2386,8 @@ async function checkAdminPassword(){
 /* ===================== PASSWORD ===================== */
 let _pwSubject=null;
 let _lockCountdownTimer=null;
-function openPassword(i){_pwSubject=subjects[i];if(guardSubjectLock_(subjects[i]))return;renderPasswordCard();}
-function openCustomPassword(i){_pwSubject=customSubjects[i];if(guardSubjectLock_(customSubjects[i]))return;renderPasswordCard();}
+function openPassword(i){_pwSubject=subjects[i];if(guardSubjectLock_(subjects[i]))return;const s=_pwSubject;if(s.password===''||s.hasPassword===false){_unlockedSubjects.add(s.parentId||s.id);loadBankAndEnroll_(s);return;}renderPasswordCard();}
+function openCustomPassword(i){_pwSubject=customSubjects[i];if(guardSubjectLock_(customSubjects[i]))return;const s=_pwSubject;if(s.password===''||s.hasPassword===false){_unlockedSubjects.add(s.parentId||s.id);loadBankAndEnroll_(s);return;}renderPasswordCard();}
 // Defense in depth: the subject cards already hide/disable "Open Exam" while
 // locked, but this re-checks the same precomputed lastAttempt right before
 // the password screen too, in case a card was rendered before fresh stats
@@ -2396,16 +2403,17 @@ function guardSubjectLock_(s){
   return true;
 }
 function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
-async function checkPassword(){const s=_pwSubject,v=document.getElementById("password").value;
+async function checkPassword(){const s=_pwSubject, input=document.getElementById("password"),v=input?input.value:"";
+  const card=document.querySelector('.password-card'), buttons=card?card.querySelectorAll('button'):[];
+  if(input){input.disabled=true;} buttons.forEach(b=>b.disabled=true);
+  const status=document.getElementById('passError'); if(status)status.textContent='Verifying…';
   let expected=s.password;
-  // Subject lists loaded from the static data/ files carry no password. For a custom subject, get it
-  // live from Apps Script when it is missing (or when the saved one did not match and nothing live was loaded yet).
   const pid=s.parentId||s.id;
-  if(customSubjects.some(c=>String(c.id)===String(pid))&&(expected===undefined||expected===null||(v!==String(expected)&&!_liveCustomApplied))){
-    const fresh=await liveCustomPassword_(pid);
-    if(fresh!==undefined&&fresh!==null)expected=fresh;
-  }
-  if(v!==String(expected)){document.getElementById("passError").textContent="Incorrect password.";return;}
+  if(expected===undefined||expected===null){
+    const verify=await apiPostBounded_("verifySubjectPassword",{subjectId:pid,password:v},6000);
+    if(verify?.ok&&verify.data?.noPassword){_unlockedSubjects.add(pid);await loadBankAndEnroll_(s);return;}
+    if(!verify?.ok||!verify.data?.valid){if(status)status.textContent=verify?.data?.configMissing?"Password configuration is missing on the server. Contact the administrator.":(verify?.ok?"Incorrect password.":"Could not verify password. Check your connection and retry.");if(input)input.disabled=false;buttons.forEach(b=>b.disabled=false);return;}
+  } else if(v!==String(expected)){if(status)status.textContent="Incorrect password.";if(input)input.disabled=false;buttons.forEach(b=>b.disabled=false);return;}
   _unlockedSubjects.add(s.parentId||s.id);
   await loadBankAndEnroll_(s);
 }
@@ -2432,7 +2440,7 @@ async function loadBankAndEnroll_(s){
     bank=bank.map(q=>({...q,exam:cleanTopic(q.exam)||homeOffline}));
     if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
     if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
-    if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available offline."}</h2><button onclick="home()">Back</button></div>`;return;}
+    if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available offline."}</h2><p class="note">Connect to the internet and retry, or open this exam online once to save it for offline use.</p><div class="buttons"><button onclick="loadBankAndEnroll_(_pwSubject||activeSubject)">Retry</button><button onclick="home()">Back</button></div></div>`;return;}
     activeSubject=s;enroll();
     return;
   }
@@ -2452,7 +2460,7 @@ async function loadBankAndEnroll_(s){
   if(bank.length)cacheBankForOffline_(cacheKey,bank); // save the FULL merged bank (pre-filter) for offline reuse by any topic under this subject
   if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
   if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
-  if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><button onclick="home()">Back</button></div>`;return;}activeSubject=s;enroll();}
+  if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><p class="note">Check your connection and try loading the question bank again.</p><div class="buttons"><button onclick="loadBankAndEnroll_(activeSubject)">Retry</button><button onclick="home()">Back</button></div></div>`;return;}activeSubject=s;enroll();}
 /* ===================== DATA-COLLECTION CONSENT (DPDP Act, 2023) =====================
  * Name + email are the only personal data this app collects at account
  * creation, and they're collected in exactly two places: here (enroll, for
@@ -2483,7 +2491,7 @@ function readConsentOrShowError_(idPrefix,errElId){
   }
   return true;
 }
-function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label for="ename">Name</label><input id="ename" name="name" placeholder="Full name" autocomplete="name" required><label for="eemail">Email</label><input id="eemail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>${consentFieldsHTML_("enr")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
+function enroll(){pushNav(enroll);const p=store.profile();if(p){confirmExamStart();return;}app.innerHTML=`<div class="card enroll-card"><h1>${esc(activeSubject.name)}</h1><p>Enter your name and email.</p><label class="field" for="ename">Name</label><input id="ename" name="name" placeholder="Full name" autocomplete="name" required><label class="field" for="eemail">Email</label><input id="eemail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>${consentFieldsHTML_("enr")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitEnroll()">Continue</button></div></div>`;}
 function submitEnroll(){
   const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();
   if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}
@@ -2517,7 +2525,7 @@ async function gateStartNewAttempt_(subject){
   if(store.getProgress(subject.id))return true; // resuming — never gated
   if(!API)return true; // no backend configured, nothing to check against
   const p=store.profile();
-  const status=await apiGet("subjectStatus",{email:p.email,subject:subject.name},8000,1);
+  const status=await apiGetBounded_("subjectStatus",{email:p.email,subject:subject.name,subjectId:subject.parentId||subject.id},4000);
   if(status?.ok&&status.data?.locked){
     showSubjectLockedScreen_(subject.name,status.data.unlockAt);
     return false;
@@ -2539,14 +2547,17 @@ function showSubjectLockedScreen_(name,unlockAtIso){
     el.textContent=formatCooldown(remaining);
   },30000);
 }
+function postBackground_(action,payload,timeoutMs=4000){if(!API)return;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);fetch(API,{method:'POST',body:JSON.stringify({action,...payload}),cache:'no-store',signal:controller.signal}).then(r=>r.ok?r.json():null).catch(e=>console.warn('Background '+action+' failed:',e)).finally(()=>clearTimeout(timer));}
+function setStartChecking_(label){const btn=[...document.querySelectorAll('button')].find(b=>/Start Exam|Retry Test|Retry Exam/.test(b.textContent));if(btn){btn.disabled=true;btn.textContent='Checking your attempt…';}let el=document.getElementById('startCheckStatus');if(!el){el=document.createElement('p');el.id='startCheckStatus';el.className='note';document.querySelector('.enroll-card,.card')?.appendChild(el);}if(el)el.textContent=label||'Checking your attempt…';}
 async function beginExam(){
+  setStartChecking_();
   if(bank.some(q=>String(q.type||'').toUpperCase()==='FIB'))await _fibRulesReady_;
   const p=store.profile();
   if(!(await gateStartNewAttempt_(activeSubject)))return;
-  apiPost("register",{name:p.name,email:p.email,subject:activeSubject.name,consent:!!p.consent});
+  if(p)postBackground_("register",{name:p.name,email:p.email,subject:activeSubject.name,consent:!!p.consent},4000);
   start();
 }
-async function retryExam(){
+async function retryExam(){setStartChecking_();
   if(bank.some(q=>String(q.type||'').toUpperCase()==='FIB'))await _fibRulesReady_;
   if(!(await gateStartNewAttempt_(activeSubject)))return;
   start();
@@ -2611,8 +2622,17 @@ function toggleReview(){marked[current]=!marked[current];persist();render();}
 function go(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();persist();render();}
 function restartExam(){if(confirm("Restart this exam? Your current answers will be cleared.")){store.clearProgress(activeSubject.id);start();}}
 function confirmSubmit(){const u=answers.filter((x,i)=>!answeredValue_(test[i],x)).length;if(u&&!confirm(`You have ${u} unanswered question(s). Submit anyway?`))return;submit();}
-function render(){const q=test[current],answered=answers.filter((x,i)=>answeredValue_(test[i],x)).length,markedCount=marked.filter(Boolean).length,isFib=String(q.type||'').toUpperCase()==='FIB';app.innerHTML=`<div class="top"><h1>${examLabel(activeSubject)&&!activeSubject.name.includes("("+examLabel(activeSubject)+")")?esc(examLabel(activeSubject))+" ":""}${esc(activeSubject.name)}</h1><div class="timer ${left<=60?"low":""}">${clock(left)}</div></div><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered <span id="answeredCount">${answered}</span>/${test.length} • Review ${markedCount}</span></div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${isFib?`<label class="fib-answer-label" for="fibAnswer">Your answer</label><input id="fibAnswer" class="fib-answer" type="text" style="width:100%;box-sizing:border-box;padding:12px;font-size:17px;margin:12px 0;border:1px solid #9aa4b2;border-radius:8px" autocomplete="off" value="${esc(answers[current]??"")}" placeholder="Type your answer" oninput="chooseText(this.value)">`:(q.options||[]).map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("") }<button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${test.map((_,k)=>`<button class="num ${answeredValue_(test[k],answers[k])?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("")}</div><div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="toggleReview()">${marked[current]?"Unmark":"Review"}</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div>`;}
-
+function render(){
+  const q=test[current],answered=answers.filter((x,i)=>answeredValue_(test[i],x)).length,markedCount=marked.filter(Boolean).length,isFib=String(q.type||'').toUpperCase()==='FIB';
+  const title=(examLabel(activeSubject)&&!activeSubject.name.includes("("+examLabel(activeSubject)+")")?esc(examLabel(activeSubject))+" ":"")+esc(activeSubject.name);
+  const palette=test.map((_,k)=>`<button class="num ${answeredValue_(test[k],answers[k])?"answered":""} ${marked[k]?"review":""} ${k===current?"current":""}" onclick="go(${k})">${k+1}</button>`).join("");
+  app.innerHTML=`<div class="top"><h1>${title}</h1><button class="questions-drawer-toggle" onclick="document.querySelector('.exam-side').classList.toggle('open')">Questions · ${answered}/${test.length}</button></div>
+  <div class="exam-layout"><section class="exam-main"><div class="card"><div class="meta"><span>Question ${current+1} of ${test.length} • ${esc(q.year)} ${esc(q.state)} • PYQ ${esc(q.questionNumber)}${q.topic&&!activeSubject.topic?` • ${esc(q.topic)}`:""}</span><span>Answered <span id="answeredCount">${answered}</span>/${test.length} • Review ${markedCount}</span></div>
+  <div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${isFib?`<label class="fib-answer-label" for="fibAnswer">Your answer</label><input id="fibAnswer" class="fib-answer" type="text" autocomplete="off" value="${esc(answers[current]??"")}" placeholder="Type your answer" oninput="chooseText(this.value)">`:(q.options||[]).map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" name="answer" ${answers[current]===k?"checked":""} onchange="choose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k]||((q.optionsImages||[])[k]),"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("")}
+  <button class="review-toggle ${marked[current]?"active":""}" onclick="toggleReview()">${marked[current]?"★ Marked for review":"☆ Mark for review"}</button>
+  <div class="examfoot"><button onclick="go(current-1)" ${current===0?"disabled":""}>◀ Prev</button><button onclick="go(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="confirmSubmit()">Submit</button></div></div></section>
+  <aside class="exam-side"><div class="card"><div class="timer ${left<=60?"low":""}">${clock(left)}</div><div class="meta" style="margin-top:12px">Answered <b>${answered}</b> / ${test.length}<br>Marked for review <b>${markedCount}</b><br>Unanswered <b>${test.length-answered}</b></div><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${palette}</div></div></aside></div>`;
+}
 /* ===================== RESULT ===================== */
 async function submit(){
   // IMPORTANT: clearExam() also resets isSubmitting=false (it's a general-purpose
@@ -2723,7 +2743,7 @@ function reviewListHTML(detail,filter){return detail.map((d,n)=>{const fib=d.typ
 
 /* ===================== PROFILE / DASHBOARD ===================== */
 function goDashboard(){requireProfile(dashboard);} function goMistakes(){requireProfile(mistakes);}
-function requireProfile(next){if(store.profile())return next();_afterProfile=next;pushNav(()=>requireProfile(next));app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label for="ename">Name</label><input id="ename" name="name" autocomplete="name" required><label for="eemail">Email</label><input id="eemail" name="email" type="email" autocomplete="email" required>${consentFieldsHTML_("req")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
+function requireProfile(next){if(store.profile())return next();_afterProfile=next;pushNav(()=>requireProfile(next));app.innerHTML=`<div class="card enroll-card"><h1>Enter your details</h1><p>Your dashboard and mistakes are tied to your email.</p><label class="field" for="ename">Name</label><input id="ename" name="name" autocomplete="name" required><label class="field" for="eemail">Email</label><input id="eemail" name="email" type="email" autocomplete="email" required>${consentFieldsHTML_("req")}<div id="eErr" class="error" role="alert"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="submitProfileAndContinue()">Continue</button></div></div>`;}
 function submitProfileAndContinue(){
   const n=document.getElementById("ename").value.trim(),e=document.getElementById("eemail").value.trim();
   if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){document.getElementById("eErr").textContent="Enter a valid name and email.";return;}
@@ -2863,17 +2883,17 @@ function reminderFormHTML(existing){
   const in1h=new Date(Date.now()+3600e3),in3h=new Date(Date.now()+3*3600e3),tomorrow=new Date(Date.now()+24*3600e3);
   const toLocal=d=>{const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;};
   return `<div class="card enroll-card"><h1>${existing?"Edit reminder":"New reminder"}</h1>
-  <label for="rName">Related task/name</label><input id="rName" name="reminderName" value="${esc(r.name||"")}" placeholder="e.g. Revise Digital Electronics" required>
-  <label for="rMessage">Message</label><input id="rMessage" name="reminderMessage" value="${esc(r.message||"")}" placeholder="What should the reminder say?" required>
-  <label for="rUrl">Related URL (optional)</label><input id="rUrl" name="reminderUrl" type="url" value="${esc(r.relatedUrl||"")}" placeholder="https://…">
-  <label for="rWhen">When</label>
+  <label class="field" for="rName">Related task/name</label><input id="rName" name="reminderName" value="${esc(r.name||"")}" placeholder="e.g. Revise Digital Electronics" required>
+  <label class="field" for="rMessage">Message</label><input id="rMessage" name="reminderMessage" value="${esc(r.message||"")}" placeholder="What should the reminder say?" required>
+  <label class="field" for="rUrl">Related URL (optional)</label><input id="rUrl" name="reminderUrl" type="url" value="${esc(r.relatedUrl||"")}" placeholder="https://…">
+  <label class="field" for="rWhen">When</label>
   <div class="buttons" style="justify-content:flex-start">
     <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in1h)}'">In 1 hour</button>
     <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(in3h)}'">In 3 hours</button>
     <button type="button" onclick="document.getElementById('rWhen').value='${toLocal(tomorrow)}'">Tomorrow</button>
   </div>
   <input id="rWhen" name="reminderWhen" type="datetime-local" aria-label="Reminder date and time" value="${r.nextRunAt?toLocal(new Date(r.nextRunAt)):""}" required>
-  <label for="rFreq">Repeat</label>
+  <label class="field" for="rFreq">Repeat</label>
   <select id="rFreq" name="reminderFrequency">${REMINDER_FREQUENCIES.map(([v,l])=>`<option value="${v}" ${((r.frequency||"once")===v)?"selected":""}>${l}</option>`).join("")}</select>
   <div id="rErr" class="error" role="alert"></div>
   <div class="buttons"><button onclick="remindersPage()">Cancel</button><button onclick="saveReminder(${existing?`'${existing.id}'`:"null"})">${existing?"Save changes":"Create reminder"}</button></div></div>`;
@@ -2981,7 +3001,7 @@ function handleRevisionBeforeUnload(e){
 }
 function handleRevisionPageHide(){if(examActive&&!isSubmitting&&revisionMode&&revisionItems.length)sendRevisionAutoSubmit();}
 
-function renderRevision(){const q=test[current],answered=answers.filter((x,i)=>answeredValue_(test[i],x)).length,isFib=q.type==="FIB";app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${isFib?`<input class="fib-answer" id="revisionFibAnswer" type="text" style="width:100%;box-sizing:border-box;padding:12px;font-size:17px;margin:12px 0;border:1px solid #9aa4b2;border-radius:8px" value="${esc(answers[current]??"")}" placeholder="Type your answer" oninput="revisionChooseText(this.value)">`:(q.options||[]).map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k],"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
+function renderRevision(){const q=test[current],answered=answers.filter((x,i)=>answeredValue_(test[i],x)).length,isFib=q.type==="FIB";app.innerHTML=`<div class="top"><h1>1-Day Revision Test</h1><div class="timer">${clock(left)}</div></div><div class="card"><div class="meta">Question ${current+1} of ${test.length} • Answered ${answered}/${test.length}</div><div class="question">${esc(q.question)}</div>${imgHTML(q.image)}${isFib?`<input class="fib-answer" id="revisionFibAnswer" type="text" style="width:100%;box-sizing:border-box;padding:12px;font-size:17px;margin:12px 0;border:1px solid #9aa4b2;border-radius:8px" value="${esc(answers[current]??"")}" placeholder="Type your answer" oninput="revisionChooseText(this.value)">`:(q.options||[]).map((o,k)=>`<label class="option ${answers[current]===k?"selected":""}"><input type="radio" ${answers[current]===k?"checked":""} onchange="revisionChoose(${k})"><b>${"ABCD"[k]}.</b> ${esc(o)} ${imgHTML((q.optionImages||[])[k]||((q.optionsImages||[])[k]),"opt-img","Option "+"ABCD"[k]+" image")}</label>`).join("")}<div class="examfoot"><button onclick="revisionGo(current-1)" ${current===0?"disabled":""}>◀ Previous</button><button onclick="revisionGo(current+1)" ${current===test.length-1?"disabled":""}>Next ▶</button><button class="submit" onclick="submitRevisionTest()">Finish revision</button></div></div>`;}
 function revisionChoose(v){answers[current]=v;renderRevision();}
 function revisionChooseText(v){answers[current]=String(v??'');}
 function revisionGo(n){commitTime();current=Math.max(0,Math.min(test.length-1,n));questionStartedAt=Date.now();renderRevision();}

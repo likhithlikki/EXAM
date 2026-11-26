@@ -791,10 +791,10 @@ function doGet(e) {
         // the Questions sheet is NOT rescanned on every visit. Admin edits
         // clear it at once (see bustPublicCaches_). Only the per-user part
         // (isAdmin + dashboard) is computed per request.
-        var pub = cached_('home_pub_v1', 90, function () {
+        var pub = cached_('home_pub_v2', 90, function () {
           var st = questionStats_(); // one scan of the Questions sheet serves both lists
           return {
-            customSubjects: customSubjects_(st),
+            customSubjects: customSubjects_(st, {publicOnly:true}),
             topicSummary: topicSummary_(st),
             cooldownMinutes: Math.round(subjectCooldownMs_() / 60000)
           };
@@ -830,7 +830,7 @@ function doGet(e) {
         // with a live countdown without ever recalculating stats.
         return out_({
           ok: true,
-          data: subjectStatus_(e.parameter.email, e.parameter.subject)
+          data: subjectStatus_(e.parameter.email, e.parameter.subject, e.parameter.subjectId)
         });
 
       case 'dashboard':
@@ -845,7 +845,7 @@ function doGet(e) {
         var subjectStats = questionStats_();
         return out_({
           ok: true,
-          data: customSubjects_(subjectStats),
+          data: customSubjects_(subjectStats, {publicOnly:true}),
           topicSummary: topicSummary_(subjectStats)
         });
 
@@ -968,6 +968,9 @@ function doPost(e) {
       case 'publishNow':
         return out_(publishNow_(body));
 
+      case 'verifySubjectPassword':
+        return out_({ok:true,data:verifySubjectPassword_(body.subjectId,body.password)});
+
       case 'register':
         return out_(register_(body));
 
@@ -997,6 +1000,9 @@ function doPost(e) {
 
       case 'setDefaultCooldown':
         return out_(setDefaultCooldown_(body));
+
+      case 'resetCooldownDefaults':
+        return out_(resetCooldownDefaults_(body));
 
       case 'setSubjectExam':
         return out_(setSubjectExam_(body));
@@ -1297,6 +1303,25 @@ function deleteAccount_(body) {
 const ADMIN_EMAILS = [
   'admin@example.com'
 ];
+function isExamAdmin_(email) {
+  var normalized=email_(email);
+  return !!normalized && ADMIN_EMAILS.indexOf(normalized)!==-1;
+}
+
+// Public subject passwords are deliberately absent from subjects.json. Built-in
+// passwords remain server-side; custom-subject passwords are read from Subjects.
+function verifySubjectPassword_(subjectId, password) {
+  var id=String(subjectId||'').trim(), supplied=String(password==null?'':password);
+  var builtInPasswords={};
+  try { builtInPasswords=JSON.parse(PropertiesService.getScriptProperties().getProperty('SUBJECT_PASSWORDS_JSON')||'{}'); } catch(ignore) { builtInPasswords={}; }
+  if(Object.prototype.hasOwnProperty.call(builtInPasswords,id)) return {valid:supplied===String(builtInPasswords[id]),noPassword:false};
+  var row=findRowByColumn_('Subjects','SubjectId',id);
+  if(!row)return {valid:false,noPassword:false,configMissing:true};
+  var expected=String(row.Password==null?'':row.Password);
+  if(!expected.trim())return {valid:true,noPassword:true};
+  return {valid:supplied===expected,noPassword:false};
+}
+
 
 // ---------------------------------------------------------------------------
 // LEGACY WEBSITE ADMIN SECRETS — moved out of source (SECURITY FIX)
@@ -1871,15 +1896,17 @@ function adminCooldownList_(body) {
 
   var target = email_(body.targetEmail);
   if (target) {
-    var names = Array.isArray(body.subjects) ? body.subjects : [];
+    var units = Array.isArray(body.subjects) ? body.subjects : [];
     var ov = overridesFor_(target);
-    out.statuses = names.map(function (name) {
-      name = String(name);
-      var last = getSubjectLastAttempt_(target, name);
-      var eff = effectiveUnlock_(last, ov, name);
+    out.statuses = units.map(function (unit) {
+      var name=String(unit && unit.name || unit || '');
+      var lockKey=String(unit && unit.id || name);
+      var last = getSubjectLastAttempt_(target, lockKey, name);
+      var eff = effectiveUnlock_(last, ov, lockKey, name);
       var locked = !!(eff.unlockAt && new Date() < eff.unlockAt);
       return {
         subject: name,
+        subjectId: lockKey,
         lastAttempt: last ? iso_(last) : null,
         locked: locked,
         unlockAt: locked ? iso_(eff.unlockAt) : null,
@@ -1903,7 +1930,8 @@ function adminCooldownAdjustImpl_(body) {
   var target = email_(body.targetEmail);
   if (!validEmail_(target)) return { ok: false, error: 'Choose a valid student.' };
 
-  var subject = String(body.subject || '').trim();
+  var subject = String(body.subjectId || body.subject || '').trim();
+  var subjectName = String(body.subjectName || body.subject || '').trim();
   if (!subject) return { ok: false, error: 'Choose a subject (or All subjects).' };
 
   var mode = String(body.mode || '').trim();
@@ -1915,8 +1943,8 @@ function adminCooldownAdjustImpl_(body) {
     return { ok: false, error: 'Minutes must be 0 or more.' };
   }
   // Guard against typos like 99999999.
-  if (Math.abs(minutes) > 60 * 24 * 365) {
-    return { ok: false, error: 'That is more than a year — please enter a smaller value.' };
+  if (Math.abs(minutes) > 60 * 24 * 90) {
+    return { ok: false, error: 'Maximum allowed wait is 90 days.' };
   }
   if (['unlock', 'set', 'add', 'default'].indexOf(mode) === -1) {
     return { ok: false, error: 'Unknown action.' };
@@ -1933,7 +1961,7 @@ function adminCooldownAdjustImpl_(body) {
       var eCol = headers.indexOf('Email'), sCol = headers.indexOf('Subject');
       for (var i = vals.length - 1; i >= 0; i--) {
         if (email_(vals[i][eCol]) === target &&
-            (subject === '*' || String(vals[i][sCol]).trim() === subject)) {
+            (subject === '*' || String(vals[i][sCol]).trim() === subject || String(vals[i][sCol]).trim() === subjectName)) {
           sheet.deleteRow(i + 2);
         }
       }
@@ -1945,20 +1973,22 @@ function adminCooldownAdjustImpl_(body) {
   var targets = [subject];
   if (mode === 'add' && subject === '*') {
     var stats = dashboardBase_(target);
-    targets = (stats.subjects || []).map(function (s) { return s.subject; });
+    targets = (stats.subjects || []).map(function (s) { return {id:s.subjectId||s.subject,name:s.subject}; });
     if (!targets.length) return { ok: false, error: 'This student has not attempted any subject yet.' };
   }
 
   var ovList = overridesFor_(target);
-  var rows = targets.map(function (name) {
+  var rows = targets.map(function (unit) {
+    var name=String(unit && unit.id || unit);
+    var legacyName=String(unit && unit.name || body.subjectName || body.subject || name);
     var unlockAt;
     if (mode === 'unlock') {
       unlockAt = now;
     } else if (mode === 'set') {
       unlockAt = new Date(now.getTime() + minutes * 60000);
     } else {
-      var last = getSubjectLastAttempt_(target, name);
-      var eff = effectiveUnlock_(last, ovList, name);
+      var last = getSubjectLastAttempt_(target, name, legacyName);
+      var eff = effectiveUnlock_(last, ovList, name, legacyName);
       var base = (eff.unlockAt && eff.unlockAt > now) ? eff.unlockAt : now;
       unlockAt = new Date(base.getTime() + minutes * 60000);
     }
@@ -2249,8 +2279,8 @@ function controlLogin_(body) {
   return denied || { ok: true };
 }
 
-// Everything the Control Centre needs in one call: the default wait, every
-// admin password, and the custom subjects with their passwords.
+// Everything the Control Centre needs in one call: the default wait, admin
+// configuration status, and public custom-subject metadata (never passwords).
 function controlData_(body) {
   var denied = controlGuard_(body);
   if (denied) return denied;
@@ -2262,7 +2292,7 @@ function controlData_(body) {
     adminPanelPassword: scriptSecret_('ADMIN_PANEL_PASSWORD') ? '(set in Script Properties)' : '(NOT SET — admin panel is disabled)',
     controlPassword: scriptSecret_('CONTROL_CENTRE_PASSWORD') ? '(set in Script Properties)' : '(NOT SET — Control Centre is disabled)',
     adminEmails: ADMIN_EMAILS.filter(function (e) { return e !== 'admin@example.com'; }),
-    subjects: customSubjects_(stats),
+    subjects: customSubjects_(stats, {publicOnly:true}),
     topicSummary: topicSummary_(stats),
     history: historyMeta_()
   };
@@ -2290,14 +2320,26 @@ function setDefaultCooldownImpl_(body) {
   if (!isFinite(minutes) || minutes < 0) {
     return { ok: false, error: 'Enter the wait as 0 or more.' };
   }
-  if (minutes > 60 * 24 * 365) {
-    return { ok: false, error: 'That is more than a year — please enter a smaller value.' };
+  if (minutes > 60 * 24 * 90) {
+    return { ok: false, error: 'Maximum allowed wait is 90 days.' };
   }
   minutes = Math.round(minutes);
   PropertiesService.getScriptProperties().setProperty('COOLDOWN_MINUTES', String(minutes));
   _cooldownMsMemo = null;
   clearAllUserCaches_();
   return { ok: true, cooldownMinutes: minutes, message: 'Default wait saved.' };
+}
+
+
+function resetCooldownDefaults_(body) {
+  var denied=controlGuard_(body); if(denied)return denied;
+  PropertiesService.getScriptProperties().deleteProperty('COOLDOWN_MINUTES');
+  _cooldownMsMemo=null;
+  var sh=sh_('CooldownOverrides');
+  var cleared=0;
+  if(sh && sh.getLastRow()>1){cleared=sh.getLastRow()-1;sh.deleteRows(2,cleared);}
+  clearAllUserCaches_();
+  return {ok:true,cooldownMinutes:1440,overridesCleared:cleared,message:'Default 24-hour cooldown restored and overrides cleared.'};
 }
 
 // Sets the exam label (GATE, ECET, ...) of a custom subject.
@@ -3511,9 +3553,10 @@ function submitExam_(body) {
   // existed (or is that same completed attempt being resubmitted, which the
   // session-dedup check above already handled) — resuming is always allowed.
   // This never sends an email or creates a reminder; it's a pure pacing rule.
-  var lastAttemptAt = getSubjectLastAttempt_(email, subject);
-  var eff = effectiveUnlock_(lastAttemptAt, overridesFor_(email), subject);
-  if (eff.unlockAt && eff.since && now < eff.unlockAt && startTime > eff.since) {
+  var lockKey=String(body.subjectId||subject);
+  var lastAttemptAt = getSubjectLastAttempt_(email, lockKey, subject);
+  var eff = effectiveUnlock_(lastAttemptAt, overridesFor_(email), lockKey, subject);
+  if (!isExamAdmin_(email) && eff.unlockAt && eff.since && now < eff.unlockAt && startTime > eff.since) {
     return {
       ok: false,
       error: 'You already attempted "' + subject + '" recently. You can retake it after ' + iso_(eff.unlockAt) + '.',
@@ -3883,7 +3926,8 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
 
   var email = email_(result.Email);
   var percentage = num_(result.Percentage);
-  var subject = String(result.Subject || '');
+  var subject = String(result.SubjectId || result.Subject || '');
+  var legacySubject = String(result.Subject || '');
 
   var emailIndex = headers.indexOf('Email');
   var attemptsIndex = headers.indexOf('Attempts');
@@ -3902,7 +3946,7 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
     : values[rowIndex];
 
   var subjectStats = parseSubjectStats_(row[subjJsonIndex]);
-  var s = subjectStats[subject] || { attempts: 0, sum: 0, best: 0, worst: 100 };
+  var s = subjectStats[subject] || subjectStats[legacySubject] || { attempts: 0, sum: 0, best: 0, worst: 100 };
   s.attempts += 1;
   s.sum += percentage;
   s.best = Math.max(s.best, percentage);
@@ -3914,6 +3958,7 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
   // Stored as an ISO string so it survives JSON round-tripping untouched.
   s.lastAttempt = iso_(result.EndTime || new Date());
   subjectStats[subject] = s;
+  if (subject !== legacySubject) delete subjectStats[legacySubject]; // migrate legacy display-name key to stable SubjectId
 
   row[emailIndex] = email;
   row[attemptsIndex] = num_(row[attemptsIndex]) + 1;
@@ -3935,7 +3980,7 @@ function recordAttemptInUserStats_(result, newMistakesCount) {
 // scan or recompute of anything. Returns null if the user/subject has no
 // completed attempt yet. Backs both the 1-day cooldown check in submitExam_
 // and the subjectStatus_ endpoint the frontend polls before starting a test.
-function getSubjectLastAttempt_(email, subject) {
+function getSubjectLastAttempt_(email, subject, legacySubject) {
   email = email_(email);
   var sheet = sh_('UserStats');
   var values = sheet.getDataRange().getValues();
@@ -3945,7 +3990,7 @@ function getSubjectLastAttempt_(email, subject) {
   if (rowIndex === -1) return null;
   var subjJsonIndex = headers.indexOf('SubjectStatsJSON');
   var subjectStats = parseSubjectStats_(values[rowIndex][subjJsonIndex]);
-  var s = subjectStats[String(subject || '')];
+  var s = subjectStats[String(subject || '')] || (legacySubject ? subjectStats[String(legacySubject)] : null);
   if (!s || !s.lastAttempt) return null;
   var d = new Date(s.lastAttempt);
   return isNaN(d.getTime()) ? null : d;
@@ -3969,7 +4014,7 @@ function subjectCooldownMs_() {
   try {
     var raw = PropertiesService.getScriptProperties().getProperty('COOLDOWN_MINUTES');
     var minutes = Number(raw);
-    if (raw !== null && raw !== '' && isFinite(minutes) && minutes >= 0 && minutes <= 60 * 24 * 365) {
+    if (raw !== null && raw !== '' && isFinite(minutes) && minutes >= 0 && minutes <= 60 * 24 * 90) {
       ms = minutes * 60000;
     }
   } catch (ignore) {}
@@ -3994,10 +4039,10 @@ function overridesFor_(email) {
   });
 }
 
-function pickOverride_(list, subject) {
+function pickOverride_(list, subject, legacySubject) {
   var best = null;
   list.forEach(function (o) {
-    if (o.subject !== '*' && o.subject !== String(subject || '')) return;
+    if (o.subject !== '*' && o.subject !== String(subject || '') && o.subject !== String(legacySubject || '')) return;
     if (!best || o.setAt.getTime() >= best.setAt.getTime()) best = o;
   });
   return best;
@@ -4010,8 +4055,8 @@ function pickOverride_(list, subject) {
 // Returns { unlockAt: Date|null, since: Date|null, overridden: bool }.
 // "since" is the moment the rule started applying; only exams started after
 // it can be rejected, so a test already in progress is never thrown away.
-function effectiveUnlock_(lastAttempt, overrideList, subject) {
-  var ov = pickOverride_(overrideList || [], subject);
+function effectiveUnlock_(lastAttempt, overrideList, subject, legacySubject) {
+  var ov = pickOverride_(overrideList || [], subject, legacySubject);
   if (ov && (!lastAttempt || ov.setAt.getTime() >= lastAttempt.getTime())) {
     return { unlockAt: ov.unlockAt, since: ov.setAt, overridden: true };
   }
@@ -4025,10 +4070,12 @@ function effectiveUnlock_(lastAttempt, overrideList, subject) {
   return { unlockAt: null, since: null, overridden: false };
 }
 
-function subjectStatus_(email, subject) {
+function subjectStatus_(email, subject, subjectId) {
   email = email_(email);
   subject = String(subject || '');
-  var lastAttempt = getSubjectLastAttempt_(email, subject);
+  if(isExamAdmin_(email)) return {locked:false,adminBypass:true,unlockAt:null};
+  var lockKey=String(subjectId||subject);
+  var lastAttempt = getSubjectLastAttempt_(email, lockKey, subject);
   var eff = effectiveUnlock_(lastAttempt, overridesFor_(email), subject);
   var locked = !!(eff.unlockAt && new Date() < eff.unlockAt);
   return {
@@ -4310,13 +4357,21 @@ function dashboard_(email) {
     (d.subjects || []).forEach(function (s) {
       var last = s.lastAttempt ? new Date(s.lastAttempt) : null;
       if (last && isNaN(last.getTime())) last = null;
-      var eff = effectiveUnlock_(last, ov, s.subject);
+      var eff = effectiveUnlock_(last, ov, s.subjectId || s.subject, s.subject);
       s.unlockAt = (eff.unlockAt && new Date() < eff.unlockAt) ? iso_(eff.unlockAt) : null;
     });
   } catch (err) {
     // Never let the override lookup break the dashboard itself.
   }
   return d;
+}
+
+function subjectDisplayName_(key) {
+  var id=String(key||'');
+  var row=findRowByColumn_('Subjects','SubjectId',id);
+  if(row&&row.Name)return String(row.Name);
+  var names={'digital-electronics':'Digital Electronics','software-engineering':'Software Engineering','computer-organisation-microprocessors':'Computer Organisation & Microprocessors','data-structures-c':'Data Structures through C','computer-networks-cyber-security':'Computer Networks & Cyber Security','operating-systems':'Operating Systems','dbms':'DBMS','java-programming':'Java Programming','web-technologies':'Web Technologies','big-data-cloud-computing':'Big Data & Cloud Computing','android-programming':'Android Programming','internet-of-things':'Internet of Things (IoT)','python-programming':'Python Programming'};
+  return names[id]||id;
 }
 
 function dashboardBase_(email) {
@@ -4345,7 +4400,8 @@ function dashboardBase_(email) {
   var subjectList = Object.keys(subjectStats).map(function (key) {
     var s = subjectStats[key];
     return {
-      subject: key,
+      subject: subjectDisplayName_(key),
+      subjectId: key,
       best: Math.round(s.best * 10) / 10,
       // Older rows created before "worst" existed won't have it — fall back
       // to best so the UI never shows a blank instead of a number.
@@ -6093,7 +6149,7 @@ var BUST_PUBLIC_CACHE_ACTIONS_ = [
   'importQuestions', 'updateQuestion', 'setQuestionTopic', 'createSubject',
   'setSubjectExam', 'deleteSubjects', 'renameSubject', 'mergeSubjects',
   'moveTopicTests', 'renameTopicTest', 'nestSubjects', 'promoteTopicTest',
-  'undoOperation', 'redoOperation', 'setDefaultCooldown'
+  'undoOperation', 'redoOperation', 'setDefaultCooldown', 'resetCooldownDefaults'
 ];
 
 var EXPORT_CACHE_KEY_ = 'export_all_v1';
@@ -6104,7 +6160,7 @@ var EXPORT_CHUNK_CHARS_ = 20000; // keeps every cache value well below 100 KB
 function bustPublicCaches_() {
   try {
     var cache = CacheService.getScriptCache();
-    var keys = ['home_pub_v1'];
+    var keys = ['home_pub_v2'];
     var meta = cache.get(EXPORT_CACHE_KEY_ + '_n');
     var n = Number(meta || 0);
     keys.push(EXPORT_CACHE_KEY_ + '_n');

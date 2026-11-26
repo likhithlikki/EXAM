@@ -55,8 +55,12 @@
     <div class="px-card">
       <h2>Step 2 — Paste the AI answer and check it</h2>
       <p class="px-note">Paste the JSON the AI gave you. Every question is checked against our rules before anything is saved.</p>
-      <textarea id="paste" class="px-mono" placeholder='[ { "type": "FIB", "question": "The ______ stores one bit.", "answer": "flip-flop;flip flop", "explanation": "..." } ]'></textarea>
-      <div class="px-btns"><button class="px-b" id="check">Check questions</button><button class="px-b alt" id="clearPaste">Clear</button></div>
+      <textarea id="paste" class="px-mono" placeholder='[ { "type": "FIB", "question": "The ______ stores one bit.", "answer": "flip-flop;flip flop", "marks": 1 } ]'></textarea>
+      <div class="px-upload" id="jsonDrop" tabindex="0" role="button" aria-label="Choose or drop a JSON file">
+        <strong>Upload JSON file</strong><span>Drag and drop here, or choose a file (maximum 2 MB)</span>
+        <input type="file" id="jsonFile" accept=".json,application/json">
+      </div>
+      <div class="px-btns"><button class="px-b" id="check">Verify questions</button><button class="px-b alt" id="sampleJson">Download sample JSON</button><button class="px-b alt" id="clearPaste">Clear</button></div>
       <div id="preview"></div>
     </div>
 
@@ -171,78 +175,64 @@
     catch (e) { $('prompt').select(); msg('copyMsg', 'info', 'Select all and copy it by hand (Ctrl+C).'); }
   };
 
-  /* ================= Step 2: paste, check, upload ================= */
-  let checked = [];   // [{q, errors, warnings}]
-  function parsePasted(text) {
-    let t = String(text || '').trim().replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim();
-    const a = t.indexOf('['), b = t.lastIndexOf(']');
-    if (a === -1 || b === -1) throw new Error('No JSON list found. It must start with [ and end with ].');
-    const arr = JSON.parse(t.slice(a, b + 1));
-    if (!Array.isArray(arr)) throw new Error('Expected a list of questions.');
-    return arr;
+  /* ================= Step 2: paste/file, verify, upload ================= */
+  let checked = [], rejectedRows = [], verified = false, knownSubjects = [];
+  fetch('subjects.json').then(function(r){return r.ok?r.json():[];}).then(function(a){knownSubjects=(a||[]).map(function(x){return String(x.name||'').trim().toLowerCase();});const api=window.APP_CONFIG&&window.APP_CONFIG.APPS_SCRIPT_URL;if(api)return fetch(api+'?action=customSubjects').then(function(r){return r.ok?r.json():null;}).then(function(res){(res&&res.data||[]).forEach(function(x){const n=String(x.name||'').trim().toLowerCase();if(n&&!knownSubjects.includes(n))knownSubjects.push(n);});}).catch(function(){});}).catch(function(){});
+  function parsePayload(text) {
+    let t=String(text||'').trim().replace(/^```[a-z]*\s*/i,'').replace(/```\s*$/,'').trim();
+    let parsed; try{parsed=JSON.parse(t);}catch(e){throw new Error('Invalid JSON: '+e.message);}
+    let arr, fileSubject='', fileTopic='';
+    if(Array.isArray(parsed))arr=parsed;
+    else if(parsed&&typeof parsed==='object'&&Array.isArray(parsed.questions)){arr=parsed.questions;fileSubject=String(parsed.subject||'').trim();fileTopic=String(parsed.topic||'').trim();}
+    else throw new Error('Expected a question array or an object containing a questions array.');
+    if(arr.length>500)throw new Error('File contains '+arr.length+' questions. Maximum allowed is 500.');
+    return {arr:arr,subject:fileSubject,topic:fileTopic};
   }
-  function normalize(q) {
-    q = q || {};
-    const out = {
-      type: String(q.type || '').toUpperCase().trim(),
-      subject: String(q.subject || $('dSub').value || '').trim(),
-      topic: String(q.topic || $('dTopic').value || '').trim(),
-      question: String(q.question || '').trim(),
-      answer: String(q.answer == null ? '' : q.answer).trim(),
-      marks: Number(q.marks) > 0 ? Number(q.marks) : 1,
-      explanation: String(q.explanation || '').trim()
-    };
-    if (out.type === 'MCQ') {
-      const o = q.options || {};
-      out.options = { A: String(o.A == null ? '' : o.A).trim(), B: String(o.B == null ? '' : o.B).trim(), C: String(o.C == null ? '' : o.C).trim(), D: String(o.D == null ? '' : o.D).trim() };
-      out.answer = out.answer.toUpperCase();
-    }
-    return out;
+  function normalize(q, defaults) {
+    q=q||{};defaults=defaults||{};
+    return {type:String(q.type||'').toUpperCase().trim(),subject:String(q.subject||defaults.subject||$('dSub').value||'').trim(),topic:String(q.topic||defaults.topic||$('dTopic').value||'').trim(),question:String(q.question||'').trim(),answer:String(q.answer==null?'':q.answer).trim(),marks:q.marks===undefined||q.marks===null||q.marks===''?NaN:Number(q.marks),explanation:String(q.explanation||'').trim()};
   }
   function validate(q) {
-    const v = PracticeRules.validateQuestion(q);
-    if (!q.subject) v.errors.push('Subject is empty. Fill the Subject (default) box above.');
+    const v=PracticeRules.validateQuestion(q);
+    if(q.type!=='FIB')v.errors.push('Type must be FIB.');
+    if(!q.subject)v.errors.push('Subject is empty. Fill the Subject (default) box above.');
+    if(!q.question||! /_{3,}/.test(q.question))v.errors.push('Question must contain at least one blank (______ ).');
+    if(!q.answer.trim())v.errors.push('Answer is empty.');
+    if(!Number.isFinite(q.marks)||q.marks<=0)v.errors.push('Marks must be greater than 0.');
     return v;
   }
-  $('check').onclick = function () {
-    let arr;
-    try { arr = parsePasted($('paste').value); }
-    catch (e) { $('preview').innerHTML = '<div class="px-msg err">' + esc(e.message) + '</div>'; checked = []; return; }
-    checked = arr.map(function (raw) { const q = normalize(raw); const v = validate(q); return { q: q, errors: v.errors, warnings: v.warnings }; });
-    renderPreview();
-  };
-  $('clearPaste').onclick = function () { $('paste').value = ''; $('preview').innerHTML = ''; checked = []; };
-  function renderPreview() {
-    const good = checked.filter(function (c) { return !c.errors.length; });
-    let h = '<div class="px-msg ' + (good.length ? 'info' : 'err') + '">' + good.length + ' of ' + checked.length + ' questions are valid.' +
-      (checked.length - good.length ? ' Fix the others in your AI chat (ask it to follow the rules) and paste again.' : '') + '</div>';
-    h += '<div class="px-scroll"><table class="px-t"><tr><th>#</th><th>Type</th><th>Question</th><th>Answer</th><th>Check</th></tr>' +
-      checked.map(function (c, i) {
-        const st = c.errors.length ? '<span class="px-err">' + c.errors.map(esc).join('<br>') + '</span>'
-          : (c.warnings.length ? '<span class="px-warn">OK, but:<br>' + c.warnings.map(esc).join('<br>') + '</span>' : '<span class="px-ok">OK</span>');
-        return '<tr><td>' + (i + 1) + '</td><td>' + esc(c.q.type) + '</td><td>' + esc(c.q.question) + '</td><td>' + esc(c.q.answer) + '</td><td>' + st + '</td></tr>';
-      }).join('') + '</table></div>';
-    h += '<div class="px-btns"><button class="px-b" id="uploadGood"' + (good.length ? '' : ' disabled') + '>Save ' + good.length + ' valid question' + (good.length === 1 ? '' : 's') + '</button></div><div id="uploadMsg"></div>';
-    $('preview').innerHTML = h;
-    $('uploadGood').onclick = upload;
+  function verifyText(text) {
+    let payload;try{payload=parsePayload(text);}catch(e){checked=[];verified=false;rejectedRows=[];$('preview').innerHTML='<div class="px-msg err">'+esc(e.message)+'</div>';return;}
+    const defaults={subject:payload.subject,topic:payload.topic};
+    checked=payload.arr.map(function(raw){const q=normalize(raw,defaults),v=validate(q);return {q:q,errors:v.errors,warnings:v.warnings};});
+    const seen=new Map();checked.forEach(function(c,i){const key=(c.q.subject.toLowerCase()+'|'+c.q.question.toLowerCase().replace(/\s+/g,' ').trim());if(seen.has(key)){c.errors.push('Duplicate row in this file (same subject and question as row '+(seen.get(key)+1)+').');}else seen.set(key,i);});
+    checked.forEach(function(c){if(knownSubjects.length&&c.q.subject&&!knownSubjects.includes(c.q.subject.toLowerCase()))c.warnings.push('Subject name does not match an existing subject. Confirm spelling or create the subject first.');});
+    verified=true;renderPreview();
   }
-  async function upload() {
-    const good = checked.filter(function (c) { return !c.errors.length; }).map(function (c) { return c.q; });
-    if (!good.length) return;
-    $('uploadGood').disabled = true; msg('uploadMsg', 'info', 'Saving…');
-    let added = 0, dup = 0, rej = 0, failed = '';
-    try {
-      for (let i = 0; i < good.length; i += 200) {
-        const r = await FibAdminAPI.addQuestions({ questions: good.slice(i, i + 200) });
-        if (!r || !r.ok) { failed = (r && r.error) || 'Server did not answer.'; break; }
-        added += r.added || 0; dup += r.duplicates || 0; rej += (r.rejected || []).length;
-      }
-    } catch (e) { failed = e.message; }
-    if (failed) { msg('uploadMsg', 'err', esc(failed) + (added ? ' (' + added + ' saved before the error.)' : '')); $('uploadGood').disabled = false; }
-    else {
-      msg('uploadMsg', 'ok', 'Saved ' + added + ' new question' + (added === 1 ? '' : 's') + (dup ? ', ' + dup + ' duplicate(s) skipped' : '') + (rej ? ', ' + rej + ' rejected by the server' : '') + '.');
-      $('paste').value = ''; checked = []; loadManage();
-    }
+  $('check').onclick=function(){verifyText($('paste').value);};
+  function readFile(file){if(!file)return;if(file.size>2*1024*1024){verified=false;checked=[];$('preview').innerHTML='<div class="px-msg err">File exceeds the 2 MB limit.</div>';return;}if(!/\.json$/i.test(file.name)&&file.type!=='application/json'){verified=false;checked=[];$('preview').innerHTML='<div class="px-msg err">Choose a .json file.</div>';return;}const reader=new FileReader();reader.onload=function(){ $('paste').value=String(reader.result||'');verifyText($('paste').value);};reader.onerror=function(){verified=false;$('preview').innerHTML='<div class="px-msg err">Could not read this file. Try again.</div>';};reader.readAsText(file);}
+  $('jsonFile').addEventListener('change',function(){readFile(this.files&&this.files[0]);});
+  const drop=$('jsonDrop');['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('drag');});});['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('drag');});});drop.addEventListener('drop',function(e){readFile(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]);});drop.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();$('jsonFile').click();}});
+  $('sampleJson').onclick=function(){const sample=[{type:'FIB',subject:$('dSub').value||'Digital Electronics',topic:$('dTopic').value||'Logic Gates',question:'The ______ gate produces output 1 only when all inputs are 1.',answer:'AND',marks:1}];downloadJson(sample,'fib-sample.json');};
+  function downloadJson(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
+  $('clearPaste').onclick=function(){$('paste').value='';$('jsonFile').value='';$('preview').innerHTML='';checked=[];verified=false;rejectedRows=[];};
+  function renderPreview(){
+    const good=checked.filter(c=>!c.errors.length),bad=checked.filter(c=>c.errors.length);rejectedRows=bad.map(c=>c.q);
+    let h='<div class="px-msg '+(bad.length?'info':'ok')+'">'+good.length+' valid / '+bad.length+' invalid'+(checked.length?' ('+checked.length+' total).':'')+'</div>';
+    h+='<div class="px-scroll"><table class="px-t"><tr><th>Row</th><th>Status</th><th>Reason</th></tr>'+checked.map(function(c,i){const reason=c.errors.length?c.errors.concat(c.warnings).join('; '):(c.warnings.length?c.warnings.join('; '):'All checks passed');return '<tr><td>'+(i+1)+'</td><td>'+(c.errors.length?'<span class="px-err">ERROR</span>':'<span class="px-ok">OK</span>')+'</td><td>'+esc(reason)+'</td></tr>';}).join('')+'</table></div>';
+    if(knownSubjects.length&&checked.some(c=>!knownSubjects.includes(c.q.subject.toLowerCase())))h+='<p class="px-msg info">Subject-name mismatch detected. Check the subject names before saving; unknown subjects may be rejected by the server.</p>';
+    h+='<div class="px-btns"><button class="px-b" id="uploadGood"'+(!verified||!good.length?' disabled':'')+'>Save '+good.length+' valid question'+(good.length===1?'':'s')+'</button>'+(bad.length?'<button class="px-b alt" id="downloadRejected">Download rejected rows</button>':'')+'</div><div id="uploadMsg"></div>';
+    $('preview').innerHTML=h;$('uploadGood').onclick=upload;const dl=$('downloadRejected');if(dl)dl.onclick=function(){downloadJson(rejectedRows,'fib-rejected-rows.json');};
+  }
+  async function upload(){
+    if(!verified)return;const good=checked.filter(c=>!c.errors.length).map(c=>c.q);if(!good.length)return;
+    $('uploadGood').disabled=true;msg('uploadMsg','info','Saving verified questions…');
+    const groups=new Map();good.forEach(q=>{if(!groups.has(q.subject))groups.set(q.subject,[]);groups.get(q.subject).push(q);});
+    let added=0,dup=0,rej=[],failed='';
+    try{for(const [subject,items] of groups){for(let i=0;i<items.length;i+=200){const r=await FibAdminAPI.addQuestions({questions:items.slice(i,i+200)});if(!r||!r.ok){failed=(r&&r.error)||'Server did not answer.';break;}added+=r.added||0;dup+=r.duplicates||0;(r.rejected||[]).forEach(x=>rej.push(x));}if(failed)break;}}
+    catch(e){failed=e.message;}
+    if(failed){msg('uploadMsg','err',esc(failed)+' Added '+added+', duplicates '+dup+', rejected '+rej.length+'.');$('uploadGood').disabled=false;}
+    else{$('uploadGood').disabled=true;msg('uploadMsg',rej.length?'info':'ok','Server result: '+added+' added / '+dup+' duplicates / '+rej.length+' rejected.'+(rej.length?' <button class=\"px-b alt\" id=\"downloadServerRejected\">Download rejected rows</button>':''));const dl=$('downloadServerRejected');if(dl)dl.onclick=function(){downloadJson(rej,'fib-server-rejected.json');};loadManage();}
   }
 
   /* ================= single question ================= */

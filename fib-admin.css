@@ -53,3 +53,5 @@ table.px-t{width:100%;border-collapse:collapse;font-size:13px}
 table.px-t th,table.px-t td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
 .px-scroll{overflow-x:auto}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.px-upload{margin:12px 0;padding:18px;border:2px dashed var(--primary);border-radius:12px;background:var(--primary-light);display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;color:var(--ink)}.px-upload span{font-size:14px;color:var(--muted)}.px-upload.drag{background:#dfe6ff;border-style:solid}.px-upload input{max-width:100%;font-size:16px}.px-b{min-height:44px;font-size:16px!important}body{font-size:16px}textarea,input,select{font-size:16px!important}table.px-t{font-size:14px}@media(max-width:600px){.px-wrap{padding:10px 10px 40px}.px-card{padding:15px}.px-top{align-items:flex-start}.px-top span{display:flex;flex-wrap:wrap;gap:6px}}
