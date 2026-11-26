@@ -3,6 +3,6 @@ window.APP_CONFIG={
   APPS_SCRIPT_URL:'https://script.google.com/macros/s/AKfycbyEanSa0-5YevPxB2xI3IeDXOxwzAmXA41RUgErbvlZ-hYLGZCRm5PAXtr891X5v_L69Q/exec',
   SITE_URL:window.location.origin+window.location.pathname,
   // Replace the placeholder with the same lowercase admin email(s) configured in Code.gs.
-  ADMIN_EMAILS:['admin@example.com'],
+  ADMIN_EMAILS:['likithmuddada@gmail.com'],
   USE_STATIC_DATA:true
 };
