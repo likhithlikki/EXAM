@@ -2,7 +2,7 @@
   {
     "id": "digital-electronics",
     "name": "Digital Electronics",
-    "file": "digital-electronics.json",
+    "file": "data/questions/static/digital-electronics.json",
     "available": true,
     "questionCount": 153,
     "hasPassword": true
@@ -10,7 +10,7 @@
   {
     "id": "software-engineering",
     "name": "Software Engineering",
-    "file": "software-engineering.json",
+    "file": "data/questions/static/software-engineering.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -18,7 +18,7 @@
   {
     "id": "computer-organisation-microprocessors",
     "name": "Computer Organisation & Microprocessors",
-    "file": "computer-organisation-microprocessors.json",
+    "file": "data/questions/static/computer-organisation-microprocessors.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -26,7 +26,7 @@
   {
     "id": "data-structures-c",
     "name": "Data Structures through C",
-    "file": "data-structures-c.json",
+    "file": "data/questions/static/data-structures-c.json",
     "available": true,
     "questionCount": 206,
     "hasPassword": true
@@ -34,7 +34,7 @@
   {
     "id": "computer-networks-cyber-security",
     "name": "Computer Networks & Cyber Security",
-    "file": "computer-networks-cyber-security.json",
+    "file": "data/questions/static/computer-networks-cyber-security.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -42,7 +42,7 @@
   {
     "id": "operating-systems",
     "name": "Operating Systems",
-    "file": "operating-systems.json",
+    "file": "data/questions/static/operating-systems.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -50,7 +50,7 @@
   {
     "id": "dbms",
     "name": "DBMS",
-    "file": "dbms.json",
+    "file": "data/questions/static/dbms.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -58,7 +58,7 @@
   {
     "id": "java-programming",
     "name": "Java Programming",
-    "file": "java-programming.json",
+    "file": "data/questions/static/java-programming.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -66,7 +66,7 @@
   {
     "id": "web-technologies",
     "name": "Web Technologies",
-    "file": "web-technologies.json",
+    "file": "data/questions/static/web-technologies.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -74,7 +74,7 @@
   {
     "id": "big-data-cloud-computing",
     "name": "Big Data & Cloud Computing",
-    "file": "big-data-cloud-computing.json",
+    "file": "data/questions/static/big-data-cloud-computing.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -82,7 +82,7 @@
   {
     "id": "android-programming",
     "name": "Android Programming",
-    "file": "android-programming.json",
+    "file": "data/questions/static/android-programming.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -90,7 +90,7 @@
   {
     "id": "internet-of-things",
     "name": "Internet of Things (IoT)",
-    "file": "internet-of-things.json",
+    "file": "data/questions/static/internet-of-things.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true
@@ -98,7 +98,7 @@
   {
     "id": "python-programming",
     "name": "Python Programming",
-    "file": "python-programming.json",
+    "file": "data/questions/static/python-programming.json",
     "available": false,
     "questionCount": 0,
     "hasPassword": true

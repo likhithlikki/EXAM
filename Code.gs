@@ -4076,7 +4076,7 @@ function subjectStatus_(email, subject, subjectId) {
   if(isExamAdmin_(email)) return {locked:false,adminBypass:true,unlockAt:null};
   var lockKey=String(subjectId||subject);
   var lastAttempt = getSubjectLastAttempt_(email, lockKey, subject);
-  var eff = effectiveUnlock_(lastAttempt, overridesFor_(email), subject);
+  var eff = effectiveUnlock_(lastAttempt, overridesFor_(email), lockKey, subject);
   var locked = !!(eff.unlockAt && new Date() < eff.unlockAt);
   return {
     locked: locked,

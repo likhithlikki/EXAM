@@ -1,0 +1,129 @@
+[
+  {
+    "id": "digital-electronics",
+    "name": "Digital Electronics",
+    "available": true,
+    "file": "data/questions/static/digital-electronics.json",
+    "total": 153,
+    "exams": [
+      {
+        "name": "Digital Electronics",
+        "total": 153
+      }
+    ],
+    "topics": []
+  },
+  {
+    "id": "software-engineering",
+    "name": "Software Engineering",
+    "available": false,
+    "file": "data/questions/static/software-engineering.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "computer-organisation-microprocessors",
+    "name": "Computer Organisation & Microprocessors",
+    "available": false,
+    "file": "data/questions/static/computer-organisation-microprocessors.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "data-structures-c",
+    "name": "Data Structures through C",
+    "available": true,
+    "file": "data/questions/static/data-structures-c.json",
+    "total": 206,
+    "exams": [
+      {
+        "name": "Data Structures through C",
+        "total": 206
+      }
+    ],
+    "topics": []
+  },
+  {
+    "id": "computer-networks-cyber-security",
+    "name": "Computer Networks & Cyber Security",
+    "available": false,
+    "file": "data/questions/static/computer-networks-cyber-security.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "operating-systems",
+    "name": "Operating Systems",
+    "available": false,
+    "file": "data/questions/static/operating-systems.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "dbms",
+    "name": "DBMS",
+    "available": false,
+    "file": "data/questions/static/dbms.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "java-programming",
+    "name": "Java Programming",
+    "available": false,
+    "file": "data/questions/static/java-programming.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "web-technologies",
+    "name": "Web Technologies",
+    "available": false,
+    "file": "data/questions/static/web-technologies.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "big-data-cloud-computing",
+    "name": "Big Data & Cloud Computing",
+    "available": false,
+    "file": "data/questions/static/big-data-cloud-computing.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "android-programming",
+    "name": "Android Programming",
+    "available": false,
+    "file": "data/questions/static/android-programming.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "internet-of-things",
+    "name": "Internet of Things (IoT)",
+    "available": false,
+    "file": "data/questions/static/internet-of-things.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  },
+  {
+    "id": "python-programming",
+    "name": "Python Programming",
+    "available": false,
+    "file": "data/questions/static/python-programming.json",
+    "total": 0,
+    "exams": [],
+    "topics": []
+  }
+]
