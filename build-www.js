@@ -9,7 +9,7 @@ const EXCLUDE_ROOT_JSON = new Set(['package.json', 'package-lock.json', 'capacit
 const FILES = [
   'index.html', 'about.html', '404.html', 'fib-admin.html', 'privacy.html', 'terms.html', 'cookies.html', 'refund.html',
   'app.js', 'config.js', 'sw.js', 'practice-rules.js', 'fib-admin-api.js',
-  'style.css', 'legal.css', 'fib-admin.css', 'manifest.json',
+  'style.css', 'legal.css', 'fib-admin.css', 'theme.css', 'theme.js', 'manifest.json',
   'icon-192.png', 'icon-512.png', 'icon-512-maskable.png'
 ];
 const DIRS = ['data'];

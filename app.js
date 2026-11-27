@@ -174,6 +174,28 @@ async function apiPost(action,payload={},timeoutMs=15000){
   });
 }
 
+/* Posts a finished exam and reports WHY it failed, instead of collapsing every
+ * failure into "No internet". kind: ok | locked | server (backend refused it, e.g. a
+ * validation error) | timeout | network | http | bad-response | config. 45 s timeout
+ * because a cold Apps Script start plus its 30 s write lock can exceed the old 15 s. */
+async function postSubmitExam_(payload,timeoutMs=45000){
+  if(!API)return{resp:null,kind:"config",error:"The Apps Script backend is not configured."};
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  loadingShow();
+  try{
+    const r=await fetch(API,{method:"POST",body:JSON.stringify({action:"submitExam",...payload}),cache:"no-store",signal:controller.signal});
+    if(!r.ok)return{resp:null,kind:"http",error:"The server answered HTTP "+r.status+"."};
+    let j=null;
+    try{j=await r.json();}catch(e){return{resp:null,kind:"bad-response",error:"The server sent a reply that could not be read."};}
+    if(j&&j.ok)return{resp:j,kind:"ok",error:""};
+    return{resp:j,kind:j&&j.cooldown&&j.cooldown.locked?"locked":"server",error:String((j&&j.error)||"The server did not accept this result.")};
+  }catch(e){
+    if(e&&e.name==="AbortError")return{resp:null,kind:"timeout",error:"The server took too long to answer."};
+    return{resp:null,kind:"network",error:"The server could not be reached."};
+  }finally{clearTimeout(timer);loadingHide();}
+}
+function saveIssueFrom_(out){return{kind:out.kind,error:out.error};}
+
 /* ===================== STATIC-FIRST DATA LOADER =====================
  * Rarely-changing content (subjects, topic counts, sheet-imported questions) is
  * published by a GitHub job as static files under data/ (see tools/sync-from-sheets.js)
@@ -359,40 +381,52 @@ function invalidateSubmitClientCaches_(){
   store.setDashboardCache(null);
   _serverStatusCache=null;
 }
-function queueForOfflineSubmit_(payload){
+function queueForOfflineSubmit_(payload,issue){
   const items=getOutbox_();
-  items.push({localId:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(16).slice(2)),payload,queuedAt:Date.now()});
+  items.push({localId:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(16).slice(2)),payload,queuedAt:Date.now(),lastError:issue?issue.error:"",lastKind:issue?issue.kind:"",lastTryAt:issue?Date.now():0});
   setOutbox_(items);
   invalidateSubmitClientCaches_();
   refreshOutboxBadge_();
 }
 let _flushingOutbox=false;
-async function flushOutbox_(){
-  if(_flushingOutbox||!navigator.onLine||!API)return;
+async function flushOutbox_(force){
+  if(_flushingOutbox||!navigator.onLine||!API)return null;
   const items=getOutbox_();
-  if(!items.length)return;
+  if(!items.length)return null;
   _flushingOutbox=true;
-  const remaining=[];
+  const remaining=[];let saved=0,lastIssue=null;
   for(const item of items){
-    const resp=await apiPost("submitExam",item.payload);
-    // A rejected-for-cooldown submission (someone attempted the same
-    // locked subject twice while offline) can never succeed by retrying —
-    // drop it instead of retrying it forever, same as it would have been
-    // handled live.
-    if(!resp?.ok && !resp?.cooldown?.locked){ remaining.push(item); continue; }
+    // A backend refusal (kind "server") will not fix itself every minute; retry those every 10 minutes unless the student pressed Save now.
+    if(force!==true&&item.lastKind==="server"&&Date.now()-(item.lastTryAt||0)<10*60*1000){remaining.push(item);continue;}
+    const out=await postSubmitExam_(item.payload);
+    // A cooldown rejection can never succeed by retrying, so drop it.
+    if(out.kind==="ok"){saved++;continue;}
+    if(out.kind==="locked")continue;
+    item.lastError=out.error;item.lastKind=out.kind;item.lastTryAt=Date.now();lastIssue=saveIssueFrom_(out);
+    remaining.push(item);
   }
   setOutbox_(remaining);
   _flushingOutbox=false;
   refreshOutboxBadge_();
-  if(remaining.length<items.length){
-    invalidateSubmitClientCaches_(); // stats changed server-side — force a fresh fetch next visit
-  }
+  if(saved)invalidateSubmitClientCaches_(); // stats changed server-side — force a fresh fetch next visit
+  return{saved,pending:remaining.length,issue:lastIssue};
+}
+// "Save now" button on the result page.
+async function saveResultNow_(btn){
+  const msg=document.getElementById("saveNowMsg");
+  if(btn)btn.disabled=true;if(msg)msg.textContent="Saving…";
+  const res=await flushOutbox_(true);
+  if(btn)btn.disabled=false;
+  if(!res){if(msg)msg.textContent=navigator.onLine?"Nothing waiting to be saved.":"Still offline — connect to the internet and try again.";return;}
+  if(!res.pending){if(msg)msg.innerHTML='<span class="correct">Saved to the server ✔ — open the result again from My Dashboard to see rank.</span>';const box=document.getElementById("saveIssueBox");if(box)box.style.background="#e6f4ea";return;}
+  if(msg)msg.textContent="Not saved yet: "+(res.issue?res.issue.error:"the server did not accept it.");
 }
 function refreshOutboxBadge_(){
   const el=document.getElementById("outboxBadge");
   if(!el)return;
   const n=outboxCount_();
-  el.innerHTML=n?`<div class="note" style="background:#fff3cd;padding:8px;border-radius:7px">📡 ${n} result${n>1?"s":""} saved offline — will upload automatically when you're back online.</div>`:"";
+  const why=getOutbox_().map(x=>x.lastError).filter(Boolean)[0];
+  el.innerHTML=n?`<div class="note" style="background:#fff3cd;padding:8px;border-radius:7px">📡 ${n} result${n>1?"s":""} saved on this device, not yet on the server${why?" — "+esc(why):""}. <button class="inline-retry" onclick="saveResultNow_()">Save now</button></div>`:"";
 }
 function armOutboxAutoSync_(){
   window.addEventListener("online",flushOutbox_);
@@ -861,8 +895,14 @@ document.addEventListener('click',e=>{
 
 
 /* ===================== HOME ===================== */
-function customSubjectsHTML(){
-  return customSubjects.length?customSubjects.map((s,i)=>{
+const isFibSubject_=s=>String(s&&s.testType||"").toUpperCase()==="FIB";
+// kind: "MCQ" (normal tests) or "FIB" (fill-in-the-blank tests). i stays the index in the full list because openCustomPassword(i) uses it.
+function customSubjectsHTML(kind){
+  kind=kind||"MCQ";
+  const shown=customSubjects.filter(s=>(kind==="FIB")===isFibSubject_(s));
+  if(!shown.length)return kind==="FIB"?'<p class="note">No fill-in-the-blank tests added yet.</p>':'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
+  return customSubjects.map((s,i)=>{
+    if((kind==="FIB")!==isFibSubject_(s))return "";
     const unfinished=store.getProgress(s.id);
     const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
     if(!hasQuestions){
@@ -874,8 +914,8 @@ function customSubjectsHTML(){
     const saved=store.getProgress(s.id),profile=store.profile(),inProgress=!!(saved&&saved.email===profile?.email);
     const lock=!inProgress?subjectLockInfo(s):{locked:false};
     const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${inProgress?"Resume Exam":"Open Exam"}</button>`;
-    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(inProgress?"Test in progress — resume any time<br>"+meta:meta)}</p>${btn}${inProgress?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
-  }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
+    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${isFibSubject_(s)?'<span class="fib-pill">✍ Fill in the blank</span>':""}${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(inProgress?"Test in progress — resume any time<br>"+meta:meta)}</p>${btn}${inProgress?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  }).join("");
 }
 async function home(){
   pushNav(home);
@@ -900,7 +940,10 @@ async function home(){
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Additional Tests <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
     <p class="subtitle">Custom subjects created directly from the Admin panel — no code or GitHub changes needed.</p>
-    <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML()}</div>
+    <div class="subject-grid" id="customSubjectGrid">${customSubjectsHTML("MCQ")}</div>
+    <h2 style="margin-top:34px">Fill in the Blank Tests</h2>
+    <p class="subtitle">Type the missing word or number for each question. These are kept separate from the multiple-choice tests above.</p>
+    <div class="subject-grid" id="fibSubjectGrid">${customSubjectsHTML("FIB")}</div>
     <div class="app-legal-footer" style="margin-top:36px;padding-top:16px;border-top:1px solid #e3e8f5;font-size:13px;color:#65708a">
       <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> ·
       <a href="terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> ·
@@ -1028,7 +1071,9 @@ function refreshSubjectCardStats(){
   const grid=document.querySelector('.home .subject-grid');
   if(grid)grid.innerHTML=subjects.map((s,i)=>subjectCardHTML(s,i)).join("");
   const cgrid=document.getElementById('customSubjectGrid');
-  if(cgrid)cgrid.innerHTML=customSubjectsHTML();
+  if(cgrid)cgrid.innerHTML=customSubjectsHTML("MCQ");
+  const fgrid=document.getElementById('fibSubjectGrid');
+  if(fgrid)fgrid.innerHTML=customSubjectsHTML("FIB");
   armCooldownTicker();
 }
 let _cooldownTicker=null;
@@ -2947,10 +2992,11 @@ async function submit(){
   }
 
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Your result will appear immediately.</p></div>`;
-  const resp=await apiPost("submitExam",payload);
-  if(!resp?.ok){
+  const out=await postSubmitExam_(payload);
+  const resp=out.resp;
+  if(out.kind!=="ok"){
     isSubmitting=false;
-    if(resp?.cooldown?.locked){
+    if(out.kind==="locked"){
       // Keep the locally calculated answers and review detail visible. The
       // backend rejected this session before recording it as an attempt.
       renderNotSavedLockedResult_(payload,resp);
@@ -2961,8 +3007,8 @@ async function submit(){
      * start. Rather than leaving the student stuck on a dead-end error
      * screen, queue it the same as a true offline submit — it'll sync
      * automatically — and still show them their result right away. */
-    queueForOfflineSubmit_(payload);
-    renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
+    queueForOfflineSubmit_(payload,saveIssueFrom_(out));
+    renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true,saveIssue:saveIssueFrom_(out)});
     return;
   }
   // Update the cached dashboard using the parent subject ID (all topic tests share it).
@@ -2976,14 +3022,15 @@ async function retrySubmit(payload){
     return;
   }
   app.innerHTML=`<div class="card"><h1>Saving result…</h1><p class="note">Retrying…</p></div>`;
-  const resp=await apiPost("submitExam",payload);
-  if(!resp?.ok){
+  const out=await postSubmitExam_(payload);
+  const resp=out.resp;
+  if(out.kind!=="ok"){
     isSubmitting=false;
-    if(resp?.cooldown?.locked){
+    if(out.kind==="locked"){
       renderNotSavedLockedResult_(payload,resp);
       return;
     }
-    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
+    app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">${esc(out.error)} Please try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;
   }
   updateDashboardLockAfterSubmit_(payload,resp);
@@ -2996,11 +3043,22 @@ function renderResult(r){
   window._lastResultDetail=r.detail;
   const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
   const lockNotice=r.notSavedLocked?`<div class="note not-saved-lock" role="alert"><b>Not saved — subject locked.</b> The server rejected this attempt, so it was not recorded. Your answers and question review remain visible here.${r.lockedUntil?` The subject unlocks ${esc(formatLockDateTime_(r.lockedUntil))}.`:''}</div>`:'';
-  const offlineNotice=r.offlinePending?'<div class="note" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">📡 No internet — this result is saved on your device and will upload automatically once you\'re back online. Rank and students-count will appear after it syncs.</div>':'';
-  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1>${lockNotice}${offlineNotice}<div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons">${r.notSavedLocked?"":'<button onclick="retryExam()">Retry Test</button>'}<button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+  const issue=r.saveIssue;
+  const issueText=!issue?"":(issue.kind==="server"?"The server refused to save this result: "+issue.error:issue.kind==="timeout"?"The server took too long to answer, so the result is not confirmed yet.":issue.kind==="network"?"The server could not be reached from this device.":issue.error);
+  const offlineNotice=r.offlinePending?(issue
+    ?`<div class="note" id="saveIssueBox" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">⚠️ <b>Result not saved on the server yet.</b> ${esc(issueText)} It is kept safely on this device and retried automatically. <button class="inline-retry" onclick="saveResultNow_(this)">Save now</button> <span id="saveNowMsg"></span></div>`
+    :'<div class="note" id="saveIssueBox" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">📡 No internet — this result is saved on your device and will upload automatically once you\'re back online. Rank and students-count will appear after it syncs. <button class="inline-retry" onclick="saveResultNow_(this)">Save now</button> <span id="saveNowMsg"></span></div>'):'';
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1>${lockNotice}${offlineNotice}<div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons">${r.notSavedLocked?"":'<button onclick="retryExam()">Retry Test</button>'}<button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('correct',this)">Correct (${r.detail.filter(d=>reviewState_(d)==="correct").length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.detail.filter(d=>reviewState_(d)==="wrong").length})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.detail.filter(d=>reviewState_(d)==="unanswered").length})</button><button onclick="filterReview('marked',this)">Marked for review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
 }
 function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
-function reviewListHTML(detail,filter){return detail.map((d,n)=>{const fib=d.type==="FIB",iu=fib?String(d.selectedText||"").trim()==="":d.selected===null||d.selected===undefined,iw=fib?!iu&&!gradeFib(d.selectedText,d.correctText).correct:!iu&&Number(d.selected)!==Number(d.correct);if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";const yours=fib?(iu?"Unanswered":esc(d.selectedText)): (iu?"Unanswered":"ABCD"[d.selected]+". "+esc((d.options||[])[d.selected]));const correct=fib?esc(d.correctText):"ABCD"[d.correct]+". "+esc((d.options||[])[d.correct]);return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${yours}</span></div><div>Correct answer: <span class="correct">${correct}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
+function reviewState_(d){
+  const fib=d.type==="FIB",iu=fib?String(d.selectedText||"").trim()==="":d.selected===null||d.selected===undefined;
+  if(iu)return "unanswered";
+  const ok=fib?gradeFib(d.selectedText,d.correctText).correct:Number(d.selected)===Number(d.correct);
+  return ok?"correct":"wrong";
+}
+// One card layout for every question: green = correct, red = wrong, yellow = unanswered.
+function reviewListHTML(detail,filter){return detail.map((d,n)=>{const st=reviewState_(d),fib=d.type==="FIB";if((filter==="correct"&&st!=="correct")||(filter==="wrong"&&st!=="wrong")||(filter==="unanswered"&&st!=="unanswered")||(filter==="marked"&&!d.marked))return"";const iu=st==="unanswered";const yours=fib?(iu?"Unanswered":esc(d.selectedText)):(iu?"Unanswered":"ABCD"[d.selected]+". "+esc((d.options||[])[d.selected]));const correct=fib?esc(d.correctText):"ABCD"[d.correct]+". "+esc((d.options||[])[d.correct]);const label=st==="correct"?"✔ Correct":st==="wrong"?"✘ Wrong":"— Unanswered";return `<div class="review ${st}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="review-tag ${st}">${label}</span>${d.marked?' <span class="review-tag marked">🔖 Marked</span>':""} <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${st==="correct"?"correct":st==="wrong"?"wronganswer":""}">${yours}</span></div><div>Correct answer: <span class="correct">${correct}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}
 
 /* ===================== PROFILE / DASHBOARD ===================== */
 function goDashboard(){requireProfile(dashboard);} function goMistakes(){requireProfile(mistakes);}

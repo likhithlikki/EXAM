@@ -147,7 +147,15 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .not-saved-lock{background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px;color:#694b00}
 .lock-rule-note{margin:0 0 3px}
 .review{border-top:1px solid var(--line);padding:13px 0;line-height:1.5}
-.review.wrong{background:var(--danger-bg);border-radius:8px;padding:12px 12px}
+.review.wrong{background:var(--danger-bg);border-radius:8px;padding:12px 12px;border-left:5px solid #b00020}
+.review.correct{background:#e8f5ec;border-radius:8px;padding:12px 12px;border-left:5px solid #1a7f37}
+.review.unanswered{background:#fff6dc;border-radius:8px;padding:12px 12px;border-left:5px solid #d4a72c}
+.review-tag{font-size:12px;font-weight:700;border-radius:20px;padding:2px 9px;margin:0 4px;background:#fff}
+.review-tag.correct{color:#1a7f37;border:1px solid #1a7f37}
+.review-tag.wrong{color:#b00020;border:1px solid #b00020}
+.review-tag.unanswered{color:#7a5b00;border:1px solid #d4a72c}
+.review-tag.marked{color:#3a4a8a;border:1px solid #9fb0e8}
+.fib-pill{display:inline-block;font-size:12px;font-weight:700;color:#3a4a8a;background:#eef1fc;border:1px solid #cfd8f6;border-radius:20px;padding:2px 10px;margin:2px 0 6px}
 .qtime{color:var(--muted);font-size:13px}
 .filterbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
 .filterbar button{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;cursor:pointer;font-weight:600;color:var(--ink)}
@@ -159,16 +167,20 @@ body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:satu
 .green{background:var(--success)}
 .red{background:var(--danger)}
 .yellow{background:var(--warning)}
+/* result pie + legend + bars share one palette: green correct, red wrong, yellow unanswered */
+.pie-legend .dot.green{background:#1a7f37}
+.pie-legend .dot.red{background:#b00020}
+.pie-legend .dot.yellow{background:#d4a72c}
 .chart-area{display:flex;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 10px 5px;overflow-x:auto}
 .y-axis{width:55px;min-width:55px;height:250px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding:0 8px 24px 0;color:var(--muted);font-size:12px}
 .chart-main{position:relative;height:250px;min-width:max(650px,calc(100vw - 130px));padding:0 4px 0}
 .gridlines{position:absolute;inset:0 0 28px 0;display:flex;flex-direction:column;justify-content:space-between}
 .gridlines i{border-top:1px dashed var(--line);width:100%;height:1px}
 .bars{height:220px;display:flex;align-items:flex-end;gap:4px;position:relative;z-index:2;padding:0 3px}
-.bar-col{width:18px;min-width:18px;border:0;border-radius:4px 4px 0 0;background:var(--primary);cursor:pointer;padding:0;position:relative}
+.bar-col{width:18px;min-width:18px;border:0;border-radius:4px 4px 0 0;background:#1a7f37;color:#fff;cursor:pointer;padding:0;position:relative}
 .bar-col:hover{opacity:.75}
-.bar-col.wrongbar{background:var(--danger)}
-.bar-col.unansbar{background:var(--warning)}
+.bar-col.wrongbar{background:#b00020;color:#fff}
+.bar-col.unansbar{background:#d4a72c;color:#1f1f1f}
 .x-axis{height:30px;display:flex;gap:4px;padding:3px 3px 0;overflow:hidden}
 .x-axis span{width:18px;min-width:18px;text-align:center;font-size:10px;color:var(--muted)}
 .chart-detail{margin:10px 0 22px;padding:12px;background:var(--primary-light);border-radius:9px;min-height:48px}
