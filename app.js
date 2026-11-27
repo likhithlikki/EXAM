@@ -81,14 +81,14 @@ function loadingShow(){
   _loadingCount++;
   const bar=document.getElementById("loadBar");
   if(bar)bar.classList.add("active");
-  document.body.classList.add("app-busy");
+  // CHANGED: network activity never disables global navigation controls.
 }
 function loadingHide(){
   _loadingCount=Math.max(0,_loadingCount-1);
   if(_loadingCount===0){
     const bar=document.getElementById("loadBar");
     if(bar)bar.classList.remove("active");
-    document.body.classList.remove("app-busy");
+    // CHANGED: no app-wide navigation lock while a request is in flight.
   }
 }
 
@@ -448,6 +448,11 @@ function pushNav(fn){
   // still logically on Home after certain navigation sequences).
   const btn=document.getElementById("backFab");
   if(btn)btn.style.display=(fn!==home)?"flex":"none";
+  if(fn===home)setGlobalNavActive_('home');
+  else if(fn===editQuestionsPage)setGlobalNavActive_('edit');
+  else if(fn===recentChangesPage)setGlobalNavActive_('recent');
+  else if(fn===controlCentrePage)setGlobalNavActive_('control');
+  else globalNavClose_();
 }
 function replaceNav(fn){
   // Like pushNav, but replaces the current top-of-stack entry instead of
@@ -498,7 +503,121 @@ let _afterProfile=null;
  * Script Properties, never in source), and held only in sessionStorage so
  * it disappears when the tab closes. Nothing secret is embedded here. */
 function adminPw_(){try{return sessionStorage.getItem("ecet_admin_pw")||"";}catch(e){return "";}}
-let isAdminUnlocked=!!adminPw_();
+let isAdminUnlocked=false; // CHANGED: admin UI remains hidden until the stored credential is verified by the server.
+
+/* CHANGED: app-wide navigation and background-task notifications. Admin links
+   are created only for a server-verified admin session; normal users never get
+   admin-only elements in the DOM. The task queue lives outside individual pages. */
+let _adminAfterUnlock_='admin';
+let _globalActivePage_='home';
+function setGlobalNavActive_(page){_globalActivePage_=page;updateGlobalNavigation_();}
+function updateGlobalNavigation_(){
+  const nav=document.getElementById('globalNavLinks');if(!nav)return;
+  const items=[{key:'home',label:'Home',action:'safeGoHome()'}];
+  if(isAdminUnlocked){items.push({key:'edit',label:'Edit Questions',action:'editQuestionsPage()'},{key:'recent',label:'Recent Changes',action:'recentChangesPage()'});}
+  items.push({key:'control',label:'Control Centre',action:'openControlCentre()'},{key:'gate',label:'GATE PYQ Tests',href:'https://likhithlikki.github.io/simple-gate-tests/'});
+  if(isAdminUnlocked)items.push({key:'add',label:'Add Questions',action:"adminQuestionsPage('adm-import')"});
+  nav.innerHTML=items.map(x=>x.href?`<a class="global-nav-link global-nav-external" data-nav="${x.key}" href="${x.href}" target="_blank" rel="noopener noreferrer">${x.label}</a>`:`<button type="button" class="global-nav-link${_globalActivePage_===x.key?' active':''}" data-nav="${x.key}" onclick="${x.action}">${x.label}</button>`).join('');
+  nav.querySelectorAll('[data-nav]').forEach(el=>el.classList.toggle('active',el.dataset.nav===_globalActivePage_));
+}
+function globalMenuToggle_(){const nav=document.getElementById('globalNavLinks'),btn=document.getElementById('globalMenuToggle');if(!nav)return;const open=nav.classList.toggle('open');if(btn)btn.setAttribute('aria-expanded',String(open));}
+function globalNavClose_(){const nav=document.getElementById('globalNavLinks'),btn=document.getElementById('globalMenuToggle');if(nav)nav.classList.remove('open');if(btn)btn.setAttribute('aria-expanded','false');}
+
+// CHANGED: do not trust the presence of a sessionStorage value as proof of
+// administrator access. A previous session is re-verified with Apps Script.
+async function verifyStoredAdminSession_(){
+  const pw=adminPw_();if(!pw)return false;
+  const profile=store.profile();
+  if(!API||!profile?.email){try{sessionStorage.removeItem('ecet_admin_pw');}catch(e){}isAdminUnlocked=false;updateGlobalNavigation_();return false;}
+  try{
+    const result=await apiGet('isAdmin',{email:profile.email,password:pw},12000,1,{silent:true});
+    isAdminUnlocked=!!(result?.ok&&result.isAdmin);
+  }catch(e){isAdminUnlocked=false;}
+  if(!isAdminUnlocked){try{sessionStorage.removeItem('ecet_admin_pw');}catch(e){}}
+  updateGlobalNavigation_();
+  const homeSlot=document.getElementById('adminNavSlot');
+  if(homeSlot&&isAdminUnlocked)homeSlot.innerHTML='<button onclick="adminQuestionsPage(\'adm-import\')">Admin: Add Questions</button>';
+  return isAdminUnlocked;
+}
+
+let _backgroundSaveQueue_=[];let _backgroundSaveBusy_=false;let _backgroundTaskSeq_=0;
+/* CHANGED (final): pending saves survive page loads. Queued tasks are mirrored to sessionStorage
+   (same tab only) and resumed on the next load of the main app; task ids make resuming idempotent.
+   On pagehide the not-yet-sent tasks are also fired with fetch keepalive. */
+function cap_(s){s=String(s||'');return s.charAt(0).toUpperCase()+s.slice(1);}
+function persistedTasks_(){try{return JSON.parse(sessionStorage.getItem('ecet_pending_tasks')||'[]');}catch(e){return [];}}
+function savePersistedTasks_(list){try{sessionStorage.setItem('ecet_pending_tasks',JSON.stringify(list));}catch(e){}}
+function persistTask_(task){const l=persistedTasks_().filter(t=>t.id!==task.id);l.push({id:task.id,label:task.label,action:task.action,payload:task.payload});savePersistedTasks_(l);}
+function removePersistedTask_(task){savePersistedTasks_(persistedTasks_().filter(t=>t.id!==task.id));}
+function resumePersistedTasks_(){
+  const l=persistedTasks_();if(!l.length)return;
+  l.forEach(t=>{const task={id:t.id,label:t.label,action:t.action,payload:t.payload,callbacks:{},attempts:0,toastTimer:null,started:false};_backgroundSaveQueue_.push(task);backgroundToast_(task,'saving',`${cap_(task.label)}: resuming save`);});
+  pumpBackgroundSaves_();
+}
+let _pageUnloading_=false;
+window.addEventListener('pagehide',()=>{
+  _pageUnloading_=true;
+  if(!API)return;
+  _backgroundSaveQueue_.forEach(t=>{try{fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...t.payload,action:t.action,taskId:t.id}),keepalive:true});}catch(e){}});
+});
+function backgroundTaskId_(){return 'cc-'+Date.now().toString(36)+'-'+(++_backgroundTaskSeq_).toString(36)+'-'+Math.random().toString(36).slice(2,8);}
+function backgroundToast_(task,state,message){
+  const root=document.getElementById('globalToasts');if(!root)return;
+  let el=document.getElementById('toast-'+task.id);
+  if(!el){el=document.createElement('div');el.id='toast-'+task.id;el.className='global-toast';el.setAttribute('role','status');root.appendChild(el);}
+  el.className='global-toast '+(state==='failed'?'failed':state==='success'?'success':'saving');
+  el.innerHTML=`<span class="global-toast-text">${esc(message)}</span>${state==='failed'?`<button type="button" class="toast-retry" aria-label="Retry ${esc(task.label)}" onclick="retryBackgroundTask_('${task.id}')">Retry</button>`:''}<button type="button" class="toast-close" aria-label="Dismiss notification" onclick="dismissBackgroundToast_('${task.id}')">×</button>`;
+  clearTimeout(task.toastTimer);
+  // CHANGED (final): success auto-dismisses after ~3s; failure stays until dismissed so Retry is never lost.
+  if(state==='success')task.toastTimer=setTimeout(()=>dismissBackgroundToast_(task.id),3000);
+}
+function dismissBackgroundToast_(id){const el=document.getElementById('toast-'+id);if(el)el.remove();_backgroundTaskQueueAll_=_backgroundTaskQueueAll_.filter(t=>!(t.id===id&&t.failedFinal));}
+function queueControlSave_(label,action,payload,callbacks={}){
+  const task={id:backgroundTaskId_(),label,action,payload:{...payload},callbacks,attempts:0,toastTimer:null,started:false};
+  persistTask_(task);_backgroundSaveQueue_.push(task);backgroundToast_(task,'saving',`${cap_(label)}: queued`);pumpBackgroundSaves_();return task.id;
+}
+function retryBackgroundTask_(id){
+  const el=document.getElementById('toast-'+id);const task=_backgroundTaskQueueAll_?.find(t=>t.id===id);
+  if(!task)return;
+  if(el)el.remove();
+  // Reuse the same id after a network/timeout failure so an already-committed
+  // server operation is returned from cache instead of being applied twice.
+  // A confirmed server rejection is retried with a fresh id.
+  if(task.retryNeedsNewId)task.id=backgroundTaskId_();
+  task.retryNeedsNewId=false;task.attempts=0;task.started=false;
+  task.failedFinal=false;persistTask_(task);_backgroundSaveQueue_.push(task);backgroundToast_(task,'saving',`${cap_(task.label)}: retry queued`);pumpBackgroundSaves_();
+}
+let _backgroundTaskQueueAll_=[];
+async function pumpBackgroundSaves_(){
+  if(_backgroundSaveBusy_)return;_backgroundSaveBusy_=true;
+  while(_backgroundSaveQueue_.length){
+    const task=_backgroundSaveQueue_.shift();_backgroundTaskQueueAll_=[..._backgroundTaskQueueAll_.filter(t=>t.id!==task.id),task];
+    task.started=true;let slowTimer=setTimeout(()=>backgroundToast_(task,'saving',`Saving ${task.label}…`),1000);
+    let result=null;
+    try{
+      if(!API)throw new Error('Backend URL is not configured.');
+      for(let poll=0;poll<12;poll++){
+        const response=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...task.payload,action:task.action,taskId:task.id}),cache:'no-store',keepalive:true});
+        result=await response.json();
+        if(result?.pending){await sleep(1200);continue;}
+        if(!(result?.success===true||result?.ok===true))throw new Error(result?.message||result?.error||'The server rejected the change.');
+        break;
+      }
+      if(result?.pending)throw new Error('The server is still processing this task. Retry to confirm its status.');
+      clearTimeout(slowTimer);backgroundToast_(task,'success',`${cap_(task.label)} saved`);removePersistedTask_(task);
+      if(task.callbacks.onSuccess)task.callbacks.onSuccess(result.data||result);
+      _backgroundTaskQueueAll_=_backgroundTaskQueueAll_.filter(t=>t.id!==task.id);
+    }catch(error){
+      if(_pageUnloading_){clearTimeout(slowTimer);continue;} // page is closing: keep the task persisted so it resumes next load
+      clearTimeout(slowTimer);if(task.callbacks.onFailure)try{task.callbacks.onFailure(error);}catch(e){console.error(e);}
+      task.retryNeedsNewId=!!(result&&!result.pending&&(result.success===false||result.ok===false));
+      task.failedFinal=true;removePersistedTask_(task);backgroundToast_(task,'failed',`Failed to update ${task.label}. Tap Retry.`);
+      task.lastError=error; // retained so the user can retry from its toast
+    }
+  }
+  _backgroundSaveBusy_=false;
+}
+
 localStorage.removeItem("ecet_admin_unlocked"); // old persistent flag from the insecure version
 
 
@@ -918,7 +1037,7 @@ function customSubjectsHTML(kind){
   }).join("");
 }
 async function home(){
-  pushNav(home);
+  pushNav(home);setGlobalNavActive_('home');
   clearExam(); revisionMode=false;
   // Render instantly from whatever we already know (static subject list + last cached
   // custom subjects) instead of waiting on the network — the network refresh below then
@@ -935,7 +1054,7 @@ async function home(){
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <div id="outboxBadge"></div>
     <p class="subtitle">${homeSubtitle()}</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div><p id="contentUpdated" class="meta" aria-live="polite"></p>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="openControlCentre()">🎛 Control Centre</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div><p id="contentUpdated" class="meta" aria-live="polite"></p>
     <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Additional Tests <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
@@ -1135,7 +1254,7 @@ let _offlineRetryTimer=null;
 function offlineStatusHTML_(){return 'Server offline. Check your internet connection, then <button class="inline-retry" onclick="checkServerStatusAndBundle(true)">Retry connection</button>.';}
 function applyServerStatus_(status,statusEl,slot){
   if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
-  if(status.isAdmin&&!isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  if(slot)slot.innerHTML=isAdminUnlocked?`<button onclick="adminQuestionsPage('adm-import')">Admin: Add Questions</button>`:'';
   let changed=false;
   if(status.topicSummary){setServerTopics(status.topicSummary);changed=true;}
   if(status.online&&Array.isArray(status.customSubjects))_liveCustomApplied=true;
@@ -1156,7 +1275,7 @@ async function checkServerStatusAndBundle(force){
   if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
   const haveCache_=!!(store.customSubjectsCache().length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
   if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>'+(haveCache_?'Updating…':'Checking server…')+'</span>';}
-  if(isAdminUnlocked&&slot)slot.innerHTML='<button onclick="adminQuestionsPage()">Admin: Add Questions</button>';
+  if(slot)slot.innerHTML=isAdminUnlocked?`<button onclick="adminQuestionsPage('adm-import')">Admin: Add Questions</button>`:'';
   const p=store.profile();
   // Background refresh: never shows the top loading bar or disables the page.
   const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS,1,{silent:true});
@@ -1378,15 +1497,13 @@ function adminNavWatch_(){
   },{rootMargin:"-15% 0px -70% 0px"});
   document.querySelectorAll(".admin-sec").forEach(el=>_admObs.observe(el));
 }
-async function adminQuestionsPage(){
-  pushNav(adminQuestionsPage);
+async function adminQuestionsPage(sectionToOpen){
+  pushNav(adminQuestionsPage);setGlobalNavActive_(sectionToOpen==='adm-import'?'add':'home');
   requireProfile(async ()=>{
     const p=store.profile();
-    const access=isAdminUnlocked?null:(API?await apiGet('isAdmin',{email:p.email},5000):null);
-    if(!isAdminUnlocked&&(!access?.ok||!access.isAdmin)){
-      app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Use the Admin button on the homepage and enter the admin password.</p><div class="buttons"><button onclick="home()">Back</button></div></div>';
-      return;
-    }
+    const access=API?await apiGet('isAdmin',{email:p?.email||'',password:adminPw_()},10000,1):null;
+    if(!access?.ok||!access.isAdmin){isAdminUnlocked=false;try{sessionStorage.removeItem('ecet_admin_pw');}catch(e){}updateGlobalNavigation_();app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Sign in again with the admin password.</p><div class="buttons"><button onclick="openAdminPassword()">Admin Sign in</button><button onclick="home()">Home</button></div></div>';return;}
+    isAdminUnlocked=true;updateGlobalNavigation_();
     if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data)){customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);if(cs.topicSummary)setServerTopics(cs.topicSummary);}}catch(e){console.warn("Custom subjects load failed",e);}}
     const curYear=new Date().getFullYear();
     app.innerHTML=`<div class="admin-page">
@@ -1429,8 +1546,8 @@ async function adminQuestionsPage(){
       <div class="admin-step optional"><b>Step 2</b><span>Optional — let an AI write the questions</span></div>
       <h2>Don't want to type questions by hand? Ask an AI</h2>
       <label class="field">Exam / series name (optional)</label><input id="aiExamName" placeholder="e.g. GATE, ECET, campus placement mock" onchange="refreshAiPrompt()">
-      <p class="note">The prompt below now asks the AI to hand back a ready-to-upload Excel (.xlsx) file directly — no copy-pasting rows.</p>
-      <p class="note"><b>Mandatory columns:</b> Question, Option A, Option B, Option C, Option D, Correct Answer, Marks, Type, Year. &nbsp; <b>Optional:</b> Topic, State, Question Number, and all Image URL columns — leave blank if unused.</p>
+      <p class="note">The generated prompt asks the AI for both a downloadable JSON file and the same JSON in its reply as a fallback.</p>
+      <p class="note"><b>JSON format:</b> an array of question objects using the site schema (question, options, answer index, subject/topic, marks, type, difficulty and explanation). JSON is validated before anything is saved.</p>
       <p class="note">Answer these first — the prompt below is generated fresh from your answers each time, not a fixed template.</p>
       <label class="field">Coverage</label><select id="aiScope" onchange="document.getElementById('aiTopicRow').style.display=this.value==='topic'?'':'none';refreshAiPrompt()">
         <option value="subject">Whole subject (broad coverage)</option>
@@ -1447,24 +1564,29 @@ async function adminQuestionsPage(){
       <label class="field">Difficulty</label><select id="aiDifficulty" onchange="refreshAiPrompt()"><option value="Easy">Easy</option><option value="Medium" selected>Medium</option><option value="Hard">Hard</option><option value="Super Hard">Super Hard</option><option value="Mixed">Mixed (all levels)</option></select>
       <label class="field">Number of Questions</label><input id="aiCount" type="number" value="20" min="1" max="200" onchange="refreshAiPrompt()">
       <label class="field">Anything else important? (optional)</label><input id="aiExtra" placeholder="e.g. avoid repeats from last year, favor diagrams-based questions" onchange="refreshAiPrompt()">
-      <p class="note">Copy the prompt below, paste it into any AI chat, then paste the AI's reply directly into the Excel template starting at cell A2 — it's tab-separated so it lands in the right columns automatically.</p>
+      <p class="note">Copy the prompt below into your AI tool. Upload its <b>questions_&lt;topic&gt;.json</b> file, or paste the JSON response into the box below.</p>
       <textarea id="aiPromptBox" readonly rows="13" style="font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;white-space:pre;resize:vertical"></textarea>
-      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template</button></div>
+      <div class="buttons"><button onclick="copyAiPrompt()">📋 Copy Prompt</button><button onclick="downloadQuestionTemplate()">Download Excel Template (optional)</button></div>
       <div id="aiCopyStatus" class="note"></div>
 
-      <div class="admin-step"><b>Step 3</b><span>Upload the filled Excel file</span></div>
-      <label class="field">Excel file (filled in from the template above)</label><input id="questionFile" type="file" accept=".xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
-      <div id="importStatus" class="note"></div><div id="importPreview"></div>
+      <div class="admin-step"><b>Step 3</b><span>Paste JSON or upload one or more files</span></div>
+      <label class="field" for="questionFile">Question files (.json, .xlsx, .xls, .csv) — multiple files supported</label>
+      <input id="questionFile" type="file" multiple accept=".json,application/json,.xlsx,.xls,.csv" onchange="previewQuestionFile(event)">
+      <div id="questionDropZone" class="question-drop-zone" tabindex="0" role="button" aria-label="Drop question files here or choose files" onclick="document.getElementById('questionFile').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="event.preventDefault();this.classList.remove('drag-over');previewQuestionFiles_(event.dataTransfer.files)">Drop .json / Excel files here, or click to choose files</div>
+      <label class="field" for="questionJsonPaste">Or paste JSON (array of question objects)</label><textarea id="questionJsonPaste" rows="7" placeholder='[{"question":"...","options":["A","B","C","D"],"answer":0,...}]'></textarea>
+      <div class="buttons"><button type="button" onclick="previewPastedQuestionJson_()">Preview pasted JSON</button></div>
+      <div id="importStatus" class="note" aria-live="polite"></div><div id="importPreview"></div>
       <div class="buttons"><button id="importQuestionsBtn" onclick="importPreviewedQuestions()" disabled>Import Questions</button></div>
     </div>
     <div class="card admin-sec" id="adm-single" data-tone="single">${questionFormHTML('add',null)}</div>
     <div class="card admin-sec" id="adm-manage" data-tone="manage"><h1>Admin — Manage Questions</h1>
       <p class="note">Edit existing questions in place, or review the audit log of every edit made.</p>
-      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="openControlCentre()">🎛 Control Centre</button><button onclick="home()">Back to Home</button></div>
+      <div class="buttons"><button onclick="editQuestionsPage()">✏️ Edit Questions</button><button onclick="recentChangesPage()">🕘 Recent Changes</button><button onclick="openControlCentre()">🎛 Control Centre</button><button onclick="home()">Home</button></div>
     </div></div>`;
     refreshAdminTopicField();
     refreshAiPrompt();
     adminNavWatch_();
+    if(sectionToOpen){setTimeout(()=>adminJump_(sectionToOpen),50);setGlobalNavActive_('add');}
   });
 }
 
@@ -1533,7 +1655,11 @@ function ccDenied(res){
   if(res&&res.ok===false&&/Control Centre password/i.test(res.error||"")){clearControlSession_();_ccData=null;renderControlGate("Please enter the Control Centre password again.");return true;}
   return false;
 }
-function openControlCentre(){_ccData=null;_ccShowPw=false;_ccSel=new Set();controlCentrePage();}
+function openControlCentre(){
+  setGlobalNavActive_('control');
+  if(!isAdminUnlocked){openAdminPassword('control');return;}
+  _ccData=null;_ccShowPw=false;_ccSel=new Set();controlCentrePage();
+}
 function controlCentrePage(){
   pushNav(controlCentrePage);
   if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
@@ -1586,14 +1712,13 @@ function ccUpdateUndoBar(){
   bar.innerHTML=`<button class="undo-btn" ${u?"":"disabled"} onclick="ccUndo()" title="${esc(u?"Undo: "+u.title:"Nothing to undo")}">↶ Undo</button><button class="undo-btn" ${r?"":"disabled"} onclick="ccRedo()" title="${esc(r?"Redo: "+r.title:"Nothing to redo")}">↷ Redo</button><span class="undo-note">${u?`Last change: <b>${esc(u.title)}</b>`:"No changes to undo yet"}</span>`;
 }
 async function ccUndoRedo_(which){
-  const h=_ccData?.history||{},item=which==="undo"?h.undo:h.redo;
-  if(!item)return;
+  const h=_ccData?.history||{},item=which==="undo"?h.undo:h.redo;if(!item)return;
   if(!confirm(`${which==="undo"?"Undo":"Redo"} this change?\n\n${item.title}`))return;
-  const res=await apiPost(which==="undo"?"undoOperation":"redoOperation",controlAuth_(),120000);
-  if(ccDenied(res))return;
-  if(!res?.ok){const top=document.getElementById("ccTopMsg");if(top)top.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not do that. Please try again.")}</span>`;return;}
-  ccForget_([..._expandedSubjects]);   // the subject list may look different now
-  await ccReload(`<span class="correct">${esc(res.message||"Done.")}</span>`);
+  const top=document.getElementById("ccTopMsg");if(top)top.textContent=`${which} queued; you can continue navigating.`;
+  queueControlSave_(`${which} operation`,which==="undo"?"undoOperation":"redoOperation",controlAuth_(),{
+    onSuccess:async res=>{ccForget_([..._expandedSubjects]);if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Done.'));},
+    onFailure:error=>{const el=document.getElementById('ccTopMsg');if(el)el.innerHTML=ccBad_(error.message||'Could not complete the operation.');}
+  });
 }
 function ccUndo(){return ccUndoRedo_("undo");}
 function ccRedo(){return ccUndoRedo_("redo");}
@@ -1639,28 +1764,28 @@ function ccLocksTab(){
   })();
 }
 async function ccResetDefault(){
-  if(!confirm('Restore the default 24-hour wait and permanently clear all CooldownOverrides rows?'))return;
-  const msg=document.getElementById('ccDefaultMsg');if(msg)msg.textContent='Resetting…';
-  const res=await apiPost('resetCooldownDefaults',{...controlAuth_()},30000);if(ccDenied(res))return;
-  if(!res?.ok){if(msg)msg.textContent=res?.error||'Reset failed.';return;}
-  _ccData.cooldownMinutes=1440;_defaultCooldownMin=1440;
+  if(!confirm('Restore the default 24-hour wait and clear all cooldown overrides?'))return;
+  const old=Number(_ccData?.cooldownMinutes||1440);_ccData.cooldownMinutes=1440;_defaultCooldownMin=1440;
   const label=document.getElementById('ccDefaultLabel');if(label)label.textContent='24 hours';
   const warn=document.getElementById('ccCooldownWarning');if(warn)warn.textContent='';
-  if(msg)msg.textContent='Reset complete. 24-hour default restored; '+(res.overridesCleared||0)+' override rows cleared.';
+  const msg=document.getElementById('ccDefaultMsg');if(msg)msg.textContent='Reset queued. You can navigate away.';
+  queueControlSave_('default timer setting','resetCooldownDefaults',controlAuth_(),{
+    onSuccess:res=>{_ccData&&(_ccData.cooldownMinutes=1440);if(msg&&document.contains(msg))msg.textContent='Reset complete. 24-hour default restored; '+(res.overridesCleared||0)+' override rows cleared.';},
+    onFailure:error=>{if(_ccData)_ccData.cooldownMinutes=old;_defaultCooldownMin=old;const el=document.getElementById('ccDefaultLabel');if(el)el.textContent=fmtMinutes(old);if(msg&&document.contains(msg))msg.textContent='Reset failed: '+error.message;}
+  });
 }
 async function ccSaveDefault(){
   const msg=document.getElementById("ccDefaultMsg"),m=readDuration("dw");
   if(m===null){msg.innerHTML='<span class="wronganswer">Enter a valid wait from 0 to 90 days. Values above 30 days will trigger a warning.</span>';return;}
   if(!confirm(`Lock every subject for ${fmtMinutes(m)} after a student finishes it?`))return;
-  msg.textContent="Saving…";
-  const res=await apiPost("setDefaultCooldown",{...controlAuth_(),minutes:m},30000);
-  if(ccDenied(res))return;
-  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
-  _ccData.cooldownMinutes=res.cooldownMinutes;_defaultCooldownMin=res.cooldownMinutes;
-  const warning=document.getElementById("ccCooldownWarning");if(warning)warning.textContent=res.cooldownMinutes>43200?"Warning: active wait exceeds 30 days.":"";
-  document.getElementById("ccDefaultLabel").textContent=fmtMinutes(res.cooldownMinutes);
-  msg.innerHTML=`<span class="correct">Saved — subjects now lock for ${esc(fmtMinutes(res.cooldownMinutes))} after an exam.</span>`;
-  if(document.getElementById("tcUser")?.value)tcLoadStatus();
+  const old=Number(_ccData?.cooldownMinutes||1440);_ccData.cooldownMinutes=m;_defaultCooldownMin=m;
+  const warning=document.getElementById("ccCooldownWarning");if(warning)warning.textContent=m>43200?"Warning: active wait exceeds 30 days.":"";
+  const label=document.getElementById("ccDefaultLabel");if(label)label.textContent=fmtMinutes(m);
+  if(msg)msg.textContent='Saving in background…';
+  queueControlSave_('default timer setting','setDefaultCooldown',{...controlAuth_(),minutes:m},{
+    onSuccess:res=>{const actual=Number(res.cooldownMinutes??m);if(_ccData)_ccData.cooldownMinutes=actual;_defaultCooldownMin=actual;const l=document.getElementById('ccDefaultLabel');if(l)l.textContent=fmtMinutes(actual);const mEl=document.getElementById('ccDefaultMsg');if(mEl)mEl.innerHTML=`<span class="correct">Saved — subjects now lock for ${esc(fmtMinutes(actual))} after an exam.</span>`;if(document.getElementById('tcUser')?.value)tcLoadStatus();},
+    onFailure:error=>{if(_ccData)_ccData.cooldownMinutes=old;_defaultCooldownMin=old;const l=document.getElementById('ccDefaultLabel');if(l)l.textContent=fmtMinutes(old);const w=document.getElementById('ccCooldownWarning');if(w)w.textContent=old>43200?'Warning: active wait exceeds 30 days.':'';const mEl=document.getElementById('ccDefaultMsg');if(mEl)mEl.textContent='Save failed: '+error.message;}
+  });
 }
 function tcFilterUsers(){
   const q=(document.getElementById("tcFilter")?.value||"").trim().toLowerCase(),sel=document.getElementById("tcUser");
@@ -1691,23 +1816,18 @@ function tcFilterSubjects(){
 async function tcAct(i,mode){
   const email=document.getElementById("tcUser")?.value,msg=document.getElementById("tcMsg");
   if(!email){msg.innerHTML='<span class="wronganswer">Select a student first.</span>';return;}
-  const subject=i<0?"*":_tcSubjects[i].id;const subjectName=i<0?"*":_tcSubjects[i].name;
-  let minutes=0,apiMode=mode;
-  if(mode==="set"||mode==="add"||mode==="sub"){
-    const m=readDuration("tc");
-    if(m===null){msg.innerHTML='<span class="wronganswer">Choose how long first (or enter a valid custom amount).</span>';return;}
-    minutes=m;
-    if(mode==="sub"){minutes=-minutes;apiMode="add";}
-  }
-  msg.innerHTML='<span class="note">Saving…</span>';
-  const res=await apiPost("adminCooldownAdjust",{...controlAuth_(),targetEmail:email,subject,subjectId:subject,subjectName,mode:apiMode,minutes},30000);
-  if(ccDenied(res))return;
-  if(!res?.ok){msg.innerHTML=`<span class="wronganswer">${esc(res?.error||"Could not save. Please try again.")}</span>`;return;}
-  const what=mode==="set"?`Locked for ${fmtMinutes(minutes)}.`:res.message||"Saved.";
-  msg.innerHTML=`<span class="correct">${esc(what)}</span>`;
-  tcLoadStatus();
+  const subject=i<0?"*":_tcSubjects[i].id,subjectName=i<0?"*":_tcSubjects[i].name;let minutes=0,apiMode=mode;
+  if(mode==="set"||mode==="add"||mode==="sub"){const m=readDuration("tc");if(m===null){msg.innerHTML='<span class="wronganswer">Choose how long first (or enter a valid custom amount).</span>';return;}minutes=m;if(mode==="sub"){minutes=-minutes;apiMode="add";}}
+  const beforeRows=document.getElementById('tcRows');
+  const targetRow=beforeRows?(i<0?beforeRows.querySelector('.cc-row.all'):beforeRows.querySelectorAll('.cc-row[data-name]')[i]):null;
+  const previousStatus=targetRow?targetRow.querySelector('.cc-row-main div')?.innerHTML:null;
+  if(targetRow){const state=targetRow.querySelector('.cc-row-main div');if(state)state.innerHTML=`<span class="note">${mode==='unlock'?'Unlock queued':mode==='set'?'Lock queued':mode==='default'?'Reset queued':'Timer update queued'}</span>`;}
+  if(msg)msg.textContent='Change queued. You can continue using the site.';
+  queueControlSave_('student timer setting','adminCooldownAdjust',{...controlAuth_(),targetEmail:email,subject,subjectId:subject,subjectName,mode:apiMode,minutes},{
+    onSuccess:res=>{const el=document.getElementById('tcMsg');if(el)el.innerHTML=`<span class="correct">${esc(mode==="set"?`Locked for ${fmtMinutes(minutes)}.`:res.message||'Saved.')}</span>`;if(document.getElementById('tcBody'))tcLoadStatus();},
+    onFailure:error=>{if(targetRow&&document.contains(targetRow)){const state=targetRow.querySelector('.cc-row-main div');if(state&&previousStatus!==null)state.innerHTML=previousStatus;}const el=document.getElementById('tcMsg');if(el)el.textContent='Could not update timer: '+error.message;}
+  });
 }
-
 /* ---------- 🔑 Passwords ---------- */
 function ccTogglePw(){_ccShowPw=!_ccShowPw;ccPasswordsTab();}
 async function ccPasswordsTab(){
@@ -1833,30 +1953,23 @@ function ccSubFilter(v){const q=cleanTopic(v).toLowerCase();document.querySelect
 function ccToggle(id,on){if(on)_ccSel.add(id);else _ccSel.delete(id);const d=byId_("ccDelBtn");if(d)d.textContent=`🗑 Delete ticked (${_ccSel.size})`;}
 function ccSelectAll(on){_ccSel=new Set(on?_ccData.subjects.map(s=>s.id):[]);ccSubjectsTab();}
 async function ccSetExam(id,val){
-  const res=await apiPost("setSubjectExam",{...controlAuth_(),subjectId:id,exam:val.trim()},30000);
-  if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(ccBad_(res?.error||"Could not save the exam."));return;}
-  [_ccData.subjects.find(s=>s.id===id),customSubjects.find(s=>s.id===id)].forEach(s=>{if(s)s.exam=res.exam;});
-  store.setCustomSubjectsCache(customSubjects);
-  ccMsg_(ccOk_(res.message||"Saved."));
+  const item=_ccData?.subjects?.find(s=>s.id===id);if(!item)return;const old=item.exam||'',next=val.trim();if(old===next)return;
+  item.exam=next;const cached=customSubjects.find(s=>s.id===id);if(cached)cached.exam=next;store.setCustomSubjectsCache(customSubjects);ccSubjectsTab();
+  queueControlSave_('subject exam setting','setSubjectExam',{...controlAuth_(),subjectId:id,exam:next},{
+    onSuccess:res=>{item.exam=res.exam??next;if(cached)cached.exam=item.exam;store.setCustomSubjectsCache(customSubjects);if(document.getElementById('ccBody'))ccSubjectsTab();},
+    onFailure:error=>{item.exam=old;if(cached)cached.exam=old;store.setCustomSubjectsCache(customSubjects);if(document.getElementById('ccBody'))ccSubjectsTab();ccMsg_(ccBad_('Could not save exam: '+error.message));}
+  });
 }
 async function ccDeleteSelected(){
-  const ids=[..._ccSel];
-  if(!ids.length){ccMsg_(ccBad_("Tick at least one subject first."));return;}
-  const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean);
-  const qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
-  if(!confirm(`Delete ${ccCount_(list.length,"subject")}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${ccCount_(qs,"question")}. Students' past results are kept. You can undo this from the top of the Control Centre.`))return;
-  ccMsg_('<span class="note">Deleting…</span>');
-  const res=await apiPost("deleteSubjects",{...controlAuth_(),subjectIds:ids},120000);
-  if(ccDenied(res))return;
-  if(!res?.ok){ccMsg_(ccBad_(res?.error||"Could not delete. Please try again."));return;}
-  const gone=new Set(res.deletedIds||ids);
-  ccForget_([...gone]);
-  gone.forEach(id=>{delete _serverTopics[id];try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});
-  setServerTopics(_serverTopics);
-  await ccReload(ccOk_(res.message||"Deleted."));
+  const ids=[..._ccSel];if(!ids.length){ccMsg_(ccBad_("Tick at least one subject first."));return;}
+  const before=JSON.parse(JSON.stringify(_ccData.subjects||[]));const list=ids.map(id=>_ccData.subjects.find(s=>s.id===id)).filter(Boolean),qs=list.reduce((n,s)=>n+(s.questionCount||0),0);
+  if(!confirm(`Delete ${ccCount_(list.length,"subject")}?\n\n${list.map(s=>"• "+s.name+" ("+(s.questionCount||0)+" questions)").join("\n")}\n\nThis permanently deletes ${list.length===1?"it":"them"} and ${ccCount_(qs,"question")}. Students' past results are kept.`))return;
+  _ccData.subjects=_ccData.subjects.filter(s=>!ids.includes(s.id));_ccSel=new Set();ccSubjectsTab();
+  queueControlSave_('selected subjects','deleteSubjects',{...controlAuth_(),subjectIds:ids},{
+    onSuccess:async res=>{const gone=new Set(res.deletedIds||ids);ccForget_([...gone]);gone.forEach(id=>{delete _serverTopics[id];try{Object.keys(localStorage).filter(k=>k==="ecet_progress_"+id||k.startsWith("ecet_progress_"+id+"::")).forEach(k=>localStorage.removeItem(k));}catch(e){}});setServerTopics(_serverTopics);if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Deleted.'));},
+    onFailure:error=>{if(_ccData)_ccData.subjects=before;if(document.getElementById('ccBody'))ccSubjectsTab();ccMsg_(ccBad_('Delete failed: '+error.message));}
+  });
 }
-
 /* ---------- drag a subject onto another subject ---------- */
 function ccDragStart(e,id){_ccDragId=id;try{e.dataTransfer.setData("text/plain",id);e.dataTransfer.effectAllowed="move";}catch(x){}}
 function ccDragEnd(){_ccDragId="";document.querySelectorAll(".cc-sub.drag-over").forEach(r=>r.classList.remove("drag-over"));}
@@ -1953,28 +2066,16 @@ function mvRefresh(targetChanged){
   byId_("mvPreview").innerHTML=text.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 }
 async function ccDoMove(){
-  const st=mvState_(),msg=byId_("mvMsg");
-  if(!st.src||!st.tgt)return;
-  if(st.kind==="topic"){
-    if(!st.join&&!st.name){msg.innerHTML=ccBad_("Type a name for the topic test first.");return;}
-    if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
-  }
-  msg.innerHTML='<span class="note">Moving…</span>';byId_("mvGo").disabled=true;
-  const base={...controlAuth_(),targetId:st.tgt.id,targetName:st.tgt.name,sourceIds:[st.src.id]};
-  let res;
-  if(st.kind==="merge")res=await apiPost("mergeSubjects",base,120000);
-  else{
-    const payload={...base,mode:st.keep?"keep":"single",targetTopic:st.join?st.join.topic:st.name};
-    if(st.join)payload.targetExam=st.join.exam;else if(st.exam!=="__keep__")payload.targetExam=st.exam;
-    res=await apiPost("nestSubjects",payload,120000);
-  }
-  if(ccDenied(res)){ccModalClose();return;}
-  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not move. Please try again.");byId_("mvGo").disabled=false;return;}
-  ccModalClose();
-  ccForget_(res.movedIds||res.mergedIds||[st.src.id]);
-  await ccReload(ccOk_(res.message||"Moved."));
+  const st=mvState_(),msg=byId_("mvMsg");if(!st.src||!st.tgt)return;
+  if(st.kind==="topic"){if(!st.join&&!st.name){msg.innerHTML=ccBad_("Type a name for the topic test first.");return;}if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}}
+  const base={...controlAuth_(),targetId:st.tgt.id,targetName:st.tgt.name,sourceIds:[st.src.id]};let action,payload;
+  if(st.kind==='merge'){action='mergeSubjects';payload=base;}else{action='nestSubjects';payload={...base,mode:st.keep?'keep':'single',targetTopic:st.join?st.join.topic:st.name};if(st.join)payload.targetExam=st.join.exam;else if(st.exam!=='__keep__')payload.targetExam=st.exam;}
+  const before=JSON.parse(JSON.stringify(_ccData.subjects||[]));_ccData.subjects=_ccData.subjects.filter(x=>x.id!==st.src.id);ccModalClose();ccSubjectsTab();
+  queueControlSave_('subject move',''+action,payload,{
+    onSuccess:async res=>{ccForget_(res.movedIds||res.mergedIds||[st.src.id]);if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Moved.'));},
+    onFailure:error=>{if(_ccData)_ccData.subjects=before;if(document.getElementById('ccBody'))ccSubjectsTab();ccMsg_(ccBad_('Move failed: '+error.message));}
+  });
 }
-
 /* ---------- ✏️ Rename a subject ---------- */
 function ccOpenRenameSubject(id){
   const s=_ccData.subjects.find(x=>x.id===id);if(!s)return;
@@ -1982,17 +2083,14 @@ function ccOpenRenameSubject(id){
   byId_("rnName").select();
 }
 async function ccDoRenameSubject(id){
-  const s=_ccData.subjects.find(x=>x.id===id),name=cleanTopic(byId_("rnName").value),msg=byId_("rnMsg");
-  if(!s)return;
-  if(!name||name===s.name){msg.innerHTML=ccBad_("Type a different name.");return;}
-  msg.innerHTML='<span class="note">Renaming…</span>';byId_("rnGo").disabled=true;
-  const res=await apiPost("renameSubject",{...controlAuth_(),subjectId:id,newName:name},30000);
-  if(ccDenied(res)){ccModalClose();return;}
-  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not rename. Please try again.");byId_("rnGo").disabled=false;return;}
-  ccModalClose();
-  await ccReload(ccOk_(res.message||"Renamed."));
+  const item=_ccData?.subjects?.find(x=>x.id===id),name=cleanTopic(byId_("rnName").value),msg=byId_("rnMsg");if(!item)return;
+  if(!name||name===item.name){msg.innerHTML=ccBad_("Type a different name.");return;}
+  const old=item.name;item.name=name;const cached=customSubjects.find(x=>x.id===id);if(cached)cached.name=name;store.setCustomSubjectsCache(customSubjects);ccModalClose();ccSubjectsTab();
+  queueControlSave_('subject name','renameSubject',{...controlAuth_(),subjectId:id,newName:name},{
+    onSuccess:async res=>{if(item)item.name=res.subject?.name||name;if(cached)cached.name=res.subject?.name||name;store.setCustomSubjectsCache(customSubjects);if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Renamed.'));},
+    onFailure:error=>{if(item)item.name=old;if(cached)cached.name=old;store.setCustomSubjectsCache(customSubjects);if(document.getElementById('ccBody'))ccSubjectsTab();ccMsg_(ccBad_('Rename failed: '+error.message));}
+  });
 }
-
 /* ---------- 🧩 Topic Tests ---------- */
 function ccTestsTab(){
   const body=byId_("ccBody");if(!body)return;
@@ -2021,18 +2119,15 @@ function ccOpenRenameTest(i){
   byId_("rtName").select();
 }
 async function ccDoRenameTest(i){
-  const t=_ccTests[i],newTopic=cleanTopic(byId_("rtName").value),newExam=cleanTopic(byId_("rtExam").value),msg=byId_("rtMsg");
-  if(!t)return;
-  if(!newTopic){msg.innerHTML=ccBad_("Type a name.");return;}
-  if(newTopic===t.topic&&newExam===t.exam){msg.innerHTML=ccBad_("Nothing changed.");return;}
-  msg.innerHTML='<span class="note">Saving…</span>';byId_("rtGo").disabled=true;
-  const res=await apiPost("renameTopicTest",{...controlAuth_(),subjectId:t.sid,topic:t.topic,exam:t.exam,newTopic,newExam},30000);
-  if(ccDenied(res)){ccModalClose();return;}
-  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not save. Please try again.");byId_("rtGo").disabled=false;return;}
-  ccModalClose();
-  await ccReload(ccOk_(res.message||"Saved."));
+  const t=_ccTests[i],newTopic=cleanTopic(byId_("rtName").value),newExam=cleanTopic(byId_("rtExam").value),msg=byId_("rtMsg");if(!t)return;
+  if(!newTopic){msg.innerHTML=ccBad_("Type a name.");return;}if(newTopic===t.topic&&newExam===t.exam){msg.innerHTML=ccBad_("Nothing changed.");return;}
+  const before=JSON.parse(JSON.stringify(_serverTopics));const group=(_serverTopics[t.sid]||{}).topics||[];const found=group.find(x=>topicKey_(x.name||x.topic)===topicKey_(t.topic)&&topicKey_(x.exam||'')===topicKey_(t.exam));if(found){found.name=newTopic;found.exam=newExam;}
+  ccModalClose();ccTestsTab();
+  queueControlSave_('topic test name','renameTopicTest',{...controlAuth_(),subjectId:t.sid,topic:t.topic,exam:t.exam,newTopic,newExam},{
+    onSuccess:async res=>{if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Saved.'));},
+    onFailure:error=>{_serverTopics=before;if(document.getElementById('ccBody'))ccTestsTab();ccMsg_(ccBad_('Rename failed: '+error.message));}
+  });
 }
-
 /* ---------- ➡️ Move a topic test to another subject ---------- */
 function ccOpenMoveTest(i,targetId){
   const t=_ccTests[i];if(!t)return;
@@ -2072,22 +2167,17 @@ function mtRefresh(targetChanged,i){
   byId_("mtPreview").innerHTML=(same?"It is already in that subject — choose another subject, or a topic test to add it to.":`Its ${ccCount_(t.count,"question")} will appear in “${st.tgt.name}” as ${called}${ex?` for ${ex}`:""}.`).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
 }
 async function ccDoMoveTest(i){
-  const st=mtState_(),msg=byId_("mtMsg");
-  if(!st.t||!st.tgt)return;
+  const st=mtState_(),msg=byId_("mtMsg");if(!st.t||!st.tgt)return;
   if(st.tgt.id===st.t.sid&&st.pick==="__keep__"){msg.innerHTML=ccBad_("It is already in that subject — choose another subject, or a topic test to add it to.");return;}
-  if(st.pick==="__new__"&&!st.name){msg.innerHTML=ccBad_("Type the new name first.");return;}
-  if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
-  const payload={...controlAuth_(),fromSubjectId:st.t.sid,items:[{topic:st.t.topic,exam:st.t.exam}],toSubjectId:st.tgt.id,toSubjectName:st.tgt.name};
-  if(st.join){payload.toTopic=st.join.topic;payload.toExam=st.join.exam;}
-  else{if(st.pick==="__new__")payload.toTopic=st.name;if(st.exam!=="__keep__")payload.toExam=st.exam;}
-  msg.innerHTML='<span class="note">Moving…</span>';byId_("mtGo").disabled=true;
-  const res=await apiPost("moveTopicTests",payload,60000);
-  if(ccDenied(res)){ccModalClose();return;}
-  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not move. Please try again.");byId_("mtGo").disabled=false;return;}
-  ccModalClose();
-  await ccReload(ccOk_(res.message||"Moved."));
+  if(st.pick==="__new__"&&!st.name){msg.innerHTML=ccBad_("Type the new name first.");return;}if(st.exam===null){msg.innerHTML=ccBad_("Type the exam name, or choose another option.");return;}
+  const payload={...controlAuth_(),fromSubjectId:st.t.sid,items:[{topic:st.t.topic,exam:st.t.exam}],toSubjectId:st.tgt.id,toSubjectName:st.tgt.name};if(st.join){payload.toTopic=st.join.topic;payload.toExam=st.join.exam;}else{if(st.pick==='__new__')payload.toTopic=st.name;if(st.exam!=='__keep__')payload.toExam=st.exam;}
+  const before=JSON.parse(JSON.stringify(_serverTopics));const src=(_serverTopics[st.t.sid]||{}).topics||[];if(_serverTopics[st.t.sid])_serverTopics[st.t.sid].topics=src.filter(x=>!(topicKey_(x.name||x.topic)===topicKey_(st.t.topic)&&topicKey_(x.exam||'')===topicKey_(st.t.exam)));
+  ccModalClose();ccTestsTab();
+  queueControlSave_('topic test move','moveTopicTests',payload,{
+    onSuccess:async res=>{if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Moved.'));},
+    onFailure:error=>{_serverTopics=before;if(document.getElementById('ccBody'))ccTestsTab();ccMsg_(ccBad_('Move failed: '+error.message));}
+  });
 }
-
 /* ---------- ⬆️ Make a topic test a subject ---------- */
 function ccOpenPromote(i){
   const t=_ccTests[i];if(!t)return;
@@ -2101,18 +2191,15 @@ function ccOpenPromote(i){
   byId_("pmName").select();
 }
 async function ccDoPromote(i){
-  const t=_ccTests[i],name=cleanTopic(byId_("pmName").value),pw=byId_("pmPass").value.trim(),msg=byId_("pmMsg");
-  if(!t)return;
-  if(!name){msg.innerHTML=ccBad_("Type a name for the new subject.");return;}
-  if(!pw){msg.innerHTML=ccBad_("A password is required for the new subject.");return;}
-  msg.innerHTML='<span class="note">Working…</span>';byId_("pmGo").disabled=true;
-  const res=await apiPost("promoteTopicTest",{...controlAuth_(),fromSubjectId:t.sid,topic:t.topic,exam:t.exam,newName:name,password:pw},60000);
-  if(ccDenied(res)){ccModalClose();return;}
-  if(!res?.ok){msg.innerHTML=ccBad_(res?.error||"Could not do that. Please try again.");byId_("pmGo").disabled=false;return;}
-  ccModalClose();
-  await ccReload(ccOk_(res.message||"Done."));
+  const t=_ccTests[i],name=cleanTopic(byId_("pmName").value),pw=byId_("pmPass").value.trim(),msg=byId_("pmMsg");if(!t)return;
+  if(!name){msg.innerHTML=ccBad_("Type a name for the new subject.");return;}if(!pw){msg.innerHTML=ccBad_("A password is required for the new subject.");return;}
+  const before=JSON.parse(JSON.stringify(_serverTopics)),src=(_serverTopics[t.sid]||{}).topics||[];if(_serverTopics[t.sid])_serverTopics[t.sid].topics=src.filter(x=>!(topicKey_(x.name||x.topic)===topicKey_(t.topic)&&topicKey_(x.exam||'')===topicKey_(t.exam)));
+  ccModalClose();ccTestsTab();
+  queueControlSave_('topic test promotion','promoteTopicTest',{...controlAuth_(),fromSubjectId:t.sid,topic:t.topic,exam:t.exam,newName:name,password:pw},{
+    onSuccess:async res=>{if(document.getElementById('ccBody'))await ccReload(ccOk_(res.message||'Done.'));},
+    onFailure:error=>{_serverTopics=before;if(document.getElementById('ccBody'))ccTestsTab();ccMsg_(ccBad_('Promotion failed: '+error.message));}
+  });
 }
-
 /* ===================== ADMIN — SHARED QUESTION FORM (manual add + edit) ===================== */
 function questionFormHTML(mode,q){
   const isEdit=mode==='edit';
@@ -2136,6 +2223,8 @@ function questionFormHTML(mode,q){
     <input id="qfBImg" placeholder="Option B image" value="${q?esc((q.optionImages||[])[1]||''):''}">
     <input id="qfCImg" placeholder="Option C image" value="${q?esc((q.optionImages||[])[2]||''):''}">
     <input id="qfDImg" placeholder="Option D image" value="${q?esc((q.optionImages||[])[3]||''):''}">
+    <label class="field">Difficulty (optional)</label><select id="qfDifficulty">${['Easy','Medium','Hard','Super Hard'].map(x=>`<option value="${x}" ${q&&q.difficulty===x?'selected':''}>${x}</option>`).join('')}</select>
+    <label class="field">Explanation (optional)</label><textarea id="qfExplanation" rows="3">${v('explanation')}</textarea>
     <div id="qfStatus" class="note"></div>
     <div class="buttons">${isEdit?`<button onclick="editQuestionsPage()">Cancel</button><button onclick="saveQuestionEdit('${esc(q.id)}')">Save Changes</button>`:`<button onclick="saveManualQuestion()">Save Question</button>`}</div>`;
 }
@@ -2156,7 +2245,9 @@ function readQuestionForm(){
     optionCImage:document.getElementById('qfCImg').value.trim(),
     optionDImage:document.getElementById('qfDImg').value.trim(),
     topic:readTopicField('qf'),
-    exam:readExamField('qf')
+    exam:readExamField('qf'),
+    difficulty:document.getElementById('qfDifficulty')?.value||'',
+    explanation:document.getElementById('qfExplanation')?.value?.trim()||''
   };
 }
 function qfSubjectChanged(){
@@ -2188,9 +2279,9 @@ async function saveManualQuestion(){
 /* ===================== ADMIN — EDIT QUESTIONS ===================== */
 let _editQuestionsCache=[],_editSubjectId='',_editSelected=new Set();
 async function editQuestionsPage(){
-  pushNav(editQuestionsPage);
+  pushNav(editQuestionsPage);setGlobalNavActive_('edit');
   requireProfile(async ()=>{
-    if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+    if(!isAdminUnlocked){openAdminPassword('edit');return;}
     if(API&&!customSubjects.length){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data))customSubjects=cs.data;}catch(e){}}
     app.innerHTML=`<div class="card"><h1>Admin — Edit Questions</h1>
       <p class="note">Pick a subject, load its questions, then click Edit on any row.</p>
@@ -2205,13 +2296,14 @@ async function loadAdminQuestions(){
   if(!sel.value||sel.value==='__new__'){listEl.innerHTML='<span class="wronganswer">Pick a subject.</span>';return;}
   _editSubjectId=sel.value;
   listEl.textContent='Loading…';
-  const res=await apiGet('questions',{subjectId:sel.value});
+  const res=await apiPost('adminQuestions',{...adminAuth_(),subjectId:sel.value},30000);
   if(!res?.ok||!Array.isArray(res.data)){listEl.innerHTML='<span class="wronganswer">Could not load questions.</span>';return;}
   _editQuestionsCache=res.data;
   _editSelected=new Set();
   renderEditQuestionsList();
 }
 function editExamOf_(q){return cleanTopic(q.exam)||homeExam(findSubjectById(_editSubjectId));}
+// CHANGED: question-management entries render as responsive cards instead of a wide table.
 function renderEditQuestionsList(){
   const listEl=document.getElementById('editQuestionsList');
   if(!listEl)return;
@@ -2242,9 +2334,7 @@ function visibleEditRows_(){
 function renderEditTable(){
   const wrap=document.getElementById('editTableWrap');if(!wrap)return;
   const rows=visibleEditRows_(),allTicked=rows.length>0&&rows.every(q=>_editSelected.has(q.id));
-  wrap.innerHTML=rows.length?`<div class="table-scroll"><table class="simple"><tr><th><input type="checkbox" ${allTicked?'checked':''} onchange="toggleEditAll(this.checked)" title="Tick / untick everything shown"></th><th>Question</th><th>Topic</th><th>Exam</th><th>Year</th><th></th></tr>
-  ${rows.map(q=>`<tr><td><input type="checkbox" ${_editSelected.has(q.id)?'checked':''} onchange="toggleEditSel('${esc(q.id)}',this.checked)"></td><td>${esc((q.question||'').slice(0,90))}${(q.question||'').length>90?'…':''}</td><td>${q.topic?esc(q.topic):'—'}</td><td>${editExamOf_(q)?esc(editExamOf_(q)):'—'}</td><td>${esc(q.year)}</td><td><button onclick="editQuestionRow('${esc(q.id)}')">Edit</button></td></tr>`).join('')}
-  </table></div>`:'<p class="note">No questions match this filter.</p>';
+  wrap.innerHTML=rows.length?`<div class="edit-question-list-head"><label><input type="checkbox" ${allTicked?'checked':''} onchange="toggleEditAll(this.checked)" title="Tick / untick everything shown"> Select all shown</label><span>${rows.length} question(s)</span></div><div class="edit-question-grid">${rows.map((q,i)=>`<article class="edit-question-card"><div class="edit-question-card-head"><label><input type="checkbox" ${_editSelected.has(q.id)?'checked':''} onchange="toggleEditSel('${esc(q.id)}',this.checked)"> <span>Q${esc(q.questionNumber||String(i+1))}</span></label><button type="button" onclick="editQuestionRow('${esc(q.id)}')">Edit</button></div><p>${esc(q.question||'')}</p><div class="edit-question-meta"><span>${q.topic?esc(q.topic):'No topic'}</span><span>${editExamOf_(q)?esc(editExamOf_(q)):'No exam'}</span><span>${esc(q.year)}</span></div></article>`).join('')}</div>`:'<p class="note">No questions match this filter.</p>';
   updateBulkBtn();
 }
 function toggleEditAll(on){visibleEditRows_().forEach(q=>{if(on)_editSelected.add(q.id);else _editSelected.delete(q.id);});renderEditTable();}
@@ -2294,11 +2384,11 @@ async function saveQuestionEdit(id){
 
 /* ===================== ADMIN — RECENT CHANGES (audit log) ===================== */
 async function recentChangesPage(){
-  pushNav(recentChangesPage);
+  pushNav(recentChangesPage);setGlobalNavActive_('recent');
   requireProfile(async ()=>{
-    if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
+    if(!isAdminUnlocked){openAdminPassword('recent');return;}
     app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="note">Loading…</p></div>`;
-    const res=await apiGet('questionChangeLog',{});
+    const res=await apiPost('adminQuestionChangeLog',adminAuth_(),30000);
     if(!res?.ok||!Array.isArray(res.data)){app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="note">Could not load the change log.</p><div class="buttons"><button onclick="recentChangesPage()">Retry</button><button onclick="adminQuestionsPage()">Back</button></div></div>`;return;}
     const rows=res.data;
     app.innerHTML=`<div class="card"><h1>Recent Changes</h1><p class="meta">Last ${rows.length} edit(s) to questions, newest first.</p>
@@ -2326,106 +2416,59 @@ async function createNewSubject(){
   if(sel){sel.innerHTML=adminSubjectOptions();sel.value=res.subject.id;}
 }
 function buildAiPrompt(){
-  // Built fresh from the admin's actual answers each time (coverage, question
-  // type, difficulty, count, exam name) — not a single fixed template
-  // regardless of input. This version asks the AI to hand back an actual
-  // .xlsx file (for AI tools that can generate files) instead of TSV text to
-  // paste in — upload the returned file straight into the importer above.
+  // CHANGED: generate a JSON-first prompt that requests both a downloadable
+  // file and an identical JSON code block as a fallback.
   const year=document.getElementById("adminYear")?.value||new Date().getFullYear();
   const scope=document.getElementById("aiScope")?.value||"subject";
   const sel=document.getElementById("adminSubject"),subjName=sel?.selectedOptions?.[0]?.textContent?.trim()||"the selected subject";
   const topic=document.getElementById("aiTopic")?.value?.trim();
   const qtype=document.getElementById("aiQType")?.value||"Mixed";
-  const count=document.getElementById("aiCount")?.value||20;
+  const count=Math.max(1,Math.min(200,Number(document.getElementById("aiCount")?.value||20)));
   const difficulty=document.getElementById("aiDifficulty")?.value||"Medium";
   const extra=document.getElementById("aiExtra")?.value?.trim();
-  const topicSel=readTopicField("at"); // the topic-wise test these questions will be filed under (may be empty)
-  const examSel=readExamField("at");   // the exam they are for (empty = the subject's default exam)
+  const topicSel=readTopicField("at"),examSel=readExamField("at");
   const examName=document.getElementById("aiExamName")?.value?.trim()||examSel||homeExam(findSubjectById(sel?.value))||subjName;
-
-  const subtopicsLine=scope==='topic'&&topic
-    ? (topicSel?topicSel+' — focusing on: '+topic:topic)
-    : scope==='topic'
-      ? (topicSel?'Everything commonly tested under "'+topicSel+'" in '+subjName:'Pick one well-defined, commonly-tested subtopic within '+subjName+' and stay within it.')
-      : topicSel
-        ? 'Everything commonly tested under "'+topicSel+'" in '+subjName
-        : 'All major topics of '+subjName+' — spread broadly, not just one chapter.';
-
-  const qtypeLines={
-    'Conceptual/theory-based':'Focus on conceptual / theory-based questions — test definitions, principles, and understanding rather than heavy calculation.',
-    'Numerical/problem-solving':'Focus on numerical / problem-solving questions — most should require a calculation or worked step, with plausible numeric distractors as the wrong options.',
-    'Mixed':'Include a balanced mix of conceptual and numerical/problem-solving questions.',
-    'Previous-year exam style':'Match the style, phrasing, and difficulty pattern typically seen in previous-year competitive exam papers for this subject.',
-    'Application/scenario-based':'Frame questions around a short real-world scenario the student must reason through (application / scenario-based).'
-  };
-
+  const subtopicsLine=scope==='topic'&&topic?(topicSel?topicSel+' — focus: '+topic:topic):scope==='topic'?(topicSel?'Commonly tested subtopics under "'+topicSel+'" in '+subjName:'Choose one well-defined commonly-tested subtopic within '+subjName):topicSel?'All commonly tested areas under "'+topicSel+'" in '+subjName:'All major topics of '+subjName+' with broad coverage.';
+  const qtypeLine={
+    'Conceptual/theory-based':'Prioritize conceptual and theory-based questions.',
+    'Numerical/problem-solving':'Prioritize numerical and calculation-based questions with plausible distractors.',
+    'Mixed':'Use a balanced mix of conceptual and numerical problem-solving questions.',
+    'Previous-year exam style':'Use the phrasing and challenge level of competitive-exam questions without copying protected questions.',
+    'Application/scenario-based':'Use short realistic scenarios that test application and reasoning.'
+  }[qtype]||'Use a balanced mix of question styles.';
+  const topicSlug=(topic||topicSel||subjName).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')||'topic';
+  const example={id:null,subject:subjName,subjectId:null,year:String(year),state:'TS',questionNumber:'1',question:'Which logic gate produces HIGH output only when all its inputs are HIGH?',options:['OR','AND','XOR','NOR'],answer:1,topic:topicSel||topic||'Logic Gates',exam:examName,marks:1,type:'MCQ',difficulty:'Medium',explanation:'An AND gate outputs 1 only when every input is 1.',image:'',optionImages:['','','','']};
   return [
-    'You are creating practice questions for a competitive-exam-style mock test. Generate exam questions in an Excel (.xlsx) file.',
+    'You are generating original, accurate competitive-exam practice questions for an online test website.',
+    'Subject: '+subjName,'Coverage: '+subtopicsLine,'Exam: '+examName,'Year: '+year,'Question count: exactly '+count,'Question style: '+qtype+' — '+qtypeLine,'Difficulty: '+difficulty,
+    ...(topicSel?['Set topic to exactly: '+topicSel]:[]),...(examSel?['Set exam to exactly: '+examSel]:[]),...(extra?['Additional instructions: '+extra]:[]),'',
+    'REQUIRED OUTPUTS — RETURN BOTH:',
+    '1) Create a downloadable file named questions_'+topicSlug+'.json. The file content must be the JSON array described below.',
+    '2) In your chat response, include the exact same JSON content in one fenced ```json code block as a fallback. Do not make the file and code block differ.',
+    'If your tool cannot create downloadable files, still provide the complete JSON code block. Never return only JavaScript, Python, or website code.',
     '',
-    'Topic: '+subjName,
-    'Subtopics: '+subtopicsLine,
-    ...(topicSel?['Topic (value for the Topic column): '+topicSel]:[]),
-    ...(examSel?['Exam (value for the Exam column): '+examSel]:[]),
-    'Number of questions: '+count,
-    'Difficulty level: '+difficulty,
-    'Year: '+year,
-    'Exam: '+examName,
+    'EXACT QUESTION OBJECT SCHEMA (the website import format):',
+    '{','  "id": null,','  "subject": "'+subjName+'",','  "subjectId": null,','  "year": "'+year+'",','  "state": "TS",','  "questionNumber": "1",','  "question": "Question text",','  "options": ["Option A", "Option B", "Option C", "Option D"],','  "answer": 0,','  "topic": "Topic name",','  "exam": "'+examName+'",','  "marks": 1,','  "type": "MCQ",','  "difficulty": "'+difficulty+'",','  "explanation": "A concise explanation of why the correct option is right.",','  "image": "",','  "optionImages": ["", "", "", ""]','}',
+    'All objects must use these exact field names. `answer` is a zero-based integer: 0=A, 1=B, 2=C, 3=D. The website generates its own question ID, so keep `id` null. `subjectId` may be null; the admin-selected destination subject is authoritative.',
+    'Full example object (one object in the output array):',JSON.stringify(example,null,2),'',
+    'QUESTION RULES:',
+    '• Create exactly '+count+' original, non-duplicate MCQ questions. Each must have exactly 4 non-empty options and exactly one correct option.',
+    '• `answer` must be an integer from 0 to 3 and point to the only correct option.',
+    '• `year` is a string. `marks` is a positive number. `type` must be exactly "MCQ".',
+    '• `difficulty` must be one of Easy, Medium, Hard, Super Hard. Use the requested level; for Mixed, vary the levels.',
+    '• Include a clear, factually correct `explanation` for every question. Use empty strings for unused image fields.',
+    '• Include `subject`, `topic`, and `exam` metadata. Use the selected topic/exam above consistently when specified.',
+    '• Number `questionNumber` sequentially from 1 to '+count+'. Keep question text and options as plain strings.',
+    '• Do not fabricate citations, facts, formulas, or answer keys. Check every answer before returning.',
     '',
-    'Excel format — mandatory',
+    'STRICT JSON RULES:',
+    '• The file must contain valid JSON only: a top-level array of question objects.',
+    '• No comments, no Markdown fences, no trailing commas, no undefined values, and no extra text inside the file.',
+    '• Escape quotation marks, backslashes, tabs, and newlines correctly using JSON escaping. Do not place literal unescaped line breaks inside strings.',
+    '• Use double quotes for every JSON key and string. Numbers and null must remain JSON numbers/null, not quoted where the schema specifies otherwise.',
+    '• Ensure the JSON parses successfully before delivering it.',
     '',
-    'Create an Excel file with exactly 18 columns in this order:',
-    '',
-    '1. Question',
-    '2. Option A',
-    '3. Option B',
-    '4. Option C',
-    '5. Option D',
-    '6. Correct Answer',
-    '7. Marks',
-    '8. Type',
-    '9. Year',
-    '10. State',
-    '11. Question Number',
-    '12. Question Image URL',
-    '13. Option A Image URL',
-    '14. Option B Image URL',
-    '15. Option C Image URL',
-    '16. Option D Image URL',
-    '17. Topic',
-    '18. Exam',
-    '',
-    'Each question must occupy one row. Include a header row with the 18 column names. Preserve this exact column order and structure.',
-    '',
-    'Question requirements',
-    '',
-    '1. Generate exactly '+count+' unique questions using the requested Type format: '+(qtype==='Previous-year exam style'?'MCQ unless the requested exam explicitly requires MSQ/NAT':(qtype==='Mixed'?'MCQ by default unless MSQ/NAT are explicitly requested':qtype))+'.',
-    '2. '+(qtypeLines[qtype]||qtypeLines['Mixed']),
-    '3. Ensure the difficulty is '+difficulty+', suitable for competitive exams.',
-    '4. Cover '+(scope==='topic'?'the specified subtopic(s)':'all specified subtopics')+' thoroughly.',
-    '5. Do not create duplicate or near-duplicate questions.',
-    '6. Every question must have exactly four options: A, B, C, and D.',
-    '7. Correct Answer must contain exactly one letter: A, B, C, or D, matching the correct option.',
-    '8. Marks must be a numeric value: use 1 or 2 for GATE-style questions; use 1 for ordinary MCQs unless the requested exam specifies another scheme.',
-    '9. Type must be exactly one of MCQ, MSQ, or NAT. If Type is MCQ, Correct Answer is one letter (A/B/C/D). If Type is MSQ, Correct Answer may contain multiple letters such as A,C and the question may have multiple correct options. If Type is NAT, use a numeric Correct Answer and leave the option fields empty when appropriate.',
-    '10. Verify every numerical answer, formula, and correct option before finalizing.',
-    '11. Use '+year+' in the Year column for every question.',
-    '12. Fill Question Number sequentially from 1 to '+count+'.',
-    '13. Fill State with the requested state abbreviation, or leave it empty if no state is specified.',
-    '14. Leave all image URL columns empty unless image URLs are explicitly requested.',
-    '15. '+(topicSel?'Fill the Topic column with exactly "'+topicSel+'" for every question (same spelling and capitalization).':'Leave the Topic column empty.'),
-    '16. '+(examSel?'Fill the Exam column with exactly "'+examSel+'" for every question.':'Leave the Exam column empty.'),
-    '17. Do not invent facts, ambiguous questions, or questions with multiple correct answers.',
-    ...(extra?['18. Additional instructions: '+extra]:[]),
-    '',
-    'Output requirements',
-    '',
-    '- Return ONLY the completed Excel (.xlsx) file.',
-    '- Do not output the questions as plain text, TSV, CSV, or Markdown.',
-    '- Do not provide explanations, answers, or any other text outside the Excel file.',
-    '- Ensure the file contains exactly '+count+' question rows plus the header row.',
-    '- Check that all 18 columns are present and in the correct order.',
-    '- Ensure every mandatory field is filled for every question.',
-    '- Make the Excel file ready to download and use directly.'
+    'Return the downloadable .json file and the identical JSON code block. Do not return Excel or code instead.'
   ].join('\n');
 }
 function refreshAiPrompt(){
@@ -2474,55 +2517,99 @@ async function downloadQuestionTemplate(){
     if(btn){btn.disabled=false;btn.textContent=originalLabel;}
   }
 }
+// CHANGED: normalize the site's JSON object format (zero-based answer index)
+// and the legacy spreadsheet column names through the same validation path.
 function normalizeQuestionRow(r,defaultYear){
   const get=(...keys)=>{for(const k of keys){if(r[k]!==undefined)return r[k];}return '';};
-  const marksRaw=get('Marks','marks','Mark','mark');const marks=String(marksRaw??'').trim();
-  const type=String(get('Type','type','Question Type','questionType')||'MCQ').trim().toUpperCase();
-  return {question:String(get('Question','question')||'').trim(),optionA:String(get('Option A','OptionA','optionA')||'').trim(),optionB:String(get('Option B','OptionB','optionB')||'').trim(),optionC:String(get('Option C','OptionC','optionC')||'').trim(),optionD:String(get('Option D','OptionD','optionD')||'').trim(),correctAnswer:String(get('Correct Answer','CorrectAnswer','correctAnswer')||'').trim().toUpperCase(),marks, type, year:String(get('Year','year')||'').trim()||String(defaultYear||'').trim(),state:String(get('State','state')||'TS').trim(),questionNumber:String(get('Question Number','QuestionNumber','questionNumber')||'').trim(),questionImage:String(get('Question Image URL','QuestionImage','questionImage')||'').trim(),optionAImage:String(get('Option A Image URL','OptionAImage','optionAImage')||'').trim(),optionBImage:String(get('Option B Image URL','OptionBImage','optionBImage')||'').trim(),optionCImage:String(get('Option C Image URL','OptionCImage','optionCImage')||'').trim(),optionDImage:String(get('Option D Image URL','OptionDImage','optionDImage')||'').trim(),topic:cleanTopic(get('Topic','topic','Topic Name')),exam:cleanTopic(get('Exam','exam','Exam Name'))};
+  const rawOptions=get('options','Options');
+  const opts=Array.isArray(rawOptions)?rawOptions:[];
+  const rawAnswer=get('answer','Answer','correctAnswer','Correct Answer','CorrectAnswer');
+  let correct=String(get('correctAnswer','Correct Answer','CorrectAnswer')||'').trim().toUpperCase();
+  if(!correct&&rawAnswer!==''&&rawAnswer!==null&&rawAnswer!==undefined){
+    if(typeof rawAnswer==='number'||/^\d+$/.test(String(rawAnswer)))correct='ABCD'[Number(rawAnswer)]||'';
+    else correct=String(rawAnswer).trim().toUpperCase();
+  }
+  const marksRaw=get('marks','Marks','Mark','mark');
+  const type=String(get('type','Type','Question Type','questionType')||'MCQ').trim().toUpperCase();
+  const oi=get('optionImages','OptionImages');const optionImages=Array.isArray(oi)?oi:[];
+  return {
+    question:String(get('question','Question')||'').trim(),
+    optionA:String(opts[0]??get('optionA','Option A','OptionA')??'').trim(),optionB:String(opts[1]??get('optionB','Option B','OptionB')??'').trim(),
+    optionC:String(opts[2]??get('optionC','Option C','OptionC')??'').trim(),optionD:String(opts[3]??get('optionD','Option D','OptionD')??'').trim(),
+    correctAnswer:correct,rawAnswer:(rawAnswer===undefined||rawAnswer===null)?'':String(rawAnswer),marks:String(marksRaw===''?1:marksRaw).trim(),type,
+    year:String(get('year','Year')||defaultYear||'').trim(),state:String(get('state','State')||'TS').trim(),
+    questionNumber:String(get('questionNumber','Question Number','QuestionNumber')||'').trim(),
+    questionImage:String(get('image','questionImage','Question Image URL','QuestionImage')||'').trim(),
+    optionAImage:String(optionImages[0]??get('optionAImage','Option A Image URL','OptionAImage')??'').trim(),
+    optionBImage:String(optionImages[1]??get('optionBImage','Option B Image URL','OptionBImage')??'').trim(),
+    optionCImage:String(optionImages[2]??get('optionCImage','Option C Image URL','OptionCImage')??'').trim(),
+    optionDImage:String(optionImages[3]??get('optionDImage','Option D Image URL','OptionDImage')??'').trim(),
+    topic:cleanTopic(get('topic','Topic','Topic Name')),exam:cleanTopic(get('exam','Exam','Exam Name')),
+    difficulty:String(get('difficulty','Difficulty')||'').trim(),explanation:String(get('explanation','Explanation')||'').trim()
+  };
 }
 function validateImportRows(rows){
-  const errs=[],seen=new Set();
-  rows.forEach((r,i)=>{const e=[];if(!r.question)e.push('Question');['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('Option '+"ABCD"[n]);});if(!/^[ABCD]$/.test(r.correctAnswer))e.push('Correct Answer A/B/C/D');const mark=Number(r.marks);if(!Number.isFinite(mark)||mark<=0)e.push('Marks must be a positive number');if(!['MCQ','MSQ','NAT'].includes(r.type))e.push('Type must be MCQ/MSQ/NAT');if(r.type!=='MCQ'&&r.type!=='MSQ'&&r.type!=='NAT'){}if(!r.year)e.push('Year');if(r.topic&&r.topic.length>80)e.push('Topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('Exam longer than 40 characters');const key=[r.question.toLowerCase(),r.year,r.state,r.questionNumber].join('|');if(seen.has(key))e.push('Duplicate');seen.add(key);if(e.length)errs.push({row:i+2,errors:e});});return errs;
+  const errors=[],duplicates=[],seen=new Set();
+  rows.forEach((r,i)=>{
+    const e=[];if(!r.question)e.push('missing question');
+    ['optionA','optionB','optionC','optionD'].forEach((k,n)=>{if(!r[k])e.push('missing option '+"ABCD"[n]);});
+    if(!/^[ABCD]$/.test(r.correctAnswer))e.push(r.rawAnswer!==undefined&&r.rawAnswer!==''?'answer "'+r.rawAnswer+'" is out of range (use 0-3 or A-D)':'missing correct answer (use answer 0-3 or correctAnswer A-D)');
+    const mark=Number(r.marks);if(!Number.isFinite(mark)||mark<=0)e.push('marks must be a positive number');
+    if(!['MCQ','MSQ','NAT'].includes(r.type))e.push('type must be MCQ/MSQ/NAT');
+    if(!r.year)e.push('missing year');
+    if(r.topic&&r.topic.length>80)e.push('topic longer than 80 characters');if(r.exam&&r.exam.length>40)e.push('exam longer than 40 characters');
+    const key=[r.question.toLowerCase().replace(/\s+/g,' ').trim(),r.year,r.state,r.questionNumber].join('|');
+    if(!e.length&&seen.has(key))duplicates.push({row:i+1,reason:'duplicate within this upload'});
+    else if(!e.length)seen.add(key);
+    if(e.length)errors.push({row:i+1,errors:e});
+  });
+  return {errors,duplicates};
 }
-async function previewQuestionFile(ev){
-  const file=ev.target.files?.[0];if(!file)return;
-  const statusEl=document.getElementById('importStatus');
-  if(statusEl)statusEl.textContent="Loading Excel support…";
-  try{
-    await ensureXLSX();
-  }catch(err){
-    if(statusEl)statusEl.textContent=err.message||"Could not load Excel support. Please try again.";
-    return;
+function importFilesArray_(files){return Array.from(files||[]).filter(Boolean);}
+async function readQuestionFile_(file,defaultYear){
+  const name=(file.name||'').toLowerCase();
+  if(name.endsWith('.json')||file.type==='application/json'){
+    const text=await file.text();let parsed;try{parsed=JSON.parse(text);}catch(e){throw new Error(`${file.name}: invalid JSON (${e.message})`);}
+    const arr=Array.isArray(parsed)?parsed:parsed&&Array.isArray(parsed.questions)?parsed.questions:null;
+    if(!arr)throw new Error(`${file.name}: JSON must be an array of question objects or {"questions": [...]}.`);
+    return arr.map(r=>normalizeQuestionRow(r,defaultYear));
   }
-  if(statusEl)statusEl.textContent="Reading file…";
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const wb=XLSX.read(e.target.result,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{defval:''}),defaultYear=document.getElementById('adminYear')?.value||'';
-      _questionImportRows=raw.map(r=>normalizeQuestionRow(r,defaultYear));
-      renderImportPreview();
-    }catch(err){
-      _questionImportRows=[];
-      document.getElementById('importQuestionsBtn').disabled=true;
-      document.getElementById('importPreview').innerHTML='';
-      document.getElementById('importStatus').textContent='Could not read the Excel file. Please use the provided template.';
-      console.warn(err);
-    }
-  };
-  reader.readAsArrayBuffer(file);
+  await ensureXLSX();
+  const buffer=await file.arrayBuffer();const wb=XLSX.read(buffer,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]];
+  return XLSX.utils.sheet_to_json(ws,{defval:''}).map(r=>normalizeQuestionRow(r,defaultYear));
+}
+async function previewQuestionFiles_(files){
+  const list=importFilesArray_(files);if(!list.length)return;
+  const status=document.getElementById('importStatus');if(status)status.textContent=`Reading ${list.length} file(s)…`;
+  try{
+    const defaultYear=document.getElementById('adminYear')?.value||'';
+    const chunks=await Promise.all(list.map(f=>readQuestionFile_(f,defaultYear)));
+    _questionImportRows=chunks.flat();_questionImportSource_='files';renderImportPreview();
+  }catch(err){_questionImportRows=[];document.getElementById('importQuestionsBtn').disabled=true;document.getElementById('importPreview').innerHTML='';if(status)status.innerHTML=`<span class="wronganswer">${esc(err.message||'Could not read the selected files.')}</span>`;}
+}
+async function previewQuestionFile(ev){await previewQuestionFiles_(ev.target.files);}
+let _questionImportSource_='files';
+function previewPastedQuestionJson_(){
+  const raw=document.getElementById('questionJsonPaste')?.value||'',status=document.getElementById('importStatus');
+  try{
+    const parsed=JSON.parse(raw),arr=Array.isArray(parsed)?parsed:parsed&&Array.isArray(parsed.questions)?parsed.questions:null;
+    if(!arr)throw new Error('JSON must be an array of question objects or {"questions": [...]}.');
+    _questionImportRows=arr.map(r=>normalizeQuestionRow(r,document.getElementById('adminYear')?.value||''));_questionImportSource_='paste';renderImportPreview();
+  }catch(err){_questionImportRows=[];document.getElementById('importQuestionsBtn').disabled=true;if(status)status.innerHTML=`<span class="wronganswer">Invalid JSON: ${esc(err.message)}</span>`;document.getElementById('importPreview').innerHTML='';}
 }
 // The rows as they will actually be saved: a row's own Topic column wins, otherwise the topic picked above.
 function effectiveImportRows_(){const t=readTopicField('at'),e=readExamField('at');return _questionImportRows.map(r=>({...r,topic:cleanTopic(r.topic)||t,exam:cleanTopic(r.exam)||e}));}
 function renderImportPreview(){
   const statusEl=document.getElementById('importStatus'),prevEl=document.getElementById('importPreview'),btn=document.getElementById('importQuestionsBtn');
-  if(!statusEl||!prevEl||!btn||!_questionImportRows.length)return;
-  const rows=effectiveImportRows_(),errors=validateImportRows(rows),preview=rows.slice(0,20);
-  const tally=new Map();
-  rows.forEach(r=>{const k=topicKey(r.exam)+'|'+topicKey(r.topic),e=tally.get(k)||{name:r.topic,exam:r.exam,n:0};e.n++;tally.set(k,e);});
+  if(!statusEl||!prevEl||!btn)return;
+  if(!_questionImportRows.length){prevEl.innerHTML='';btn.disabled=true;return;}
+  const rows=effectiveImportRows_(),validation=validateImportRows(rows),errors=validation.errors,duplicates=validation.duplicates;
+  const badRows=new Set([...errors.map(x=>x.row-1),...duplicates.map(x=>x.row-1)]);const validCount=rows.length-badRows.size;
+  const preview=rows.slice(0,30),tally=new Map();rows.forEach(r=>{const k=topicKey(r.exam)+'|'+topicKey(r.topic),e=tally.get(k)||{name:r.topic,exam:r.exam,n:0};e.n++;tally.set(k,e);});
   const topicLine=[...tally.values()].map(e=>`${e.name?esc(e.name):'<i>no topic</i>'}${e.exam?' ('+esc(e.exam)+')':''} × ${e.n}`).join(' • ');
-  statusEl.innerHTML=`<b>${rows.length}</b> row(s) found. ${errors.length?`<span class="wronganswer">${errors.length} invalid row(s)</span>`:'<span class="correct">All rows passed validation.</span>'}<br><span class="note">Topic tests in this import: ${topicLine}</span>`;
-  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Marks</th><th>Type</th><th>Topic</th><th>Exam</th><th>Year</th><th>Images</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+2);const imgCount=[r.questionImage,r.optionAImage,r.optionBImage,r.optionCImage,r.optionDImage].filter(Boolean).length;return `<tr><td>${i+2}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.marks)}</td><td>${esc(r.type)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${r.exam?esc(r.exam):'—'}</td><td>${esc(r.year)}</td><td>${imgCount?imgCount+' img':'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length?`<div class="error"><b>Import blocked.</b> Fix the invalid rows and upload the corrected file.<br>${errors.slice(0,30).map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`:''}`;
-  btn.disabled=errors.length>0||!rows.length||(topicFieldIncomplete('at')||examFieldIncomplete('at'));
+  statusEl.innerHTML=`<b>${rows.length}</b> question(s) loaded: <span class="correct">${validCount} valid</span>, ${duplicates.length?`<span class="note">${duplicates.length} duplicate(s) will be skipped</span>`:'0 duplicates'}, ${errors.length?`<span class="wronganswer">${errors.length} invalid</span>`:'0 invalid'}.<br><span class="note">Topic tests: ${topicLine}</span>`;
+  prevEl.innerHTML=`<div class="table-scroll"><table class="simple"><tr><th>Row</th><th>Question</th><th>A</th><th>B</th><th>C</th><th>D</th><th>Correct</th><th>Marks</th><th>Type</th><th>Topic</th><th>Exam</th><th>Status</th></tr>${preview.map((r,i)=>{const er=errors.find(x=>x.row===i+1),du=duplicates.find(x=>x.row===i+1);return `<tr><td>${i+1}</td><td>${esc(r.question)}</td><td>${esc(r.optionA)}</td><td>${esc(r.optionB)}</td><td>${esc(r.optionC)}</td><td>${esc(r.optionD)}</td><td>${esc(r.correctAnswer)}</td><td>${esc(r.marks)}</td><td>${esc(r.type)}</td><td>${r.topic?esc(r.topic):'—'}</td><td>${r.exam?esc(r.exam):'—'}</td><td>${er?`<span class="wronganswer">${esc(er.errors.join(', '))}</span>`:du?'<span class="note">Duplicate — skipped</span>':'<span class="correct">OK</span>'}</td></tr>`}).join('')}</table></div>${errors.length||duplicates.length?`<div class="error"><b>Rows needing attention:</b><br>${errors.slice(0,40).map(x=>`Question ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}${duplicates.slice(0,40).map(x=>`<br>Question ${x.row}: ${esc(x.reason)} — skipped`).join('')}</div>`:''}${rows.length>30?`<p class="note">Showing first 30 of ${rows.length} questions.</p>`:''}`;
+  btn.disabled=validCount===0||(topicFieldIncomplete('at')||examFieldIncomplete('at'));
 }
 async function importPreviewedQuestions(){
   const btn=document.getElementById('importQuestionsBtn'),status=document.getElementById('importStatus');
@@ -2531,44 +2618,26 @@ async function importPreviewedQuestions(){
   btn.disabled=true;
   const p=store.profile(),sel=document.getElementById('adminSubject');
   const subject=subjects.find(s=>s.id===sel.value)||customSubjects.find(s=>s.id===sel.value);
-  const rows=effectiveImportRows_(),total=rows.length,BATCH=50;
-  let done=0,lastRes=null;
-  /* Importing is sent in small batches with a long timeout. If the browser stops
-     waiting (slow Apps Script) the batch may STILL have been saved, so we never
-     report "failed" from silence: we re-send the same batch, and the server
-     answers "already imported" if it had gone through the first time. */
+  const rows=effectiveImportRows_(),validation=validateImportRows(rows),skip=new Set([...validation.errors.map(x=>x.row-1),...validation.duplicates.map(x=>x.row-1)]),validRows=rows.filter((r,i)=>!skip.has(i));
+  const total=validRows.length,BATCH=50;let imported=0,serverDuplicates=0,serverInvalid=0,lastRes=null;
   for(let i=0;i<total;i+=BATCH){
-    const batch=rows.slice(i,i+BATCH);
-    btn.textContent=`Importing ${Math.min(i+BATCH,total)} / ${total}…`;
-    let res=null;
-    for(let attempt=0;attempt<3&&!res;attempt++){
-      if(attempt){status.innerHTML=`<span class="note">Server is slow — confirming the last batch was saved…</span>`;await sleep(4000*attempt);}
-      res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:adminPw_(),subjectId:sel.value,subject:subject?.name||sel.value,questions:batch},90000);
-    }
-    lastRes=res;
-    if(!res?.ok)break;
-    done+=batch.length;
+    const batch=validRows.slice(i,i+BATCH);btn.textContent=`Importing ${Math.min(i+BATCH,total)} / ${total}…`;
+    let res=null;for(let attempt=0;attempt<3&&!res;attempt++){if(attempt){status.innerHTML='Confirming whether the previous batch was saved…';await sleep(3000*attempt);}res=await apiPost('importQuestions',{adminEmail:p.email,adminPassword:adminPw_(),subjectId:sel.value,subject:subject?.name||sel.value,questions:batch},90000);}
+    lastRes=res;if(!res?.ok)break;imported+=Number(res.imported||0);serverDuplicates+=Number(res.duplicates||res.alreadyImported||0);serverInvalid+=Number(res.invalid||0);
   }
-  if(done===total){
-    status.innerHTML=`<span class="correct"><b>${total}</b> question(s) imported successfully — available immediately in Additional Tests.</span>`;
-    _questionImportRows=[];document.getElementById('importPreview').innerHTML='';
-    await refreshCustomSubjects(); // keep home/admin question counts and topic lists in sync
-    refreshAdminTopicField(true);  // a topic created by this import is now selectable, and stays selected
+  if(lastRes?.ok){
+    status.innerHTML=`<span class="correct"><b>${imported}</b> question(s) imported.</span> ${serverDuplicates?`${serverDuplicates} duplicate(s) skipped. `:''}${serverInvalid?`${serverInvalid} server-invalid row(s) skipped. `:''}${validation.errors.length?`${validation.errors.length} invalid local row(s) skipped. `:''}${validation.duplicates.length?`${validation.duplicates.length} duplicate local row(s) skipped.`:''}`;
+    _questionImportRows=[];document.getElementById('importPreview').innerHTML='';document.getElementById('questionJsonPaste').value='';document.getElementById('questionFile').value='';
+    await refreshCustomSubjects();refreshAdminTopicField(true);
   }else{
-    const msg=lastRes?lastRes.error||'Import failed.':'Could not reach the server, so the last batch could not be confirmed. Wait a minute and use “Import Questions” again — questions already saved are detected automatically.';
-    status.innerHTML=`<span class="wronganswer">${esc(msg)}</span>${done?`<br><span class="note">${done} of ${total} question(s) were already saved before this happened.</span>`:''}`;
-    if(lastRes?.errors?.length)document.getElementById('importPreview').innerHTML=`<div class="error">${lastRes.errors.map(x=>`Row ${x.row}: ${esc(x.errors.join(', '))}`).join('<br>')}</div>`;
+    const msg=lastRes?lastRes.error||'Import failed.':'Could not reach the server; no success was confirmed.';
+    status.innerHTML=`<span class="wronganswer">${esc(msg)}</span>${imported?`<br><span class="note">${imported} question(s) were saved before the failure.</span>`:''}`;
   }
-  btn.textContent='Import Questions';btn.disabled=!_questionImportRows.length;
+  btn.textContent='Import Questions';renderImportPreview();
 }
 
-/* ===================== ADMIN PASSWORD UNLOCK =====================
-   The Admin button is always visible on the homepage. Entering the admin
-   password unlocks the admin panel on this device even if the server-side
-   isAdmin check (which needs a working backend + a registered admin email)
-   is slow or unreachable. */
-function openAdminPassword(){
-  clearExam();pushNav(openAdminPassword);
+function openAdminPassword(after){
+  _adminAfterUnlock_=after||'admin';clearExam();pushNav(openAdminPassword);
   app.innerHTML=`<div class="card password-card"><h1>Admin Access</h1><p>Enter the admin password to manage subjects and questions.</p><input id="adminPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPassword()"><div id="adminPassErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkAdminPassword()">Continue</button></div></div>`;
   document.getElementById("adminPass").focus();
 }
@@ -2582,11 +2651,11 @@ async function checkAdminPassword(){
   const res=API?await apiGet("isAdmin",{email:p?.email||"",password:v},15000,1):null;
   if(!res?.ok||!res.isAdmin){errEl.textContent=res?"Incorrect password.":"Could not reach the server. Try again.";return;}
   try{sessionStorage.setItem("ecet_admin_pw",v);}catch(e){}
-  isAdminUnlocked=true;
-  // Replace the password-screen stack entry so Back goes straight Home,
-  // instead of pushing the admin page on top of the password screen.
+  isAdminUnlocked=true;updateGlobalNavigation_();
+  // Replace the password-screen stack entry so Back goes straight Home.
   navStack.pop();
-  adminQuestionsPage();
+  const destination=_adminAfterUnlock_;_adminAfterUnlock_='admin';
+  if(destination==='control')openControlCentre();else if(destination==='edit')editQuestionsPage();else if(destination==='recent')recentChangesPage();else adminQuestionsPage(destination==='add'?'adm-import':undefined);
 }
 
 /* ===================== PASSWORD ===================== */
@@ -3352,4 +3421,18 @@ if("serviceWorker" in navigator){
 }
 armOutboxAutoSync_();
 
-home();
+// CHANGED: mount app-wide nav actions once; the toast root is in index.html.
+const _globalMenuButton=document.getElementById('globalMenuToggle');
+if(_globalMenuButton)_globalMenuButton.addEventListener('click',globalMenuToggle_);
+updateGlobalNavigation_();
+// CHANGED: wait for the initial Home render and saved-admin verification before
+// applying a deep link, so the asynchronous subject load cannot overwrite it.
+const _initialView=new URLSearchParams(location.search).get('ecetView');
+const _initialHomePromise=home();resumePersistedTasks_();
+const _initialAdminPromise=adminPw_()?verifyStoredAdminSession_():Promise.resolve(false);
+if(_initialView){Promise.all([_initialHomePromise,_initialAdminPromise]).then(()=>{
+  if(_initialView==='edit'){if(isAdminUnlocked)editQuestionsPage();else openAdminPassword('edit');}
+  else if(_initialView==='recent'){if(isAdminUnlocked)recentChangesPage();else openAdminPassword('recent');}
+  else if(_initialView==='control')openControlCentre();
+  else if(_initialView==='add'){if(isAdminUnlocked)adminQuestionsPage('adm-import');else openAdminPassword('add');}
+});}

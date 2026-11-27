@@ -108,11 +108,12 @@ const SHEETS = {
     'CreatedAt', 'UpdatedAt', 'LastSentAt'
   ],
 
+  // CHANGED: explanation and difficulty are optional metadata columns for imported/edited MCQs.
   Questions: [
     'QuestionId', 'SubjectId', 'Subject', 'Year', 'State', 'QuestionNumber',
     'Question', 'OptionA', 'OptionB', 'OptionC', 'OptionD', 'CorrectAnswer', 'Answer',
     'CreatedAt', 'CreatedBy', 'QuestionImage', 'OptionAImage', 'OptionBImage',
-    'OptionCImage', 'OptionDImage', 'Topic', 'Exam', 'Marks', 'Type'
+    'OptionCImage', 'OptionDImage', 'Topic', 'Exam', 'Marks', 'Type', 'Explanation', 'Difficulty'
   ],
 
   Subjects: [
@@ -900,11 +901,10 @@ function doGet(e) {
           data: notifications_(e.parameter.email)
         });
 
+      // CHANGED: audit-log reads are administrator-only.
       case 'questionChangeLog':
-        return out_({
-          ok: true,
-          data: questionChangeLog_()
-        });
+        if (!isAdmin_(e.parameter.email, e.parameter.password)) return out_({ok:false,error:'unauthorized'});
+        return out_({ok:true,data:questionChangeLog_()});
 
       case 'exportAll':
         // Read-only, public-content-only export used by the GitHub sync job.
@@ -926,19 +926,60 @@ function doGet(e) {
   }
 }
 
+/* CHANGED: Control Centre task idempotency. The short script lock only reserves
+   a task ID in ScriptCache; the sheet mutation runs after the lock is released.
+   A retried request with the same taskId receives the cached result instead of
+   applying a mutation twice. */
+var CONTROL_BACKGROUND_ACTIONS_ = [
+  'adminCooldownAdjust','setDefaultCooldown','resetCooldownDefaults','setSubjectExam',
+  'deleteSubjects','renameSubject','mergeSubjects','moveTopicTests','renameTopicTest',
+  'nestSubjects','promoteTopicTest','undoOperation','redoOperation'
+];
+function runControlBackgroundTask_(body, action, worker) {
+  var taskId=String(body.taskId||Utilities.getUuid()).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,100);
+  body.taskId=taskId;
+  var cache=CacheService.getScriptCache(),key='cc_task_'+taskId;
+  var cached=cache.get(key);
+  if(cached){var old=JSON.parse(cached);if(old.pending)return {ok:false,success:false,pending:true,taskId:taskId,message:'Task is still processing.',data:null};return old;}
+  var claimLock=LockService.getScriptLock();
+  if(!claimLock.tryLock(900)) return {ok:false,success:false,pending:true,taskId:taskId,message:'Task is queued on the server.',data:null};
+  try {
+    cached=cache.get(key);
+    if(cached){var again=JSON.parse(cached);if(again.pending)return {ok:false,success:false,pending:true,taskId:taskId,message:'Task is still processing.',data:null};return again;}
+    cache.put(key,JSON.stringify({pending:true,taskId:taskId,action:action}),300);
+  } finally { try{claimLock.releaseLock();}catch(ignore){} }
+  var result, workLock=LockService.getScriptLock(), workLocked=false;
+  try {
+    // CHANGED (final): the sheet mutation itself is serialized with a script lock so two
+    // overlapping saves cannot interleave or corrupt the undo journal. The browser never
+    // waits on this: saves are already asynchronous background tasks.
+    workLock.waitLock(30000); workLocked=true;
+    result=worker();
+    var success=!!(result && result.ok!==false);
+    var response={ok:success,success:success,taskId:taskId,message:String(result&&result.message||(success?'Saved.':result&&result.error||'Save failed.')),data:result||null};
+    if(!success)response.error=String(result&&result.error||response.message);
+    cache.put(key,JSON.stringify(response),21600);
+    return response;
+  } catch(err) {
+    var failed={ok:false,success:false,taskId:taskId,message:friendlyError_(err),error:friendlyError_(err),data:null};
+    cache.put(key,JSON.stringify(failed),21600);return failed;
+  } finally { if(workLocked){try{workLock.releaseLock();}catch(ignore){}} }
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
+  var lockHeld = false;
   var body = {};
   var bustAfter = false;
+  var action = '';
 
   try {
-    lock.waitLock(30000);
-
+    if (e && e.postData && e.postData.contents) body = JSON.parse(e.postData.contents);
+    action = String(body.action || '').trim();
+    // CHANGED: background Control Centre writes do not wait behind a 30-second
+    // global lock. runControlBackgroundTask_ reserves IDs under a short lock.
+    if (CONTROL_BACKGROUND_ACTIONS_.indexOf(action) === -1) { lock.waitLock(30000); lockHeld = true; }
     ensureSheetsCached_();
-
-    if (e && e.postData && e.postData.contents) {
-      body = JSON.parse(e.postData.contents);
-    }
 
     // NATIVE APP PATH (every POST action at once): verify idToken ONCE here
     // rather than per-action, then force body.email to the VERIFIED email so
@@ -958,7 +999,7 @@ function doPost(e) {
       delete body.__verifiedUid;
     }
 
-    var action = String(body.action || '').trim();
+    action = String(body.action || '').trim();
 
     // Anything that changes subjects / questions / cooldown must also clear
     // the shared public caches (homeBundle + exportAll) once it has finished.
@@ -983,6 +1024,16 @@ function doPost(e) {
       case 'updateQuestion':
         return out_(updateQuestion_(body));
 
+      // CHANGED: dedicated admin-only read endpoints keep student question access public
+      // while protecting the question-management list and audit log.
+      case 'adminQuestions':
+        if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) return out_({ok:false,error:'unauthorized'});
+        return out_({ok:true,data:questions_(body.subjectId)});
+
+      case 'adminQuestionChangeLog':
+        if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) return out_({ok:false,error:'unauthorized'});
+        return out_({ok:true,data:questionChangeLog_()});
+
       case 'setQuestionTopic':
         return out_(setQuestionTopic_(body));
 
@@ -990,7 +1041,7 @@ function doPost(e) {
         return out_(adminCooldownList_(body));
 
       case 'adminCooldownAdjust':
-        return out_(adminCooldownAdjust_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return adminCooldownAdjust_(body);}));
 
       case 'controlLogin':
         return out_(controlLogin_(body));
@@ -1002,43 +1053,43 @@ function doPost(e) {
         return out_(controlSubjectPasswords_(body));
 
       case 'setDefaultCooldown':
-        return out_(setDefaultCooldown_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return setDefaultCooldown_(body);}));
 
       case 'resetCooldownDefaults':
-        return out_(resetCooldownDefaults_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return resetCooldownDefaults_(body);}));
 
       case 'setSubjectExam':
-        return out_(setSubjectExam_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return setSubjectExam_(body);}));
 
       case 'deleteSubjects':
-        return out_(deleteSubjects_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return deleteSubjects_(body);}));
 
       case 'renameSubject':
-        return out_(renameSubject_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return renameSubject_(body);}));
 
       case 'mergeSubjects':
-        return out_(mergeSubjects_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return mergeSubjects_(body);}));
 
       case 'moveTopicTests':
-        return out_(moveTopicTests_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return moveTopicTests_(body);}));
 
       case 'renameTopicTest':
-        return out_(renameTopicTest_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return renameTopicTest_(body);}));
 
       case 'nestSubjects':
-        return out_(nestSubjects_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return nestSubjects_(body);}));
 
       case 'promoteTopicTest':
-        return out_(promoteTopicTest_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return promoteTopicTest_(body);}));
 
       case 'controlHistory':
         return out_(controlHistory_(body));
 
       case 'undoOperation':
-        return out_(undoOperation_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return undoOperation_(body);}));
 
       case 'redoOperation':
-        return out_(redoOperation_(body));
+        return out_(runControlBackgroundTask_(body,action,function(){return redoOperation_(body);}));
 
       case 'createSubject':
         return out_(createSubject_(body));
@@ -1092,15 +1143,19 @@ function doPost(e) {
     }
 
   } catch (error) {
-    return out_({
-      ok: false,
-      error: friendlyError_(error)
-    });
+    var failureMessage = friendlyError_(error);
+    // CHANGED: Control Centre callers always receive the same task envelope,
+    // including unexpected errors raised outside the mutation helper.
+    if (CONTROL_BACKGROUND_ACTIONS_.indexOf(action) !== -1) {
+      var failedTaskId = String(body && body.taskId || '');
+      return out_({ok:false,success:false,taskId:failedTaskId,message:failureMessage,error:failureMessage,data:null});
+    }
+    return out_({ok:false,error:failureMessage});
 
   } finally {
     if (bustAfter) bustPublicCaches_();
     try {
-      lock.releaseLock();
+      if (lockHeld) lock.releaseLock();
     } catch (ignore) {
       // Nothing to do.
     }
@@ -1373,7 +1428,7 @@ function secretMatches_(supplied, expected) {
 
 function controlGuard_(body) {
   if (!isAdmin_(email_(body.adminEmail), body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
+    return { ok: false, error: 'unauthorized' };
   }
   if (!secretMatches_(body.controlPassword, scriptSecret_('CONTROL_CENTRE_PASSWORD'))) {
     return { ok: false, error: 'Incorrect Control Centre password.' };
@@ -1423,10 +1478,11 @@ function topicKey_(value) {
 // Makes sure an existing Questions sheet has the Topic column. New sheets get
 // it from SHEETS; older sheets get it appended here, so importing or editing
 // never depends on setup() having been re-run first.
+// CHANGED: add optional question metadata columns to older spreadsheets safely.
 function ensureQuestionsSchema_() {
   var sheet = sh_('Questions');
   if (!sheet) return null;
-  ['Topic', 'Exam', 'Marks', 'Type', 'Answer'].forEach(function (name) {
+  ['Topic', 'Exam', 'Marks', 'Type', 'Answer', 'Explanation', 'Difficulty'].forEach(function (name) {
     var lastCol = Math.max(1, sheet.getLastColumn());
     var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
     if (headers.indexOf(name) === -1) {
@@ -1494,6 +1550,7 @@ function questionStats_(opts) {
   var hidden = publicOnly ? privateSubjectIds_() : {};
   var homes = subjectHomeExams_();
   var counts = {};
+  var nonFib = {};
   var exams = {};
   var topics = {};
   objs_(sh_('Questions')).forEach(function (row) {
@@ -1502,6 +1559,7 @@ function questionStats_(opts) {
     // Public export only: skip private subjects and private questions/tests.
     if (publicOnly && (hidden[sid] || bool_(row.Private))) return;
     counts[sid] = (counts[sid] || 0) + 1;
+    if (String(row.Type || 'MCQ').toUpperCase() !== 'FIB') nonFib[sid] = (nonFib[sid] || 0) + 1;
 
     var exam = cleanTopic_(row.Exam) || homeExamOf_(homes, sid);
     var examKey = 'k:' + topicKey_(exam);
@@ -1522,7 +1580,7 @@ function questionStats_(opts) {
     }
     topicBucket.map[key].count++;
   });
-  return { counts: counts, exams: exams, topics: topics, homes: homes };
+  return { counts: counts, nonFib: nonFib, exams: exams, topics: topics, homes: homes };
 }
 
 // { subjectId: { total, exams: [{ name, total }], topics: [{ name, count, exam }] } }
@@ -1548,7 +1606,15 @@ function topicSummary_(stats) {
 // both read this sheet live.
 function customSubjects_(stats, opts) {
   var publicOnly = !!(opts && opts.publicOnly);
-  var counts = (stats || questionStats_()).counts;
+  var qs = stats || questionStats_();
+  var counts = qs.counts;
+  // A subject whose questions are ALL fill-in-the-blank belongs in the FIB section even if its
+  // TestType cell was never set to FIB (e.g. questions added after the subject was created).
+  function typeOf_(row) {
+    var sid = String(row.SubjectId);
+    var allFib = (counts[sid] || 0) > 0 && !((qs.nonFib || {})[sid]);
+    return (String(row.TestType || '').toUpperCase() === 'FIB' || allFib) ? 'FIB' : 'MCQ';
+  }
   var rows = objs_(sh_('Subjects'));
   if (publicOnly) rows = rows.filter(function (row) { return !bool_(row.Private); });
   return rows.map(function (row) {
@@ -1558,7 +1624,7 @@ function customSubjects_(stats, opts) {
         id: row.SubjectId,
         name: row.Name,
         hasPassword: String(row.Password || '') !== '',
-        testType: String(row.TestType || '').toUpperCase() === 'FIB' ? 'FIB' : 'MCQ',
+        testType: typeOf_(row),
         description: row.Description || '',
         createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : '',
         exam: cleanTopic_(row.Exam).slice(0, 40),
@@ -1569,7 +1635,7 @@ function customSubjects_(stats, opts) {
       id: row.SubjectId,
       name: row.Name,
       password: row.Password,
-      testType: String(row.TestType || '').toUpperCase() === 'FIB' ? 'FIB' : 'MCQ',
+      testType: typeOf_(row),
       description: row.Description || '',
       createdAt: row.CreatedAt ? toDate_(row.CreatedAt).toISOString() : '',
       exam: cleanTopic_(row.Exam).slice(0, 40),
@@ -1581,7 +1647,7 @@ function customSubjects_(stats, opts) {
 function createSubjectImpl_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
+    return { ok: false, error: 'unauthorized' };
   }
 
   var name = String(body.name || '').trim();
@@ -1636,7 +1702,7 @@ function createSubjectImpl_(body) {
 function importQuestions_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
+    return { ok: false, error: 'unauthorized' };
   }
 
   var subjectId = String(body.subjectId || '').trim();
@@ -1682,6 +1748,7 @@ function importQuestions_(body) {
   var questionSheet = ensureQuestionsSchema_();
   var valid = [];
   var errors = [];
+  var duplicates = [];
   var seen = {};
   var letters = ['A', 'B', 'C', 'D'];
 
@@ -1734,7 +1801,8 @@ function importQuestions_(body) {
       String(row.optionC || '').trim(),
       String(row.optionD || '').trim()
     ];
-    var correct = String(row.correctAnswer || '').trim().toUpperCase();
+    var correctRaw = row.correctAnswer !== undefined && row.correctAnswer !== null && row.correctAnswer !== '' ? row.correctAnswer : row.answer;
+    var correct = (typeof correctRaw === 'number' || /^\d+$/.test(String(correctRaw == null ? '' : correctRaw).trim())) ? (letters[Number(correctRaw)] || '') : String(correctRaw || '').trim().toUpperCase();
     var year = String(row.year || '').trim();
     var state = String(row.state || 'TS').trim();
     var qno = String(row.questionNumber || '').trim();
@@ -1791,9 +1859,13 @@ function importQuestions_(body) {
     if (!fibImport && type === 'FIB') rowErrors.push('Import FIB questions as a separate FIB-only subject.');
 
     var duplicateKey = [q.toLowerCase(), year, state, qno].join('|');
-    if (seen[duplicateKey]) rowErrors.push('Duplicate question in this import');
-    if (existing[duplicateKey]) rowErrors.push('Question already exists in this subject');
-    seen[duplicateKey] = true;
+    if (!rowErrors.length) {
+      if (seen[duplicateKey] || existing[duplicateKey]) {
+        duplicates.push({row:line,reason:seen[duplicateKey]?'Duplicate question in this import':'Question already exists in this subject'});
+        return;
+      }
+      seen[duplicateKey] = true;
+    }
 
     if (rowErrors.length) {
       errors.push({ row: line, errors: rowErrors });
@@ -1824,33 +1896,16 @@ function importQuestions_(body) {
       Topic: topic,
       Exam: exam,
       Marks: marks,
-      Type: type
+      Type: type,
+      Explanation: String(row.explanation || '').trim(),
+      Difficulty: String(row.difficulty || '').trim()
     });
   });
 
-  // A retry of an import that already went through (for example after the
-  // browser gave up waiting) finds every row "already exists". That is a
-  // success, not a failure.
-  if (errors.length === rows.length && errors.every(function (er) {
-    return er.errors.length === 1 && er.errors[0] === 'Question already exists in this subject';
-  })) {
-    return {
-      ok: true,
-      imported: 0,
-      alreadyImported: rows.length,
-      invalid: 0,
-      message: 'These ' + rows.length + ' question(s) were already imported.'
-    };
-  }
-
-  if (errors.length) {
-    return {
-      ok: false,
-      error: 'Import validation failed. No rows were added.',
-      imported: 0,
-      invalid: errors.length,
-      errors: errors
-    };
+  // CHANGED: duplicate questions are skipped and reported, not treated as a
+  // batch-fatal validation error. Valid rows in the same request are still saved.
+  if (!valid.length && errors.length) {
+    return {ok:false,error:'No valid questions were found. Correct the listed rows and retry.',imported:0,duplicates:duplicates.length,invalid:errors.length,errors:errors,duplicateRows:duplicates};
   }
 
   appendManyByHeader_(questionSheet, valid);
@@ -1862,7 +1917,7 @@ function importQuestions_(body) {
       subjectSheetForType.getRange(2 + objs_(subjectSheetForType).findIndex(function(r){return String(r.SubjectId)===subjectId;}), subjectHeadersForType.indexOf('TestType') + 1).setValue('FIB');
     }
   }
-  return { ok: true, imported: valid.length, invalid: 0, message: valid.length + ' question(s) imported successfully.' };
+  return {ok:true,imported:valid.length,duplicates:duplicates.length,invalid:errors.length,errors:errors,duplicateRows:duplicates,message:valid.length+' question(s) imported; '+duplicates.length+' duplicate(s) skipped; '+errors.length+' invalid row(s) skipped.'};
 }
 
 
@@ -2012,18 +2067,24 @@ function adminCooldownAdjustImpl_(body) {
   return { ok: true, message: 'Exam timer updated.' };
 }
 
+// CHANGED: expose answer index, subject metadata, explanation and difficulty in the website object.
 // One Questions-sheet row -> the question object the website uses.
 function questionRow_(row) {
   var letters = ['A', 'B', 'C', 'D'];
   return {
     id: String(row.QuestionId),
+    subject: String(row.Subject || ''),
+    subjectId: String(row.SubjectId || ''),
     year: String(row.Year),
     state: String(row.State || ''),
     questionNumber: String(row.QuestionNumber || ''),
     question: String(row.Question || ''),
     options: String(row.Type || 'MCQ').toUpperCase() === 'FIB' ? [] : [row.OptionA, row.OptionB, row.OptionC, row.OptionD].map(function(v){return String(v || '');}),
     answer: Math.max(0, letters.indexOf(String(row.CorrectAnswer || '').toUpperCase())),
+    correctAnswer: String(row.CorrectAnswer || ''),
     answerText: String(row.Answer || (String(row.Type || '').toUpperCase() === 'FIB' ? row.CorrectAnswer : '') || ''),
+    explanation: String(row.Explanation || ''),
+    difficulty: String(row.Difficulty || ''),
     topic: cleanTopic_(row.Topic),
     exam: cleanTopic_(row.Exam),
     marks: Number(row.Marks) > 0 ? Number(row.Marks) : 1,
@@ -2047,7 +2108,7 @@ function questions_(subjectId) {
 function updateQuestion_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
+    return { ok: false, error: 'unauthorized' };
   }
 
   var questionId = String(body.questionId || '').trim();
@@ -2127,6 +2188,7 @@ function updateQuestion_(body) {
     }
   }
 
+  // CHANGED: preserve metadata when omitted, but allow an explicitly empty field to clear it.
   var updated = {
     Question: q,
     OptionA: options[0], OptionB: options[1], OptionC: options[2], OptionD: options[3],
@@ -2140,7 +2202,9 @@ function updateQuestion_(body) {
     OptionCImage: String(body.optionCImage || '').trim(),
     OptionDImage: String(body.optionDImage || '').trim(),
     Topic: topic,
-    Exam: exam
+    Exam: exam,
+    Explanation: body.explanation !== undefined ? String(body.explanation || '').trim() : String(before.Explanation || ''),
+    Difficulty: body.difficulty !== undefined ? String(body.difficulty || '').trim() : String(before.Difficulty || '')
   };
 
   var after = {};
@@ -2181,7 +2245,7 @@ function updateQuestion_(body) {
 function setQuestionTopicImpl_(body) {
   var adminEmail = email_(body.adminEmail);
   if (!isAdmin_(adminEmail, body.adminPassword)) {
-    return { ok: false, error: 'Admin access is required.' };
+    return { ok: false, error: 'unauthorized' };
   }
 
   var subjectId = String(body.subjectId || '').trim();

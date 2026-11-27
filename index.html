@@ -60,6 +60,15 @@
 <script src="theme.js"></script>
 </head>
 <body>
+<!-- CHANGED: shared sticky app navigation; admin-only links are injected only after server verification. -->
+<header class="global-topbar" id="globalTopbar">
+  <div class="global-nav-inner"><div class="global-brand">ECET Quiz</div>
+    <button id="globalMenuToggle" class="global-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+    <nav id="globalNavLinks" class="global-nav-links" aria-label="Main navigation"></nav>
+  </div>
+</header>
+<!-- CHANGED: app-root toast mount survives SPA page changes. -->
+<div id="globalToasts" class="global-toasts" aria-live="polite" aria-relevant="additions text"></div>
 <div id="loadBar"><div id="loadBarFill"></div></div>
 <button id="backFab" onclick="goBack()" title="Back" aria-label="Back">←</button>
 <main class="wrap"><div id="app"></div></main>

@@ -75,8 +75,9 @@
     if (e.key === KEY && (e.newValue === "dark" || e.newValue === "light")) apply(e.newValue, false);
   });
 
-  /* ---- 2. toggle button + top bar ---- */
-  var SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>';
+  /* CHANGED: one shared sticky navigation/toast host across SPA, FIB and information pages. */
+  /* ---- 2. shared site navigation + theme toggle ---- */
+  var SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6-1.6"/></svg>';
   var MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>';
 
   function makeToggle() {
@@ -89,27 +90,58 @@
     return b;
   }
 
-  function mount() {
-    if (document.getElementById("tmToggle")) return;
-    var toggle = makeToggle();
-    var bar = document.querySelector(".bar .wrap");           /* about / legal / 404 pages already have a header */
-    if (bar) {
-      var nav = bar.querySelector("nav");
-      toggle.classList.add("tm-in-bar");
-      (nav || bar).appendChild(toggle);
-    } else {                                                  /* main app + FIB admin: add a slim header */
-      var h = document.createElement("header");
-      h.className = "tm-bar";
-      h.innerHTML =
-        '<div class="tm-bar-in">' +
-          '<a class="tm-brand" href="index.html"><i aria-hidden="true">✎</i><span>Online Mock Test</span></a>' +
-          '<nav class="tm-nav" aria-label="Site"><a href="about.html">About</a></nav>' +
-        '</div>';
-      h.querySelector(".tm-nav").appendChild(toggle);
-      document.body.insertBefore(h, document.body.firstChild);
-      root.classList.add("tm-has-bar");
+  function hasAdminSession() {
+    try { return !!sessionStorage.getItem("ecet_admin_pw"); } catch (e) { return false; }
+  }
+
+  function navMarkup() {
+    var links = [['Home', 'index.html', false]];
+    if (hasAdminSession()) {
+      links.push(['Edit Questions', 'index.html?ecetView=edit', false]);
+      links.push(['Recent Changes', 'index.html?ecetView=recent', false]);
     }
-    apply(current(), false);                                  /* sync aria-label now the button exists */
+    links.push(['Control Centre', 'index.html?ecetView=control', false]);
+    links.push(['GATE PYQ Tests', 'https://likhithlikki.github.io/simple-gate-tests/', true]);
+    if (hasAdminSession()) links.push(['Add Questions', 'index.html?ecetView=add', false]);
+    return links.map(function (x) {
+      return '<a class="global-nav-link' + (x[2] ? ' global-nav-external' : '') + '" href="' + x[1] + '"' + (x[2] ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + x[0] + '</a>';
+    }).join('');
+  }
+
+  function mount() {
+    var header = document.getElementById('globalTopbar');
+    if (!header) {
+      // Replace the old standalone-page bar to avoid stacking two headers.
+      var oldBar = document.querySelector('body > header.bar');
+      header = document.createElement('header');
+      header.className = 'global-topbar';
+      header.id = 'globalTopbar';
+      header.innerHTML = '<div class="global-nav-inner"><a class="global-brand" href="index.html">ECET Quiz</a><button id="globalMenuToggle" class="global-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button><nav id="globalNavLinks" class="global-nav-links" aria-label="Main navigation">' + navMarkup() + '</nav></div>';
+      if (oldBar) oldBar.replaceWith(header);
+      else document.body.insertBefore(header, document.body.firstChild);
+      root.classList.add('tm-has-bar');
+    }
+    var nav = document.getElementById('globalNavLinks');
+    // index.html owns navigation state in app.js; standalone pages get links here.
+    if (nav && !document.getElementById('app')) nav.innerHTML = navMarkup();
+    var menuButton = document.getElementById('globalMenuToggle');
+    if (menuButton && !document.getElementById('app') && !menuButton.dataset.bound) {
+      menuButton.dataset.bound = '1';
+      menuButton.addEventListener('click', function () {
+        var open = nav && nav.classList.toggle('open');
+        menuButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    if (!document.getElementById('globalToasts')) {
+      var toasts = document.createElement('div');
+      toasts.id = 'globalToasts';
+      toasts.className = 'global-toasts';
+      toasts.setAttribute('aria-live', 'polite');
+      toasts.setAttribute('aria-relevant', 'additions text');
+      document.body.appendChild(toasts);
+    }
+    if (!document.getElementById('tmToggle')) header.querySelector('.global-nav-inner').appendChild(makeToggle());
+    apply(current(), false);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);

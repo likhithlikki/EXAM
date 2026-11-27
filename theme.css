@@ -739,3 +739,110 @@ html[data-theme="dark"] .hero::before, html[data-theme="dark"] .hero::after { di
   body::before, .tm-bar, .tm-toggle { display: none !important; }
   html, body { background: #fff !important; }
 }
+
+
+/* ================================================================
+   CHANGED: app-wide sticky navigation, background-save toasts and
+   wide responsive layout (360px through ultrawide desktop).
+   ================================================================ */
+:root { --global-nav-height: 58px; }
+.global-topbar {
+  position: sticky; top: 0; z-index: 150; min-height: var(--global-nav-height);
+  background: rgba(10, 16, 23, .94); border-bottom: 1px solid rgba(85, 170, 153, .28);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.global-nav-inner {
+  width: 100%; max-width: 1400px; min-height: var(--global-nav-height); margin: 0 auto;
+  padding: 7px clamp(16px, 3vw, 40px); box-sizing: border-box; display: flex;
+  align-items: center; gap: 14px;
+}
+.global-brand { color: #eaf4f2; font: 700 14px/1.1 Poppins, Inter, sans-serif; letter-spacing: .2px; white-space: nowrap; }
+.global-nav-links { display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0; flex-wrap: wrap; }
+.global-nav-link {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center;
+  min-height: 32px; margin: 0; padding: 6px 13px; border: 1px solid rgba(94, 195, 159, .35);
+  border-radius: 999px; background: rgba(78, 174, 139, .14); color: #bfe9d7;
+  font: 600 12px/1.2 Inter, sans-serif; text-decoration: none; white-space: nowrap;
+  box-shadow: none; cursor: pointer; transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.global-nav-link:hover { background: rgba(78, 174, 139, .27); color: #fff; border-color: rgba(94, 195, 159, .6); }
+.global-nav-link.active { background: #4ab58f; color: #09261c; border-color: #4ab58f; }
+.global-nav-external { background: rgba(120, 161, 192, .10); border-color: rgba(120, 161, 192, .22); color: #c8d9e7; }
+.global-menu-toggle { display: none; margin-left: auto; width: 38px; height: 36px; padding: 0; border: 1px solid rgba(94,195,159,.38); border-radius: 9px; background: rgba(78,174,139,.14); color: #d7eee5; font-size: 20px; box-shadow: none; }
+.global-toasts {
+  position: fixed; top: calc(var(--global-nav-height) + 12px); right: max(12px, calc((100vw - 1400px) / 2 + 24px));
+  z-index: 260; display: flex; flex-direction: column; align-items: flex-end; gap: 9px;
+  width: min(390px, calc(100vw - 24px)); pointer-events: none;
+}
+.global-toast {
+  display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;
+  padding: 11px 12px; border: 1px solid rgba(140,165,181,.3); border-left-width: 3px;
+  border-radius: 11px; background: #17212b; color: #edf4f7; box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  font: 500 13px/1.4 Inter, sans-serif; pointer-events: auto;
+}
+.global-toast.success { border-left-color: #49c58d; }
+.global-toast.failed { border-left-color: #ee6464; }
+.global-toast.saving { border-left-color: #5daee6; }
+.global-toast-text { flex: 1; min-width: 0; }
+.toast-retry, .toast-close { flex: 0 0 auto; margin: 0; padding: 5px 9px; border: 1px solid rgba(255,255,255,.16); border-radius: 7px; background: rgba(255,255,255,.08); color: #f5f7f9; font-size: 12px; box-shadow: none; }
+.toast-close { padding: 2px 7px; font-size: 18px; line-height: 1; }
+
+/* The main content width now grows on desktop, but is capped to prevent
+   cards and text from stretching excessively on 2K/ultrawide displays. */
+.wrap { width: 100%; max-width: 1400px; margin: 0 auto; padding: 26px clamp(16px, 3vw, 40px) 120px; box-sizing: border-box; }
+.subject-grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 16px; }
+.cc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 10px; align-items: stretch; }
+.cc-list .cc-row { min-width: 0; }
+.cc-row { box-sizing: border-box; }
+.admin-sec[data-tone="manage"] .buttons { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 9px; }
+.admin-sec[data-tone="manage"] .buttons button { width: 100%; }
+.admin-nav { top: var(--global-nav-height) !important; }
+.table-scroll { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+#editTableWrap, #editQuestionsList, #importPreview, #ccBody { min-width: 0; max-width: 100%; }
+.question-drop-zone { margin: 9px 0 16px; padding: 18px; border: 1px dashed rgba(96,190,158,.55); border-radius: 12px; color: #b9d8cd; background: rgba(72,157,126,.08); text-align: center; cursor: pointer; font-size: 13px; }
+.question-drop-zone.drag-over { background: rgba(72,157,126,.2); border-color: #62c9a1; }
+
+/* CHANGED: requested desktop/tablet column counts while retaining the
+   auto-fill minmax grid at wide desktop widths. */
+@media (min-width: 901px) and (max-width: 1500px) {
+  .subject-grid, .cc-list, .edit-question-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .subject-grid, .cc-list, .edit-question-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .subject-grid, .cc-list, .edit-question-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 900px) {
+  :root { --global-nav-height: 54px; }
+  .global-nav-inner { padding-block: 7px; }
+  .global-menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .global-nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; padding: 10px 14px 14px;
+    background: rgba(10,16,23,.98); border-bottom: 1px solid rgba(85,170,153,.28);
+    flex-direction: column; align-items: stretch; gap: 7px; box-shadow: 0 14px 22px rgba(0,0,0,.23); }
+  .global-nav-links.open { display: flex; }
+  .global-nav-link { width: 100%; justify-content: flex-start; min-height: 38px; box-sizing: border-box; }
+  .global-toasts { left: 10px; right: 10px; top: calc(var(--global-nav-height) + 8px); width: auto; align-items: stretch; }
+  .wrap { padding: 18px 16px calc(100px + env(safe-area-inset-bottom)); }
+  .cc-tabs { display: flex; flex-wrap: wrap; }
+}
+@media (max-width: 380px) {
+  .wrap { padding-inline: 12px; }
+  .global-brand { font-size: 13px; }
+  .global-toast { font-size: 12px; padding: 9px; }
+}
+
+/* CHANGED: question-management records use the same responsive card grid as
+   subjects and Control Centre items, avoiding a wide table on small screens. */
+.edit-question-list-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:12px 0; color:var(--tm-muted); font-size:13px; }
+.edit-question-list-head label { display:flex; align-items:center; gap:8px; }
+.edit-question-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr)); gap:12px; align-items:stretch; }
+.edit-question-card { min-width:0; display:flex; flex-direction:column; gap:10px; padding:14px; border:1px solid var(--tm-line); border-radius:13px; background:var(--tm-surface); }
+.edit-question-card-head { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.edit-question-card-head label { display:flex; align-items:center; gap:8px; font-weight:700; font-size:12px; color:var(--tm-muted); }
+.edit-question-card-head button { flex:0 0 auto; margin:0; padding:7px 12px; font-size:12px; }
+.edit-question-card p { margin:0; overflow-wrap:anywhere; font-size:13px; line-height:1.5; color:var(--tm-ink); }
+.edit-question-meta { display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; }
+.edit-question-meta span { border:1px solid var(--tm-line); border-radius:999px; padding:3px 8px; color:var(--tm-muted); font-size:11px; }
+.global-nav-inner > .tm-toggle { flex:0 0 auto; margin-left:4px; }

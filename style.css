@@ -76,7 +76,7 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
    every button fades and becomes unclickable so a click can't fire twice
    and it's obvious something is happening — even on buttons re-rendered
    mid-request, since this is one selector rather than per-button JS. */
-body.app-busy button{opacity:.45;cursor:progress;pointer-events:none;filter:saturate(.6)}
+/* Navigation remains usable while background requests are running. */
 .card{padding:22px}
 .password-card,.enroll-card{max-width:520px;margin:50px auto}
 .password-card h1,.enroll-card h1,.card h1{color:var(--ink);font-weight:800}
