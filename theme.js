@@ -94,18 +94,28 @@
     try { return !!sessionStorage.getItem("ecet_admin_pw"); } catch (e) { return false; }
   }
 
+  /* CHANGED: standalone pages share the same three navigation links. Admin
+     destinations stay behind the single Admin entry; the separate logout
+     control only clears this tab's session and does not grant any privileges. */
   function navMarkup() {
-    var links = [['Home', 'index.html', false]];
-    if (hasAdminSession()) {
-      links.push(['Edit Questions', 'index.html?ecetView=edit', false]);
-      links.push(['Recent Changes', 'index.html?ecetView=recent', false]);
-    }
-    links.push(['Control Centre', 'index.html?ecetView=control', false]);
-    links.push(['GATE PYQ Tests', 'https://likhithlikki.github.io/simple-gate-tests/', true]);
-    if (hasAdminSession()) links.push(['Add Questions', 'index.html?ecetView=add', false]);
+    var path = (location.pathname || '').toLowerCase();
+    var isHome = /(?:^|\/)index\.html$/.test(path) || /\/EXAM\/?$/.test(path);
+    var isControl = new URLSearchParams(location.search).get('ecetView') === 'control';
+    var links = [
+      ['Home', 'index.html', false, isHome],
+      ['Control Centre', 'index.html?ecetView=control', false, isControl],
+      ['GATE PYQ Tests', 'https://likhithlikki.github.io/simple-gate-tests/', true, false]
+    ];
     return links.map(function (x) {
-      return '<a class="global-nav-link' + (x[2] ? ' global-nav-external' : '') + '" href="' + x[1] + '"' + (x[2] ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + x[0] + '</a>';
+      return '<a class="global-nav-link' + (x[2] ? ' global-nav-external' : '') + (x[3] ? ' active' : '') + '" data-nav="' + (x[0] === 'Home' ? 'home' : x[0] === 'Control Centre' ? 'control' : 'gate') + '" href="' + x[1] + '"' + (x[2] ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + x[0] + (x[2] ? '<span class="nav-new">NEW</span>' : '') + '</a>';
     }).join('');
+  }
+  /* CHANGED: Admin remains beside the theme toggle; logout is created only when a session exists. */
+  function adminActionsMarkup() {
+    var unlocked = hasAdminSession();
+    return '<div class="global-nav-actions">' +
+      (unlocked ? '<button id="globalAdminLogout" class="global-admin-logout" type="button">Log out</button>' : '') +
+      '<a id="globalAdminButton" class="global-admin-button' + (unlocked ? ' active' : '') + '" href="index.html?ecetView=admin"' + (unlocked ? ' aria-current="page"' : '') + '>Admin</a></div>';
   }
 
   function mount() {
@@ -116,20 +126,32 @@
       header = document.createElement('header');
       header.className = 'global-topbar';
       header.id = 'globalTopbar';
-      header.innerHTML = '<div class="global-nav-inner"><a class="global-brand" href="index.html">ECET Quiz</a><button id="globalMenuToggle" class="global-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button><nav id="globalNavLinks" class="global-nav-links" aria-label="Main navigation">' + navMarkup() + '</nav></div>';
+      header.innerHTML = '<div class="global-nav-inner"><a class="global-brand" href="index.html">ECET Quiz</a><button id="globalMenuToggle" class="global-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button><nav id="globalNavLinks" class="global-nav-links" aria-label="Main navigation">' + navMarkup() + '</nav>' + adminActionsMarkup() + '</div>';
       if (oldBar) oldBar.replaceWith(header);
       else document.body.insertBefore(header, document.body.firstChild);
       root.classList.add('tm-has-bar');
     }
     var nav = document.getElementById('globalNavLinks');
     // index.html owns navigation state in app.js; standalone pages get links here.
-    if (nav && !document.getElementById('app')) nav.innerHTML = navMarkup();
+    if (nav && !document.getElementById('app')) {
+      nav.innerHTML = navMarkup();
+      var actions = header.querySelector('.global-nav-actions');
+      if (!actions) header.querySelector('.global-nav-inner').insertAdjacentHTML('beforeend', adminActionsMarkup());
+    }
     var menuButton = document.getElementById('globalMenuToggle');
     if (menuButton && !document.getElementById('app') && !menuButton.dataset.bound) {
       menuButton.dataset.bound = '1';
       menuButton.addEventListener('click', function () {
         var open = nav && nav.classList.toggle('open');
         menuButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    var logoutButton = document.getElementById('globalAdminLogout');
+    if (logoutButton && !document.getElementById('app') && !logoutButton.dataset.bound) {
+      logoutButton.dataset.bound = '1';
+      logoutButton.addEventListener('click', function () {
+        try { sessionStorage.removeItem('ecet_admin_pw'); sessionStorage.removeItem('ecet_control_session'); } catch (e) {}
+        window.location.href = 'index.html';
       });
     }
     if (!document.getElementById('globalToasts')) {

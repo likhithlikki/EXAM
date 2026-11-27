@@ -452,6 +452,8 @@ function pushNav(fn){
   else if(fn===editQuestionsPage)setGlobalNavActive_('edit');
   else if(fn===recentChangesPage)setGlobalNavActive_('recent');
   else if(fn===controlCentrePage)setGlobalNavActive_('control');
+  // CHANGED: the Admin landing is a first-class active route in the shared bar.
+  else if(fn===adminQuestionsPage)setGlobalNavActive_('admin');
   else globalNavClose_();
 }
 function replaceNav(fn){
@@ -505,20 +507,45 @@ let _afterProfile=null;
 function adminPw_(){try{return sessionStorage.getItem("ecet_admin_pw")||"";}catch(e){return "";}}
 let isAdminUnlocked=false; // CHANGED: admin UI remains hidden until the stored credential is verified by the server.
 
-/* CHANGED: app-wide navigation and background-task notifications. Admin links
-   are created only for a server-verified admin session; normal users never get
-   admin-only elements in the DOM. The task queue lives outside individual pages. */
+/* CHANGED: app-wide navigation. Admin-only content is rendered only after the
+   Apps Script isAdmin check succeeds; ordinary visitors get only the neutral
+   Admin sign-in control. Background-save queue and toast code remain separate. */
 let _adminAfterUnlock_='admin';
 let _globalActivePage_='home';
 function setGlobalNavActive_(page){_globalActivePage_=page;updateGlobalNavigation_();}
 function updateGlobalNavigation_(){
-  const nav=document.getElementById('globalNavLinks');if(!nav)return;
-  const items=[{key:'home',label:'Home',action:'safeGoHome()'}];
-  if(isAdminUnlocked){items.push({key:'edit',label:'Edit Questions',action:'editQuestionsPage()'},{key:'recent',label:'Recent Changes',action:'recentChangesPage()'});}
-  items.push({key:'control',label:'Control Centre',action:'openControlCentre()'},{key:'gate',label:'GATE PYQ Tests',href:'https://likhithlikki.github.io/simple-gate-tests/'});
-  if(isAdminUnlocked)items.push({key:'add',label:'Add Questions',action:"adminQuestionsPage('adm-import')"});
-  nav.innerHTML=items.map(x=>x.href?`<a class="global-nav-link global-nav-external" data-nav="${x.key}" href="${x.href}" target="_blank" rel="noopener noreferrer">${x.label}</a>`:`<button type="button" class="global-nav-link${_globalActivePage_===x.key?' active':''}" data-nav="${x.key}" onclick="${x.action}">${x.label}</button>`).join('');
-  nav.querySelectorAll('[data-nav]').forEach(el=>el.classList.toggle('active',el.dataset.nav===_globalActivePage_));
+  const nav=document.getElementById('globalNavLinks');
+  if(nav){
+    const items=[
+      {key:'home',label:'Home',action:'safeGoHome()'},
+      {key:'control',label:'Control Centre',action:'openControlCentre()'},
+      {key:'gate',label:'GATE PYQ Tests',href:'https://likhithlikki.github.io/simple-gate-tests/'}
+    ];
+    nav.innerHTML=items.map(x=>x.href
+      ?`<a class="global-nav-link global-nav-external" data-nav="${x.key}" href="${x.href}" target="_blank" rel="noopener noreferrer">${x.label}<span class="nav-new">NEW</span></a>`
+      :`<button type="button" class="global-nav-link${_globalActivePage_===x.key?' active':''}" data-nav="${x.key}" onclick="${x.action};globalNavClose_()">${x.label}</button>`).join('');
+    nav.querySelectorAll('[data-nav]').forEach(el=>el.classList.toggle('active',el.dataset.nav===_globalActivePage_));
+  }
+  const adminButton=document.getElementById('globalAdminButton');
+  if(adminButton){adminButton.classList.toggle('active',!!isAdminUnlocked);adminButton.setAttribute('aria-pressed',String(!!isAdminUnlocked));}
+  // CHANGED: no logout control exists in the DOM until the server has
+  // verified the admin password for this tab. Remove it on lock/logout.
+  let logoutButton=document.getElementById('globalAdminLogout');
+  if(isAdminUnlocked){
+    if(!logoutButton){
+      logoutButton=document.createElement('button');logoutButton.id='globalAdminLogout';
+      logoutButton.type='button';logoutButton.className='global-admin-logout';
+      logoutButton.textContent='Log out';logoutButton.addEventListener('click',adminLogout_);
+    }
+    if(adminButton&&logoutButton.parentElement!==adminButton.parentElement)adminButton.parentElement.insertBefore(logoutButton,adminButton);
+    else if(adminButton&&logoutButton.nextElementSibling!==adminButton)adminButton.parentElement.insertBefore(logoutButton,adminButton);
+  }else if(logoutButton){logoutButton.remove();}
+}
+function openAdminEntry_(){globalNavClose_();if(isAdminUnlocked){adminQuestionsPage();return;}openAdminPassword('admin');}
+function adminLogout_(){
+  try{sessionStorage.removeItem('ecet_admin_pw');sessionStorage.removeItem('ecet_control_session');}catch(e){}
+  clearControlSession_();isAdminUnlocked=false;_ccData=null;_subjectPasswordMap=null;
+  updateGlobalNavigation_();home();
 }
 function globalMenuToggle_(){const nav=document.getElementById('globalNavLinks'),btn=document.getElementById('globalMenuToggle');if(!nav)return;const open=nav.classList.toggle('open');if(btn)btn.setAttribute('aria-expanded',String(open));}
 function globalNavClose_(){const nav=document.getElementById('globalNavLinks'),btn=document.getElementById('globalMenuToggle');if(nav)nav.classList.remove('open');if(btn)btn.setAttribute('aria-expanded','false');}
@@ -535,8 +562,6 @@ async function verifyStoredAdminSession_(){
   }catch(e){isAdminUnlocked=false;}
   if(!isAdminUnlocked){try{sessionStorage.removeItem('ecet_admin_pw');}catch(e){}}
   updateGlobalNavigation_();
-  const homeSlot=document.getElementById('adminNavSlot');
-  if(homeSlot&&isAdminUnlocked)homeSlot.innerHTML='<button onclick="adminQuestionsPage(\'adm-import\')">Admin: Add Questions</button>';
   return isAdminUnlocked;
 }
 
@@ -924,13 +949,18 @@ function groupHTML(s,g,gi,multi){
   const rows=testRowHTML(s,g,gi,-1)+g.topics.map((t,ti)=>testRowHTML(s,g,gi,ti)).join("");
   return `<div class="exam-group">${head}${rows}</div>`;
 }
+/* CHANGED: title and card tools share a flex header. The eye and index badge
+   occupy their own non-shrinking column and can never cover the subject name. */
+function subjectCardHeadHTML(s,i){
+  return `<div class="subject-card-head"><h2>${esc(s.name)}</h2><div class="subject-card-tools">${subjectPasswordEyeHTML(s)}<span class="subject-no">${i+1}</span></div></div>`;
+}
 function topicCardHTML(s,i){
   const info=subjectTopicInfo(s),open=_expandedSubjects.has(s.id);
   const units=allUnitsOf(s),profile=store.profile();
   const inProgress=units.some(u=>{const saved=store.getProgress(u.id);return saved&&saved.email===profile?.email;});
   const lock=inProgress?{locked:false}:subjectLockInfo(s);
   const panel=open?`<div class="topic-panel"><p class="note lock-rule-note">Finishing any test in this subject locks all its tests.</p>${info.groups.map((g,gi)=>groupHTML(s,g,gi,info.groups.length>1)).join("")}</div>`:"";
-  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p><button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
+  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}">${subjectCardHeadHTML(s,i)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p><button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
 }
 function toggleTopics(sid){
   if(_expandedSubjects.has(sid))_expandedSubjects.delete(sid);else _expandedSubjects.add(sid);
@@ -1025,7 +1055,7 @@ function customSubjectsHTML(kind){
     const unfinished=store.getProgress(s.id);
     const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
     if(!hasQuestions){
-      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+      return `<div class="subject-card" data-sid="${esc(s.id)}">${subjectCardHeadHTML(s,i)}${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
     if(hasTestList(s))return topicCardHTML(s,i);
     const best=subjectBest(s);
@@ -1033,7 +1063,7 @@ function customSubjectsHTML(kind){
     const saved=store.getProgress(s.id),profile=store.profile(),inProgress=!!(saved&&saved.email===profile?.email);
     const lock=!inProgress?subjectLockInfo(s):{locked:false};
     const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${inProgress?"Resume Exam":"Open Exam"}</button>`;
-    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${isFibSubject_(s)?'<span class="fib-pill">✍ Fill in the blank</span>':""}${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(inProgress?"Test in progress — resume any time<br>"+meta:meta)}</p>${btn}${inProgress?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    return `<div class="subject-card" data-sid="${esc(s.id)}">${subjectCardHeadHTML(s,i)}${isFibSubject_(s)?'<span class="fib-pill">✍ Fill in the blank</span>':""}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(inProgress?"Test in progress — resume any time<br>"+meta:meta)}</p>${btn}${inProgress?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join("");
 }
 async function home(){
@@ -1049,12 +1079,15 @@ async function home(){
   // Anything saved from an earlier visit? Then the page is already showing real data, so the status pill
   // just says "Updating…" instead of "Checking server…".
   const haveCache_=!!(customSubjects.length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
+  // CHANGED: the home utility row contains student actions only; the GATE feature banner
+  // is a full-width, high-visibility destination between the greeting and search.
   app.innerHTML=`<div class="home"><div class="home-titlebar"><h1>Online Mock Test</h1><div class="home-title-actions"><button id="hardRefreshBtn" onclick="hardRefresh()" title="Clear local cache and reload"><span class="rf-ico" aria-hidden="true">⟳</span><span>Refresh Data</span></button><button id="publishBtn" data-publish-btn onclick="publishNow()" title="Fetch the newest subjects and questions now"><span class="rf-ico" aria-hidden="true">🔄</span><span>Update content</span></button></div></div>
     <div class="note" data-publish-msg role="status" aria-live="polite" style="display:none"></div>
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <div id="outboxBadge"></div>
     <p class="subtitle">${homeSubtitle()}</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="openControlCentre()">🎛 Control Centre</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div><p id="contentUpdated" class="meta" aria-live="polite"></p>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div><p id="contentUpdated" class="meta" aria-live="polite"></p>
+    <a class="gate-home-banner" href="https://likhithlikki.github.io/simple-gate-tests/" target="_blank" rel="noopener noreferrer"><span class="gate-banner-copy"><strong>GATE PYQ Tests</strong><small>Practice previous-year GATE questions</small></span><span class="gate-banner-cta">Open GATE Tests <b aria-hidden="true">→</b></span><span class="gate-banner-new">NEW</span></a>
     <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Additional Tests <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
@@ -1093,7 +1126,7 @@ function subjectCardHTML(s,i){
   const btn=!s.available?`<button disabled>Coming Soon</button>`
     :lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`
     :`<button onclick="openPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,s.available)}<p>${subjectCardMeta(s)}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  return `<div class="subject-card" data-sid="${esc(s.id)}">${subjectCardHeadHTML(s,i)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,s.available)}<p>${subjectCardMeta(s)}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
 }
 function subjectCardMeta(s){
   const saved=store.getProgress(s.id),profile=store.profile();
@@ -1252,9 +1285,8 @@ let _offlineRetryTimer=null;
 // message — clicking it forces a fresh check instead of waiting for the
 // cache TTL or for the user to navigate Home again.
 function offlineStatusHTML_(){return 'Server offline. Check your internet connection, then <button class="inline-retry" onclick="checkServerStatusAndBundle(true)">Retry connection</button>.';}
-function applyServerStatus_(status,statusEl,slot){
+function applyServerStatus_(status,statusEl){
   if(statusEl){statusEl.className='server-status '+(status.online?'online':'offline');statusEl.innerHTML=`<span class="server-dot"></span><span>${status.online?'Server online':offlineStatusHTML_()}</span>`;}
-  if(slot)slot.innerHTML=isAdminUnlocked?`<button onclick="adminQuestionsPage('adm-import')">Admin: Add Questions</button>`:'';
   let changed=false;
   if(status.topicSummary){setServerTopics(status.topicSummary);changed=true;}
   if(status.online&&Array.isArray(status.customSubjects))_liveCustomApplied=true;
@@ -1267,22 +1299,20 @@ function applyServerStatus_(status,statusEl,slot){
 }
 async function checkServerStatusAndBundle(force){
   const statusEl=document.getElementById('serverStatus');
-  const slot=document.getElementById('adminNavSlot');
   if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
   if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — configure the Apps Script URL in config.js, then retry <button class="inline-retry" onclick="checkServerStatusAndBundle(true)">Retry</button></span>';}return;}
   const currentEmail=String(store.profile()?.email||'').trim().toLowerCase();
   const fresh=_serverStatusCache&&_serverStatusCache.email===currentEmail&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
-  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
+  if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl);return;}
   const haveCache_=!!(store.customSubjectsCache().length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
   if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>'+(haveCache_?'Updating…':'Checking server…')+'</span>';}
-  if(slot)slot.innerHTML=isAdminUnlocked?`<button onclick="adminQuestionsPage('adm-import')">Admin: Add Questions</button>`:'';
   const p=store.profile();
   // Background refresh: never shows the top loading bar or disables the page.
   const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS,1,{silent:true});
   if(res?.ok){
     if(Number.isFinite(res.data?.cooldownMinutes))_defaultCooldownMin=res.data.cooldownMinutes;
     _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,email:String(p?.email||'').trim().toLowerCase(),customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
-    applyServerStatus_(_serverStatusCache,statusEl,slot);
+    applyServerStatus_(_serverStatusCache,statusEl);
     refreshSubjectCardStats();
     // homeBundle already carries the same pre-aggregated stats dashboard_()
     // would return (a single-row UserStats lookup, not a recompute) — cache
@@ -1498,13 +1528,23 @@ function adminNavWatch_(){
   document.querySelectorAll(".admin-sec").forEach(el=>_admObs.observe(el));
 }
 async function adminQuestionsPage(sectionToOpen){
-  pushNav(adminQuestionsPage);setGlobalNavActive_(sectionToOpen==='adm-import'?'add':'home');
+  pushNav(adminQuestionsPage);setGlobalNavActive_('admin');
   requireProfile(async ()=>{
     const p=store.profile();
     const access=API?await apiGet('isAdmin',{email:p?.email||'',password:adminPw_()},10000,1):null;
     if(!access?.ok||!access.isAdmin){isAdminUnlocked=false;try{sessionStorage.removeItem('ecet_admin_pw');}catch(e){}updateGlobalNavigation_();app.innerHTML='<div class="card"><h1>Admin access required</h1><p class="note">This page is available only to an authorized administrator. Sign in again with the admin password.</p><div class="buttons"><button onclick="openAdminPassword()">Admin Sign in</button><button onclick="home()">Home</button></div></div>';return;}
     isAdminUnlocked=true;updateGlobalNavigation_();
     if(API){try{const cs=await apiGet("customSubjects",{});if(cs?.ok&&Array.isArray(cs.data)){customSubjects=cs.data;store.setCustomSubjectsCache(cs.data);if(cs.topicSummary)setServerTopics(cs.topicSummary);}}catch(e){console.warn("Custom subjects load failed",e);}}
+    if(!sectionToOpen){
+      app.innerHTML=`<section class="admin-landing"><header class="admin-landing-head"><p class="eyebrow">ADMINISTRATION</p><h1>Admin - Manage Questions</h1><p class="note">Choose an admin workspace. All actions are checked again by the server.</p></header><div class="admin-tile-grid">
+        <button type="button" class="admin-tile" onclick="editQuestionsPage()"><span class="admin-tile-icon">✏️</span><strong>Edit Questions</strong><small>Find, update and organize existing questions</small><span class="admin-tile-arrow">Open workspace →</span></button>
+        <button type="button" class="admin-tile" onclick="recentChangesPage()"><span class="admin-tile-icon">🕘</span><strong>Recent Changes</strong><small>Review the question edit history</small><span class="admin-tile-arrow">Open history →</span></button>
+        <button type="button" class="admin-tile" onclick="openControlCentre()"><span class="admin-tile-icon">🎛️</span><strong>Control Centre</strong><small>Manage locks, timers, passwords and subjects</small><span class="admin-tile-arrow">Open controls →</span></button>
+        <button type="button" class="admin-tile" onclick="adminQuestionsPage('adm-import')"><span class="admin-tile-icon">➕</span><strong>Add Questions</strong><small>Generate an AI prompt, paste JSON or upload files</small><span class="admin-tile-arrow">Open importer →</span></button>
+        <button type="button" class="admin-tile admin-tile-home" onclick="home()"><span class="admin-tile-icon">🏠</span><strong>Home</strong><small>Return to the subject test list</small><span class="admin-tile-arrow">Back to Home →</span></button>
+      </div></section>`;
+      return;
+    }
     const curYear=new Date().getFullYear();
     app.innerHTML=`<div class="admin-page">
     <nav class="admin-nav" aria-label="Admin sections">
@@ -2637,6 +2677,8 @@ async function importPreviewedQuestions(){
 }
 
 function openAdminPassword(after){
+  // CHANGED: collect the profile email before the server-side isAdmin check if needed.
+  if(!store.profile()){requireProfile(()=>openAdminPassword(after));return;}
   _adminAfterUnlock_=after||'admin';clearExam();pushNav(openAdminPassword);
   app.innerHTML=`<div class="card password-card"><h1>Admin Access</h1><p>Enter the admin password to manage subjects and questions.</p><input id="adminPass" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPassword()"><div id="adminPassErr" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkAdminPassword()">Continue</button></div></div>`;
   document.getElementById("adminPass").focus();
@@ -3421,7 +3463,7 @@ if("serviceWorker" in navigator){
 }
 armOutboxAutoSync_();
 
-// CHANGED: mount app-wide nav actions once; the toast root is in index.html.
+// CHANGED: mount shared Home / Control Centre / GATE navigation; Admin is a separate verified action.
 const _globalMenuButton=document.getElementById('globalMenuToggle');
 if(_globalMenuButton)_globalMenuButton.addEventListener('click',globalMenuToggle_);
 updateGlobalNavigation_();
@@ -3435,4 +3477,5 @@ if(_initialView){Promise.all([_initialHomePromise,_initialAdminPromise]).then(()
   else if(_initialView==='recent'){if(isAdminUnlocked)recentChangesPage();else openAdminPassword('recent');}
   else if(_initialView==='control')openControlCentre();
   else if(_initialView==='add'){if(isAdminUnlocked)adminQuestionsPage('adm-import');else openAdminPassword('add');}
+  else if(_initialView==='admin'){if(isAdminUnlocked)adminQuestionsPage();else openAdminPassword('admin');}
 });}

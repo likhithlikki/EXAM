@@ -62,9 +62,13 @@
 <body>
 <!-- CHANGED: shared sticky app navigation; admin-only links are injected only after server verification. -->
 <header class="global-topbar" id="globalTopbar">
-  <div class="global-nav-inner"><div class="global-brand">ECET Quiz</div>
+  <div class="global-nav-inner">
+    <a class="global-brand" href="index.html">ECET Quiz</a>
     <button id="globalMenuToggle" class="global-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
     <nav id="globalNavLinks" class="global-nav-links" aria-label="Main navigation"></nav>
+    <div class="global-nav-actions" id="globalNavActions">
+      <button id="globalAdminButton" class="global-admin-button" type="button" onclick="openAdminEntry_()">Admin</button>
+    </div>
   </div>
 </header>
 <!-- CHANGED: app-root toast mount survives SPA page changes. -->

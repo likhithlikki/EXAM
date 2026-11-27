@@ -24,7 +24,7 @@
  * (the outbox queue, cached dashboard/mistakes fallbacks, etc.) instead of
  * silently serving a stale cached API response.
  */
-const CACHE_VERSION = "v18"; // CHANGED: bump to v17 so clients fetch the new navigation, styles and importer.
+const CACHE_VERSION = "v20"; // CHANGED: invalidate v18 so the updated navigation, app.js and styles are installed.
 const SHELL_CACHE = "ecet-shell-" + CACHE_VERSION;
 const RUNTIME_CACHE = "ecet-runtime-" + CACHE_VERSION;
 
@@ -63,9 +63,12 @@ self.addEventListener("install", (event) => {
       // install and leave the service worker (and offline support) never
       // activated at all.
       Promise.all(
-        SHELL_FILES.map((url) =>
-          cache.add(url).catch((err) => console.warn("SW precache skipped:", url, err))
-        )
+        SHELL_FILES.map((url) => {
+          // CHANGED: bypass the browser HTTP cache so a new shell version cannot
+          // precache stale CSS/JS bytes left behind by a previous deployment.
+          const request = new Request(new URL(url, self.registration.scope).toString(), { cache: "reload" });
+          return cache.add(request).catch((err) => console.warn("SW precache skipped:", url, err));
+        })
       )
     ).then(() => self.skipWaiting())
   );

@@ -40,7 +40,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 html,body{overflow-x:hidden;max-width:100%}
 body{margin:0;background:linear-gradient(180deg,#eef2fc 0%,#f6f8fd 320px,#f2f5fc 100%);color:var(--ink);font-family:'Inter',Arial,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
-.wrap{max-width:1200px;margin:auto;padding:26px 22px 120px}
+/* CHANGED: shared desktop container used by home, admin, Control Centre and question pages. */
+.wrap{width:100%;max-width:1760px;margin-inline:auto;padding:26px clamp(20px,3vw,56px) 120px;box-sizing:border-box}
 
 /* ---------- Home ---------- */
 .home{text-align:center}
@@ -48,7 +49,8 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 .home-username{font-family:'Poppins','Inter',Arial,sans-serif;font-size:clamp(28px,6vw,46px);font-weight:800;color:var(--ink);margin:2px 0 6px;line-height:1.15;letter-spacing:.2px}
 .subtitle{color:var(--muted);margin-bottom:22px;font-size:15px}
 .home-nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
-.subject-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left}
+/* CHANGED: larger auto-fill cards; desktop column counts are finalized in theme.css. */
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:22px;text-align:left}
 .subject-card,.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
 .subject-card{padding:20px;min-height:180px;position:relative;border-top:4px solid var(--primary);transition:transform .15s ease,box-shadow .15s ease}
 .subject-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
@@ -523,7 +525,8 @@ h1,h2{font-family:'Poppins','Inter',Arial,sans-serif}
 html,body{max-width:100%;overflow-x:hidden}body{font-size:clamp(16px,1.1vw,17px)}
 button,.subject-card button,.examfoot button{font-size:16px;min-height:44px}input,select,textarea{font-size:16px!important;max-width:100%}.question{font-size:clamp(18px,1.55vw,22px)}.option{font-size:clamp(17px,1.25vw,18px);font-weight:400;color:var(--ink);line-height:1.5}.option>b{font-weight:800}.meta,.palette-legend,.qtime{font-size:14px}.option{min-height:48px}.card label.option{display:flex;align-items:flex-start;gap:8px;text-transform:none;letter-spacing:normal;font-weight:400;color:var(--ink);font-size:clamp(17px,1.25vw,18px);margin:10px 0}.card label.option:first-of-type{margin-top:10px}
 :focus-visible{outline:3px solid var(--primary)!important;outline-offset:3px}
-@media(min-width:1024px){.wrap{max-width:1200px}.exam-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}.exam-main{min-width:0}.exam-side{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding-bottom:20px}.exam-side .palette{grid-template-columns:repeat(6,1fr)}.examfoot{position:static;transform:none;width:100%;margin-top:18px;box-shadow:none}}
+/* CHANGED: prevent the historical 1200px desktop cap from reappearing in exam views. */
+@media(min-width:1024px){.wrap{max-width:1760px}.exam-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}.exam-main{min-width:0}.exam-side{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;padding-bottom:20px}.exam-side .palette{grid-template-columns:repeat(6,1fr)}.examfoot{position:static;transform:none;width:100%;margin-top:18px;box-shadow:none}}
 @media(min-width:600px) and (max-width:1023px){.subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.exam-layout{display:block}.exam-side{margin-top:18px}.palette{grid-template-columns:repeat(8,1fr)}}
 @media(max-width:599px){.wrap{padding:12px 10px calc(100px + env(safe-area-inset-bottom))}.subject-grid{grid-template-columns:1fr}.exam-layout{display:block}.exam-side{margin-top:16px}.exam-side .palette{grid-template-columns:repeat(5,1fr)}.examfoot{position:fixed;left:0;right:0;bottom:0;transform:none;width:100%;border-radius:14px 14px 0 0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.examfoot button{min-height:48px;padding:8px 5px}.examfoot .submit{grid-column:span 1}.top{flex-direction:row;align-items:center}.top h1{font-size:19px}.question{font-size:19px}.palette-legend{font-size:14px}.card{padding:16px}.password-card,.enroll-card{margin:16px auto}.stats,.dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .questions-drawer-toggle{display:none}
