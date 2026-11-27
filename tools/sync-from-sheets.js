@@ -125,7 +125,15 @@ async function main() {
     hash.update(fs.readFileSync(file));
     hash.update('\0');
   }
-  writeJson(path.join(DATA, 'export-meta.json'), { hash: hash.digest('hex'), fileCount: files.length });
+  const nextHash = hash.digest('hex');
+  const metaPath = path.join(DATA, 'export-meta.json');
+  const previousMeta = readJson(metaPath, {});
+  // Timestamp only a real content change. Legacy metadata without generatedAt
+  // stays untimestamped on no-change runs rather than claiming a false update.
+  const meta = { hash: nextHash, fileCount: files.length };
+  if (previousMeta.hash !== nextHash) meta.generatedAt = new Date().toISOString();
+  else if (previousMeta.generatedAt) meta.generatedAt = previousMeta.generatedAt;
+  writeJson(metaPath, meta);
   console.log(`Sync complete: ${files.length} content files; ${expectedQuestionFiles.size} question banks.`);
 }
 

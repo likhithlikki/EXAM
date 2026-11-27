@@ -998,6 +998,9 @@ function doPost(e) {
       case 'controlData':
         return out_(controlData_(body));
 
+      case 'controlSubjectPasswords':
+        return out_(controlSubjectPasswords_(body));
+
       case 'setDefaultCooldown':
         return out_(setDefaultCooldown_(body));
 
@@ -1300,12 +1303,10 @@ function deleteAccount_(body) {
 
 // Set one or more administrator emails before using the import tool.
 // Keep this list private in Apps Script.
-const ADMIN_EMAILS = [
-  'admin@example.com'
-];
+const ADMIN_EMAILS = []; // Add real administrator addresses here; never use the placeholder.
 function isExamAdmin_(email) {
   var normalized=email_(email);
-  return !!normalized && ADMIN_EMAILS.indexOf(normalized)!==-1;
+  return !!normalized && normalized !== 'admin@example.com' && ADMIN_EMAILS.map(email_).indexOf(normalized)!==-1;
 }
 
 // Public subject passwords are deliberately absent from subjects.json. Built-in
@@ -2296,6 +2297,25 @@ function controlData_(body) {
     topicSummary: topicSummary_(stats),
     history: historyMeta_()
   };
+}
+
+// Returns subject passwords only to an authenticated Control Centre session.
+// This action is deliberately POST-only and is never called by a public GET path.
+function controlSubjectPasswords_(body) {
+  var denied = controlGuard_(body);
+  if (denied) return denied;
+  var passwords = {};
+  try {
+    var builtIn = JSON.parse(PropertiesService.getScriptProperties().getProperty('SUBJECT_PASSWORDS_JSON') || '{}');
+    if (builtIn && typeof builtIn === 'object' && !Array.isArray(builtIn)) {
+      Object.keys(builtIn).forEach(function (id) { passwords[String(id)] = String(builtIn[id] == null ? '' : builtIn[id]); });
+    }
+  } catch (ignore) {}
+  objs_(sh_('Subjects')).forEach(function (row) {
+    var id = String(row.SubjectId || '').trim();
+    if (id) passwords[id] = String(row.Password == null ? '' : row.Password);
+  });
+  return { ok: true, passwords: passwords };
 }
 
 // Drops the cached dashboards so every student sees the new wait straight away.
@@ -3560,7 +3580,13 @@ function submitExam_(body) {
     return {
       ok: false,
       error: 'You already attempted "' + subject + '" recently. You can retake it after ' + iso_(eff.unlockAt) + '.',
-      cooldown: { locked: true, unlockAt: iso_(eff.unlockAt) }
+      cooldown: {
+        locked: true,
+        unlockAt: iso_(eff.unlockAt),
+        lastAttempt: lastAttemptAt ? iso_(lastAttemptAt) : null,
+        reason: eff.overridden ? 'admin' : 'attempt',
+        lockSince: eff.since ? iso_(eff.since) : null
+      }
     };
   }
 
@@ -3760,6 +3786,9 @@ function submitExam_(body) {
   );
 
   recordAttemptInUserStats_(result, mistakeRows.length);
+  // submitExam_ changed both the dashboard and mistakes aggregates. Drop the
+  // short-lived script caches now rather than serving their previous values.
+  clearUserCaches_(email);
 
   if (sessionId) {
     append_(
@@ -3790,11 +3819,14 @@ function submitExam_(body) {
     rankOutOf: rank.total,
     expectedRank: expectedRank_(percentage),
     revisionAvailableAt: unlock.toISOString(),
+    lastAttempt: iso_(now),
+    unlockAt: iso_(new Date(now.getTime() + subjectCooldownMs_())),
     emailStatus: emailResult.status
   };
 }
 
 function resultResponse_(result, duplicate) {
+  var last = toDate_(result.EndTime || result.Timestamp || new Date());
   return {
     ok: true,
     duplicate: !!duplicate,
@@ -3806,6 +3838,8 @@ function resultResponse_(result, duplicate) {
       result.RevisionAvailableAt
         ? new Date(result.RevisionAvailableAt).toISOString()
         : null,
+    lastAttempt: iso_(last),
+    unlockAt: iso_(new Date(last.getTime() + subjectCooldownMs_())),
     emailStatus: 'ALREADY_SENT'
   };
 }
@@ -4081,8 +4115,10 @@ function subjectStatus_(email, subject, subjectId) {
   return {
     locked: locked,
     lastAttempt: lastAttempt ? iso_(lastAttempt) : null,
+    lockSince: eff.since ? iso_(eff.since) : null,
     unlockAt: locked ? iso_(eff.unlockAt) : null,
-    overridden: eff.overridden
+    overridden: eff.overridden,
+    reason: eff.overridden ? 'admin' : (lastAttempt ? 'attempt' : '')
   };
 }
 
@@ -4359,6 +4395,8 @@ function dashboard_(email) {
       if (last && isNaN(last.getTime())) last = null;
       var eff = effectiveUnlock_(last, ov, s.subjectId || s.subject, s.subject);
       s.unlockAt = (eff.unlockAt && new Date() < eff.unlockAt) ? iso_(eff.unlockAt) : null;
+      s.lockSince = eff.since ? iso_(eff.since) : null;
+      s.lockReason = eff.overridden ? 'admin' : (last ? 'attempt' : '');
     });
   } catch (err) {
     // Never let the override lookup break the dashboard itself.

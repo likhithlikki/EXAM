@@ -24,7 +24,7 @@
  * (the outbox queue, cached dashboard/mistakes fallbacks, etc.) instead of
  * silently serving a stale cached API response.
  */
-const CACHE_VERSION = "v13"; // bump this string on every deploy to force a clean cache refresh
+const CACHE_VERSION = "v14"; // bump this string on every deploy to force a clean cache refresh
 const SHELL_CACHE = "ecet-shell-" + CACHE_VERSION;
 const RUNTIME_CACHE = "ecet-runtime-" + CACHE_VERSION;
 

@@ -45,8 +45,23 @@ const store = {
   clearProgress:id=>localStorage.removeItem(store.progressKey(id)),
   mistakesCache:()=>JSON.parse(localStorage.getItem("ecet_mistakes_cache")||"[]"),
   setMistakesCache:a=>localStorage.setItem("ecet_mistakes_cache",JSON.stringify(a)),
-  dashboardCache:()=>JSON.parse(localStorage.getItem("ecet_dashboard_cache")||"null"),
-  setDashboardCache:d=>localStorage.setItem("ecet_dashboard_cache",JSON.stringify(d)),
+  dashboardCache:()=>{
+    try{
+      const cached=JSON.parse(localStorage.getItem("ecet_dashboard_cache")||"null");
+      const email=String(store.profile()?.email||"").trim().toLowerCase();
+      if(!cached||!email||String(cached.email||"").toLowerCase()!==email){
+        if(cached)localStorage.removeItem("ecet_dashboard_cache");
+        return null;
+      }
+      return cached.data||null;
+    }catch(e){return null;}
+  },
+  setDashboardCache:d=>{
+    if(!d){localStorage.removeItem("ecet_dashboard_cache");return;}
+    const email=String(store.profile()?.email||"").trim().toLowerCase();
+    if(!email){localStorage.removeItem("ecet_dashboard_cache");return;}
+    localStorage.setItem("ecet_dashboard_cache",JSON.stringify({email,data:d}));
+  },
   historyCache:()=>{try{return JSON.parse(localStorage.getItem("ecet_history_cache")||"null");}catch(e){return null;}},
   setHistoryCache:a=>{try{localStorage.setItem("ecet_history_cache",JSON.stringify(a));}catch(e){}},
   remindersCache:()=>JSON.parse(localStorage.getItem("ecet_reminders_cache")||"[]"),
@@ -198,6 +213,21 @@ async function loadData(path,fallbackFn){
   }
   return fallbackFn?fallbackFn():null;
 }
+function contentUpdatedLabel_(meta){
+  if(!meta||!meta.generatedAt)return "";
+  const d=new Date(meta.generatedAt);
+  if(isNaN(d.getTime()))return "";
+  const time=d.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}).toLowerCase();
+  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const publishedDay=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+  if(today===publishedDay)return 'Content updated '+time;
+  const date=d.toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'Asia/Kolkata'});
+  return 'Content updated '+date+', '+time;
+}
+function renderContentUpdated_(){
+  const el=document.getElementById('contentUpdated');
+  if(el)el.textContent=contentUpdatedLabel_(_dataMeta);
+}
 // Sheet-imported questions of one subject, in the same shape the "questions" API returns.
 async function loadQuestions_(subjectId){
   const live=async()=>{
@@ -250,6 +280,7 @@ async function pollForNewContent_(baseline){
       const m=r.ok?await r.json():null;
       if(m&&m.hash&&m.hash!==baseline){
         _dataMeta=m;_dataMetaAt=Date.now();
+        renderContentUpdated_();
         await reloadStaticData_();
         return true;
       }
@@ -324,10 +355,15 @@ function getCachedBank_(subjectId){
 function getOutbox_(){ try{return JSON.parse(localStorage.getItem("ecet_outbox")||"[]");}catch(e){return [];} }
 function setOutbox_(items){ try{localStorage.setItem("ecet_outbox",JSON.stringify(items));}catch(e){console.warn("Outbox save failed",e);} }
 function outboxCount_(){ return getOutbox_().length; }
+function invalidateSubmitClientCaches_(){
+  store.setDashboardCache(null);
+  _serverStatusCache=null;
+}
 function queueForOfflineSubmit_(payload){
   const items=getOutbox_();
   items.push({localId:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random().toString(16).slice(2)),payload,queuedAt:Date.now()});
   setOutbox_(items);
+  invalidateSubmitClientCaches_();
   refreshOutboxBadge_();
 }
 let _flushingOutbox=false;
@@ -349,7 +385,7 @@ async function flushOutbox_(){
   _flushingOutbox=false;
   refreshOutboxBadge_();
   if(remaining.length<items.length){
-    store.setDashboardCache(null); // stats just changed server-side — force a fresh fetch next dashboard visit
+    invalidateSubmitClientCaches_(); // stats changed server-side — force a fresh fetch next visit
   }
 }
 function refreshOutboxBadge_(){
@@ -573,11 +609,32 @@ const topicKey=t=>cleanTopic(t).toLowerCase();
 const topicSlug=t=>topicKey(t).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"topic";
 const hashStr=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);};
 const readJsonLS=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return v&&typeof v==="object"&&!Array.isArray(v)?v:d;}catch(e){return d;}};
+const readJsonSS_=(k,d)=>{try{const v=JSON.parse(sessionStorage.getItem(k)||"null");return v&&typeof v==="object"&&!Array.isArray(v)?v:d;}catch(e){return d;}};
 let _serverTopics=readJsonLS("ecet_topic_summary_cache_v2",{}); // {subjectId:{total,exams:[{name,total}],topics:[{name,count,exam}]}}
 let _staticTopics=readJsonLS("ecet_static_topics_cache_v2",{}); // same shape, counted from the static JSON banks
 let _staticTopicsChecked=false;
 let _expandedSubjects=new Set(); // Home cards whose test list is open
-let _unlockedSubjects=new Set(); // subjects whose password was entered this visit (so other tests of it don't ask again)
+function loadUnlockedSubjects_(){
+  const saved=readJsonSS_("ecet_unlocked",{}),now=Date.now(),valid={};
+  Object.keys(saved).forEach(id=>{if(Number(saved[id])>now)valid[id]=Number(saved[id]);});
+  try{sessionStorage.setItem("ecet_unlocked",JSON.stringify(valid));}catch(e){}
+  return new Set(Object.keys(valid));
+}
+let _unlockedSubjects=loadUnlockedSubjects_();
+function isSubjectUnlocked_(id){
+  const key=String(id||"");if(!key)return false;
+  try{const saved=readJsonSS_("ecet_unlocked",{});if(Number(saved[key])>Date.now()){_unlockedSubjects.add(key);return true;}delete saved[key];sessionStorage.setItem("ecet_unlocked",JSON.stringify(saved));}catch(e){}
+  _unlockedSubjects.delete(key);return false;
+}
+function unlockSubject_(id){
+  const key=String(id||"");if(!key)return;
+  _unlockedSubjects.add(key);
+  try{const saved=readJsonSS_("ecet_unlocked",{});saved[key]=Date.now()+15*60*1000;sessionStorage.setItem("ecet_unlocked",JSON.stringify(saved));}catch(e){}
+}
+function lockSubjectAgain_(id){
+  const key=String(id||"");_unlockedSubjects.delete(key);
+  try{const saved=readJsonSS_("ecet_unlocked",{});delete saved[key];sessionStorage.setItem("ecet_unlocked",JSON.stringify(saved));}catch(e){}
+}
 
 function findSubjectById(id){return subjects.find(s=>s.id===id)||customSubjects.find(s=>s.id===id);}
 // The exam a question belongs to when it has none of its own.
@@ -608,8 +665,8 @@ function setServerTopics(map){
   try{localStorage.setItem("ecet_topic_summary_cache_v2",JSON.stringify(map));}catch(e){}
 }
 // Built-in subjects' topic counts. Read from data/subjects.json (tiny, counted on the server side by the
-// sync job) instead of downloading every subject's question file on each Home visit. The old eager
-// download is kept only as a fallback when that file is missing / unreadable / switched off.
+// sync job) instead of downloading question files on Home. If this metadata is unavailable, topic
+// counts remain incomplete until a valid metadata export arrives; question banks are never prefetched.
 async function ensureStaticTopics(){
   if(_staticTopicsChecked)return;
   _staticTopicsChecked=true;
@@ -627,22 +684,10 @@ async function ensureStaticTopics(){
     }
     return;
   }
-  await ensureStaticTopicsLegacy_();
-}
-async function ensureStaticTopicsLegacy_(){
-  let changed=false;
-  await Promise.all(subjects.filter(s=>s.available&&s.file).map(async s=>{
-    try{
-      const arr=await fetch(s.file).then(r=>r.json());
-      if(!Array.isArray(arr))return;
-      const next={total:arr.length,...tallyBank(arr,"ECET")};
-      if(JSON.stringify(_staticTopics[s.id])!==JSON.stringify(next)){_staticTopics[s.id]=next;changed=true;}
-    }catch(e){}
-  }));
-  if(changed){
-    try{localStorage.setItem("ecet_static_topics_cache_v2",JSON.stringify(_staticTopics));}catch(e){}
-    refreshSubjectCardStats();
-  }
+  // Do not fall back to downloading raw question banks on Home. Topic metadata
+  // is optional; full question files are fetched only after the subject lock
+  // gate and password flow have passed.
+  return;
 }
 // One entry per exam of the subject (home exam first): {exam,examKey,isHome,total,topics:[{name,count}]}
 function subjectGroups(s){
@@ -709,10 +754,11 @@ function cardTagsHTML(s,showCount){
 }
 function testRowHTML(parent,g,gi,ti){
   const unit=ti<0?fullUnit(parent,g):topicUnit(parent,g,g.topics[ti]);
-  const unfinished=store.getProgress(unit.id);
+  const saved=store.getProgress(unit.id),profile=store.profile();
+  const unfinished=!!(saved&&saved.email===profile?.email);
   // A wait never blocks resuming a test already in progress — only starting a new attempt.
-  const lock=!unfinished?subjectLockInfo(unit.name):{locked:false};
-  const best=subjectBest(unit.name),count=ti<0?g.total:g.topics[ti].count;
+  const lock=!unfinished?subjectLockInfo(unit):{locked:false};
+  const best=subjectBest(unit),count=ti<0?g.total:g.topics[ti].count;
   const bits=[];if(count)bits.push(`${count} Q`,`${count} min`);bits.push(`Best: ${best!=null?best+"%":"—"}`);
   const btn=lock.locked?`<button disabled title="You can retake this after the wait">Locked</button>`:`<button onclick="openTestUnit('${esc(parent.id)}',${gi},${ti})">${unfinished?"Resume":"Start"}</button>`;
   const remind=unfinished?`<button class="ghost" onclick="quickRemindUnit('${esc(parent.id)}',${gi},${ti})">Remind me later</button>`:"";
@@ -727,9 +773,11 @@ function groupHTML(s,g,gi,multi){
 }
 function topicCardHTML(s,i){
   const info=subjectTopicInfo(s),open=_expandedSubjects.has(s.id);
-  const inProgress=allUnitsOf(s).some(u=>store.getProgress(u.id));
-  const panel=open?`<div class="topic-panel">${info.groups.map((g,gi)=>groupHTML(s,g,gi,info.groups.length>1)).join("")}</div>`:"";
-  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p><button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
+  const units=allUnitsOf(s),profile=store.profile();
+  const inProgress=units.some(u=>{const saved=store.getProgress(u.id);return saved&&saved.email===profile?.email;});
+  const lock=inProgress?{locked:false}:subjectLockInfo(s);
+  const panel=open?`<div class="topic-panel"><p class="note lock-rule-note">Finishing any test in this subject locks all its tests.</p>${info.groups.map((g,gi)=>groupHTML(s,g,gi,info.groups.length>1)).join("")}</div>`:"";
+  return `<div class="subject-card has-topics${open?" expanded":""}" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>":""}${info.total} Questions${inProgress?"<br>Test in progress — resume any time":""}</p><button onclick="toggleTopics('${esc(s.id)}')" aria-expanded="${open}">${open?"Hide tests ▴":"Choose Test ▾"}</button>${panel}</div>`;
 }
 function toggleTopics(sid){
   if(_expandedSubjects.has(sid))_expandedSubjects.delete(sid);else _expandedSubjects.add(sid);
@@ -738,14 +786,6 @@ function toggleTopics(sid){
     const card=[...document.querySelectorAll('.subject-card')].find(c=>c.dataset.sid===sid);
     if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-}
-function openTestUnit(sid,gi,ti){
-  const unit=unitFor(sid,gi,ti);if(!unit)return;
-  _pwSubject=unit;
-  if(guardSubjectLock_(unit))return;
-  // The subject password was already entered this visit → go straight to the test.
-  if(_unlockedSubjects.has(unit.parentId||unit.id)){loadBankAndEnroll_(unit);return;}
-  renderPasswordCard();
 }
 function quickRemindUnit(sid,gi,ti){const u=unitFor(sid,gi,ti);if(u)quickRemindLater(u.id,u.name);}
 // Per-topic score table, shown on the result page of a test that mixes topics (a full subject test).
@@ -826,15 +866,15 @@ function customSubjectsHTML(){
     const unfinished=store.getProgress(s.id);
     const hasQuestions=s.questionCount===undefined?true:s.questionCount>0; // older cached data has no count yet — don't hide it
     if(!hasQuestions){
-      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
+      return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${cardTagsHTML(s,false)}<p>${s.description?esc(s.description):"Question bank coming soon"}</p><button disabled>Coming Soon</button></div>`;
     }
     if(hasTestList(s))return topicCardHTML(s,i);
-    const best=subjectBest(s.name);
+    const best=subjectBest(s);
     const meta=`${s.questionCount} Questions • ${s.questionCount} min • Best: ${best!=null?best+"%":"—"}`;
-    // A cooldown never blocks resuming an exam already in progress — only starting a brand-new attempt.
-    const lock=!unfinished?subjectLockInfo(s.name):{locked:false};
-    const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(unfinished?"Test in progress — resume any time<br>"+meta:meta)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+    const saved=store.getProgress(s.id),profile=store.profile(),inProgress=!!(saved&&saved.email===profile?.email);
+    const lock=!inProgress?subjectLockInfo(s):{locked:false};
+    const btn=lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`:`<button onclick="openCustomPassword(${i})">${inProgress?"Resume Exam":"Open Exam"}</button>`;
+    return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,true)}<p>${s.description?esc(s.description)+"<br>"+meta:(inProgress?"Test in progress — resume any time<br>"+meta:meta)}</p>${btn}${inProgress?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
   }).join(""):'<p class="note">No custom tests added yet. An admin can add one from the Admin page.</p>';
 }
 async function home(){
@@ -855,7 +895,7 @@ async function home(){
     ${p?`<div class="home-username">${esc(p.name)}</div>`:""}
     <div id="outboxBadge"></div>
     <p class="subtitle">${homeSubtitle()}</p>
-    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div>
+    <div class="home-nav"><button onclick="goDashboard()">My Dashboard</button><button onclick="goMistakes()">My Mistakes</button><button onclick="goReminders()">Request Reminder</button><button onclick="location.href='about.html'">ℹ️ About</button><span id="adminNavSlot"><button onclick="openAdminPassword()">Admin</button></span>${p?`<button onclick="goProfile()">👤 My Profile</button>`:""}</div><div id="serverStatus" class="server-status checking"><span class="server-dot"></span><span>${haveCache_?"Updating…":"Checking server…"}</span></div><p id="contentUpdated" class="meta" aria-live="polite"></p>
     <div class="subject-jump" id="subjectJumpWrap"><input id="subjectJump" type="text"  placeholder="Search a subject or topic test…" autocomplete="off" aria-label="Search subjects" oninput="renderJumpList()" onfocus="renderJumpList(true)" onkeydown="jumpKey(event)"><button type="button" class="jump-toggle" onclick="toggleJumpList()" aria-label="Show all subjects" title="Show all subjects">▾</button><div id="jumpList" class="jump-list" hidden></div></div>
     <div class="subject-grid">${subjects.map((s,i)=>subjectCardHTML(s,i)).join("")}</div>
     <h2 style="margin-top:34px">Additional Tests <button class="icon-btn" onclick="refreshCustomSubjects(true)" title="Refresh practice tests" aria-label="Refresh practice tests">↻</button></h2>
@@ -868,6 +908,7 @@ async function home(){
       <a href="refund.html" target="_blank" rel="noopener">Refunds</a>
     </div>
   </div>`;
+  dataMeta_().then(renderContentUpdated_); // timestamp is metadata only; it is not part of the content hash
   loadStaticHome_();        // static-first: fills an empty list/topic summary without waiting for Apps Script
   checkServerStatusAndBundle();
   handleRevisionLink();
@@ -884,30 +925,39 @@ function homeSubtitle(){
 }
 function subjectCardHTML(s,i){
   if(s.available&&hasTestList(s))return topicCardHTML(s,i);
-  const unfinished=s.available&&store.getProgress(s.id);
-  // A cooldown never blocks resuming an exam already in progress — only
-  // starting a brand-new attempt.
-  const lock=(s.available&&!unfinished)?subjectLockInfo(s.name):{locked:false};
+  const saved=store.getProgress(s.id),profile=store.profile();
+  const unfinished=!!(s.available&&saved&&saved.email===profile?.email);
+  const lock=(s.available&&!unfinished)?subjectLockInfo(s):{locked:false};
   const btn=!s.available?`<button disabled>Coming Soon</button>`
     :lock.locked?`<button disabled title="You can retake this after the cooldown">Locked</button>`
     :`<button onclick="openPassword(${i})">${unfinished?"Resume Exam":"Open Exam"}</button>`;
-  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${cardTagsHTML(s,s.available)}<p>${subjectCardMeta(s)}${lock.locked?`<br>${lockBadgeHTML(lock.unlockAt)}`:""}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
+  return `<div class="subject-card" data-sid="${esc(s.id)}"><div class="subject-no">${i+1}</div><h2>${esc(s.name)}</h2>${subjectPasswordEyeHTML(s)}${lock.locked?`<div>${lockBadgeHTML(lock.unlockAt)}</div>`:""}${cardTagsHTML(s,s.available)}<p>${subjectCardMeta(s)}</p>${btn}${unfinished?`<button onclick="quickRemindLater('${esc(s.id)}','${esc(s.name)}')">Remind me later</button>`:""}</div>`;
 }
 function subjectCardMeta(s){
-  const unfinished=s.available&&store.getProgress(s.id);
+  const saved=store.getProgress(s.id),profile=store.profile();
+  const unfinished=!!(s.available&&saved&&saved.email===profile?.email);
   if(!s.available)return "Question bank coming soon";
   const count=s.questionCount;
   const mins=count?count:50;
-  const best=subjectBest(s.name);
+  const best=subjectBest(s);
   const bits=[];
   if(count)bits.push(`${count} Questions`);
   bits.push(`${mins} min`);
   bits.push(best!=null?`Best: ${best}%`:"Best: —");
   return unfinished?`Test in progress — resume any time<br>${bits.join(" • ")}`:bits.join(" • ");
 }
-function subjectBest(name){
-  const d=store.dashboardCache();
-  const row=d?.subjects?.find(x=>x.subject===name);
+function lockSubjectId_(unitOrSubject){
+  const s=unitOrSubject&&typeof unitOrSubject==='object'?unitOrSubject:null;
+  return String((s&&(s.parentId||s.id))||unitOrSubject||'');
+}
+function subjectParentName_(unitOrSubject){
+  const s=unitOrSubject&&typeof unitOrSubject==='object'?unitOrSubject:null;
+  if(s)return String(s.parentName||((s.parentId&&findSubjectById(s.parentId)?.name)||s.name)||'');
+  return String(unitOrSubject||'');
+}
+function subjectBest(unitOrSubject){
+  const d=store.dashboardCache(),id=lockSubjectId_(unitOrSubject),name=subjectParentName_(unitOrSubject);
+  const row=d?.subjects?.find(x=>String(x.subjectId||'')===id)||d?.subjects?.find(x=>x.subject===name);
   return row?row.best:null;
 }
 // Reads the 1-day cooldown state for a subject straight out of the same
@@ -921,7 +971,7 @@ function lockInfoFromLastAttempt_(lastAttempt){
   if(!lastAttempt)return{locked:false};
   const unlockAt=new Date(lastAttempt).getTime()+_defaultCooldownMin*60*1000;
   const remaining=unlockAt-Date.now();
-  return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
+  return remaining>0?{locked:true,unlockAt,remaining,reason:'attempt',lastAttempt,lockSince:lastAttempt}:{locked:false};
 }
 // The server now sends the real unlock time (unlockAt) for every subject,
 // which already includes any admin adjustment. Older cached data without it
@@ -931,17 +981,45 @@ function lockInfoFromRow_(row){
   if(row.unlockAt!==undefined){
     if(!row.unlockAt)return{locked:false};
     const unlockAt=new Date(row.unlockAt).getTime(),remaining=unlockAt-Date.now();
-    return remaining>0?{locked:true,unlockAt,remaining}:{locked:false};
+    return remaining>0?{locked:true,unlockAt,remaining,reason:row.lockReason||'attempt',lastAttempt:row.lockSince||row.lastAttempt||null}:{locked:false};
   }
   return lockInfoFromLastAttempt_(row.lastAttempt);
 }
-function subjectLockInfo(name){
-  const me=store.profile()?.email?.toLowerCase();if(me&&(window.APP_CONFIG?.ADMIN_EMAILS||[]).map(x=>String(x).toLowerCase()).includes(me))return {locked:false,adminBypass:true};
-  const d=store.dashboardCache();
-  return lockInfoFromRow_(d?.subjects?.find(x=>x.subject===name));
+function subjectLockInfo(unitOrSubject){
+  const me=String(store.profile()?.email||'').trim().toLowerCase();
+  const configured=(window.APP_CONFIG?.ADMIN_EMAILS||[]).map(x=>String(x).trim().toLowerCase()).filter(x=>x&&x!=='admin@example.com');
+  const serverAdmin=!!(_serverStatusCache?.online===true&&_serverStatusCache?.isAdmin&&_serverStatusCache.email===me);
+  if(serverAdmin||(me&&configured.includes(me)))return {locked:false,adminBypass:true};
+  const d=store.dashboardCache(),id=lockSubjectId_(unitOrSubject),name=subjectParentName_(unitOrSubject);
+  // A live subjectStatus check is cached separately from score rows so even
+  // a never-attempted subject has an explicit, email-bound offline state.
+  const lockState=d?.subjectLocks?.[id];
+  if(lockState)return lockInfoFromRow_({unlockAt:lockState.unlockAt,lastAttempt:lockState.lastAttempt,lockSince:lockState.lockSince,lockReason:lockState.reason});
+  const row=d?.subjects?.find(x=>String(x.subjectId||'')===id)||d?.subjects?.find(x=>x.subject===name);
+  return lockInfoFromRow_(row);
 }
 function lockBadgeHTML(unlockAt){
   return `<span class="cooldown-badge" data-unlock="${unlockAt}">Locked — retake in ${formatCooldown(unlockAt-Date.now())}</span>`;
+}
+function formatLockDateTime_(value){
+  const d=new Date(value);if(isNaN(d.getTime()))return 'an unavailable time';
+  const weekday=d.toLocaleDateString('en-IN',{weekday:'short',timeZone:'Asia/Kolkata'});
+  const date=d.toLocaleDateString('en-IN',{day:'numeric',month:'short',timeZone:'Asia/Kolkata'});
+  const time=d.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'}).toLowerCase();
+  return `${weekday} ${date}, ${time}`;
+}
+function canRevealSubjectPasswords_(){
+  const me=String(store.profile()?.email||'').trim().toLowerCase();
+  return !!(isAdminUnlocked||(_serverStatusCache?.isAdmin&&_serverStatusCache.email===me));
+}
+function subjectPasswordEyeHTML(subject){
+  if(!canRevealSubjectPasswords_())return "";
+  const id=lockSubjectId_(subject);
+  return `<button type="button" class="subject-password-eye" title="Reveal subject password" aria-label="Reveal password for ${esc(subject.name)}" onclick="showSubjectPasswordById_('${esc(id)}')">👁</button>`;
+}
+function showSubjectPasswordById_(subjectId){
+  const subject=findSubjectById(String(subjectId||''));
+  if(subject)showSubjectPassword_(subjectId,subject.name);
 }
 // Re-renders just the meta text / lock state on already-painted subject
 // cards once fresh precomputed stats arrive from homeBundle, instead of a
@@ -1028,7 +1106,8 @@ async function checkServerStatusAndBundle(force){
   const slot=document.getElementById('adminNavSlot');
   if(_offlineRetryTimer){clearTimeout(_offlineRetryTimer);_offlineRetryTimer=null;}
   if(!API){if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML='<span class="server-dot"></span><span>Server offline — configure the Apps Script URL in config.js, then retry <button class="inline-retry" onclick="checkServerStatusAndBundle(true)">Retry</button></span>';}return;}
-  const fresh=_serverStatusCache&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
+  const currentEmail=String(store.profile()?.email||'').trim().toLowerCase();
+  const fresh=_serverStatusCache&&_serverStatusCache.email===currentEmail&&(Date.now()-_serverStatusCache.checkedAt<SERVER_STATUS_TTL_MS);
   if(fresh&&!force){applyServerStatus_(_serverStatusCache,statusEl,slot);return;}
   const haveCache_=!!(store.customSubjectsCache().length||store.dashboardCache()||Object.keys(_serverTopics||{}).length);
   if(statusEl){statusEl.className='server-status checking';statusEl.innerHTML='<span class="server-dot"></span><span>'+(haveCache_?'Updating…':'Checking server…')+'</span>';}
@@ -1038,15 +1117,24 @@ async function checkServerStatusAndBundle(force){
   const res=await apiGet('homeBundle',p?{email:p.email}:{},SERVER_STATUS_TIMEOUT_MS,1,{silent:true});
   if(res?.ok){
     if(Number.isFinite(res.data?.cooldownMinutes))_defaultCooldownMin=res.data.cooldownMinutes;
-    _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
+    _serverStatusCache={online:true,isAdmin:!!res.data?.isAdmin,email:String(p?.email||'').trim().toLowerCase(),customSubjects:Array.isArray(res.data?.customSubjects)?res.data.customSubjects:customSubjects,topicSummary:res.data?.topicSummary,checkedAt:Date.now()};
     applyServerStatus_(_serverStatusCache,statusEl,slot);
+    refreshSubjectCardStats();
     // homeBundle already carries the same pre-aggregated stats dashboard_()
     // would return (a single-row UserStats lookup, not a recompute) — cache
     // it here too so subject cards show real Best/Worst/cooldown data on
     // every home visit, not only after the user has opened My Dashboard once.
-    if(p&&res.data?.dashboard){store.setDashboardCache(res.data.dashboard);refreshSubjectCardStats();}
+    if(p&&res.data?.dashboard){
+      const nextDashboard=res.data.dashboard,previousDashboard=store.dashboardCache();
+      // Preserve local unlocked checks for subjects with no result row yet;
+      // server rows, when present, always supersede the local snapshot.
+      const serverIds=new Set((nextDashboard.subjects||[]).map(x=>String(x.subjectId||'')));
+      const savedLocks=previousDashboard?.subjectLocks||{};
+      nextDashboard.subjectLocks=Object.fromEntries(Object.entries(savedLocks).filter(([id])=>!serverIds.has(String(id))));
+      store.setDashboardCache(nextDashboard);refreshSubjectCardStats();
+    }
   }else{
-    _serverStatusCache={online:false,isAdmin:isAdminUnlocked,customSubjects,checkedAt:Date.now()};
+    _serverStatusCache={online:false,isAdmin:isAdminUnlocked,email:String(p?.email||'').trim().toLowerCase(),customSubjects,checkedAt:Date.now()};
     if(statusEl){statusEl.className='server-status offline';statusEl.innerHTML=`<span class="server-dot"></span><span>${offlineStatusHTML_()}</span>`;}
     // Don't just sit on "offline" until the user manually revisits Home —
     // keep quietly re-checking in the background, but only while the status
@@ -1342,9 +1430,29 @@ async function adminQuestionsPage(){
  *   🔒 Locks & Timers — default wait for everyone + lock/unlock any subject for one student
  *   🔑 Passwords      — every subject password and the admin passwords
  *   🗂 Subjects       — set a subject's exam, select and delete several subjects at once */
-let _tcSubjects=[],_tcUsers=[],_controlPw="",_ccTab="locks",_ccData=null,_ccShowPw=false,_ccSel=new Set();
+let _tcSubjects=[],_tcUsers=[],_ccTab="locks",_ccData=null,_ccShowPw=false,_ccSel=new Set();
+let _subjectPasswordMap=null,_subjectPasswordMapExpiry=0,_shownSubjectPassword="",_subjectPasswordHideTimer=null,_controlSessionTimer=null;
 function adminAuth_(){const p=store.profile();return{adminEmail:p?.email||"",adminPassword:adminPw_()};}
-function controlAuth_(){return{...adminAuth_(),controlPassword:_controlPw};}
+function clearControlSession_(){
+  clearTimeout(_controlSessionTimer);_controlSessionTimer=null;
+  try{sessionStorage.removeItem("ecet_control_session");}catch(e){}
+  _subjectPasswordMap=null;_subjectPasswordMapExpiry=0;
+}
+function getControlSession_(){
+  try{
+    const session=JSON.parse(sessionStorage.getItem("ecet_control_session")||"null");
+    if(session&&session.pw&&Number(session.expiresAt)>Date.now())return session;
+  }catch(e){}
+  clearControlSession_();return null;
+}
+function saveControlSession_(pw){
+  const session={pw:String(pw||""),expiresAt:Date.now()+15*60*1000};
+  try{sessionStorage.setItem("ecet_control_session",JSON.stringify(session));}catch(e){}
+  clearTimeout(_controlSessionTimer);
+  _controlSessionTimer=setTimeout(clearControlSession_,15*60*1000);
+  _subjectPasswordMap=null;_subjectPasswordMapExpiry=0;
+}
+function controlAuth_(){return{...adminAuth_(),controlPassword:getControlSession_()?.pw||""};}
 const DURATION_PRESETS=[["24 hours",1440],["3 days",4320],["7 days",10080],["1 month",43200]];
 function fmtMinutes(m){
   m=Math.round(Number(m)||0);
@@ -1377,14 +1485,14 @@ function readDuration(pfx){
 }
 // A Control Centre call was refused because the password is missing/wrong → ask for it again.
 function ccDenied(res){
-  if(res&&res.ok===false&&/Control Centre password/i.test(res.error||"")){_controlPw="";_ccData=null;renderControlGate("Please enter the Control Centre password again.");return true;}
+  if(res&&res.ok===false&&/Control Centre password/i.test(res.error||"")){clearControlSession_();_ccData=null;renderControlGate("Please enter the Control Centre password again.");return true;}
   return false;
 }
-function openControlCentre(){_controlPw="";_ccData=null;_ccShowPw=false;_ccSel=new Set();controlCentrePage();}
+function openControlCentre(){_ccData=null;_ccShowPw=false;_ccSel=new Set();controlCentrePage();}
 function controlCentrePage(){
   pushNav(controlCentrePage);
   if(!isAdminUnlocked){app.innerHTML='<div class="card"><h1>Admin access required</h1><div class="buttons"><button onclick="home()">Back</button></div></div>';return;}
-  if(!_controlPw){renderControlGate();return;}
+  if(!getControlSession_()){renderControlGate();return;}
   requireProfile(()=>ccRender());
 }
 function renderControlGate(msg){
@@ -1397,7 +1505,7 @@ async function controlLogin(){
   err.textContent="Checking…";
   const res=await apiPost("controlLogin",{...adminAuth_(),controlPassword:pw},20000);
   if(!res?.ok){err.textContent=res?res.error||"Incorrect password.":"Could not reach the server. Check your connection and try again.";return;}
-  _controlPw=pw;
+  saveControlSession_(pw);
   requireProfile(()=>ccRender());
 }
 function ccRender(){
@@ -1557,11 +1665,14 @@ async function tcAct(i,mode){
 
 /* ---------- 🔑 Passwords ---------- */
 function ccTogglePw(){_ccShowPw=!_ccShowPw;ccPasswordsTab();}
-function ccPasswordsTab(){
+async function ccPasswordsTab(){
   const body=document.getElementById("ccBody");if(!body)return;
-  const show=v=>_ccShowPw?`<code>${esc(v)}</code>`:"••••••";
-  const all=[...subjects.map(s=>({name:s.name,exam:homeExam(s),pw:s.password,kind:s.available?"Built-in":"Built-in (coming soon)"})),..._ccData.subjects.map(s=>({name:s.name,exam:homeExam(s),pw:s.password,kind:"Custom"}))];
-  body.innerHTML=`<p class="note">These are the passwords students type to open a subject, plus the admin passwords. They stay hidden until you press the button.</p>
+  body.innerHTML='<p class="note">Loading subject passwords…</p>';
+  const passwords=await loadSubjectPasswordMap_();
+  if(!passwords){if(!getControlSession_()){renderControlGate("The Control Centre session expired. Please sign in again.");return;}if(body)body.innerHTML='<p class="wronganswer">Could not load subject passwords. Check the connection and try again.</p>';return;}
+  const show=v=>_ccShowPw?`<code>${esc(v||"")||"(not set)"}</code>`:"••••••";
+  const all=[...subjects.map(s=>({id:s.id,name:s.name,exam:homeExam(s),pw:passwords[String(s.id)]||"",kind:s.available?"Built-in":"Built-in (coming soon)"})),...(_ccData.subjects||[]).map(s=>({id:s.id,name:s.name,exam:homeExam(s),pw:passwords[String(s.id)]||"",kind:"Custom"}))];
+  body.innerHTML=`<p class="note">These are the passwords students type to open a subject, plus the admin password status. Subject passwords remain server-side and are fetched only for this authenticated Control Centre session.</p>
     <div class="buttons"><button onclick="ccTogglePw()">${_ccShowPw?"🙈 Hide passwords":"👁 Show passwords"}</button></div>
     <h2>Subject passwords</h2>
     <div class="table-scroll"><table class="simple"><thead><tr><th>#</th><th>Subject</th><th>Default exam</th><th>Type</th><th>Password</th></tr></thead><tbody>${all.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td>${r.exam?esc(r.exam):"—"}</td><td>${esc(r.kind)}</td><td>${show(r.pw)}</td></tr>`).join("")}</tbody></table></div>
@@ -1571,6 +1682,56 @@ function ccPasswordsTab(){
       <tr><td><b>Control Centre password</b></td><td>${show(_ccData.controlPassword)}</td></tr>
       <tr><td><b>Admin email${(_ccData.adminEmails||[]).length===1?"":"s"}</b></td><td>${(_ccData.adminEmails||[]).length?_ccData.adminEmails.map(esc).join("<br>"):"—"}</td></tr>
     </tbody></table></div>`;
+}
+
+/* ---------- Subject password reveal (admin-only) ---------- */
+async function loadSubjectPasswordMap_(){
+  const session=getControlSession_();if(!session)return null;
+  if(_subjectPasswordMap&&_subjectPasswordMapExpiry===session.expiresAt)return _subjectPasswordMap;
+  const res=await apiPost("controlSubjectPasswords",controlAuth_(),20000);
+  if(res?.ok&&res.passwords&&typeof res.passwords==='object'){
+    _subjectPasswordMap=res.passwords;_subjectPasswordMapExpiry=session.expiresAt;return _subjectPasswordMap;
+  }
+  if(res&&res.ok===false&&/Control Centre password/i.test(res.error||""))clearControlSession_();
+  return null;
+}
+function promptSubjectPasswordLogin_(subjectId,subjectName,message){
+  ccModal(`<h2>Control Centre authentication</h2><p>Enter the Control Centre password to reveal this subject password.</p><input id="subjectPwControlInput" type="password" autocomplete="off" placeholder="Control Centre password" onkeydown="if(event.key==='Enter')verifySubjectPasswordLogin_('${esc(subjectId)}','${esc(subjectName)}')"><div id="subjectPwControlError" class="error">${message?esc(message):""}</div><div class="buttons"><button onclick="ccModalClose()">Cancel</button><button onclick="verifySubjectPasswordLogin_('${esc(subjectId)}','${esc(subjectName)}')">Unlock</button></div>`);
+  byId_("subjectPwControlInput")?.focus();
+}
+async function verifySubjectPasswordLogin_(subjectId,subjectName){
+  const input=byId_("subjectPwControlInput"),error=byId_("subjectPwControlError"),pw=(input?.value||"").trim();
+  if(!pw){if(error)error.textContent="Enter the Control Centre password.";return;}
+  if(error)error.textContent="Checking…";
+  const res=await apiPost("controlLogin",{...adminAuth_(),controlPassword:pw},20000);
+  if(!res?.ok){if(error)error.textContent=res?.error||"Could not reach the server. Try again.";return;}
+  saveControlSession_(pw);ccModalClose();await showSubjectPassword_(subjectId,subjectName);
+}
+async function showSubjectPassword_(subjectId,subjectName){
+  if(!canRevealSubjectPasswords_())return;
+  if(!getControlSession_()){promptSubjectPasswordLogin_(subjectId,subjectName);return;}
+  const map=await loadSubjectPasswordMap_();
+  if(!map){
+    if(!getControlSession_())promptSubjectPasswordLogin_(subjectId,subjectName,"The session expired. Enter the Control Centre password again.");
+    else ccModal('<h2>Could not load password</h2><p class="note">Check the connection and try again.</p><div class="buttons"><button onclick="ccModalClose()">Close</button></div>');
+    return;
+  }
+  const password=String(map[String(subjectId)]||"");
+  ccModal(`<h2>${esc(subjectName)} password</h2><p><code id="subjectPasswordValue">${password?esc(password):"(No password configured)"}</code></p><p class="note">This password is shared by every topic test and the Full Subject Test inside this subject. This view hides automatically after 15 seconds.</p><div id="subjectPasswordCopyStatus" class="note" aria-live="polite"></div><div class="buttons"><button onclick="copySubjectPassword_()" ${password?"":"disabled"}>Copy</button><button onclick="hideSubjectPassword_()">Hide</button></div>`);
+  // ccModal() closes any previous modal (and clears its secret); restore this
+  // newly revealed value only after that cleanup so the Copy action can use it.
+  _shownSubjectPassword=password;
+  clearTimeout(_subjectPasswordHideTimer);
+  _subjectPasswordHideTimer=setTimeout(hideSubjectPassword_,15000);
+}
+async function copySubjectPassword_(){
+  if(!_shownSubjectPassword)return;
+  const status=byId_("subjectPasswordCopyStatus");
+  try{await navigator.clipboard.writeText(_shownSubjectPassword);if(status)status.textContent="Password copied.";}
+  catch(e){if(status)status.textContent="Clipboard access was blocked by this browser.";}
+}
+function hideSubjectPassword_(){
+  clearTimeout(_subjectPasswordHideTimer);_subjectPasswordHideTimer=null;_shownSubjectPassword="";ccModalClose();
 }
 
 /* ---------- shared: a small dialog ---------- */
@@ -1584,7 +1745,7 @@ function ccModal(html){
   document.body.appendChild(d);
   document.addEventListener("keydown",ccModalKey_);
 }
-function ccModalClose(){const d=byId_("ccModal");if(d)d.remove();document.removeEventListener("keydown",ccModalKey_);}
+function ccModalClose(){clearTimeout(_subjectPasswordHideTimer);_subjectPasswordHideTimer=null;_shownSubjectPassword="";const d=byId_("ccModal");if(d)d.remove();document.removeEventListener("keydown",ccModalKey_);}
 
 let _ccFlash="",_ccTests=[],_ccTestSel=new Set(),_ccDragId="";
 function ccFlashHTML(){const m=_ccFlash;_ccFlash="";return m;}
@@ -1598,7 +1759,7 @@ function ccTargetOptions_(selected,exceptId){
 function ccMsg_(html){const m=byId_("ccDelMsg");if(m)m.innerHTML=html;}
 // reload everything from the server, then show a message on the tab that is open
 async function ccReload(flashHTML){_ccFlash=flashHTML||"";_ccData=null;_ccSel=new Set();await ccTab(_ccTab);}
-function ccForget_(ids){ids.forEach(id=>{_expandedSubjects.delete(id);_unlockedSubjects.delete(id);});}
+function ccForget_(ids){ids.forEach(id=>{_expandedSubjects.delete(id);lockSubjectAgain_(id);});}
 function ccOk_(m){return `<span class="correct">${esc(m)}</span>`;}
 function ccBad_(m){return `<span class="wronganswer">${esc(m)}</span>`;}
 function ccCount_(n,word){return `${n} ${word}${n===1?"":"s"}`;}
@@ -2386,23 +2547,39 @@ async function checkAdminPassword(){
 /* ===================== PASSWORD ===================== */
 let _pwSubject=null;
 let _lockCountdownTimer=null;
-function openPassword(i){_pwSubject=subjects[i];if(guardSubjectLock_(subjects[i]))return;const s=_pwSubject;if(s.password===''||s.hasPassword===false){_unlockedSubjects.add(s.parentId||s.id);loadBankAndEnroll_(s);return;}renderPasswordCard();}
-function openCustomPassword(i){_pwSubject=customSubjects[i];if(guardSubjectLock_(customSubjects[i]))return;const s=_pwSubject;if(s.password===''||s.hasPassword===false){_unlockedSubjects.add(s.parentId||s.id);loadBankAndEnroll_(s);return;}renderPasswordCard();}
-// Defense in depth: the subject cards already hide/disable "Open Exam" while
-// locked, but this re-checks the same precomputed lastAttempt right before
-// the password screen too, in case a card was rendered before fresh stats
-// arrived. Never blocks resuming an in-progress exam. Returns true if blocked.
-function guardSubjectLock_(s){
-  if(!s||store.getProgress(s.id))return false;
-  const lock=subjectLockInfo(s.name);
+function openPassword(i){const subject=subjects[i];if(subject)openSubjectFlow_(subject);}
+function openCustomPassword(i){const subject=customSubjects[i];if(subject)openSubjectFlow_(subject);}
+function openTestUnit(sid,gi,ti){const unit=unitFor(sid,gi,ti);if(unit)openSubjectFlow_(unit);}
+let _offlineGateNotice="",_pendingGateRetry=null;
+async function openSubjectFlow_(subject){
+  _pwSubject=subject;
+  const continueFlow=async()=>{
+    const allowed=await gateStartNewAttempt_(subject,continueFlow);
+    if(!allowed)return;
+    const parentId=lockSubjectId_(subject);
+    if(isSubjectUnlocked_(parentId)){await loadBankAndEnroll_(subject,true);return;}
+    if(subject.password===''||subject.hasPassword===false){unlockSubject_(parentId);await loadBankAndEnroll_(subject,true);return;}
+    renderPasswordCard();
+  };
+  if(!store.profile()){requireProfile(continueFlow);return;}
+  await continueFlow();
+}
+// Kept as a local-cache defence for any legacy caller. New entry paths always
+// use the live fail-closed gate before displaying a password or loading a bank.
+function guardSubjectLock_(subject){
+  if(!subject)return false;
+  const saved=store.getProgress(subject.id),profile=store.profile();
+  if(saved&&saved.email===profile?.email)return false;
+  const lock=subjectLockInfo(subject);
   if(!lock.locked)return false;
-  pushNav(()=>guardSubjectLock_(s));
-  app.innerHTML=`<div class="card"><h1>${esc(s.name)} is locked</h1><p class="note">You already attempted this subject recently. You can retake it in <b id="lockCountdown" data-unlock="${lock.unlockAt}">${formatCooldown(lock.remaining)}</b>.</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
-  clearInterval(_lockCountdownTimer);
-  _lockCountdownTimer=setInterval(()=>{const el=document.getElementById("lockCountdown");if(!el){clearInterval(_lockCountdownTimer);return;}const remaining=Number(el.dataset.unlock)-Date.now();if(remaining<=0){home();return;}el.textContent=formatCooldown(remaining);},30000);
+  showSubjectLockedScreen_(subject,lock.unlockAt,lock);
   return true;
 }
-function renderPasswordCard(){pushNav(renderPasswordCard);const s=_pwSubject;app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1><p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;document.getElementById("password").focus();}
+function renderPasswordCard(){
+  pushNav(renderPasswordCard);const s=_pwSubject;
+  app.innerHTML=`<div class="card password-card"><h1>${esc(s.name)}</h1>${_offlineGateNotice?`<p class="note">${esc(_offlineGateNotice)}</p>`:""}<p>Enter the subject password.</p><input id="password" type="password" inputmode="numeric" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><div id="passError" class="error"></div><div class="buttons"><button onclick="home()">Back</button><button onclick="checkPassword()">Continue</button></div></div>`;
+  _offlineGateNotice="";document.getElementById("password").focus();
+}
 async function checkPassword(){const s=_pwSubject, input=document.getElementById("password"),v=input?input.value:"";
   const card=document.querySelector('.password-card'), buttons=card?card.querySelectorAll('button'):[];
   if(input){input.disabled=true;} buttons.forEach(b=>b.disabled=true);
@@ -2411,11 +2588,11 @@ async function checkPassword(){const s=_pwSubject, input=document.getElementById
   const pid=s.parentId||s.id;
   if(expected===undefined||expected===null){
     const verify=await apiPostBounded_("verifySubjectPassword",{subjectId:pid,password:v},6000);
-    if(verify?.ok&&verify.data?.noPassword){_unlockedSubjects.add(pid);await loadBankAndEnroll_(s);return;}
+    if(verify?.ok&&verify.data?.noPassword){unlockSubject_(pid);await loadBankAndEnroll_(s,true);return;}
     if(!verify?.ok||!verify.data?.valid){if(status)status.textContent=verify?.data?.configMissing?"Password configuration is missing on the server. Contact the administrator.":(verify?.ok?"Incorrect password.":"Could not verify password. Check your connection and retry.");if(input)input.disabled=false;buttons.forEach(b=>b.disabled=false);return;}
   } else if(v!==String(expected)){if(status)status.textContent="Incorrect password.";if(input)input.disabled=false;buttons.forEach(b=>b.disabled=false);return;}
-  _unlockedSubjects.add(s.parentId||s.id);
-  await loadBankAndEnroll_(s);
+  unlockSubject_(pid);
+  await loadBankAndEnroll_(s,true);
 }
 /* ===================== OFFLINE-AWARE BANK LOADING =====================
  * Unchanged behavior when online: fetches the static file + backend
@@ -2425,7 +2602,13 @@ async function checkPassword(){const s=_pwSubject, input=document.getElementById
  * connection, this skips the network entirely and serves the last cached
  * copy for this subject instead of failing — if nothing was ever cached
  * for it, it says so plainly rather than pretending the bank is empty. */
-async function loadBankAndEnroll_(s){
+async function loadBankAndEnroll_(s,gatePassed=false){
+  if(!s)return;
+  if(!gatePassed){
+    _pwSubject=s;
+    const continueLoad=()=>loadBankAndEnroll_(s,false);
+    if(!(await gateStartNewAttempt_(s,continueLoad)))return;
+  }
   const parentId=s.parentId||s.id; // a topic test loads its parent subject's questions, then keeps only its topic
   const cacheKey=parentId;
 
@@ -2440,7 +2623,7 @@ async function loadBankAndEnroll_(s){
     bank=bank.map(q=>({...q,exam:cleanTopic(q.exam)||homeOffline}));
     if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
     if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
-    if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available offline."}</h2><p class="note">Connect to the internet and retry, or open this exam online once to save it for offline use.</p><div class="buttons"><button onclick="loadBankAndEnroll_(_pwSubject||activeSubject)">Retry</button><button onclick="home()">Back</button></div></div>`;return;}
+    if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available offline."}</h2><p class="note">Connect to the internet and retry, or open this exam online once to save it for offline use.</p><div class="buttons"><button onclick="openSubjectFlow_(_pwSubject||activeSubject)">Retry</button><button onclick="home()">Back</button></div></div>`;return;}
     activeSubject=s;enroll();
     return;
   }
@@ -2460,7 +2643,7 @@ async function loadBankAndEnroll_(s){
   if(bank.length)cacheBankForOffline_(cacheKey,bank); // save the FULL merged bank (pre-filter) for offline reuse by any topic under this subject
   if(s.examKey!==undefined)bank=bank.filter(q=>topicKey(q.exam)===s.examKey);
   if(s.topicKey)bank=bank.filter(q=>topicKey(q.topic)===s.topicKey);
-  if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><p class="note">Check your connection and try loading the question bank again.</p><div class="buttons"><button onclick="loadBankAndEnroll_(activeSubject)">Retry</button><button onclick="home()">Back</button></div></div>`;return;}activeSubject=s;enroll();}
+  if(!bank.length){app.innerHTML=`<div class="card"><h2>${s.topicKey?"No questions in this topic yet.":"Question bank not available."}</h2><p class="note">Check your connection and try loading the question bank again.</p><div class="buttons"><button onclick="openSubjectFlow_(activeSubject)">Retry</button><button onclick="home()">Back</button></div></div>`;return;}activeSubject=s;enroll();}
 /* ===================== DATA-COLLECTION CONSENT (DPDP Act, 2023) =====================
  * Name + email are the only personal data this app collects at account
  * creation, and they're collected in exactly two places: here (enroll, for
@@ -2521,45 +2704,95 @@ function confirmExamStart(){
  * exam or start the timer if it's still locked. Resuming an in-progress
  * exam is never subject to this (there's nothing "new" being started), so
  * the check is skipped whenever saved progress exists for the subject. */
-async function gateStartNewAttempt_(subject){
-  if(store.getProgress(subject.id))return true; // resuming — never gated
-  if(!API)return true; // no backend configured, nothing to check against
-  const p=store.profile();
-  const status=await apiGetBounded_("subjectStatus",{email:p.email,subject:subject.name,subjectId:subject.parentId||subject.id},4000);
-  if(status?.ok&&status.data?.locked){
-    showSubjectLockedScreen_(subject.name,status.data.unlockAt);
+function localDashboardClearlyUnlocked_(subject){
+  const d=store.dashboardCache();if(!d)return false; // dashboard is email-bound by store.dashboardCache()
+  const id=lockSubjectId_(subject),name=subjectParentName_(subject),lockState=d.subjectLocks?.[id];
+  if(lockState)return !lockInfoFromRow_({unlockAt:lockState.unlockAt,lastAttempt:lockState.lastAttempt,lockSince:lockState.lockSince,lockReason:lockState.reason}).locked;
+  const row=(d.subjects||[]).find(x=>String(x.subjectId||'')===id)||(d.subjects||[]).find(x=>x.subject===name);
+  if(!row)return false; // no cached record is not proof that the subject is unlocked
+  return !lockInfoFromRow_(row).locked;
+}
+function showGateChecking_(subject){
+  app.innerHTML=`<div class="card"><h1>Checking ${esc(subject.name)}…</h1><p class="note">Verifying your subject lock before showing the password or downloading questions.</p><p id="gateCheckingStatus" class="note">Checking…</p></div>`;
+}
+function showGateVerificationError_(subject,retryFn,message){
+  _pendingGateRetry=retryFn||(()=>openSubjectFlow_(subject));
+  pushNav(()=>openSubjectFlow_(subject));
+  app.innerHTML=`<div class="card"><h1>Couldn't verify your attempt status</h1><p class="note">${esc(message||"The server did not confirm whether this subject is unlocked. The exam will not start until the status can be verified.")}</p><div class="buttons"><button onclick="home()">Back to Subjects</button><button onclick="retrySubjectGate_()">Retry</button></div></div>`;
+}
+function retrySubjectGate_(){const retry=_pendingGateRetry;_pendingGateRetry=null;if(retry)retry();}
+function updateLocalSubjectLockFromStatus_(subject,data){
+  const d=store.dashboardCache()||{attempts:0,best:0,avg:0,mistakes:0,subjects:[]};
+  const id=lockSubjectId_(subject),name=subjectParentName_(subject);
+  d.subjects=d.subjects||[];d.subjectLocks=d.subjectLocks||{};
+  let row=d.subjects.find(x=>String(x.subjectId||'')===id)||d.subjects.find(x=>x.subject===name);
+  if(row){row.subjectId=id;row.subject=name;row.unlockAt=data.locked?data.unlockAt:null;row.lastAttempt=data.lastAttempt||row.lastAttempt||null;row.lockSince=data.lockSince||null;row.lockReason=data.reason||'';}
+  d.subjectLocks[id]={unlockAt:data.locked?data.unlockAt:null,lastAttempt:data.lastAttempt||null,lockSince:data.lockSince||null,reason:data.reason||'',checkedAt:Date.now()};
+  store.setDashboardCache(d);
+}
+async function gateStartNewAttempt_(subject,retryFn){
+  const profile=store.profile(),parentId=lockSubjectId_(subject);
+  const saved=store.getProgress(subject.id);
+  if(saved&&profile&&saved.email===profile.email)return true; // a same-user in-progress exam always resumes
+  _pendingGateRetry=retryFn||(()=>openSubjectFlow_(subject));
+  showGateChecking_(subject);
+  if(!navigator.onLine){
+    const cachedBank=getCachedBank_(parentId);
+    if(localDashboardClearlyUnlocked_(subject)&&Array.isArray(cachedBank)&&cachedBank.length){
+      _offlineGateNotice="Offline: using this device's saved unlocked status and cached question bank. Live lock status could not be checked.";
+      _pendingGateRetry=null;
+      return true;
+    }
+    const localLock=subjectLockInfo(subject);
+    if(localLock.locked){showSubjectLockedScreen_(subject,localLock.unlockAt,localLock);return false;}
+    showGateVerificationError_(subject,retryFn,"You are offline and this device does not have both a clear unlocked status and a cached question bank for this subject.");
     return false;
   }
+  if(!API){showGateVerificationError_(subject,retryFn,"The Apps Script backend is not configured. Connect to the backend before starting a new attempt.");return false;}
+  const email=profile?.email||"";
+  if(!email){showGateVerificationError_(subject,retryFn,"A student profile is required to verify the subject lock.");return false;}
+  const status=await apiGetBounded_("subjectStatus",{email,subject:subjectParentName_(subject),subjectId:parentId},20000);
+  if(!status||status.ok!==true||!status.data){
+    showGateVerificationError_(subject,retryFn,"The server did not return a valid lock status. Try again when the connection is stable.");
+    return false;
+  }
+  if(status.data.locked){showSubjectLockedScreen_(subject,status.data.unlockAt,status.data);return false;}
+  updateLocalSubjectLockFromStatus_(subject,status.data);
+  _pendingGateRetry=null;
   return true;
 }
-
-function showSubjectLockedScreen_(name,unlockAtIso){
+function showSubjectLockedScreen_(subject,unlockAtIso,reason){
+  const name=typeof subject==='string'?subject:(subject?.parentName||subject?.name||'This subject');
   const unlockAt=new Date(unlockAtIso).getTime();
   const remaining=Math.max(0,unlockAt-Date.now());
-  pushNav(()=>showSubjectLockedScreen_(name,unlockAtIso));
-  app.innerHTML=`<div class="card"><h1>${esc(name)} is locked</h1><p class="note">You already attempted this subject. You can retake it in <b id="lockCountdown" data-unlock="${unlockAt}">${formatCooldown(remaining)}</b>.</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
+  const lockInfo=reason&&typeof reason==='object'?reason:{};
+  const isAdminLock=lockInfo.reason==='admin'||lockInfo.overridden===true;
+  const since=lockInfo.lastAttempt||lockInfo.lockSince||null;
+  const reasonText=isAdminLock?'Set by admin':(since?'Another test in this subject was completed on '+formatLockDateTime_(since):'Another test in this subject was completed recently');
+  pushNav(()=>showSubjectLockedScreen_(subject,unlockAtIso,reason));
+  app.innerHTML=`<div class="card"><h1>${esc(name)} is locked</h1><p class="note">This lock applies to every topic test and the Full Subject Test in this subject.</p><p>Unlocks <b>${isNaN(unlockAt)?'when the configured wait ends':formatLockDateTime_(unlockAtIso)}</b>.</p><p class="note">Retake available in <b id="lockCountdown" data-unlock="${isNaN(unlockAt)?0:unlockAt}">${isNaN(unlockAt)?'—':formatCooldown(remaining)}</b>.</p><p class="note">${esc(reasonText)}</p><div class="buttons"><button onclick="home()">Back to Subjects</button></div></div>`;
   clearInterval(_lockCountdownTimer);
   _lockCountdownTimer=setInterval(()=>{
-    const el=document.getElementById("lockCountdown");
-    if(!el){clearInterval(_lockCountdownTimer);return;}
-    const remaining=Number(el.dataset.unlock)-Date.now();
-    if(remaining<=0){home();return;}
-    el.textContent=formatCooldown(remaining);
+    const el=document.getElementById("lockCountdown");if(!el){clearInterval(_lockCountdownTimer);return;}
+    const until=Number(el.dataset.unlock),left=until-Date.now();
+    if(left<=0){clearInterval(_lockCountdownTimer);home();return;}
+    el.textContent=formatCooldown(left);
   },30000);
 }
 function postBackground_(action,payload,timeoutMs=4000){if(!API)return;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);fetch(API,{method:'POST',body:JSON.stringify({action,...payload}),cache:'no-store',signal:controller.signal}).then(r=>r.ok?r.json():null).catch(e=>console.warn('Background '+action+' failed:',e)).finally(()=>clearTimeout(timer));}
 function setStartChecking_(label){const btn=[...document.querySelectorAll('button')].find(b=>/Start Exam|Retry Test|Retry Exam/.test(b.textContent));if(btn){btn.disabled=true;btn.textContent='Checking your attempt…';}let el=document.getElementById('startCheckStatus');if(!el){el=document.createElement('p');el.id='startCheckStatus';el.className='note';document.querySelector('.enroll-card,.card')?.appendChild(el);}if(el)el.textContent=label||'Checking your attempt…';}
 async function beginExam(){
   setStartChecking_();
+  if(!(await gateStartNewAttempt_(activeSubject,beginExam)))return;
   if(bank.some(q=>String(q.type||'').toUpperCase()==='FIB'))await _fibRulesReady_;
   const p=store.profile();
-  if(!(await gateStartNewAttempt_(activeSubject)))return;
   if(p)postBackground_("register",{name:p.name,email:p.email,subject:activeSubject.name,consent:!!p.consent},4000);
   start();
 }
-async function retryExam(){setStartChecking_();
+async function retryExam(){
+  setStartChecking_();
+  if(!(await gateStartNewAttempt_(activeSubject,retryExam)))return;
   if(bank.some(q=>String(q.type||'').toUpperCase()==='FIB'))await _fibRulesReady_;
-  if(!(await gateStartNewAttempt_(activeSubject)))return;
   start();
 }
 
@@ -2634,6 +2867,46 @@ function render(){
   <aside class="exam-side"><div class="card"><div class="timer ${left<=60?"low":""}">${clock(left)}</div><div class="meta" style="margin-top:12px">Answered <b>${answered}</b> / ${test.length}<br>Marked for review <b>${markedCount}</b><br>Unanswered <b>${test.length-answered}</b></div><div class="palette-legend"><span>⬜ Unanswered</span><span>🟩 Answered</span><span>🟨 Review</span></div><div class="palette">${palette}</div></div></aside></div>`;
 }
 /* ===================== RESULT ===================== */
+function updateDashboardLockAfterSubmit_(payload,resp){
+  if(resp?.duplicate){
+    updateDashboardLockAfterCooldown_(payload,{cooldown:{unlockAt:resp.unlockAt,lastAttempt:resp.lastAttempt,reason:'attempt'}});
+    return;
+  }
+  const id=String(payload.subjectId||""),nowIso=new Date().toISOString();
+  const unlockAt=resp?.unlockAt||new Date(Date.now()+_defaultCooldownMin*60000).toISOString();
+  const parent=findSubjectById(id),name=parent?.name||activeSubject?.parentName||payload.subject;
+  const d=store.dashboardCache()||{attempts:0,best:0,avg:0,mistakes:0,subjects:[]};
+  d.subjects=Array.isArray(d.subjects)?d.subjects:[];
+  let row=d.subjects.find(x=>String(x.subjectId||"")===id)||d.subjects.find(x=>x.subject===name);
+  if(!row){row={subjectId:id,subject:name,best:payload.percentage,worst:payload.percentage,avg:payload.percentage,attempts:0};d.subjects.push(row);}
+  const prior=Number(row.attempts)||0;
+  row.subjectId=id;row.subject=name;row.attempts=prior+1;
+  row.best=Math.max(Number(row.best)||0,Number(payload.percentage)||0);
+  row.worst=prior?Math.min(Number(row.worst??row.best),Number(payload.percentage)||0):(Number(payload.percentage)||0);
+  row.avg=prior?((Number(row.avg)||0)*prior+(Number(payload.percentage)||0))/(prior+1):(Number(payload.percentage)||0);
+  row.lastAttempt=resp?.lastAttempt||nowIso;row.unlockAt=unlockAt;row.lockSince=row.lastAttempt;row.lockReason='attempt';
+  d.subjectLocks=d.subjectLocks||{};d.subjectLocks[id]={unlockAt,lastAttempt:row.lastAttempt,lockSince:row.lastAttempt,reason:'attempt',checkedAt:Date.now()};
+  d.attempts=(Number(d.attempts)||0)+1;
+  store.setDashboardCache(d);
+  _serverStatusCache=null;
+}
+function updateDashboardLockAfterCooldown_(payload,resp){
+  const lock=resp?.cooldown||{},id=String(payload.subjectId||'');
+  if(!id||!lock.unlockAt)return;
+  const parent=findSubjectById(id),name=parent?.name||activeSubject?.parentName||payload.subject;
+  const d=store.dashboardCache()||{attempts:0,best:0,avg:0,mistakes:0,subjects:[]};
+  d.subjects=Array.isArray(d.subjects)?d.subjects:[];
+  let row=d.subjects.find(x=>String(x.subjectId||'')===id)||d.subjects.find(x=>x.subject===name);
+  if(!row){row={subjectId:id,subject:name,best:0,worst:0,avg:0,attempts:0};d.subjects.push(row);}
+  row.subjectId=id;row.subject=name;row.unlockAt=lock.unlockAt;row.lockSince=lock.lockSince||lock.lastAttempt||null;row.lastAttempt=lock.lastAttempt||row.lastAttempt||null;row.lockReason=lock.reason||'attempt';
+  d.subjectLocks=d.subjectLocks||{};d.subjectLocks[id]={unlockAt:lock.unlockAt,lastAttempt:lock.lastAttempt||row.lastAttempt||null,lockSince:lock.lockSince||lock.lastAttempt||null,reason:lock.reason||'attempt',checkedAt:Date.now()};
+  store.setDashboardCache(d);_serverStatusCache=null;
+}
+function renderNotSavedLockedResult_(payload,resp){
+  const lock=resp?.cooldown||{};
+  updateDashboardLockAfterCooldown_(payload,resp);
+  renderResult({score:payload.score,total:payload.total,percentage:payload.percentage,wrong:payload.wrong,unanswered:payload.unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,notSavedLocked:true,lockedUntil:lock.unlockAt,lockReason:lock.reason,lockSince:lock.lastAttempt||lock.lockSince});
+}
 async function submit(){
   // IMPORTANT: clearExam() also resets isSubmitting=false (it's a general-purpose
   // "leaving an exam context" reset used elsewhere). It must run BEFORE we set
@@ -2678,12 +2951,9 @@ async function submit(){
   if(!resp?.ok){
     isSubmitting=false;
     if(resp?.cooldown?.locked){
-      // This only happens if a fresh attempt somehow got started during the
-      // cooldown (the "Open Exam" screen already blocks that normally). The
-      // progress isn't restored here since the cooldown means a new attempt
-      // shouldn't have been possible in the first place.
-      store.clearProgress(activeSubject.id);
-      app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+      // Keep the locally calculated answers and review detail visible. The
+      // backend rejected this session before recording it as an attempt.
+      renderNotSavedLockedResult_(payload,resp);
       return;
     }
     /* The connection genuinely dropped mid-request (was online a second
@@ -2695,19 +2965,8 @@ async function submit(){
     renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:null,rankOutOf:null,expectedRank:null,equivalentMarks:null,offlinePending:true});
     return;
   }
-  // Reflect the new cooldown in the local cache immediately, so Home's
-  // subject card (and guardSubjectLock_) shows "Locked" without waiting
-  // on the next dashboard refresh. This is a display convenience only —
-  // gateStartNewAttempt_() above is what actually enforces the lock.
-  const dc=store.dashboardCache();
-  if(dc){
-    dc.subjects=dc.subjects||[];
-    const nowIso=new Date().toISOString();
-    let srow=dc.subjects.find(s=>s.subject===activeSubject.name);
-    if(srow)srow.lastAttempt=nowIso;
-    else dc.subjects.push({subject:activeSubject.name,best:percentage,worst:percentage,avg:percentage,attempts:1,lastAttempt:nowIso});
-    store.setDashboardCache(dc);
-  }
+  // Update the cached dashboard using the parent subject ID (all topic tests share it).
+  updateDashboardLockAfterSubmit_(payload,resp);
   renderResult({score,total,percentage,wrong,unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 async function retrySubmit(payload){
@@ -2721,13 +2980,13 @@ async function retrySubmit(payload){
   if(!resp?.ok){
     isSubmitting=false;
     if(resp?.cooldown?.locked){
-      store.clearProgress(activeSubject.id);
-      app.innerHTML=`<div class="card"><h1>This subject is locked</h1><p class="note">You already attempted "${esc(activeSubject.name)}" recently. You can retake it after <b>${esc(formatDateTime(resp.cooldown.unlockAt))}</b>.</p><div class="buttons"><button onclick="home()">Subjects</button></div></div>`;
+      renderNotSavedLockedResult_(payload,resp);
       return;
     }
     app.innerHTML=`<div class="card"><h1>Could not save result</h1><p class="note">Please check your internet connection and try submitting again.</p><div class="buttons"><button onclick="retrySubmit(payload)">Try again</button><button onclick="home()">Subjects</button></div></div>`;
     return;
   }
+  updateDashboardLockAfterSubmit_(payload,resp);
   renderResult({score:payload.score,total:payload.total,percentage:payload.percentage,wrong:payload.wrong,unanswered:payload.unanswered,totalTime:payload.totalTime,detail:payload.detail,rank:resp.rank,rankOutOf:resp.rankOutOf,expectedRank:resp.expectedRank,equivalentMarks:resp.equivalentMarks});
 }
 function pieHTML(r){const fib=r.detail&&r.detail.length&&r.detail.every(d=>d.type==="FIB");const total=Math.max(1,fib?r.detail.reduce((s,d)=>s+(Number(d.marks)>0?Number(d.marks):1),0):r.total),c=fib?r.detail.reduce((s,d)=>s+(gradeFib(d.selectedText,d.correctText).correct?(Number(d.marks)>0?Number(d.marks):1):0),0)/total*100:r.score/total*100,w=fib?r.detail.reduce((s,d)=>s+(String(d.selectedText||"").trim()!==""&&!gradeFib(d.selectedText,d.correctText).correct?(Number(d.marks)>0?Number(d.marks):1):0),0)/total*100:r.wrong/total*100,u=fib?r.detail.reduce((s,d)=>s+(String(d.selectedText||"").trim()===""?(Number(d.marks)>0?Number(d.marks):1):0),0)/total*100:r.unanswered/total*100;return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(#1a7f37 0 ${c}%,#b00020 ${c}% ${c+w}%,#d4a72c ${c+w}% 100%)"></div><div class="pie-legend"><span><i class="dot green"></i>Correct ${c.toFixed(1)}%</span><span><i class="dot red"></i>Wrong ${w.toFixed(1)}%</span><span><i class="dot yellow"></i>Unanswered ${u.toFixed(1)}%</span></div></div>`;}
@@ -2736,7 +2995,9 @@ function showQuestionTime(i){const d=window._lastResultDetail?.[i];if(!d)return;
 function renderResult(r){
   window._lastResultDetail=r.detail;
   const expected=r.expectedRank||"—",eq=r.equivalentMarks??Math.round(r.percentage*2*10)/10;
-  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1>${r.offlinePending?'<div class="note" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">📡 No internet — this result is saved on your device and will upload automatically once you\'re back online. Rank and students-count will appear after it syncs.</div>':''}<div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons"><button onclick="retryExam()">Retry Test</button><button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
+  const lockNotice=r.notSavedLocked?`<div class="note not-saved-lock" role="alert"><b>Not saved — subject locked.</b> The server rejected this attempt, so it was not recorded. Your answers and question review remain visible here.${r.lockedUntil?` The subject unlocks ${esc(formatLockDateTime_(r.lockedUntil))}.`:''}</div>`:'';
+  const offlineNotice=r.offlinePending?'<div class="note" style="background:#fff3cd;padding:10px;border-radius:7px;margin-bottom:10px">📡 No internet — this result is saved on your device and will upload automatically once you\'re back online. Rank and students-count will appear after it syncs.</div>':'';
+  app.innerHTML=`<div class="card"><h1>Result — ${esc(activeSubject.name)}</h1>${lockNotice}${offlineNotice}<div class="stats"><div class="stat"><b>${r.score}/${r.total}</b>Score</div><div class="stat"><b>${r.percentage}%</b>Percentage</div><div class="stat"><b>${eq}/200</b>Equivalent AP ECET</div><div class="stat"><b>${expected}</b>Expected AP ECET Rank</div><div class="stat"><b>${r.rank?"#"+r.rank:"—"}</b>Practice Rank</div><div class="stat"><b>${r.rankOutOf||"—"}</b>Students</div><div class="stat"><b>${r.wrong}</b>Wrong</div><div class="stat"><b>${r.unanswered}</b>Unanswered</div></div><p class="meta">Total time: <b>${clock(r.totalTime)}</b></p><h2>Result breakdown</h2>${pieHTML(r)}${topicBreakdownHTML(r.detail)}<h2>Time spent per question</h2>${timeChart(r.detail)}<div class="buttons">${r.notSavedLocked?"":'<button onclick="retryExam()">Retry Test</button>'}<button onclick="goDashboard()">Dashboard</button><button onclick="home()">Subjects</button></div><h2>Question review</h2><div class="filterbar"><button class="active" onclick="filterReview('all',this)">All (${r.detail.length})</button><button onclick="filterReview('wrong',this)">Wrong (${r.wrong})</button><button onclick="filterReview('unanswered',this)">Unanswered (${r.unanswered})</button><button onclick="filterReview('marked',this)">Review (${r.detail.filter(d=>d.marked).length})</button></div><div id="reviewList">${reviewListHTML(r.detail,"all")}</div></div>`;
 }
 function filterReview(f,b){document.querySelectorAll(".filterbar button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("reviewList").innerHTML=reviewListHTML(window._lastResultDetail,f);}
 function reviewListHTML(detail,filter){return detail.map((d,n)=>{const fib=d.type==="FIB",iu=fib?String(d.selectedText||"").trim()==="":d.selected===null||d.selected===undefined,iw=fib?!iu&&!gradeFib(d.selectedText,d.correctText).correct:!iu&&Number(d.selected)!==Number(d.correct);if((filter==="wrong"&&!iw)||(filter==="unanswered"&&!iu)||(filter==="marked"&&!d.marked))return"";const yours=fib?(iu?"Unanswered":esc(d.selectedText)): (iu?"Unanswered":"ABCD"[d.selected]+". "+esc((d.options||[])[d.selected]));const correct=fib?esc(d.correctText):"ABCD"[d.correct]+". "+esc((d.options||[])[d.correct]);return `<div class="review ${iw||iu?"wrong":""}"><b>Q${n+1} • ${esc(d.year)} ${esc(d.state)} • PYQ ${esc(d.questionNumber)}</b> <span class="qtime">${formatSeconds(d.time)}</span><p>${esc(d.question)}</p><div>Your answer: <span class="${iu?"":iw?"wronganswer":"correct"}">${yours}</span></div><div>Correct answer: <span class="correct">${correct}</span></div></div>`;}).join("")||`<p class="note">Nothing to show.</p>`;}

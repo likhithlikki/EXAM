@@ -25,3 +25,12 @@ Responsive single-page ECET practice-test website with a Google Apps Script back
 - SPA navigation with Back/Home controls and active-test browser-back protection.
 - Mobile and desktop responsive layout.
 - Backend/API/network error states, loading states, validation and retry paths.
+
+
+## Content, subject locks and passwords
+
+Question content originates in Google Sheets. Apps Script `exportAll` supplies the GitHub Action (`.github/workflows/sync-sheets.yml`), which runs `tools/sync-from-sheets.js` every 15 minutes (or through **Update content**) and publishes the static files under `data/`. Built-in banks in `data/questions/static/` are checked into the repository.
+
+A completed test locks its **parent subject**: every topic test and the Full Subject Test inside that subject share the same cooldown. Different subjects lock independently. Each parent subject has one password shared by all of its tests; built-in passwords are configured in the Apps Script `SUBJECT_PASSWORDS_JSON` Script Property, while custom-subject passwords are stored in the `Subjects` sheet.
+
+Control Centre authentication is held in `sessionStorage` for 15 minutes. The expiry is not extended by use; when it expires, the Control Centre password is requested again. Configure administrator email addresses as the same real, lowercase list in `config.js` and `Code.gs`; the `admin@example.com` placeholder is not an administrator.
