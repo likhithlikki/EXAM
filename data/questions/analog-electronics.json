@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-98d8727a839045f78252",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -12,7 +14,10 @@
       "Equal to supply voltage"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -27,6 +32,8 @@
   },
   {
     "id": "Q-8fa9029bd4764caba593",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -38,7 +45,10 @@
       "100 kΩ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -53,6 +63,8 @@
   },
   {
     "id": "Q-0f8fb2df489049dabe53",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -64,7 +76,10 @@
       "Equal to input resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -79,6 +94,8 @@
   },
   {
     "id": "Q-89d5913ac7ac4499a8e7",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -90,7 +107,10 @@
       "Infinite"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -105,6 +125,8 @@
   },
   {
     "id": "Q-2ddf3140dd7341888cfa",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -116,7 +138,10 @@
       "Equal to differential gain"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -131,6 +156,8 @@
   },
   {
     "id": "Q-d48597cfcd90403db5c7",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -142,7 +169,10 @@
       "Negative"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -157,6 +187,8 @@
   },
   {
     "id": "Q-fab64c30a7f84b829ff4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -168,7 +200,10 @@
       "Power supply"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -183,6 +218,8 @@
   },
   {
     "id": "Q-6d6709a13b1f46d4a116",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -194,7 +231,10 @@
       "-Rin/Rf"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -209,6 +249,8 @@
   },
   {
     "id": "Q-77648167e695446f82e8",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -220,7 +262,10 @@
       "-1-Rf/R1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -235,6 +280,8 @@
   },
   {
     "id": "Q-2cd784c7174c4ff2b88c",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -246,7 +293,10 @@
       "Infinite"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -261,6 +311,8 @@
   },
   {
     "id": "Q-cef1200e822a442f98a8",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -272,7 +324,10 @@
       "270°"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -287,6 +342,8 @@
   },
   {
     "id": "Q-19c2e10873944109b0c9",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -298,7 +355,10 @@
       "270°"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -313,6 +373,8 @@
   },
   {
     "id": "Q-e4c79a7426ea49a78dd8",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -324,7 +386,10 @@
       "Equal to supply current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -339,6 +404,8 @@
   },
   {
     "id": "Q-66e36a6f996b4e898700",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -350,7 +417,10 @@
       "Differential input without feedback"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -365,6 +435,8 @@
   },
   {
     "id": "Q-ddd355f109aa4431a680",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -376,7 +448,10 @@
       "11"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -391,6 +466,8 @@
   },
   {
     "id": "Q-b71d2337e3164f1aa841",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -402,7 +479,10 @@
       "-5"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -417,6 +497,8 @@
   },
   {
     "id": "Q-e89b57b699ce45548a51",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -428,7 +510,10 @@
       "20 V"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -443,6 +528,8 @@
   },
   {
     "id": "Q-aaedc89460804cad9599",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -454,7 +541,10 @@
       "0.22 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -469,6 +559,8 @@
   },
   {
     "id": "Q-3c3e4cfad99343b58849",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -480,7 +572,10 @@
       "2"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -495,6 +590,8 @@
   },
   {
     "id": "Q-db7daf8e0f98410687c1",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -506,7 +603,10 @@
       "Infinite"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -521,6 +621,8 @@
   },
   {
     "id": "Q-8ed469c861b74b199f32",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -532,7 +634,10 @@
       "Average only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -547,6 +652,8 @@
   },
   {
     "id": "Q-3091ac25b99c4e4d9852",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -558,7 +665,10 @@
       "RMS value"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -573,6 +683,8 @@
   },
   {
     "id": "Q-457be24ef82e46469428",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -584,7 +696,10 @@
       "Diode"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -599,6 +714,8 @@
   },
   {
     "id": "Q-5ef6d46c34fa408f930f",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -610,7 +727,10 @@
       "Zener diode"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -625,6 +745,8 @@
   },
   {
     "id": "Q-8e0b4a6923704529b66c",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -636,7 +758,10 @@
       "Eliminate all feedback"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -651,6 +776,8 @@
   },
   {
     "id": "Q-fc61ce813b194c0d8464",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -662,7 +789,10 @@
       "Remove negative feedback"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -677,6 +807,8 @@
   },
   {
     "id": "Q-55e7cf4e6fd5430593cf",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -688,7 +820,10 @@
       "Eliminate feedback"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -703,6 +838,8 @@
   },
   {
     "id": "Q-c1b904e50f814c74a867",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -714,7 +851,10 @@
       "Product of inputs"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -729,6 +869,8 @@
   },
   {
     "id": "Q-e1246cd18697410cb00f",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -740,7 +882,10 @@
       "Noise only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -755,6 +900,8 @@
   },
   {
     "id": "Q-794df27a9c88491a9aa4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -766,7 +913,10 @@
       "V1/V2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -781,6 +931,8 @@
   },
   {
     "id": "Q-4e50e2d1ae2b454dab9e",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -792,7 +944,10 @@
       "V1/V2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -807,6 +962,8 @@
   },
   {
     "id": "Q-b81c48f8710e4c77af7d",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -818,7 +975,10 @@
       "0.5 V"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -833,6 +993,8 @@
   },
   {
     "id": "Q-09f3e3cc7d2c40d79f09",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -844,7 +1006,10 @@
       "5 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -859,6 +1024,8 @@
   },
   {
     "id": "Q-e8677b23a9114c2f8d8d",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -870,7 +1037,10 @@
       "Ac/Vd"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -885,6 +1055,8 @@
   },
   {
     "id": "Q-8cc0302b930f49bca5f4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -896,7 +1068,10 @@
       "Input resistance to output resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -911,6 +1086,8 @@
   },
   {
     "id": "Q-81e70cfec94d45ed8ac9",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -922,7 +1099,10 @@
       "Ad-Acm"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -937,6 +1117,8 @@
   },
   {
     "id": "Q-e017f2685858457189ea",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -948,7 +1130,10 @@
       "0.001"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -963,6 +1148,8 @@
   },
   {
     "id": "Q-566ee32193044f2b8d54",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -974,7 +1161,10 @@
       "100 dB"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -989,6 +1179,8 @@
   },
   {
     "id": "Q-81715eb6f91d4fc9aed4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -1000,7 +1192,10 @@
       "Eliminates input resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1015,6 +1210,8 @@
   },
   {
     "id": "Q-f251f1551a1349bfbb17",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -1026,7 +1223,10 @@
       "Remove all feedback"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1041,6 +1241,8 @@
   },
   {
     "id": "Q-1b692c65761145238d5a",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -1052,7 +1254,10 @@
       "No differential input"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1067,6 +1272,8 @@
   },
   {
     "id": "Q-e2d2590692dc4a9cb1b4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -1078,7 +1285,10 @@
       "Only unity gain"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1093,6 +1303,8 @@
   },
   {
     "id": "Q-368c1acd593b48f1bc13",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -1104,7 +1316,10 @@
       "An inductor only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1119,6 +1334,8 @@
   },
   {
     "id": "Q-c96698415a074f459712",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -1130,7 +1347,10 @@
       "Saturate both inputs"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1145,6 +1365,8 @@
   },
   {
     "id": "Q-b83d2411ae85476c9e87",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -1156,7 +1378,10 @@
       "Feedback current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1171,6 +1396,8 @@
   },
   {
     "id": "Q-d2eb90e7383d4048b793",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -1182,7 +1409,10 @@
       "Supply current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1197,6 +1427,8 @@
   },
   {
     "id": "Q-298c1575324246d4a615",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -1208,7 +1440,10 @@
       "Equal to VCC"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1223,6 +1458,8 @@
   },
   {
     "id": "Q-2bce08f1958749ed8bcf",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -1234,7 +1471,10 @@
       "Equal to output current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1249,6 +1489,8 @@
   },
   {
     "id": "Q-c1d6a0170c634d2dbbbc",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -1260,7 +1502,10 @@
       "Only output capacitance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1275,6 +1520,8 @@
   },
   {
     "id": "Q-c4412c1004ad43558293",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -1286,7 +1533,10 @@
       "Input bias current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1301,6 +1551,8 @@
   },
   {
     "id": "Q-28664a92aaa44660917e",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -1312,7 +1564,10 @@
       "A/V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1327,6 +1582,8 @@
   },
   {
     "id": "Q-8f6c457e0f2b48e4a2ae",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -1338,7 +1595,10 @@
       "25 µs"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1353,6 +1613,8 @@
   },
   {
     "id": "Q-ac0f19330aa2411ab03f",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -1364,7 +1626,10 @@
       "2πVp/f"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1379,6 +1644,8 @@
   },
   {
     "id": "Q-5362405cdbe843628a4e",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -1390,7 +1657,10 @@
       "31.4 V/µs"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1405,6 +1675,8 @@
   },
   {
     "id": "Q-508aeb7313024ecdb4e4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -1416,7 +1688,10 @@
       "Equal to input resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1431,6 +1706,8 @@
   },
   {
     "id": "Q-7cbcc68ac94348f289be",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -1442,7 +1719,10 @@
       "10 MHz"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1457,6 +1737,8 @@
   },
   {
     "id": "Q-262fedd59c86453cbd11",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -1468,7 +1750,10 @@
       "Slew rate"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1483,6 +1768,8 @@
   },
   {
     "id": "Q-6ad733a4c9334a7bbf0e",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -1494,7 +1781,10 @@
       "Always infinite"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1509,6 +1799,8 @@
   },
   {
     "id": "Q-9f6dc8939c1d4b0e8670",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -1520,7 +1812,10 @@
       "Eliminates input impedance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1535,6 +1830,8 @@
   },
   {
     "id": "Q-f388c4e077e64567848e",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -1546,7 +1843,10 @@
       "Become infinite in every case"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1561,6 +1861,8 @@
   },
   {
     "id": "Q-fea4b83c312e491184e6",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "61",
@@ -1572,7 +1874,10 @@
       "Become supply voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1587,6 +1892,8 @@
   },
   {
     "id": "Q-6d3a1ee127ff490b877f",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "62",
@@ -1598,7 +1905,10 @@
       "Input offset voltage necessarily"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1613,6 +1923,8 @@
   },
   {
     "id": "Q-61288baff5554f3883b6",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "63",
@@ -1624,7 +1936,10 @@
       "Only as a follower"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1639,6 +1954,8 @@
   },
   {
     "id": "Q-3b8c324686304c0d84d4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "64",
@@ -1650,7 +1967,10 @@
       "Exceeds input resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1665,6 +1985,8 @@
   },
   {
     "id": "Q-e7f095128c2c4cc2bc7d",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "65",
@@ -1676,7 +1998,10 @@
       "Infinite"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1691,6 +2016,8 @@
   },
   {
     "id": "Q-d4ab3d185ba747ad9c50",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "66",
@@ -1702,7 +2029,10 @@
       "Inductive feedback"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1717,6 +2047,8 @@
   },
   {
     "id": "Q-b170554905164e209ba4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "67",
@@ -1728,7 +2060,10 @@
       "Make output analog only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1743,6 +2078,8 @@
   },
   {
     "id": "Q-980b74dd02b24fa2969c",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "68",
@@ -1754,7 +2091,10 @@
       "Its input bias current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1769,6 +2109,8 @@
   },
   {
     "id": "Q-4b93a575786c48d1bd34",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "69",
@@ -1780,7 +2122,10 @@
       "+20 V"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1795,6 +2140,8 @@
   },
   {
     "id": "Q-1f0bd9028a9f45d5941d",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "70",
@@ -1806,7 +2153,10 @@
       "Negative voltage gain only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1821,6 +2171,8 @@
   },
   {
     "id": "Q-cce99b38b0d540b8a02c",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "71",
@@ -1832,7 +2184,10 @@
       "Generating only square waves"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1847,6 +2202,8 @@
   },
   {
     "id": "Q-0d6ec092c25a48278099",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "72",
@@ -1858,7 +2215,10 @@
       "200 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1873,6 +2233,8 @@
   },
   {
     "id": "Q-429381ebd952487ba59b",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "73",
@@ -1884,7 +2246,10 @@
       "240 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1899,6 +2264,8 @@
   },
   {
     "id": "Q-6a91858c9cf643a18ef1",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "74",
@@ -1910,7 +2277,10 @@
       "Infinite input resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1925,6 +2295,8 @@
   },
   {
     "id": "Q-160847917fc645279454",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "75",
@@ -1936,7 +2308,10 @@
       "Infinite supply voltage"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1951,6 +2326,8 @@
   },
   {
     "id": "Q-c14f854cc9ab463eb824",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "76",
@@ -1962,7 +2339,10 @@
       "V1/V2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1977,6 +2357,8 @@
   },
   {
     "id": "Q-a592c252e9fd43c1b47c",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "77",
@@ -1988,7 +2370,10 @@
       "10 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2003,6 +2388,8 @@
   },
   {
     "id": "Q-337f34fdebac439e868f",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "78",
@@ -2014,7 +2401,10 @@
       "0.2"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2029,6 +2419,8 @@
   },
   {
     "id": "Q-f4964b75941f4282bd75",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "79",
@@ -2040,7 +2432,10 @@
       "20"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2055,6 +2450,8 @@
   },
   {
     "id": "Q-646301315b9849b1aeb4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "80",
@@ -2066,7 +2463,10 @@
       "4 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2081,6 +2481,8 @@
   },
   {
     "id": "Q-e84dc50226374940992d",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "81",
@@ -2092,7 +2494,10 @@
       "0.033 V"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2107,6 +2512,8 @@
   },
   {
     "id": "Q-082ea1144cf5443c82f7",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "82",
@@ -2118,7 +2525,10 @@
       "-1.5 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2133,6 +2543,8 @@
   },
   {
     "id": "Q-86b9e758c3f7435c99a4",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "83",
@@ -2144,7 +2556,10 @@
       "Infinite"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2159,6 +2574,8 @@
   },
   {
     "id": "Q-4f4db7753412495a96b7",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "84",
@@ -2170,7 +2587,10 @@
       "Frequency to resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2185,6 +2605,8 @@
   },
   {
     "id": "Q-626ec8b434b4427282be",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "85",
@@ -2196,7 +2618,10 @@
       "Transformer"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2211,6 +2636,8 @@
   },
   {
     "id": "Q-39f87ab80bf1494d9695",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "86",
@@ -2222,7 +2649,10 @@
       "200 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2237,6 +2667,8 @@
   },
   {
     "id": "Q-cba7b8449ddb4c0a9d13",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "87",
@@ -2248,7 +2680,10 @@
       "Output pin"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2263,6 +2698,8 @@
   },
   {
     "id": "Q-238c7b70b2774b148a3d",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "88",
@@ -2274,7 +2711,10 @@
       "Only inductive behavior"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2289,6 +2729,8 @@
   },
   {
     "id": "Q-63082d61edc34802a376",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "89",
@@ -2300,7 +2742,10 @@
       "C/R"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2315,6 +2760,8 @@
   },
   {
     "id": "Q-6c033dd395e44b82a7da",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "90",
@@ -2326,7 +2773,10 @@
       "15.9 kHz"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2341,6 +2791,8 @@
   },
   {
     "id": "Q-5cf1769272134d1893cf",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "91",
@@ -2352,7 +2804,10 @@
       "+20 dB/decade"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2367,6 +2822,8 @@
   },
   {
     "id": "Q-d59a738d4bec4ba3b1de",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "92",
@@ -2378,7 +2835,10 @@
       "Only DC gain above cutoff"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2393,6 +2853,8 @@
   },
   {
     "id": "Q-3dce813ed1cb4ac5bde6",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "93",
@@ -2404,7 +2866,10 @@
       "1.414 of passband"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2419,6 +2884,8 @@
   },
   {
     "id": "Q-d93d23e7605945e4b760",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "94",
@@ -2430,7 +2897,10 @@
       "10"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2445,6 +2915,8 @@
   },
   {
     "id": "Q-11826c7b2fef4f5c845e",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "95",
@@ -2456,7 +2928,10 @@
       "0 dB/decade"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2471,6 +2946,8 @@
   },
   {
     "id": "Q-157f4bbf2776454b8ac3",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "96",
@@ -2482,7 +2959,10 @@
       "Works only with DC"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2497,6 +2977,8 @@
   },
   {
     "id": "Q-4831e445f57349f3bf1f",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "97",
@@ -2508,7 +2990,10 @@
       "Generate only a triangular wave"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2523,6 +3008,8 @@
   },
   {
     "id": "Q-a0ee187413c04318a028",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "98",
@@ -2534,7 +3021,10 @@
       "Create infinite bandwidth"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2549,6 +3039,8 @@
   },
   {
     "id": "Q-4e4cc69573b14c76a4ff",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "99",
@@ -2560,7 +3052,10 @@
       "The maximum resistor value"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2575,6 +3070,8 @@
   },
   {
     "id": "Q-0b8058cd822542e78094",
+    "subject": "Analog electronics",
+    "subjectId": "analog-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "100",
@@ -2586,7 +3083,10 @@
       "Have zero supply current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,

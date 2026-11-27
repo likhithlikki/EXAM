@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-671cce8631c347a9b9d4",
+    "subject": "Software Engineering",
+    "subjectId": "software-engineering",
     "year": "2026",
     "state": "TS",
     "questionNumber": "",
@@ -12,7 +14,10 @@
       "ddddddddddddddddddddddddddddddddddd"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,

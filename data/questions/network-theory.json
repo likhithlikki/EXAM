@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-b1f2392efcda4f2da172",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -12,7 +14,10 @@
       "siemens"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -27,6 +32,8 @@
   },
   {
     "id": "Q-ba15f8cf82c7425eb30c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -38,7 +45,10 @@
       "weber"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -53,6 +63,8 @@
   },
   {
     "id": "Q-a18a42468d514423acac",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -64,7 +76,10 @@
       "coulomb"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -79,6 +94,8 @@
   },
   {
     "id": "Q-7ec797bb63f74c47a698",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -90,7 +107,10 @@
       "farad"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -105,6 +125,8 @@
   },
   {
     "id": "Q-412c7e191ae0480ebdfc",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -116,7 +138,10 @@
       "farad"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -131,6 +156,8 @@
   },
   {
     "id": "Q-e923b0c044d040aea734",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -142,7 +169,10 @@
       "vi=R"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -157,6 +187,8 @@
   },
   {
     "id": "Q-caf7e640599e447da10e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -168,7 +200,10 @@
       "R/I²"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -183,6 +218,8 @@
   },
   {
     "id": "Q-99581a6d51ba4cc4a11d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -194,7 +231,10 @@
       "100 W"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -209,6 +249,8 @@
   },
   {
     "id": "Q-e798fd3164484f87b6bd",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -220,7 +262,10 @@
       "1.0 ohm"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -235,6 +280,8 @@
   },
   {
     "id": "Q-fee922593adb4b46aeed",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -246,7 +293,10 @@
       "24 ohm"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -261,6 +311,8 @@
   },
   {
     "id": "Q-20157f7146da4fb89852",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -272,7 +324,10 @@
       "power"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -287,6 +342,8 @@
   },
   {
     "id": "Q-6fb0b9d351b54e12b38c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -298,7 +355,10 @@
       "current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -313,6 +373,8 @@
   },
   {
     "id": "Q-88cfa68c1a6244f4bab8",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -324,7 +386,10 @@
       "equal to voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -339,6 +404,8 @@
   },
   {
     "id": "Q-3eeb1aea35c24399943b",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -350,7 +417,10 @@
       "equal to current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -365,6 +435,8 @@
   },
   {
     "id": "Q-4b0c16420284491e8b94",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -376,7 +448,10 @@
       "negative"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -391,6 +466,8 @@
   },
   {
     "id": "Q-4ee0f9859d43419aa2d4",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -402,7 +479,10 @@
       "equal to voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -417,6 +497,8 @@
   },
   {
     "id": "Q-f13821270a31403288dd",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -428,7 +510,10 @@
       "equal to load resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -443,6 +528,8 @@
   },
   {
     "id": "Q-369a3529dfc643c79803",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -454,7 +541,10 @@
       "equal to load resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -469,6 +559,8 @@
   },
   {
     "id": "Q-8472a5c1e0cc41aa8ea7",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -480,7 +572,10 @@
       "0.04 S"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -495,6 +590,8 @@
   },
   {
     "id": "Q-189b99d930794e94b9d1",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -506,7 +603,10 @@
       "72 A"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -521,6 +621,8 @@
   },
   {
     "id": "Q-088b327ac0b84758bfa5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -532,7 +634,10 @@
       "must be nonlinear"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -547,6 +652,8 @@
   },
   {
     "id": "Q-19fcb0a805f94e46ac98",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -558,7 +665,10 @@
       "only KVL"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -573,6 +683,8 @@
   },
   {
     "id": "Q-76f985798dcf409a8e4e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -584,7 +696,10 @@
       "requires an independent source"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -599,6 +714,8 @@
   },
   {
     "id": "Q-a310f9f612e84b918c67",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -610,7 +727,10 @@
       "is always infinite"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -625,6 +745,8 @@
   },
   {
     "id": "Q-4be77d6b30f54be9a368",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -636,7 +758,10 @@
       "C/V"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -651,6 +776,8 @@
   },
   {
     "id": "Q-cf6e47735bbd4ca2a020",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -662,7 +789,10 @@
       "at all"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -677,6 +807,8 @@
   },
   {
     "id": "Q-5c6b994c43424100869c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -688,7 +820,10 @@
       "only at DC"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -703,6 +838,8 @@
   },
   {
     "id": "Q-e7c85ecd0ba24e2b813f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -714,7 +851,10 @@
       "v=Ri"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -729,6 +869,8 @@
   },
   {
     "id": "Q-4d91f22ae8cc47e09cb5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -740,7 +882,10 @@
       "i=V/R"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -755,6 +900,8 @@
   },
   {
     "id": "Q-bd6f2c5379cf4670be33",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -766,7 +913,10 @@
       "V²/C"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -781,6 +931,8 @@
   },
   {
     "id": "Q-a3c46f433d1f4705a78e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -792,7 +944,10 @@
       "I²/L"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -807,6 +962,8 @@
   },
   {
     "id": "Q-b11e09df614f46bcad87",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -818,7 +975,10 @@
       "2 J"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -833,6 +993,8 @@
   },
   {
     "id": "Q-bced57b5132a47549c6e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -844,7 +1006,10 @@
       "18 J"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -859,6 +1024,8 @@
   },
   {
     "id": "Q-1de5d7a185e44ed38b85",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -870,7 +1037,10 @@
       "mechanical force only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -885,6 +1055,8 @@
   },
   {
     "id": "Q-5d583bb9eab140468443",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -896,7 +1068,10 @@
       "CCCS"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -911,6 +1086,8 @@
   },
   {
     "id": "Q-f0ea7bb334bf4afe9ac2",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -922,7 +1099,10 @@
       "CCCS"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -937,6 +1117,8 @@
   },
   {
     "id": "Q-2ee5b7ff7cb048628eb5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -948,7 +1130,10 @@
       "ideal open circuit"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -963,6 +1148,8 @@
   },
   {
     "id": "Q-d7bd3af901d84647a377",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -974,7 +1161,10 @@
       "9 A in parallel with 12 ohm"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -989,6 +1179,8 @@
   },
   {
     "id": "Q-b33e38eec29a4c8b81f1",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -1000,7 +1192,10 @@
       "only mesh equations"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1015,6 +1210,8 @@
   },
   {
     "id": "Q-b29347eacb684a759adf",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -1026,7 +1223,10 @@
       "maximum power theorem"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1041,6 +1241,8 @@
   },
   {
     "id": "Q-8f864ded843c4510a82e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -1052,7 +1254,10 @@
       "only one-node circuits"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1067,6 +1272,8 @@
   },
   {
     "id": "Q-3b980f54d1a945489f91",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -1078,7 +1285,10 @@
       "across a single resistor"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1093,6 +1303,8 @@
   },
   {
     "id": "Q-c6adc34614ba422ea3c5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -1104,7 +1316,10 @@
       "in parallel with an open circuit"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1119,6 +1334,8 @@
   },
   {
     "id": "Q-f23b8423d2a8420f8ee9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -1130,7 +1347,10 @@
       "2n"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1145,6 +1365,8 @@
   },
   {
     "id": "Q-33ae6118246b4da3bf96",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -1156,7 +1378,10 @@
       "2n branches"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1171,6 +1396,8 @@
   },
   {
     "id": "Q-2f3ffd7033a245858f31",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -1182,7 +1409,10 @@
       "with zero impedance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1197,6 +1427,8 @@
   },
   {
     "id": "Q-c1cf3cb28c5b4f9eb067",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -1208,7 +1440,10 @@
       "bn"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1223,6 +1458,8 @@
   },
   {
     "id": "Q-8f820d5c3b5643c58221",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -1234,7 +1471,10 @@
       "short circuit only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1249,6 +1489,8 @@
   },
   {
     "id": "Q-d6d395b0dd7f4752a405",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -1260,7 +1502,10 @@
       "resistor only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1275,6 +1520,8 @@
   },
   {
     "id": "Q-d36bedf6df944ea9a16d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -1286,7 +1533,10 @@
       "resistor only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1301,6 +1551,8 @@
   },
   {
     "id": "Q-31c77bae832b4df59a27",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -1312,7 +1564,10 @@
       "load power"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1327,6 +1582,8 @@
   },
   {
     "id": "Q-247120ec6d6b467e957f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -1338,7 +1595,10 @@
       "made zero resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1353,6 +1613,8 @@
   },
   {
     "id": "Q-fedc09cb1cd24e34ae60",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -1364,7 +1626,10 @@
       "source current only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1379,6 +1644,8 @@
   },
   {
     "id": "Q-1bf9c4c783994f58aeb6",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -1390,7 +1657,10 @@
       "Vth=IN/Rth"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1405,6 +1675,8 @@
   },
   {
     "id": "Q-62e196bf98dd43ed9dcc",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -1416,7 +1688,10 @@
       "infinite"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1431,6 +1706,8 @@
   },
   {
     "id": "Q-f5644f4c6ae74a97bc8e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -1442,7 +1719,10 @@
       "1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1457,6 +1737,8 @@
   },
   {
     "id": "Q-1b80f0f178b34c20bc39",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -1468,7 +1750,10 @@
       "only circuits with one source"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1483,6 +1768,8 @@
   },
   {
     "id": "Q-45aace47b8304da78b80",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -1494,7 +1781,10 @@
       "current source"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1509,6 +1799,8 @@
   },
   {
     "id": "Q-5c059d6ae6e44acfaacf",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -1520,7 +1812,10 @@
       "resistor of zero value"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1535,6 +1830,8 @@
   },
   {
     "id": "Q-6d12b861ebba4b60b914",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -1546,7 +1843,10 @@
       "only transient circuits"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1561,6 +1861,8 @@
   },
   {
     "id": "Q-e3bb8fbd654344c1bbbe",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "61",
@@ -1572,7 +1874,10 @@
       "ωL"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1587,6 +1892,8 @@
   },
   {
     "id": "Q-29de774c5ffe49af9cf5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "62",
@@ -1598,7 +1905,10 @@
       "ωC"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1613,6 +1923,8 @@
   },
   {
     "id": "Q-bd1c1e2c69634eb3a481",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "63",
@@ -1624,7 +1936,10 @@
       "current source"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1639,6 +1954,8 @@
   },
   {
     "id": "Q-bcd5ef4f376d4e8497ff",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "64",
@@ -1650,7 +1967,10 @@
       "voltage source"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1665,6 +1985,8 @@
   },
   {
     "id": "Q-48fbfb6b3c064692ae8d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "65",
@@ -1676,7 +1998,10 @@
       "100j ohm"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1691,6 +2016,8 @@
   },
   {
     "id": "Q-3fabee5f17f64370b6df",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "66",
@@ -1702,7 +2029,10 @@
       "0.1 ohm"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1717,6 +2047,8 @@
   },
   {
     "id": "Q-3c06588b00f14200a9a9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "67",
@@ -1728,7 +2060,10 @@
       "unrelated"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1743,6 +2078,8 @@
   },
   {
     "id": "Q-83705f16999a4979b5c8",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "68",
@@ -1754,7 +2091,10 @@
       "lags by 180°"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1769,6 +2109,8 @@
   },
   {
     "id": "Q-9836a4084fcb48dab46c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "69",
@@ -1780,7 +2122,10 @@
       "lags by 180°"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1795,6 +2140,8 @@
   },
   {
     "id": "Q-91e23792de48432a9533",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "70",
@@ -1806,7 +2153,10 @@
       "-1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1821,6 +2171,8 @@
   },
   {
     "id": "Q-0e962a2a1a60481f8b2f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "71",
@@ -1832,7 +2184,10 @@
       "-1"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1847,6 +2202,8 @@
   },
   {
     "id": "Q-3a8149aebaf344e18b55",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "72",
@@ -1858,7 +2215,10 @@
       "V/I"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1873,6 +2233,8 @@
   },
   {
     "id": "Q-b36d95f150b24d0d9d9e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "73",
@@ -1884,7 +2246,10 @@
       "I²/V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1899,6 +2264,8 @@
   },
   {
     "id": "Q-11853abfc85d479f8449",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "74",
@@ -1910,7 +2277,10 @@
       "V/I"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1925,6 +2295,8 @@
   },
   {
     "id": "Q-3e85c94008c4434baaa6",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "75",
@@ -1936,7 +2308,10 @@
       "ohm"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1951,6 +2326,8 @@
   },
   {
     "id": "Q-ef3e198608bb42bba2ff",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "76",
@@ -1962,7 +2339,10 @@
       "henry"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1977,6 +2357,8 @@
   },
   {
     "id": "Q-61d7b718b4c24a43af4d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "77",
@@ -1988,7 +2370,10 @@
       "open circuit"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2003,6 +2388,8 @@
   },
   {
     "id": "Q-6c43c855db2e44bb9e6c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "78",
@@ -2014,7 +2401,10 @@
       "removes real power"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2029,6 +2419,8 @@
   },
   {
     "id": "Q-f0e0b90368bd4f68b55d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "79",
@@ -2040,7 +2432,10 @@
       "VL IL sinφ"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2055,6 +2450,8 @@
   },
   {
     "id": "Q-49c8ee7656f44088a5ce",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "80",
@@ -2066,7 +2463,10 @@
       "phase voltage/√3"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2081,6 +2481,8 @@
   },
   {
     "id": "Q-16971c0cb9494922bf7e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "81",
@@ -2092,7 +2494,10 @@
       "phase current/√3"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2107,6 +2512,8 @@
   },
   {
     "id": "Q-84617df5d8fc4d128eb9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "82",
@@ -2118,7 +2525,10 @@
       "√2Vm"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2133,6 +2543,8 @@
   },
   {
     "id": "Q-007b1d5c3aed405fbfdd",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "83",
@@ -2144,7 +2556,10 @@
       "Vm/√2"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2159,6 +2574,8 @@
   },
   {
     "id": "Q-bade40be9e60458eaf1c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "84",
@@ -2170,7 +2587,10 @@
       "14.14 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2185,6 +2605,8 @@
   },
   {
     "id": "Q-19b83055479f49018072",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "85",
@@ -2196,7 +2618,10 @@
       "141.4 V"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2211,6 +2636,8 @@
   },
   {
     "id": "Q-a282bbd13349489cbc09",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "86",
@@ -2222,7 +2649,10 @@
       "2π/50 rad/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2237,6 +2667,8 @@
   },
   {
     "id": "Q-ea718c8c1fbf40358f3e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "87",
@@ -2248,7 +2680,10 @@
       "10 s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2263,6 +2698,8 @@
   },
   {
     "id": "Q-a750f27c2477439abf18",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "88",
@@ -2274,7 +2711,10 @@
       "7 ohm"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2289,6 +2729,8 @@
   },
   {
     "id": "Q-f82d8b4ee9a547759aa0",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "89",
@@ -2300,7 +2742,10 @@
       "-53.1°"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2315,6 +2760,8 @@
   },
   {
     "id": "Q-2af36a4101f249c08982",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "90",
@@ -2326,7 +2773,10 @@
       "zero resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2341,6 +2791,8 @@
   },
   {
     "id": "Q-19bcde09ff4e46199550",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "91",
@@ -2352,7 +2804,10 @@
       "purely inductive"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2367,6 +2822,8 @@
   },
   {
     "id": "Q-3b31ee33a3564714b924",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "92",
@@ -2378,7 +2835,10 @@
       "ω=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2393,6 +2853,8 @@
   },
   {
     "id": "Q-16ee4964ad3642b6b50e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "93",
@@ -2404,7 +2866,10 @@
       "√LC"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2419,6 +2884,8 @@
   },
   {
     "id": "Q-060bad9d251540228795",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "94",
@@ -2430,7 +2897,10 @@
       "1e6 rad/s"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2445,6 +2915,8 @@
   },
   {
     "id": "Q-b955499cdb20472587e8",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "95",
@@ -2456,7 +2928,10 @@
       "independent of source voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2471,6 +2946,8 @@
   },
   {
     "id": "Q-442f79b1887a42499c61",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "96",
@@ -2482,7 +2959,10 @@
       "equal to capacitor impedance only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2497,6 +2977,8 @@
   },
   {
     "id": "Q-c14552f4be6e43729f6b",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "97",
@@ -2508,7 +2990,10 @@
       "both B and C"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2523,6 +3008,8 @@
   },
   {
     "id": "Q-a2e93430094141e88e07",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "98",
@@ -2534,7 +3021,10 @@
       "RC"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2549,6 +3039,8 @@
   },
   {
     "id": "Q-afeed6619a8a4e08bbbb",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "99",
@@ -2560,7 +3052,10 @@
       "independent of Q"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2575,6 +3070,8 @@
   },
   {
     "id": "Q-d9cbe829ba4e438a9e19",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "100",
@@ -2586,7 +3083,10 @@
       "C/R"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2601,6 +3101,8 @@
   },
   {
     "id": "Q-5ce61d081481438f8138",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "101",
@@ -2612,7 +3114,10 @@
       "1/LR"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2627,6 +3132,8 @@
   },
   {
     "id": "Q-99891d3e37574e8f8b46",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "102",
@@ -2638,7 +3145,10 @@
       "86.5% final"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2653,6 +3163,8 @@
   },
   {
     "id": "Q-1c6852987ae84a7f9533",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "103",
@@ -2664,7 +3176,10 @@
       "86.5% initial"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2679,6 +3194,8 @@
   },
   {
     "id": "Q-0c797459748a4d4aa5cd",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "104",
@@ -2690,7 +3207,10 @@
       "36.8% complete"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2705,6 +3225,8 @@
   },
   {
     "id": "Q-3d9be9ad48e24090aa16",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "105",
@@ -2716,7 +3238,10 @@
       "frequency of source only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2731,6 +3256,8 @@
   },
   {
     "id": "Q-af5154d4a03348aa8624",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "106",
@@ -2742,7 +3269,10 @@
       "zero voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2757,6 +3287,8 @@
   },
   {
     "id": "Q-25561a36d7d1429da2f9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "107",
@@ -2768,7 +3300,10 @@
       "zero current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2783,6 +3318,8 @@
   },
   {
     "id": "Q-0f3e654f56e94633988b",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "108",
@@ -2794,7 +3331,10 @@
       "three state variables"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2809,6 +3349,8 @@
   },
   {
     "id": "Q-c27354e4a9f84fd6922d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "109",
@@ -2820,7 +3362,10 @@
       "constant always"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2835,6 +3380,8 @@
   },
   {
     "id": "Q-57a1aba3090a49409854",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "110",
@@ -2846,7 +3393,10 @@
       "constant"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2861,6 +3411,8 @@
   },
   {
     "id": "Q-fa60d9ce7ea94025be98",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "111",
@@ -2872,7 +3424,10 @@
       "L/C"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2887,6 +3442,8 @@
   },
   {
     "id": "Q-f30e4437aad140e3989c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "112",
@@ -2898,7 +3455,10 @@
       "aperiodic only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2913,6 +3473,8 @@
   },
   {
     "id": "Q-d48d5c8da53c405bb5d3",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "113",
@@ -2924,7 +3486,10 @@
       "an ideal voltage source only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2939,6 +3504,8 @@
   },
   {
     "id": "Q-4e5d937097d84d9e93e6",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "114",
@@ -2950,7 +3517,10 @@
       "R=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2965,6 +3535,8 @@
   },
   {
     "id": "Q-ae6bcaedca8d43aa9080",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "115",
@@ -2976,7 +3548,10 @@
       "no poles"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2991,6 +3566,8 @@
   },
   {
     "id": "Q-24ee1ecedd6e49ac8794",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "116",
@@ -3002,7 +3579,10 @@
       "one positive pole only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3017,6 +3597,8 @@
   },
   {
     "id": "Q-61b9c9147906488b90e7",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "117",
@@ -3028,7 +3610,10 @@
       "no poles"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3043,6 +3628,8 @@
   },
   {
     "id": "Q-21bf479c0d2e4a1a9f57",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "118",
@@ -3054,7 +3641,10 @@
       "s²+1/RLC=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3069,6 +3659,8 @@
   },
   {
     "id": "Q-2b505c55b257493eb256",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "119",
@@ -3080,7 +3672,10 @@
       "origin only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3095,6 +3690,8 @@
   },
   {
     "id": "Q-10f6317f81c249c4ad8c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "120",
@@ -3106,7 +3703,10 @@
       "1/(s+1)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3121,6 +3721,8 @@
   },
   {
     "id": "Q-4d2cf562c8c243109ec2",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "121",
@@ -3132,7 +3734,10 @@
       "1/F(s)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3147,6 +3752,8 @@
   },
   {
     "id": "Q-9b6eafc61bfd4f4ba7c4",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "122",
@@ -3158,7 +3765,10 @@
       "s²"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3173,6 +3783,8 @@
   },
   {
     "id": "Q-1ad963a36e194c25a3f2",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "123",
@@ -3184,7 +3796,10 @@
       ""
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3199,6 +3814,8 @@
   },
   {
     "id": "Q-a4c7f74ea60541aea64f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "124",
@@ -3210,7 +3827,10 @@
       "C/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3225,6 +3845,8 @@
   },
   {
     "id": "Q-fa3cae65056744e5984f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "125",
@@ -3236,7 +3858,10 @@
       "s/L"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3251,6 +3876,8 @@
   },
   {
     "id": "Q-3a3083c6b47d4b14bf82",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "126",
@@ -3262,7 +3889,10 @@
       "short-circuit conditions"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3277,6 +3907,8 @@
   },
   {
     "id": "Q-62980a1b38a446f298af",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "127",
@@ -3288,7 +3920,10 @@
       "input waveform"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3303,6 +3938,8 @@
   },
   {
     "id": "Q-5c69e70869454c3e820d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "128",
@@ -3314,7 +3951,10 @@
       "load resistance only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3329,6 +3969,8 @@
   },
   {
     "id": "Q-81884e6efb584f2f83b1",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "129",
@@ -3340,7 +3982,10 @@
       "positive real axis"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3355,6 +4000,8 @@
   },
   {
     "id": "Q-a6c1047306b4432aa463",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "130",
@@ -3366,7 +4013,10 @@
       "no frequencies"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3381,6 +4031,8 @@
   },
   {
     "id": "Q-4d4ff5a870a544a3a8d9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "131",
@@ -3392,7 +4044,10 @@
       "only zero frequency"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3407,6 +4062,8 @@
   },
   {
     "id": "Q-2e6e23efc891491fbdaf",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "132",
@@ -3418,7 +4075,10 @@
       "C/R"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3433,6 +4093,8 @@
   },
   {
     "id": "Q-98760f6843534b688f50",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "133",
@@ -3444,7 +4106,10 @@
       "15900 Hz"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3459,6 +4124,8 @@
   },
   {
     "id": "Q-19ad23b33c7c4d81aa83",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "134",
@@ -3470,7 +4137,10 @@
       "2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3485,6 +4155,8 @@
   },
   {
     "id": "Q-24bf01c880cd4e37b854",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "135",
@@ -3496,7 +4168,10 @@
       "0 dB/decade"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3511,6 +4186,8 @@
   },
   {
     "id": "Q-ef406dd2f8a34c439cb0",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "136",
@@ -3522,7 +4199,10 @@
       "-40 dB/decade"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3537,6 +4217,8 @@
   },
   {
     "id": "Q-81a17469b3a84d488fae",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "137",
@@ -3548,7 +4230,10 @@
       "only infinite frequency"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3563,6 +4248,8 @@
   },
   {
     "id": "Q-5149baec4786408887e7",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "138",
@@ -3574,7 +4261,10 @@
       "f2/f1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3589,6 +4279,8 @@
   },
   {
     "id": "Q-2d2c3e692c834fbb8ca5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "139",
@@ -3600,7 +4292,10 @@
       "sum f1+f2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3615,6 +4310,8 @@
   },
   {
     "id": "Q-181ccd0622d54962966e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "140",
@@ -3626,7 +4323,10 @@
       "amplify only noise"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3641,6 +4341,8 @@
   },
   {
     "id": "Q-c72d0cfe1dcb4707bddc",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "141",
@@ -3652,7 +4354,10 @@
       "time only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3667,6 +4372,8 @@
   },
   {
     "id": "Q-f6d4ebdcdc674af69449",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "142",
@@ -3678,7 +4385,10 @@
       "100"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3693,6 +4403,8 @@
   },
   {
     "id": "Q-868e65d853624917a0b1",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "143",
@@ -3704,7 +4416,10 @@
       "π"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3719,6 +4434,8 @@
   },
   {
     "id": "Q-1bcc437a88bf446f845e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "144",
@@ -3730,7 +4447,10 @@
       "no poles"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3745,6 +4465,8 @@
   },
   {
     "id": "Q-84d4293bdbd849778eb8",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "145",
@@ -3756,7 +4478,10 @@
       "0 dB/decade"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3771,6 +4496,8 @@
   },
   {
     "id": "Q-99eed317f7be4fdebf45",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "146",
@@ -3782,7 +4509,10 @@
       "0 dB/decade"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3797,6 +4527,8 @@
   },
   {
     "id": "Q-8e8df0ddc43d4bd381f5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "147",
@@ -3808,7 +4540,10 @@
       "+90°"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3823,6 +4558,8 @@
   },
   {
     "id": "Q-906c2f6585664b3bbd81",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "148",
@@ -3834,7 +4571,10 @@
       "180°"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3849,6 +4589,8 @@
   },
   {
     "id": "Q-3cec6e366bd34ffb8399",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "149",
@@ -3860,7 +4602,10 @@
       "1/(center frequency×bandwidth)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3875,6 +4620,8 @@
   },
   {
     "id": "Q-c41b7725aaf34b37ae15",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "150",
@@ -3886,7 +4633,10 @@
       "6"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3901,6 +4651,8 @@
   },
   {
     "id": "Q-6f5bb4902a9740abb28b",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "151",
@@ -3912,7 +4664,10 @@
       "arbitrarily without sign"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3927,6 +4682,8 @@
   },
   {
     "id": "Q-3fd243a2ed9e46dbab1c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "152",
@@ -3938,7 +4695,10 @@
       "transmission parameters"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3953,6 +4713,8 @@
   },
   {
     "id": "Q-819be87b154c4b6397e3",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "153",
@@ -3964,7 +4726,10 @@
       "transmission parameters"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3979,6 +4744,8 @@
   },
   {
     "id": "Q-3a43ac5918fe4c978273",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "154",
@@ -3990,7 +4757,10 @@
       "scattering parameters"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4005,6 +4775,8 @@
   },
   {
     "id": "Q-9763f8ea259c4169b5c5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "155",
@@ -4016,7 +4788,10 @@
       "hybrid parameters"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4031,6 +4806,8 @@
   },
   {
     "id": "Q-2af110add7024127bbd9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "156",
@@ -4042,7 +4819,10 @@
       "V2=0"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4057,6 +4837,8 @@
   },
   {
     "id": "Q-bb64282d9c3c4020bbea",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "157",
@@ -4068,7 +4850,10 @@
       "V2=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4083,6 +4868,8 @@
   },
   {
     "id": "Q-f56619b765b34d049208",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "158",
@@ -4094,7 +4881,10 @@
       "V2=0"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4109,6 +4899,8 @@
   },
   {
     "id": "Q-a9bbde452fb34ba1a2d3",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "159",
@@ -4120,7 +4912,10 @@
       "V2=0"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4135,6 +4930,8 @@
   },
   {
     "id": "Q-d3f524e1b03747e196e9",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "160",
@@ -4146,7 +4943,10 @@
       "henry"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4161,6 +4961,8 @@
   },
   {
     "id": "Q-f0c231340afc4388bd02",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "161",
@@ -4172,7 +4974,10 @@
       "dimensionless"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4187,6 +4992,8 @@
   },
   {
     "id": "Q-0cd7c5a5c9eb4f86b5b0",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "162",
@@ -4198,7 +5005,10 @@
       "negative z21 always"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4213,6 +5023,8 @@
   },
   {
     "id": "Q-34930cfe7e674a4aa1b4",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "163",
@@ -4224,7 +5036,10 @@
       "negative y21 always"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4239,6 +5054,8 @@
   },
   {
     "id": "Q-316af81813274c559b27",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "164",
@@ -4250,7 +5067,10 @@
       "z22=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4265,6 +5085,8 @@
   },
   {
     "id": "Q-9ef85346d7fe45b0bbb1",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "165",
@@ -4276,7 +5098,10 @@
       "A+B+C+D=1"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4291,6 +5116,8 @@
   },
   {
     "id": "Q-be3a45b9bd804f9d8136",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "166",
@@ -4302,7 +5129,10 @@
       "inverting only the first matrix"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4317,6 +5147,8 @@
   },
   {
     "id": "Q-35d2cd9160344acab965",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "167",
@@ -4328,7 +5160,10 @@
       "I2/V2 with I1=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4343,6 +5178,8 @@
   },
   {
     "id": "Q-a8a583cb883c4a0aaf64",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "168",
@@ -4354,7 +5191,10 @@
       "V2/I2 with I1=0"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4369,6 +5209,8 @@
   },
   {
     "id": "Q-a8942f2a7844463ab27a",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "169",
@@ -4380,7 +5222,10 @@
       "I1/V1 with V2=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4395,6 +5240,8 @@
   },
   {
     "id": "Q-221f3029edc347628e37",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "170",
@@ -4406,7 +5253,10 @@
       "I2/V2 with V1=0"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4421,6 +5271,8 @@
   },
   {
     "id": "Q-b9cd536abbac43c0a84d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "171",
@@ -4432,7 +5284,10 @@
       "independent of all parameters"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4447,6 +5302,8 @@
   },
   {
     "id": "Q-81b8c6e3d3ff4b4d8163",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "172",
@@ -4458,7 +5315,10 @@
       "z12=0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4473,6 +5333,8 @@
   },
   {
     "id": "Q-08a5d321ffd048d3ad68",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "173",
@@ -4484,7 +5346,10 @@
       "only powers"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4499,6 +5364,8 @@
   },
   {
     "id": "Q-02063de698d9403d933f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "174",
@@ -4510,7 +5377,10 @@
       "only DC sources"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4525,6 +5395,8 @@
   },
   {
     "id": "Q-7d165facdf3245f189cb",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "175",
@@ -4536,7 +5408,10 @@
       "equal to 1 always"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4551,6 +5426,8 @@
   },
   {
     "id": "Q-f178b9013a8e42699f40",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "176",
@@ -4562,7 +5439,10 @@
       "sources"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4577,6 +5457,8 @@
   },
   {
     "id": "Q-6273e58a634c47dab383",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "177",
@@ -4588,7 +5470,10 @@
       "always 2"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4603,6 +5488,8 @@
   },
   {
     "id": "Q-3dbb93bcad8f4e3f8037",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "178",
@@ -4614,7 +5501,10 @@
       "only links"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4629,6 +5519,8 @@
   },
   {
     "id": "Q-406333d54eac46769518",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "179",
@@ -4640,7 +5532,10 @@
       "with zero resistance only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4655,6 +5550,8 @@
   },
   {
     "id": "Q-84fa06cbe7ea47b7b0b7",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "180",
@@ -4666,7 +5563,10 @@
       "bn"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4681,6 +5581,8 @@
   },
   {
     "id": "Q-a1303a0233204374bdf5",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "181",
@@ -4692,7 +5594,10 @@
       "makes every branch shorted"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4707,6 +5612,8 @@
   },
   {
     "id": "Q-81fe884e800648598d04",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "182",
@@ -4718,7 +5625,10 @@
       "a source transformation"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4733,6 +5643,8 @@
   },
   {
     "id": "Q-2df81572907a43c99ecd",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "183",
@@ -4744,7 +5656,10 @@
       "b-n"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4759,6 +5674,8 @@
   },
   {
     "id": "Q-b9eddac3208f4a4f936f",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "184",
@@ -4770,7 +5687,10 @@
       "without nodes"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4785,6 +5705,8 @@
   },
   {
     "id": "Q-8c80d1842f95488f863e",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "185",
@@ -4796,7 +5718,10 @@
       "tree"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4811,6 +5736,8 @@
   },
   {
     "id": "Q-5382d48353724c97a1c3",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "186",
@@ -4822,7 +5749,10 @@
       "node"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4837,6 +5767,8 @@
   },
   {
     "id": "Q-a55051c8b4ce427ca357",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "187",
@@ -4848,7 +5780,10 @@
       "current source"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4863,6 +5798,8 @@
   },
   {
     "id": "Q-4ec681b357554655bd77",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "188",
@@ -4874,7 +5811,10 @@
       "reciprocity"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4889,6 +5829,8 @@
   },
   {
     "id": "Q-adf0e5020ff34bc28051",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "189",
@@ -4900,7 +5842,10 @@
       "only digital"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4915,6 +5860,8 @@
   },
   {
     "id": "Q-2d2bb2e52101452eaddb",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "190",
@@ -4926,7 +5873,10 @@
       "only at zero"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4941,6 +5891,8 @@
   },
   {
     "id": "Q-3a49681acebb4b1794cd",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "191",
@@ -4952,7 +5904,10 @@
       "power/voltage"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4967,6 +5922,8 @@
   },
   {
     "id": "Q-ada2da5f51bb47f596d1",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "192",
@@ -4978,7 +5935,10 @@
       "power/current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4993,6 +5953,8 @@
   },
   {
     "id": "Q-531541950e8440b8a7bc",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "193",
@@ -5004,7 +5966,10 @@
       "susceptance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5019,6 +5984,8 @@
   },
   {
     "id": "Q-f4ccb363280a4727a355",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "194",
@@ -5030,7 +5997,10 @@
       "reactance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5045,6 +6015,8 @@
   },
   {
     "id": "Q-5b7174b8e2024d29b034",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "195",
@@ -5056,7 +6028,10 @@
       "subtracted"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5071,6 +6046,8 @@
   },
   {
     "id": "Q-ce9be8b9297a4fe4bfe2",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "196",
@@ -5082,7 +6059,10 @@
       "always equal"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5097,6 +6077,8 @@
   },
   {
     "id": "Q-ff59d53a7a9149bf9c0d",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "197",
@@ -5108,7 +6090,10 @@
       "0∠R°"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5123,6 +6108,8 @@
   },
   {
     "id": "Q-d98e99560cb54c9c8bac",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "198",
@@ -5134,7 +6121,10 @@
       "infinite real part always"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5149,6 +6139,8 @@
   },
   {
     "id": "Q-6d143ace69334f808b62",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "199",
@@ -5160,7 +6152,10 @@
       "negative real part always"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5175,6 +6170,8 @@
   },
   {
     "id": "Q-3ab951f874a54d02be5c",
+    "subject": "Network theory",
+    "subjectId": "network-theory",
     "year": "2026",
     "state": "TS",
     "questionNumber": "200",
@@ -5186,7 +6183,10 @@
       "always zero"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,

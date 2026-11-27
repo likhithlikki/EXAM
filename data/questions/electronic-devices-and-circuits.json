@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-7c73304e45ff460f982a",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -12,7 +14,10 @@
       "Both reverse biased"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -27,6 +32,8 @@
   },
   {
     "id": "Q-a24c75da441247bda652",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -38,7 +45,10 @@
       "Reverse and forward biased"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -53,6 +63,8 @@
   },
   {
     "id": "Q-85f527a966bc4fb7af14",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -64,7 +76,10 @@
       "Only ions"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -79,6 +94,8 @@
   },
   {
     "id": "Q-360f4ed9886941caa7a3",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -90,7 +107,10 @@
       "Equally doped as the base"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -105,6 +125,8 @@
   },
   {
     "id": "Q-0cafa58bb51740799fe9",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -116,7 +138,10 @@
       "Increase junction capacitance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -131,6 +156,8 @@
   },
   {
     "id": "Q-1f052118e1a24a8c819e",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -142,7 +169,10 @@
       "VC < VE < VB"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -157,6 +187,8 @@
   },
   {
     "id": "Q-3d73d8f239ac4c70b639",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -168,7 +200,10 @@
       "2 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -183,6 +218,8 @@
   },
   {
     "id": "Q-a90dd44db28044c686e7",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -194,7 +231,10 @@
       "A voltage source"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -209,6 +249,8 @@
   },
   {
     "id": "Q-824f11e18c8043b6bb27",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -220,7 +262,10 @@
       "A current mirror only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -235,6 +280,8 @@
   },
   {
     "id": "Q-518ff11c1571461d88e5",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -246,7 +293,10 @@
       "IC = IB + β"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -261,6 +311,8 @@
   },
   {
     "id": "Q-9f837c86e9984b838771",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -272,7 +324,10 @@
       "IE = βIC"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -287,6 +342,8 @@
   },
   {
     "id": "Q-66b0731d9fe04c1592e2",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -298,7 +355,10 @@
       "200 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -313,6 +373,8 @@
   },
   {
     "id": "Q-149e2f4d378640c39458",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -324,7 +386,10 @@
       "320 µA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -339,6 +404,8 @@
   },
   {
     "id": "Q-1ab24f3401f84d1aa7d0",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -350,7 +417,10 @@
       "2.20 mA"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -365,6 +435,8 @@
   },
   {
     "id": "Q-325c065386f64f4f8c25",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -376,7 +448,10 @@
       "IC/IE"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -391,6 +466,8 @@
   },
   {
     "id": "Q-2e1753f3bbbd4f91b8c5",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -402,7 +479,10 @@
       "IB/IE"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -417,6 +497,8 @@
   },
   {
     "id": "Q-a7983f34980f4dca81f0",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -428,7 +510,10 @@
       "β = 1/α"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -443,6 +528,8 @@
   },
   {
     "id": "Q-57517a6e1f7e44ba8e3c",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -454,7 +541,10 @@
       "0.98"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -469,6 +559,8 @@
   },
   {
     "id": "Q-90348572299e421584a0",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -480,7 +572,10 @@
       "1.49"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -495,6 +590,8 @@
   },
   {
     "id": "Q-48694d86e1464e2e9863",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -506,7 +603,10 @@
       "Common drain"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -521,6 +621,8 @@
   },
   {
     "id": "Q-736b6205dbd04f1c9e2f",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -532,7 +634,10 @@
       "Common gate"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -547,6 +652,8 @@
   },
   {
     "id": "Q-9649900ce28b4d378aae",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -558,7 +665,10 @@
       "Unity voltage gain always"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -573,6 +683,8 @@
   },
   {
     "id": "Q-2447efbdd5f249cc9ffb",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -584,7 +696,10 @@
       "Independent of input"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -599,6 +714,8 @@
   },
   {
     "id": "Q-69f090b84e674c52bb2b",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -610,7 +727,10 @@
       "Darlington only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -625,6 +745,8 @@
   },
   {
     "id": "Q-6c6ec7aa091841b89dc1",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -636,7 +758,10 @@
       "Zero collector current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -651,6 +776,8 @@
   },
   {
     "id": "Q-2d918280b2af487aa6bf",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -662,7 +789,10 @@
       "Is disconnected in all cases"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -677,6 +807,8 @@
   },
   {
     "id": "Q-fe0a1455453a4b3f9ad9",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -688,7 +820,10 @@
       "VTβ"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -703,6 +838,8 @@
   },
   {
     "id": "Q-d921bed9f89b433997f1",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -714,7 +851,10 @@
       "1 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -729,6 +869,8 @@
   },
   {
     "id": "Q-e4d39c65a10448cd878a",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -740,7 +882,10 @@
       "0.025 Ω"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -755,6 +900,8 @@
   },
   {
     "id": "Q-5226d83103ba44ee8924",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -766,7 +913,10 @@
       "100"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -781,6 +931,8 @@
   },
   {
     "id": "Q-f2b6c92643f944ec9a9e",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -792,7 +944,10 @@
       "ICβ"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -807,6 +962,8 @@
   },
   {
     "id": "Q-3623901029cc4f2db54b",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -818,7 +975,10 @@
       "100 mS"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -833,6 +993,8 @@
   },
   {
     "id": "Q-16c5a50684604324ab5d",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -844,7 +1006,10 @@
       "Become independent of base current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -859,6 +1024,8 @@
   },
   {
     "id": "Q-86f262c42cc84b4faa3e",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -870,7 +1037,10 @@
       "Base-emitter drop"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -885,6 +1055,8 @@
   },
   {
     "id": "Q-967baa7221e745438d95",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -896,7 +1068,10 @@
       "100 kΩ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -911,6 +1086,8 @@
   },
   {
     "id": "Q-e2a75908978348038927",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -922,7 +1099,10 @@
       "Eliminate base current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -937,6 +1117,8 @@
   },
   {
     "id": "Q-16448be5049944d9ae52",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -948,7 +1130,10 @@
       "10 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -963,6 +1148,8 @@
   },
   {
     "id": "Q-d1d5d042bc5b4398be17",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -974,7 +1161,10 @@
       "6 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -989,6 +1179,8 @@
   },
   {
     "id": "Q-ee3b42309a7b48d4bbbd",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -1000,7 +1192,10 @@
       "Breakdown and active"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1015,6 +1210,8 @@
   },
   {
     "id": "Q-48335590fcbb4804aee0",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -1026,7 +1223,10 @@
       "6 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1041,6 +1241,8 @@
   },
   {
     "id": "Q-fa0e6ca7ba6c436c8425",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -1052,7 +1254,10 @@
       "Set transistor breakdown voltage"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1067,6 +1272,8 @@
   },
   {
     "id": "Q-98118a02eb084e799489",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -1078,7 +1285,10 @@
       "Higher than collector always"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1093,6 +1303,8 @@
   },
   {
     "id": "Q-e4d44e346ee84b9f8abd",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -1104,7 +1316,10 @@
       "Equal to emitter"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1119,6 +1334,8 @@
   },
   {
     "id": "Q-bfc7020635494bbebca3",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -1130,7 +1347,10 @@
       "Make β exactly one"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1145,6 +1365,8 @@
   },
   {
     "id": "Q-52bc35510c144843a133",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -1156,7 +1378,10 @@
       "BE is forward biased and BC reverse biased"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1171,6 +1396,8 @@
   },
   {
     "id": "Q-e670852d8e4747d886ed",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -1182,7 +1409,10 @@
       "Emitter current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1197,6 +1427,8 @@
   },
   {
     "id": "Q-70cd3b75856d4290bca8",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -1208,7 +1440,10 @@
       "Equal to source current"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1223,6 +1458,8 @@
   },
   {
     "id": "Q-a80804b284f84a599764",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -1234,7 +1471,10 @@
       "Gate is shorted to source"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1249,6 +1489,8 @@
   },
   {
     "id": "Q-0578a1d364d24db68d74",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -1260,7 +1502,10 @@
       "VDS < 0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1275,6 +1520,8 @@
   },
   {
     "id": "Q-758ba3384d4645beafa4",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -1286,7 +1533,10 @@
       "VGS = 0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1301,6 +1551,8 @@
   },
   {
     "id": "Q-0ebcfa6ca8114910b395",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -1312,7 +1564,10 @@
       "VGS = 0"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1327,6 +1582,8 @@
   },
   {
     "id": "Q-26a42bcc283046809622",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -1338,7 +1595,10 @@
       "A current-controlled voltage source"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1353,6 +1613,8 @@
   },
   {
     "id": "Q-34817a81cebe4a0aa102",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -1364,7 +1626,10 @@
       "A transformer"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1379,6 +1644,8 @@
   },
   {
     "id": "Q-155419effed64a7c8af8",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -1390,7 +1657,10 @@
       "VDS - VGS"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1405,6 +1675,8 @@
   },
   {
     "id": "Q-01470d20e22f46e5b301",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -1416,7 +1688,10 @@
       "3.5 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1431,6 +1706,8 @@
   },
   {
     "id": "Q-013135123736411dbca6",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -1442,7 +1719,10 @@
       "VDS^2 only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1457,6 +1737,8 @@
   },
   {
     "id": "Q-d0599a980698479dbc0b",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -1468,7 +1750,10 @@
       "ID = VGS/k"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1483,6 +1768,8 @@
   },
   {
     "id": "Q-142afa4f388642c0b62f",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -1494,7 +1781,10 @@
       "4 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1509,6 +1799,8 @@
   },
   {
     "id": "Q-def1810fa2344b0090d6",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -1520,7 +1812,10 @@
       "2 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1535,6 +1830,8 @@
   },
   {
     "id": "Q-94c28989cde14c958d27",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -1546,7 +1843,10 @@
       "gm = 1/ID"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1561,6 +1861,8 @@
   },
   {
     "id": "Q-227fbcf87285462791c4",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "61",
@@ -1572,7 +1874,10 @@
       "8 mS"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1587,6 +1892,8 @@
   },
   {
     "id": "Q-1593b4f5103e4c84baf5",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "62",
@@ -1598,7 +1905,10 @@
       "Become independent of all voltages"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1613,6 +1923,8 @@
   },
   {
     "id": "Q-494d18f937414dd2afc9",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "63",
@@ -1624,7 +1936,10 @@
       "λ/ID"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1639,6 +1954,8 @@
   },
   {
     "id": "Q-0ca28588750d4332b918",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "64",
@@ -1650,7 +1967,10 @@
       "250 kΩ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1665,6 +1985,8 @@
   },
   {
     "id": "Q-0091b45a5aa44fffbac4",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "65",
@@ -1676,7 +1998,10 @@
       "Become negative"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1691,6 +2016,8 @@
   },
   {
     "id": "Q-e3fa62cde76d4c7d8220",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "66",
@@ -1702,7 +2029,10 @@
       "Force cutoff"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1717,6 +2047,8 @@
   },
   {
     "id": "Q-317cbc36de1942379a4d",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "67",
@@ -1728,7 +2060,10 @@
       "The load resistor"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1743,6 +2078,8 @@
   },
   {
     "id": "Q-58f4252f21a94ea98dc8",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "68",
@@ -1754,7 +2091,10 @@
       "Equal to drain resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1769,6 +2109,8 @@
   },
   {
     "id": "Q-e8994c916e974225a6dc",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "69",
@@ -1780,7 +2122,10 @@
       "Only current gain and no voltage gain"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1795,6 +2140,8 @@
   },
   {
     "id": "Q-f8d85b1dc2e4461d9bd7",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "70",
@@ -1806,7 +2153,10 @@
       "Drain follower"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1821,6 +2171,8 @@
   },
   {
     "id": "Q-36e873b5a7034c038f77",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "71",
@@ -1832,7 +2184,10 @@
       "Rectifier"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1847,6 +2202,8 @@
   },
   {
     "id": "Q-47174ab38b94440ca85b",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "72",
@@ -1858,7 +2215,10 @@
       "180° phase inversion always"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1873,6 +2233,8 @@
   },
   {
     "id": "Q-dbf808cf060e41a99e53",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "73",
@@ -1884,7 +2246,10 @@
       "Eliminating transconductance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1899,6 +2264,8 @@
   },
   {
     "id": "Q-ff5a5d6416744c1094b7",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "74",
@@ -1910,7 +2277,10 @@
       "All always have unity gain"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1925,6 +2295,8 @@
   },
   {
     "id": "Q-39421b6863874669890f",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "75",
@@ -1936,7 +2308,10 @@
       "No output signal"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1951,6 +2326,8 @@
   },
   {
     "id": "Q-df7a93fd7a614be48229",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "76",
@@ -1962,7 +2339,10 @@
       "1/gmRD"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1977,6 +2357,8 @@
   },
   {
     "id": "Q-b3274a63922f4c7f8137",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "77",
@@ -1988,7 +2370,10 @@
       "-40"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2003,6 +2388,8 @@
   },
   {
     "id": "Q-f1febfede336416ebccf",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "78",
@@ -2014,7 +2401,10 @@
       "Gate current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2029,6 +2419,8 @@
   },
   {
     "id": "Q-7de0194eea0d4bc09f27",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "79",
@@ -2040,7 +2432,10 @@
       "Eliminates biasing"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2055,6 +2450,8 @@
   },
   {
     "id": "Q-e94f8d9f937f4857bc10",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "80",
@@ -2066,7 +2463,10 @@
       "Always zero"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2081,6 +2481,8 @@
   },
   {
     "id": "Q-cbb88c466b06459c84f0",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "81",
@@ -2092,7 +2494,10 @@
       "Equal to gate resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2107,6 +2512,8 @@
   },
   {
     "id": "Q-81c2922fce6f4af6934d",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "82",
@@ -2118,7 +2525,10 @@
       "The gate current is large"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2133,6 +2543,8 @@
   },
   {
     "id": "Q-5bb838edd91f48328326",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "83",
@@ -2144,7 +2556,10 @@
       "Body current per source voltage"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2159,6 +2574,8 @@
   },
   {
     "id": "Q-a73cefb0e3354e789422",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "84",
@@ -2170,7 +2587,10 @@
       "5 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2185,6 +2605,8 @@
   },
   {
     "id": "Q-c94f0fa0125b44dba9cd",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "85",
@@ -2196,7 +2618,10 @@
       "Generate gate current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2211,6 +2636,8 @@
   },
   {
     "id": "Q-be0d33207f4a48e7a1f5",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "86",
@@ -2222,7 +2649,10 @@
       "Infinite gate current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2237,6 +2667,8 @@
   },
   {
     "id": "Q-730b4f3be33c48409eb2",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "87",
@@ -2248,7 +2680,10 @@
       "Threshold voltage to zero"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2263,6 +2698,8 @@
   },
   {
     "id": "Q-46069951af17475384c6",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "88",
@@ -2274,7 +2711,10 @@
       "Its input capacitance only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2289,6 +2729,8 @@
   },
   {
     "id": "Q-68c4dcf0522d415ab0bc",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "89",
@@ -2300,7 +2742,10 @@
       "Avalanche biased in normal operation"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2315,6 +2760,8 @@
   },
   {
     "id": "Q-945f27ed065a421ea144",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "90",
@@ -2326,7 +2773,10 @@
       "Base current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2341,6 +2791,8 @@
   },
   {
     "id": "Q-c2f39dfb9f1048aca25a",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "91",
@@ -2352,7 +2804,10 @@
       "Makes gate current large"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2367,6 +2822,8 @@
   },
   {
     "id": "Q-713a8e31b3d74374b78c",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "92",
@@ -2378,7 +2835,10 @@
       "VDS(sat)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2393,6 +2853,8 @@
   },
   {
     "id": "Q-c690c9f996074653a8f4",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "93",
@@ -2404,7 +2866,10 @@
       "ID = VDS/RD"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2419,6 +2884,8 @@
   },
   {
     "id": "Q-576b083829904248b846",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "94",
@@ -2430,7 +2897,10 @@
       "8 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2445,6 +2915,8 @@
   },
   {
     "id": "Q-1c2b380824b24aec98c2",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "95",
@@ -2456,7 +2928,10 @@
       "BJT saturation"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2471,6 +2946,8 @@
   },
   {
     "id": "Q-7f4c4de6d24242bf9863",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "96",
@@ -2482,7 +2959,10 @@
       "A four-junction device"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2497,6 +2977,8 @@
   },
   {
     "id": "Q-28b529fc795a4620aec3",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "97",
@@ -2508,7 +2990,10 @@
       "It has no capacitances"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2523,6 +3008,8 @@
   },
   {
     "id": "Q-ecfefcdc09e74beabe49",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "98",
@@ -2534,7 +3021,10 @@
       "BJT has zero output resistance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2549,6 +3039,8 @@
   },
   {
     "id": "Q-3e50ec8669194fb9a1fc",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "99",
@@ -2560,7 +3052,10 @@
       "Zero transconductance"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2575,6 +3070,8 @@
   },
   {
     "id": "Q-104f8b79bad3448c8cb1",
+    "subject": "Electronic devices and circuits",
+    "subjectId": "electronic-devices-and-circuits",
     "year": "2026",
     "state": "TS",
     "questionNumber": "100",
@@ -2586,7 +3083,10 @@
       "It requires continuous gate current"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,

@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-e2c85169bbe448f6aae2",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -12,7 +14,10 @@
       "4"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -27,6 +32,8 @@
   },
   {
     "id": "Q-89643bf73f8943dfa047",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -38,7 +45,10 @@
       "2"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -53,6 +63,8 @@
   },
   {
     "id": "Q-0e047c7756d2400eaf08",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -64,7 +76,10 @@
       "its zero nearer to the origin than its pole"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -79,6 +94,8 @@
   },
   {
     "id": "Q-a0fbaba544a54df6b009",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -90,7 +107,10 @@
       "3 (about 9.54 dB)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -105,6 +125,8 @@
   },
   {
     "id": "Q-3f8ac7b3a86e4c2190d2",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -116,7 +138,10 @@
       "4"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -131,6 +156,8 @@
   },
   {
     "id": "Q-0d4ad831d4544f0a9b36",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -142,7 +169,10 @@
       "1 rad/s"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -157,6 +187,8 @@
   },
   {
     "id": "Q-ce68ef54278b4d16b225",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -168,7 +200,10 @@
       "The eigenvalues of A are always a subset of the poles"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -183,6 +218,8 @@
   },
   {
     "id": "Q-e58bfb86d5d54b3b8088",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -194,7 +231,10 @@
       "Both peak overshoot and peak time decrease"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -209,6 +249,8 @@
   },
   {
     "id": "Q-40862695b5d24f9c9322",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -220,7 +262,10 @@
       "s/(s²+1)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -235,6 +280,8 @@
   },
   {
     "id": "Q-c9397aadc97444648615",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -246,7 +293,10 @@
       "an unbounded resonant peak"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -261,6 +311,8 @@
   },
   {
     "id": "Q-9b988fc2087e43e6ac9d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -272,7 +324,10 @@
       "3/(s + 2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -287,6 +342,8 @@
   },
   {
     "id": "Q-2e26bd5bff4f4501acc4",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -298,7 +355,10 @@
       "zero"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -313,6 +373,8 @@
   },
   {
     "id": "Q-423bf29f42d94c4097d4",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -324,7 +386,10 @@
       "0.5 sin 2t"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -339,6 +404,8 @@
   },
   {
     "id": "Q-9bd3cedfddc94977a94d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -350,7 +417,10 @@
       "0.75"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -365,6 +435,8 @@
   },
   {
     "id": "Q-7933185b56184b2ab3e9",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -376,7 +448,10 @@
       "A_OCF = -A_CCFᵀ, B_OCF = B_CCF, C_OCF = C_CCF"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -391,6 +466,8 @@
   },
   {
     "id": "Q-e36ac1993ff442b69ce7",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -402,7 +479,10 @@
       "0.5"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -417,6 +497,8 @@
   },
   {
     "id": "Q-7077ff36cfa543139f06",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -428,7 +510,10 @@
       "√2"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -443,6 +528,8 @@
   },
   {
     "id": "Q-951e0c4892e543a18035",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -454,7 +541,10 @@
       "0 dB"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -469,6 +559,8 @@
   },
   {
     "id": "Q-3036278a92ce42d1b35e",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -480,7 +572,10 @@
       "[0 1; -4 -2]"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -495,6 +590,8 @@
   },
   {
     "id": "Q-446b08387e9f47709487",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -506,7 +603,10 @@
       "0.5"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -521,6 +621,8 @@
   },
   {
     "id": "Q-b12e4e27d4f347b9a1b9",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -532,7 +634,10 @@
       "5"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -547,6 +652,8 @@
   },
   {
     "id": "Q-64254e77002747398648",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -558,7 +665,10 @@
       "±60°, 180°"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -573,6 +683,8 @@
   },
   {
     "id": "Q-842219b9f35d4381b9bc",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -584,7 +696,10 @@
       "[5 4]"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -599,6 +714,8 @@
   },
   {
     "id": "Q-bc08b860ca234080994c",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -610,7 +727,10 @@
       "s/((s+1)(s+2))"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -625,6 +745,8 @@
   },
   {
     "id": "Q-7e48339b5f9a4d288120",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -636,7 +758,10 @@
       "improves relative stability and increases rise time"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -651,6 +776,8 @@
   },
   {
     "id": "Q-416f40f8b9424078b962",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -662,7 +789,10 @@
       "s² + 3s + 2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -677,6 +807,8 @@
   },
   {
     "id": "Q-ff49392a12ad484fb535",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -688,7 +820,10 @@
       "K/(s(s+1)(s+2))"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -703,6 +838,8 @@
   },
   {
     "id": "Q-0147a476cabf41e7834d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -714,7 +851,10 @@
       "[2 1]"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -729,6 +869,8 @@
   },
   {
     "id": "Q-e47f56e3be7247d7bd4b",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -740,7 +882,10 @@
       "+20 dB/decade"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -755,6 +900,8 @@
   },
   {
     "id": "Q-70096b8c8d234d8a980b",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -766,7 +913,10 @@
       "dependent on K"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -781,6 +931,8 @@
   },
   {
     "id": "Q-a41a6e9ec9f542a987a7",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -792,7 +944,10 @@
       "Mr = 1.0, ωr = 10 rad/s"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -807,6 +962,8 @@
   },
   {
     "id": "Q-7a847007dfaa4b818fce",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -818,7 +975,10 @@
       "-1, -2"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -833,6 +993,8 @@
   },
   {
     "id": "Q-09d1503697d640039f14",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -844,7 +1006,10 @@
       "stable with infinite gain margin"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -859,6 +1024,8 @@
   },
   {
     "id": "Q-289a1cc5923d4b7899a0",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -870,7 +1037,10 @@
       "32"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -885,6 +1055,8 @@
   },
   {
     "id": "Q-1a22bacb315a482fa4ef",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -896,7 +1068,10 @@
       "1"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -911,6 +1086,8 @@
   },
   {
     "id": "Q-23d4ebfa8b0e4f2bb512",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -922,7 +1099,10 @@
       "61.4°"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -937,6 +1117,8 @@
   },
   {
     "id": "Q-69f9b84a6a4f460ebf22",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -948,7 +1130,10 @@
       "e^(-2t)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -963,6 +1148,8 @@
   },
   {
     "id": "Q-9c5bbb71a2504322b16b",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -974,7 +1161,10 @@
       "[1 t²/2; 0 1]"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -989,6 +1179,8 @@
   },
   {
     "id": "Q-25b60ee882af48b5860f",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -1000,7 +1192,10 @@
       "45°"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1015,6 +1210,8 @@
   },
   {
     "id": "Q-1724d957e69f4924b21a",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -1026,7 +1223,10 @@
       "∞"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1041,6 +1241,8 @@
   },
   {
     "id": "Q-e58e7d9dd0f64f8da65f",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -1052,7 +1254,10 @@
       "25"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1067,6 +1272,8 @@
   },
   {
     "id": "Q-4479c193e6c3407ba051",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -1078,7 +1285,10 @@
       "45°"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1093,6 +1303,8 @@
   },
   {
     "id": "Q-33e12fecca544f529bba",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -1104,7 +1316,10 @@
       "K = 5, ω = √30 rad/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1119,6 +1334,8 @@
   },
   {
     "id": "Q-c52170747ff74ba0bbde",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -1130,7 +1347,10 @@
       "reduces rise time and increases peak overshoot"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1145,6 +1365,8 @@
   },
   {
     "id": "Q-39100a6db2c74720a4f2",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -1156,7 +1378,10 @@
       "1/(s+2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1171,6 +1396,8 @@
   },
   {
     "id": "Q-0b68070ef9bd4b529fd7",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -1182,7 +1409,10 @@
       "0.4"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1197,6 +1427,8 @@
   },
   {
     "id": "Q-fac94b9189cb44069c48",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -1208,7 +1440,10 @@
       "51.8°"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1223,6 +1458,8 @@
   },
   {
     "id": "Q-e1113275ea8f4e56be74",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -1234,7 +1471,10 @@
       "-270°"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1249,6 +1489,8 @@
   },
   {
     "id": "Q-47729626f4564e6488bd",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -1260,7 +1502,10 @@
       "1.5 rad/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1275,6 +1520,8 @@
   },
   {
     "id": "Q-d9aacb1ec35443f688c7",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -1286,7 +1533,10 @@
       "-1, -3"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1301,6 +1551,8 @@
   },
   {
     "id": "Q-e76a05a6edaa4dcd973a",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -1312,7 +1564,10 @@
       "controllable, since the controllability matrix has rank 2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1327,6 +1582,8 @@
   },
   {
     "id": "Q-d4a4822d23e742f08e6e",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -1338,7 +1595,10 @@
       "1.0 s"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1353,6 +1613,8 @@
   },
   {
     "id": "Q-75093b3afde941268e94",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -1364,7 +1626,10 @@
       "T = 9 ms, a = 0.9"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1379,6 +1644,8 @@
   },
   {
     "id": "Q-2ae6c25dfddd4f2ca5de",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -1390,7 +1657,10 @@
       "-80 dB/decade"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1405,6 +1675,8 @@
   },
   {
     "id": "Q-cd03e3c75b464b05a1cf",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -1416,7 +1688,10 @@
       "1 ∠ -45°"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1431,6 +1706,8 @@
   },
   {
     "id": "Q-cc3e9bb349814a3499d7",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -1442,7 +1719,10 @@
       "1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1457,6 +1737,8 @@
   },
   {
     "id": "Q-5fab885f05844af5ab71",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -1468,7 +1750,10 @@
       "s/(s² + 5s + 6)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1483,6 +1768,8 @@
   },
   {
     "id": "Q-de16126911ea4c188249",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -1494,7 +1781,10 @@
       "K > 0"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1509,6 +1799,8 @@
   },
   {
     "id": "Q-b2b765c6ccfc4b3881fa",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -1520,7 +1812,10 @@
       "2"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1535,6 +1830,8 @@
   },
   {
     "id": "Q-6f072ed4b3364ec2a785",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -1546,7 +1843,10 @@
       "|G| = 1, phase = 0°"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1561,6 +1861,8 @@
   },
   {
     "id": "Q-8fd1c2a59bfd4b198449",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "61",
@@ -1572,7 +1874,10 @@
       "2.5 s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1587,6 +1892,8 @@
   },
   {
     "id": "Q-b9be1ad983994730868d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "62",
@@ -1598,7 +1905,10 @@
       "4"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1613,6 +1923,8 @@
   },
   {
     "id": "Q-f17d12b3a2764956a2b8",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "63",
@@ -1624,7 +1936,10 @@
       "3"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1639,6 +1954,8 @@
   },
   {
     "id": "Q-b1ef4d28576c4927a102",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "64",
@@ -1650,7 +1967,10 @@
       "Increase in the overall gain of the system"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1665,6 +1985,8 @@
   },
   {
     "id": "Q-8d639c10178d43928b77",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "65",
@@ -1676,7 +1998,10 @@
       "-2"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1691,6 +2016,8 @@
   },
   {
     "id": "Q-606a9eb520d74785acea",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "66",
@@ -1702,7 +2029,10 @@
       "0.2"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1717,6 +2047,8 @@
   },
   {
     "id": "Q-d0761f4ece874bcdbe42",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "67",
@@ -1728,7 +2060,10 @@
       "1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1743,6 +2078,8 @@
   },
   {
     "id": "Q-67a1b68ded5e47a591e5",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "68",
@@ -1754,7 +2091,10 @@
       "Between -2 and -4 only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1769,6 +2109,8 @@
   },
   {
     "id": "Q-1b6376f5a1c84b6b8781",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "69",
@@ -1780,7 +2122,10 @@
       "7"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1795,6 +2140,8 @@
   },
   {
     "id": "Q-e66618e9f47e4ad28127",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "70",
@@ -1806,7 +2153,10 @@
       "-1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1821,6 +2171,8 @@
   },
   {
     "id": "Q-c13245f98e6f4c04a1cb",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "71",
@@ -1832,7 +2184,10 @@
       "0, 1/Kv, ∞"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1847,6 +2202,8 @@
   },
   {
     "id": "Q-dabccdc7ed04402a8583",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "72",
@@ -1858,7 +2215,10 @@
       "makes the root locus symmetric about the jω axis"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1873,6 +2233,8 @@
   },
   {
     "id": "Q-1ef71275d25746358642",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "73",
@@ -1884,7 +2246,10 @@
       "0.25"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1899,6 +2264,8 @@
   },
   {
     "id": "Q-53c6dadfb86d43b982b8",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "74",
@@ -1910,7 +2277,10 @@
       "-2 ± j"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1925,6 +2295,8 @@
   },
   {
     "id": "Q-b9c2a34505d14dc98dd5",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "75",
@@ -1936,7 +2308,10 @@
       "both controllable and observable"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1951,6 +2326,8 @@
   },
   {
     "id": "Q-1990d5db06c54aa0afb9",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "76",
@@ -1962,7 +2339,10 @@
       "4"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -1977,6 +2357,8 @@
   },
   {
     "id": "Q-a2c8bd16fbd24d61a814",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "77",
@@ -1988,7 +2370,10 @@
       "9.54 dB"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2003,6 +2388,8 @@
   },
   {
     "id": "Q-f70419e070b3416b91ae",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "78",
@@ -2014,7 +2401,10 @@
       "1.414"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2029,6 +2419,8 @@
   },
   {
     "id": "Q-a54b0867d3b94930a046",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "79",
@@ -2040,7 +2432,10 @@
       "0 < K < 6"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2055,6 +2450,8 @@
   },
   {
     "id": "Q-750444d9d4ad4582863e",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "80",
@@ -2066,7 +2463,10 @@
       "0.393 s"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2081,6 +2481,8 @@
   },
   {
     "id": "Q-ee3d8091dfe74b52be88",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "81",
@@ -2092,7 +2494,10 @@
       "-0.8"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2107,6 +2512,8 @@
   },
   {
     "id": "Q-03dcbb89b09d4c6c85d4",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "82",
@@ -2118,7 +2525,10 @@
       "improved steady-state accuracy and reduced bandwidth"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2133,6 +2543,8 @@
   },
   {
     "id": "Q-74dcffb7a85b4d818c77",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "83",
@@ -2144,7 +2556,10 @@
       "Mon Aug 03 2026 00:00:00 GMT+0530 (India Standard Time)"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2159,6 +2574,8 @@
   },
   {
     "id": "Q-266e8b9462fd40fcb89a",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "84",
@@ -2170,7 +2587,10 @@
       "∞"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2185,6 +2605,8 @@
   },
   {
     "id": "Q-20edbf74bcc74518988d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "85",
@@ -2196,7 +2618,10 @@
       "-18 dB/octave"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2211,6 +2636,8 @@
   },
   {
     "id": "Q-5419d0be688a4634bfb1",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "86",
@@ -2222,7 +2649,10 @@
       "√10 rad/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2237,6 +2667,8 @@
   },
   {
     "id": "Q-92011e87f90a4086b13d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "87",
@@ -2248,7 +2680,10 @@
       "1 rad/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2263,6 +2698,8 @@
   },
   {
     "id": "Q-1c12f2c0918241daacf0",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "88",
@@ -2274,7 +2711,10 @@
       "a unit circle traced repeatedly in the clockwise direction"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2289,6 +2729,8 @@
   },
   {
     "id": "Q-37a3019b9ce9457bb9a2",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "89",
@@ -2300,7 +2742,10 @@
       "-0.5"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2315,6 +2760,8 @@
   },
   {
     "id": "Q-a313283acb0d4e15bc11",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "90",
@@ -2326,7 +2773,10 @@
       "2"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2341,6 +2791,8 @@
   },
   {
     "id": "Q-81e24d1a7cf34539aa5f",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "91",
@@ -2352,7 +2804,10 @@
       "a circle of radius K"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2367,6 +2822,8 @@
   },
   {
     "id": "Q-5f489e48dbb147909488",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "92",
@@ -2378,7 +2835,10 @@
       "It reduces damping and increases the peak overshoot"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2393,6 +2853,8 @@
   },
   {
     "id": "Q-fc48b1d3464b484aa41e",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "93",
@@ -2404,7 +2866,10 @@
       "41.8°"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2419,6 +2884,8 @@
   },
   {
     "id": "Q-a1e094aca42e4e6fa562",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "94",
@@ -2430,7 +2897,10 @@
       "Sat Jan 03 2026 00:00:00 GMT+0530 (India Standard Time)"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2445,6 +2915,8 @@
   },
   {
     "id": "Q-3ab1a4cc9af34895b268",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "95",
@@ -2456,7 +2928,10 @@
       "0.095"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2471,6 +2946,8 @@
   },
   {
     "id": "Q-6e2f79d772dd48359083",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "96",
@@ -2482,7 +2959,10 @@
       "high-pass filter"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2497,6 +2977,8 @@
   },
   {
     "id": "Q-671b14e2db9b4cea925e",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "97",
@@ -2508,7 +2990,10 @@
       "4"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2523,6 +3008,8 @@
   },
   {
     "id": "Q-c0e223e9786e48d4bf75",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "98",
@@ -2534,7 +3021,10 @@
       "twice in the counterclockwise direction"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2549,6 +3039,8 @@
   },
   {
     "id": "Q-a479fa91ad8847c1854d",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "99",
@@ -2560,7 +3052,10 @@
       "-6 < K < 66"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,
@@ -2575,6 +3070,8 @@
   },
   {
     "id": "Q-ecb4682a08ab41119033",
+    "subject": "Control systems",
+    "subjectId": "control-systems",
     "year": "2026",
     "state": "TS",
     "questionNumber": "100",
@@ -2586,7 +3083,10 @@
       "1.5 s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "GATE",
     "marks": 1,

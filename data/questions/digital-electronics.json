@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-1871e8022ab145ce9893",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -12,7 +14,10 @@
       "V_FS/(2^n-1)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -27,6 +32,8 @@
   },
   {
     "id": "Q-f77c4558e0e148948cf8",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -38,7 +45,10 @@
       "O(n log n)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -53,6 +63,8 @@
   },
   {
     "id": "Q-69004caf0b7f4387a50d",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -64,7 +76,10 @@
       "6.0 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -79,6 +94,8 @@
   },
   {
     "id": "Q-7b157544c6fc41518a03",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -90,7 +107,10 @@
       "k"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -105,6 +125,8 @@
   },
   {
     "id": "Q-7b36507dbbd84282881d",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -116,7 +138,10 @@
       "Independent of bit position"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -131,6 +156,8 @@
   },
   {
     "id": "Q-fdf9e67b629a426595aa",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -142,7 +169,10 @@
       "Find p's position"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -157,6 +187,8 @@
   },
   {
     "id": "Q-0209e7e5a34f4f7d93e7",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -168,7 +200,10 @@
       "24 bytes"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -183,6 +218,8 @@
   },
   {
     "id": "Q-2f219ebb114e49e3836c",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -194,7 +231,10 @@
       "Does not need switches"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -209,6 +249,8 @@
   },
   {
     "id": "Q-42adf6d67c1f4fd79afe",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -220,7 +262,10 @@
       "nV_ref"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -235,6 +280,8 @@
   },
   {
     "id": "Q-e52fdf3b3ec240dba7b2",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -246,7 +293,10 @@
       "9,7,4,2,1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -261,6 +311,8 @@
   },
   {
     "id": "Q-119aa69801b3475c8c3e",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -272,7 +324,10 @@
       "80 mV"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -287,6 +342,8 @@
   },
   {
     "id": "Q-5b4c30706475448aa6af",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -298,7 +355,10 @@
       "n-1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -313,6 +373,8 @@
   },
   {
     "id": "Q-ab83cc3e01d54e089746",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -324,7 +386,10 @@
       "tail->next points to head"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -339,6 +404,8 @@
   },
   {
     "id": "Q-e9fcdfd6a0b644c1bf27",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -350,7 +417,10 @@
       "11"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -365,6 +435,8 @@
   },
   {
     "id": "Q-49f152f4848443858170",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -376,7 +448,10 @@
       "0 LSB for every input"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -391,6 +466,8 @@
   },
   {
     "id": "Q-8a9c4dca8b0d478f98ad",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -402,7 +479,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -417,6 +497,8 @@
   },
   {
     "id": "Q-383fd24db55243c0966f",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -428,7 +510,10 @@
       "Generate the reference voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -443,6 +528,8 @@
   },
   {
     "id": "Q-bafc1bc8b5e244eb8992",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -454,7 +541,10 @@
       "n"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -469,6 +559,8 @@
   },
   {
     "id": "Q-81eac858256b42a0829e",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -480,7 +572,10 @@
       "A single comparator used repeatedly"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -495,6 +590,8 @@
   },
   {
     "id": "Q-f59af01fe3d94ebf8711",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -506,7 +603,10 @@
       "O(n^2)"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -521,6 +621,8 @@
   },
   {
     "id": "Q-61a1f0fc32d7498ca3b7",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -532,7 +634,10 @@
       "Search by value"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -547,6 +652,8 @@
   },
   {
     "id": "Q-6d7d807ee6cc4a3aafb1",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -558,7 +665,10 @@
       "64"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -573,6 +683,8 @@
   },
   {
     "id": "Q-7163389f7bdd4f25a249",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -584,7 +696,10 @@
       "Automatic reversal"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -599,6 +714,8 @@
   },
   {
     "id": "Q-c190a73c080843e6b7a0",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -610,7 +727,10 @@
       "Use of no comparators"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -625,6 +745,8 @@
   },
   {
     "id": "Q-c3ea41baf1364f3f8d93",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -636,7 +758,10 @@
       "Integrating the input indefinitely"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -651,6 +776,8 @@
   },
   {
     "id": "Q-cd7d2d2a8cde4ab59686",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -662,7 +789,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -677,6 +807,8 @@
   },
   {
     "id": "Q-2a52be78984d4112b6a6",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -688,7 +820,10 @@
       "Amplify the input signal"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -703,6 +838,8 @@
   },
   {
     "id": "Q-668c8b7dce8240da8ccc",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -714,7 +851,10 @@
       "O(n^2)"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -729,6 +869,8 @@
   },
   {
     "id": "Q-9b7b50c5957444ae9445",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -740,7 +882,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -755,6 +900,8 @@
   },
   {
     "id": "Q-e5095bf449f44d02aa14",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -766,7 +913,10 @@
       "20"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -781,6 +931,8 @@
   },
   {
     "id": "Q-df4e77e26d8c43e2b5e8",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -792,7 +944,10 @@
       "Very small conversion time"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -807,6 +962,8 @@
   },
   {
     "id": "Q-df93f5809fb8421488d0",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -818,7 +975,10 @@
       "p->next == p"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -833,6 +993,8 @@
   },
   {
     "id": "Q-cd322b7b9e1c4e3e8cce",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -844,7 +1006,10 @@
       "The DAC is switched off for the entire conversion"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -859,6 +1024,8 @@
   },
   {
     "id": "Q-f5489bf5c97f4f3fad4a",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -870,7 +1037,10 @@
       "2n+1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -885,6 +1055,8 @@
   },
   {
     "id": "Q-2e8cb5cc34604884be06",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -896,7 +1068,10 @@
       "Does not depend on resolution"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -911,6 +1086,8 @@
   },
   {
     "id": "Q-ddd1267f25c342219819",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -922,7 +1099,10 @@
       "It requires a tail pointer"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -937,6 +1117,8 @@
   },
   {
     "id": "Q-90b86769820f4720bc43",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -948,7 +1130,10 @@
       "Integrating"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -963,6 +1148,8 @@
   },
   {
     "id": "Q-955d6b5b72a34a9680ec",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -974,7 +1161,10 @@
       "C->next=D and C->prev=B"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -989,6 +1179,8 @@
   },
   {
     "id": "Q-0e7df114a9b945038a4f",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -1000,7 +1192,10 @@
       "Using an analog memory instead of a DAC"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1015,6 +1210,8 @@
   },
   {
     "id": "Q-4b173f0765714c048728",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -1026,7 +1223,10 @@
       "O(n log n)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1041,6 +1241,8 @@
   },
   {
     "id": "Q-62c5182e2842401b8699",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -1052,7 +1254,10 @@
       "32 bytes"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1067,6 +1272,8 @@
   },
   {
     "id": "Q-d0173f3c67034bd2948c",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -1078,7 +1285,10 @@
       "Remove offset error"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1093,6 +1303,8 @@
   },
   {
     "id": "Q-0a995984cd0d42ec89da",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -1104,7 +1316,10 @@
       "Sort all nodes"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1119,6 +1334,8 @@
   },
   {
     "id": "Q-0d3bb68fa736481da126",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -1130,7 +1347,10 @@
       "4096"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1145,6 +1365,8 @@
   },
   {
     "id": "Q-c6414d7cae6d45a8a766",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -1156,7 +1378,10 @@
       "X->prev=NULL; X->next=NULL"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1171,6 +1396,8 @@
   },
   {
     "id": "Q-cd23d48a5ec5413eb6d7",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -1182,7 +1409,10 @@
       "1024"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1197,6 +1427,8 @@
   },
   {
     "id": "Q-0859a78eebf5471a8850",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -1208,7 +1440,10 @@
       "T->next->next"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1223,6 +1458,8 @@
   },
   {
     "id": "Q-fe81cdf38bfd487abb79",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -1234,7 +1471,10 @@
       "Reduces the reference voltage automatically"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1249,6 +1489,8 @@
   },
   {
     "id": "Q-9010fcfdeeb14566a59e",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -1260,7 +1502,10 @@
       "T->next=T->prev"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1275,6 +1520,8 @@
   },
   {
     "id": "Q-92e80ea627c043438ce9",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -1286,7 +1533,10 @@
       "Only zero output"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1301,6 +1551,8 @@
   },
   {
     "id": "Q-97e4b5c6ca0c40fb8037",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -1312,7 +1564,10 @@
       "Only negative outputs"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1327,6 +1582,8 @@
   },
   {
     "id": "Q-d1dfc005b1534c828157",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -1338,7 +1595,10 @@
       "10"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1353,6 +1613,8 @@
   },
   {
     "id": "Q-1b63782172904e9e8131",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -1364,7 +1626,10 @@
       "1:4"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1379,6 +1644,8 @@
   },
   {
     "id": "Q-d64ddac8be4549928661",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -1390,7 +1657,10 @@
       "3,2,1,X"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1405,6 +1675,8 @@
   },
   {
     "id": "Q-ad161d8e23bf483ebb42",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -1416,7 +1688,10 @@
       "64"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1431,6 +1706,8 @@
   },
   {
     "id": "Q-d4c0ca3a63e44f1abe87",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -1442,7 +1719,10 @@
       "T=NULL"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1457,6 +1737,8 @@
   },
   {
     "id": "Q-308dde8a88fb4cf19efc",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -1468,7 +1750,10 @@
       "1.25 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1483,6 +1768,8 @@
   },
   {
     "id": "Q-603a2d4cb643474aadd8",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -1494,7 +1781,10 @@
       "It deletes the tail"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1509,6 +1799,8 @@
   },
   {
     "id": "Q-0279fd79fbfa4f069acf",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -1520,7 +1812,10 @@
       "4"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1535,6 +1830,8 @@
   },
   {
     "id": "Q-17dedce5a007415588cf",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -1546,7 +1843,10 @@
       "4.0 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1561,6 +1861,8 @@
   },
   {
     "id": "Q-44d9b2a4f5164ea68cb0",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -1572,7 +1874,10 @@
       "2 LSB"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1587,6 +1892,8 @@
   },
   {
     "id": "Q-c843ff1ea8d44014b109",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -1598,7 +1905,10 @@
       "H->next=NULL and H->prev=H"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1613,6 +1923,8 @@
   },
   {
     "id": "Q-1ec995182e714c5c9fd9",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -1624,7 +1936,10 @@
       "Equal to the full-scale voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1639,6 +1954,8 @@
   },
   {
     "id": "Q-9d101604a6684644be3a",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -1650,7 +1967,10 @@
       "n and n+1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1665,6 +1985,8 @@
   },
   {
     "id": "Q-54022cae4f064afaa8be",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -1676,7 +1998,10 @@
       "The reference voltage only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1691,6 +2016,8 @@
   },
   {
     "id": "Q-c35db70347724cdf9bde",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -1702,7 +2029,10 @@
       "D and H"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1717,6 +2047,8 @@
   },
   {
     "id": "Q-ac296e2e0f824317a345",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -1728,7 +2060,10 @@
       "p->prev=NULL; p->next=NULL"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1743,6 +2078,8 @@
   },
   {
     "id": "Q-e02a32d975314cea86ca",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -1754,7 +2091,10 @@
       "10 mV"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1769,6 +2109,8 @@
   },
   {
     "id": "Q-0cf0122e43c44c38b937",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -1780,7 +2122,10 @@
       "24"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1795,6 +2140,8 @@
   },
   {
     "id": "Q-706d25b82c5244afa214",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -1806,7 +2153,10 @@
       "768"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1821,6 +2171,8 @@
   },
   {
     "id": "Q-2172d5d21e3c4635b0a7",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -1832,7 +2184,10 @@
       "5.12 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1847,6 +2202,8 @@
   },
   {
     "id": "Q-ce5b1be051f049b09892",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -1858,7 +2215,10 @@
       "O(n), O(n), O(1)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1873,6 +2233,8 @@
   },
   {
     "id": "Q-1edd5e93e605473db787",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -1884,7 +2246,10 @@
       "2,3,4,5,1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1899,6 +2264,8 @@
   },
   {
     "id": "Q-6a627cefca8c4dc2bd48",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -1910,7 +2277,10 @@
       "The ADC comparator to switch"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1925,6 +2295,8 @@
   },
   {
     "id": "Q-374503660ffa4c36b16a",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -1936,7 +2308,10 @@
       "ADC aperture error"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -1951,6 +2326,8 @@
   },
   {
     "id": "Q-e4f5b2da63434fbc927b",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -1962,7 +2339,10 @@
       "2,3,4,5,6,1"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1977,6 +2357,8 @@
   },
   {
     "id": "Q-26615d704cca4313b1ec",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -1988,7 +2370,10 @@
       "Sixth node"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2003,6 +2388,8 @@
   },
   {
     "id": "Q-536add2fa3c64d9caec5",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -2014,7 +2401,10 @@
       "The LSB resistor is removed"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2029,6 +2419,8 @@
   },
   {
     "id": "Q-0e014542f7b0419494d6",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -2040,7 +2432,10 @@
       "The DAC must have zero offset"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2055,6 +2450,8 @@
   },
   {
     "id": "Q-55aad2c718374cd090d0",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -2066,7 +2463,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2081,6 +2481,8 @@
   },
   {
     "id": "Q-cc9a05e5ab2b498a986b",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -2092,7 +2494,10 @@
       "Require a reference"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2107,6 +2512,8 @@
   },
   {
     "id": "Q-e4caa7e92eb443d7b039",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -2118,7 +2525,10 @@
       "5"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2133,6 +2543,8 @@
   },
   {
     "id": "Q-11309b3791ff4e249575",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -2144,7 +2556,10 @@
       "f_s < 2f_max"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2159,6 +2574,8 @@
   },
   {
     "id": "Q-d4c4c20e73d34001b159",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -2170,7 +2587,10 @@
       "2n"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2185,6 +2605,8 @@
   },
   {
     "id": "Q-1421d55bbbdf4adeb07c",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -2196,7 +2618,10 @@
       "Insert after NULL"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2211,6 +2636,8 @@
   },
   {
     "id": "Q-c3a50ee52a344dd19544",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -2222,7 +2649,10 @@
       "The DAC output is monotonic"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2237,6 +2667,8 @@
   },
   {
     "id": "Q-5e5050f4451f4d018ba2",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -2248,7 +2680,10 @@
       "Eliminate quantization levels"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2263,6 +2698,8 @@
   },
   {
     "id": "Q-c8d72d552dc84110b9ad",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -2274,7 +2711,10 @@
       "n+1"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2289,6 +2729,8 @@
   },
   {
     "id": "Q-56087001ed644329a49f",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -2300,7 +2742,10 @@
       "1 MS/s"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2315,6 +2760,8 @@
   },
   {
     "id": "Q-d0e4cfa5f3ae44949342",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -2326,7 +2773,10 @@
       "2n+1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2341,6 +2791,8 @@
   },
   {
     "id": "Q-ae3dd4b5277c4f70ae05",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -2352,7 +2804,10 @@
       "6 MS/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2367,6 +2822,8 @@
   },
   {
     "id": "Q-faa5a73ffa4c4fd6875b",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -2378,7 +2835,10 @@
       "T->next points to T"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2393,6 +2853,8 @@
   },
   {
     "id": "Q-24dbcc6e85f14204b916",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -2404,7 +2866,10 @@
       "9 bits"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2419,6 +2884,8 @@
   },
   {
     "id": "Q-e279f9d0068447c493d6",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -2430,7 +2897,10 @@
       "12,5,10,15,20"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2445,6 +2915,8 @@
   },
   {
     "id": "Q-5902ef06fa9e42be9fe1",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -2456,7 +2928,10 @@
       "1023"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2471,6 +2946,8 @@
   },
   {
     "id": "Q-99e2ef76f40b48969955",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -2482,7 +2959,10 @@
       "n+1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2497,6 +2977,8 @@
   },
   {
     "id": "Q-48cd44afa66c4f378fa5",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -2508,7 +2990,10 @@
       "new->next=new"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2523,6 +3008,8 @@
   },
   {
     "id": "Q-c8e2792966544d4bb8da",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -2534,7 +3021,10 @@
       "2.0 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2549,6 +3039,8 @@
   },
   {
     "id": "Q-61a603f0bd024291af6f",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -2560,7 +3052,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2575,6 +3070,8 @@
   },
   {
     "id": "Q-a68c18f422f64574a2d4",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -2586,7 +3083,10 @@
       "10n + 20 dB"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2601,6 +3101,8 @@
   },
   {
     "id": "Q-5d8335e5b53f4429aba7",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -2612,7 +3114,10 @@
       "40 dB"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2627,6 +3132,8 @@
   },
   {
     "id": "Q-fb8a8f0d01e34d4d9b5e",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -2638,7 +3145,10 @@
       "O(n^2)"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2653,6 +3163,8 @@
   },
   {
     "id": "Q-4a3a66b0cc194fcfacbd",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -2664,7 +3176,10 @@
       "O(n^2)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2679,6 +3194,8 @@
   },
   {
     "id": "Q-d345f0e5f32f4d5f9dc2",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -2690,7 +3207,10 @@
       "200 mV"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2705,6 +3225,8 @@
   },
   {
     "id": "Q-4a82ebe4d76c4bca83d3",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -2716,7 +3238,10 @@
       "Code 48"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2731,6 +3256,8 @@
   },
   {
     "id": "Q-ce7462bc3d2c48de843f",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -2742,7 +3269,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2757,6 +3287,8 @@
   },
   {
     "id": "Q-2feb93a70fee490e8c09",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -2768,7 +3300,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2783,6 +3318,8 @@
   },
   {
     "id": "Q-4f05b12d773e450182dd",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -2794,7 +3331,10 @@
       "15 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2809,6 +3349,8 @@
   },
   {
     "id": "Q-b35fb28ec910495281ca",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -2820,7 +3362,10 @@
       "Sort the list"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2835,6 +3380,8 @@
   },
   {
     "id": "Q-f2754f396eb1477eacbb",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -2846,7 +3393,10 @@
       "A sample-and-hold capacitor exclusively"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2861,6 +3411,8 @@
   },
   {
     "id": "Q-08fa60ed34394b49af06",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -2872,7 +3424,10 @@
       "O(n^2)"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2887,6 +3442,8 @@
   },
   {
     "id": "Q-99e922d4a6eb41bc9f66",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -2898,7 +3455,10 @@
       "It eliminates the need for a clock"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2913,6 +3473,8 @@
   },
   {
     "id": "Q-6dbff691eabd4f859d7b",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -2924,7 +3486,10 @@
       "The reference polarity only"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -2939,6 +3504,8 @@
   },
   {
     "id": "Q-c1eff9bb7de5454ab2bb",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -2950,7 +3517,10 @@
       "X->prev=NULL"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2965,6 +3535,8 @@
   },
   {
     "id": "Q-37cbb77493d743ecb47a",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -2976,7 +3548,10 @@
       "Previous node's data"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2991,6 +3566,8 @@
   },
   {
     "id": "Q-65c6bc3f64c5443eb82f",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -3002,7 +3579,10 @@
       "111"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -3017,6 +3597,8 @@
   },
   {
     "id": "Q-2e7e28e9e100486fba96",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -3028,7 +3610,10 @@
       "O(n^2)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3043,6 +3628,8 @@
   },
   {
     "id": "Q-58e64340bed749aaaaba",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -3054,7 +3641,10 @@
       "Zero quantization error"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "DAC AND ADC COVERTERS",
     "exam": "",
     "marks": 1,
@@ -3069,6 +3659,8 @@
   },
   {
     "id": "Q-834d01b09da24b248793",
+    "subject": "Digital Electronics",
+    "subjectId": "digital-electronics",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -3080,7 +3672,10 @@
       "O(n^2)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,

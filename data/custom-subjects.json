@@ -1,1 +1,82 @@
-[]
+[
+  {
+    "id": "analog-electronics",
+    "name": "Analog electronics",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "Op amps",
+    "createdAt": "2026-09-19T19:44:52.917Z",
+    "exam": "",
+    "questionCount": 100
+  },
+  {
+    "id": "control-systems",
+    "name": "Control systems",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "",
+    "createdAt": "2026-10-03T20:49:25.224Z",
+    "exam": "GATE",
+    "questionCount": 100
+  },
+  {
+    "id": "data-structures",
+    "name": "Data structures",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "This is a basic ecet course",
+    "createdAt": "2026-09-18T17:29:39.407Z",
+    "exam": "",
+    "questionCount": 60
+  },
+  {
+    "id": "electronic-devices-and-circuits",
+    "name": "Electronic devices and circuits",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "Basics of transistors",
+    "createdAt": "2026-09-19T19:57:57.867Z",
+    "exam": "",
+    "questionCount": 100
+  },
+  {
+    "id": "network-theory",
+    "name": "Network theory",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "All basics covered",
+    "createdAt": "2026-09-19T20:04:25.589Z",
+    "exam": "",
+    "questionCount": 200
+  },
+  {
+    "id": "test-subject",
+    "name": "test  subject",
+    "hasPassword": false,
+    "testType": "FIB",
+    "description": "Fill-in-the-blank test",
+    "createdAt": "2026-11-27T06:46:39.029Z",
+    "exam": "ECET",
+    "questionCount": 20
+  },
+  {
+    "id": "training-and-placement",
+    "name": "Training and placement",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "For placement test",
+    "createdAt": "2026-11-22T12:32:14.662Z",
+    "exam": "Ecet",
+    "questionCount": 240
+  },
+  {
+    "id": "verilog",
+    "name": "Verilog",
+    "hasPassword": true,
+    "testType": "MCQ",
+    "description": "",
+    "createdAt": "2026-09-18T16:35:40.279Z",
+    "exam": "",
+    "questionCount": 0
+  }
+]

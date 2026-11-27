@@ -1,6 +1,8 @@
 [
   {
     "id": "Q-223fa51f269b49a2a1c8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -12,7 +14,10 @@
       "10 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -27,6 +32,8 @@
   },
   {
     "id": "Q-6f30bb66be5a4e7ab804",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -38,7 +45,10 @@
       "-2"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -53,6 +63,8 @@
   },
   {
     "id": "Q-c746e8ce90a74a28bb3b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -64,7 +76,10 @@
       "10% rise"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -79,6 +94,8 @@
   },
   {
     "id": "Q-f9017c33302d4fafbf21",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "1",
@@ -90,7 +107,10 @@
       "long"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -105,6 +125,8 @@
   },
   {
     "id": "Q-37d7c1f1a45241e284c4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -116,7 +138,10 @@
       "Sat Dec 30 1899 10:07:09 GMT+0521 (India Standard Time)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -131,6 +156,8 @@
   },
   {
     "id": "Q-82a417ee09fd4d169c08",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -142,7 +169,10 @@
       "6"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -157,6 +187,8 @@
   },
   {
     "id": "Q-eab593590b894df4a7c0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -168,7 +200,10 @@
       "11 Ω"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -183,6 +218,8 @@
   },
   {
     "id": "Q-eabfc7ade5cf48c88f32",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "2",
@@ -194,7 +231,10 @@
       "5"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -209,6 +249,8 @@
   },
   {
     "id": "Q-268c134c378b4a739fc7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -220,7 +262,10 @@
       "&&"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -235,6 +280,8 @@
   },
   {
     "id": "Q-520c3589ebd24a98b71c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -246,7 +293,10 @@
       "20"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -261,6 +311,8 @@
   },
   {
     "id": "Q-9b3d7a637a504c3ba58e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -272,7 +324,10 @@
       "25"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -287,6 +342,8 @@
   },
   {
     "id": "Q-b69e824fa1be4ce78993",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "3",
@@ -298,7 +355,10 @@
       "24 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -313,6 +373,8 @@
   },
   {
     "id": "Q-1d5d99d2f58c433fb2f2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -324,7 +386,10 @@
       "18 kJ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -339,6 +404,8 @@
   },
   {
     "id": "Q-6b9be1e7d2f14d98b8ed",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -350,7 +417,10 @@
       "A string literal can safely be modified"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -365,6 +435,8 @@
   },
   {
     "id": "Q-9b6f11d5a71244228379",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -376,7 +448,10 @@
       "33"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -391,6 +466,8 @@
   },
   {
     "id": "Q-e38cb92c118b419b9e00",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "4",
@@ -402,7 +479,10 @@
       "Error"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -417,6 +497,8 @@
   },
   {
     "id": "Q-26b10687ef2e4199a805",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -428,7 +510,10 @@
       "float"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -443,6 +528,8 @@
   },
   {
     "id": "Q-284e5a03a00a4ccd90b7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -454,7 +541,10 @@
       "0.16"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -469,6 +559,8 @@
   },
   {
     "id": "Q-589bef34c44d474f9c07",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -480,7 +572,10 @@
       "*(a[2]+3) gives an address"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -495,6 +590,8 @@
   },
   {
     "id": "Q-b4f9945741a9407490a4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "5",
@@ -506,7 +603,10 @@
       "25 Ω"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -521,6 +621,8 @@
   },
   {
     "id": "Q-379e0cc2eba44bdb9a4d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -532,7 +634,10 @@
       "40 mJ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -547,6 +652,8 @@
   },
   {
     "id": "Q-77f79d6dbf28435795c4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -558,7 +665,10 @@
       "math.h"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -573,6 +683,8 @@
   },
   {
     "id": "Q-d672446674554d1488cf",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -584,7 +696,10 @@
       "realloc always moves the block"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -599,6 +714,8 @@
   },
   {
     "id": "Q-e459cff8ddda4d16b3d3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "6",
@@ -610,7 +727,10 @@
       "₹12,100"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -625,6 +745,8 @@
   },
   {
     "id": "Q-1ea26e30aa134b4f9d89",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -636,7 +758,10 @@
       "₹8,000"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -651,6 +776,8 @@
   },
   {
     "id": "Q-4415153260dc487692f6",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -662,7 +789,10 @@
       "24"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -677,6 +807,8 @@
   },
   {
     "id": "Q-7b452b93df78468ca74f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -688,7 +820,10 @@
       "100 mJ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -703,6 +838,8 @@
   },
   {
     "id": "Q-b18c40c21c444c3885a0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "7",
@@ -714,7 +851,10 @@
       "Length"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -729,6 +869,8 @@
   },
   {
     "id": "Q-2b0c9d97360c460d8585",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -740,7 +882,10 @@
       "EOF"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -755,6 +900,8 @@
   },
   {
     "id": "Q-2dc46fc0ffe448838f48",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -766,7 +913,10 @@
       "0.12"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -781,6 +931,8 @@
   },
   {
     "id": "Q-61b642972db74ad39239",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -792,7 +944,10 @@
       "Friend function"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -807,6 +962,8 @@
   },
   {
     "id": "Q-a5bec1f4343142fb8d2f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "8",
@@ -818,7 +975,10 @@
       "Lags 180°"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -833,6 +993,8 @@
   },
   {
     "id": "Q-3bba71b34c404e3288cd",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -844,7 +1006,10 @@
       "char **f(int);"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -859,6 +1024,8 @@
   },
   {
     "id": "Q-68ad1631a5364d56abad",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -870,7 +1037,10 @@
       "Undefined"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -885,6 +1055,8 @@
   },
   {
     "id": "Q-95d394c78dc746e8b1c3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -896,7 +1068,10 @@
       "0.3"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -911,6 +1086,8 @@
   },
   {
     "id": "Q-97f51262dd684fb79352",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "9",
@@ -922,7 +1099,10 @@
       "70 Ω"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -937,6 +1117,8 @@
   },
   {
     "id": "Q-0e3718f433a44122a468",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -948,7 +1130,10 @@
       "12 L"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -963,6 +1148,8 @@
   },
   {
     "id": "Q-9b4e56168dd8409186f0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -974,7 +1161,10 @@
       "32"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -989,6 +1179,8 @@
   },
   {
     "id": "Q-c66b0751e3b241078cd3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -1000,7 +1192,10 @@
       "strcpy"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1015,6 +1210,8 @@
   },
   {
     "id": "Q-fad3eb976aa843b39928",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "10",
@@ -1026,7 +1223,10 @@
       "10 kW"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1041,6 +1241,8 @@
   },
   {
     "id": "Q-31318229bbdb44deb76c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -1052,7 +1254,10 @@
       "6 kWh"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1067,6 +1272,8 @@
   },
   {
     "id": "Q-43b273ba5663485cb204",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -1078,7 +1285,10 @@
       "9 A"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1093,6 +1303,8 @@
   },
   {
     "id": "Q-b78d8d1e530b4d5087a2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -1104,7 +1316,10 @@
       "10 days"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1119,6 +1334,8 @@
   },
   {
     "id": "Q-c5b918564ea8457cbad0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "11",
@@ -1130,7 +1347,10 @@
       "free"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1145,6 +1365,8 @@
   },
   {
     "id": "Q-1f5844d03dd24c839b88",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -1156,7 +1378,10 @@
       "250 Ω"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1171,6 +1396,8 @@
   },
   {
     "id": "Q-26efecbea68042b1a06e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -1182,7 +1409,10 @@
       "24 days"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1197,6 +1427,8 @@
   },
   {
     "id": "Q-2acd6743dfc64e9c8e6e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -1208,7 +1440,10 @@
       "24 kJ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1223,6 +1458,8 @@
   },
   {
     "id": "Q-5dcb325f87dc46459849",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "12",
@@ -1234,7 +1471,10 @@
       "An array size"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1249,6 +1489,8 @@
   },
   {
     "id": "Q-0cf651ece272450c98d2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -1260,7 +1502,10 @@
       "Program must terminate"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1275,6 +1520,8 @@
   },
   {
     "id": "Q-36cb23f502d34d819fec",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -1286,7 +1533,10 @@
       "24 h"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1301,6 +1551,8 @@
   },
   {
     "id": "Q-74652479bbac40fdb7aa",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -1312,7 +1564,10 @@
       "17 Ω"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1327,6 +1582,8 @@
   },
   {
     "id": "Q-7c1b3453fe874f3589bc",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "13",
@@ -1338,7 +1595,10 @@
       "13 A"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1353,6 +1613,8 @@
   },
   {
     "id": "Q-2fef4cbe55434763852f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -1364,7 +1626,10 @@
       "5 A"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1379,6 +1644,8 @@
   },
   {
     "id": "Q-3c4ffe65577b49fcabac",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -1390,7 +1657,10 @@
       "Thu Feb 05 2026 00:00:00 GMT+0530 (India Standard Time)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1405,6 +1675,8 @@
   },
   {
     "id": "Q-78f459f5643a4418a9cf",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -1416,7 +1688,10 @@
       "12.5 W"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1431,6 +1706,8 @@
   },
   {
     "id": "Q-9e344da4683843d18beb",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "14",
@@ -1442,7 +1719,10 @@
       "int **p[10]"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1457,6 +1737,8 @@
   },
   {
     "id": "Q-0c4ad627fd414a45866f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -1468,7 +1750,10 @@
       "10 A"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1483,6 +1768,8 @@
   },
   {
     "id": "Q-8f1715b0506b4d23ae22",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -1494,7 +1781,10 @@
       "12"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1509,6 +1799,8 @@
   },
   {
     "id": "Q-ac4a2dae2f4a4e16815d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -1520,7 +1812,10 @@
       "Remove all resistors"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1535,6 +1830,8 @@
   },
   {
     "id": "Q-f346090d1d724a178e67",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "15",
@@ -1546,7 +1843,10 @@
       "100 km/h"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1561,6 +1861,8 @@
   },
   {
     "id": "Q-1ea09a7dc4604e029b9b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -1572,7 +1874,10 @@
       "18 s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1587,6 +1892,8 @@
   },
   {
     "id": "Q-48ba75e34e39463ca589",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -1598,7 +1905,10 @@
       "18 mJ"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1613,6 +1923,8 @@
   },
   {
     "id": "Q-8fd0042b1cf84a8eaa4b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -1624,7 +1936,10 @@
       "Infinite"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1639,6 +1954,8 @@
   },
   {
     "id": "Q-e7e62a73655c4e609917",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "16",
@@ -1650,7 +1967,10 @@
       "7"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1665,6 +1985,8 @@
   },
   {
     "id": "Q-0464accb24e8483fb56d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -1676,7 +1998,10 @@
       "314π rad/s"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1691,6 +2016,8 @@
   },
   {
     "id": "Q-51693c1bee1540149603",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -1702,7 +2029,10 @@
       "7"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1717,6 +2047,8 @@
   },
   {
     "id": "Q-59aa738032ad4e36af6f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -1728,7 +2060,10 @@
       "Current lags voltage by 90 degrees"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1743,6 +2078,8 @@
   },
   {
     "id": "Q-9bda15f834874b9e9e20",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "17",
@@ -1754,7 +2091,10 @@
       "54 km/h"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1769,6 +2109,8 @@
   },
   {
     "id": "Q-1f869a30aaba4e9891fc",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -1780,7 +2122,10 @@
       "27 km/h"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1795,6 +2140,8 @@
   },
   {
     "id": "Q-24bf4ae772224572a2db",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -1806,7 +2153,10 @@
       "32"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1821,6 +2171,8 @@
   },
   {
     "id": "Q-370cb692b16f46d6beb0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -1832,7 +2184,10 @@
       "1.25"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1847,6 +2202,8 @@
   },
   {
     "id": "Q-d3b159a519bd41489c60",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "18",
@@ -1858,7 +2215,10 @@
       "20 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1873,6 +2233,8 @@
   },
   {
     "id": "Q-5a795279497249bea917",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -1884,7 +2246,10 @@
       "3 times phase voltage"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -1899,6 +2264,8 @@
   },
   {
     "id": "Q-8bf436ebd3e4496094f2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -1910,7 +2277,10 @@
       "Tunnel diode"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -1925,6 +2295,8 @@
   },
   {
     "id": "Q-a30925c99c1846f4b61a",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -1936,7 +2308,10 @@
       "Nested for"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -1951,6 +2326,8 @@
   },
   {
     "id": "Q-e3c8045ce17841f08396",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "19",
@@ -1962,7 +2339,10 @@
       "6 h"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -1977,6 +2357,8 @@
   },
   {
     "id": "Q-468bde709a6847a39f67",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -1988,7 +2370,10 @@
       "Proportional to feedback resistance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2003,6 +2388,8 @@
   },
   {
     "id": "Q-7084d88211e24285a6da",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -2014,7 +2401,10 @@
       "17 km"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2029,6 +2419,8 @@
   },
   {
     "id": "Q-afa752d24f684f708a5c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -2040,7 +2432,10 @@
       "6.4 kW"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2055,6 +2450,8 @@
   },
   {
     "id": "Q-e4d822de61674dcb896c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "20",
@@ -2066,7 +2463,10 @@
       "goto"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2081,6 +2481,8 @@
   },
   {
     "id": "Q-8b797e2f533c4a289c5e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -2092,7 +2494,10 @@
       "49"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2107,6 +2512,8 @@
   },
   {
     "id": "Q-d05042c5b3384a5b8628",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -2118,7 +2525,10 @@
       "default"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2133,6 +2543,8 @@
   },
   {
     "id": "Q-ecbea99b15564367a5a7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -2144,7 +2556,10 @@
       "Transformer core"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2159,6 +2574,8 @@
   },
   {
     "id": "Q-f855a0bbce784a2cb593",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "21",
@@ -2170,7 +2587,10 @@
       "Mon May 04 2026 00:00:00 GMT+0530 (India Standard Time)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2185,6 +2605,8 @@
   },
   {
     "id": "Q-0fd2433456d54dd9bbbd",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -2196,7 +2618,10 @@
       "Reverse breakdown"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2211,6 +2636,8 @@
   },
   {
     "id": "Q-1865610396f84b30be9b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -2222,7 +2649,10 @@
       "64"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2237,6 +2667,8 @@
   },
   {
     "id": "Q-8c39e6e1b21544e0aed3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -2248,7 +2680,10 @@
       "Infinite"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2263,6 +2698,8 @@
   },
   {
     "id": "Q-c83709c9f4e64206bcc2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "22",
@@ -2274,7 +2711,10 @@
       "Buffer"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2289,6 +2729,8 @@
   },
   {
     "id": "Q-738035c97b564e51ae6b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -2300,7 +2742,10 @@
       "27"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2315,6 +2760,8 @@
   },
   {
     "id": "Q-7f8c8fe26e4549d98c4b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -2326,7 +2773,10 @@
       "Nothing"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2341,6 +2791,8 @@
   },
   {
     "id": "Q-81af16ac799c45db8ba4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -2352,7 +2804,10 @@
       "1.5 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2367,6 +2822,8 @@
   },
   {
     "id": "Q-eda18f2b5e0e42ef8d66",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "23",
@@ -2378,7 +2835,10 @@
       "A'B"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2393,6 +2853,8 @@
   },
   {
     "id": "Q-2165f9c2c6944f21860e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -2404,7 +2866,10 @@
       "Reverse leakage only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2419,6 +2884,8 @@
   },
   {
     "id": "Q-3749f53f48914e738472",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -2430,7 +2897,10 @@
       "5"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2445,6 +2915,8 @@
   },
   {
     "id": "Q-c8a95f1634f548de8ef2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -2456,7 +2928,10 @@
       "−1 and −3/2"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2471,6 +2946,8 @@
   },
   {
     "id": "Q-d2694b184a384fa1b0c1",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "24",
@@ -2482,7 +2959,10 @@
       "float"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2497,6 +2977,8 @@
   },
   {
     "id": "Q-04441a60a78b477f8ea5",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -2508,7 +2990,10 @@
       "324"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2523,6 +3008,8 @@
   },
   {
     "id": "Q-6e0b94df774f49fc81d7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -2534,7 +3021,10 @@
       "static"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2549,6 +3039,8 @@
   },
   {
     "id": "Q-7caaa672941e4adc9051",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -2560,7 +3052,10 @@
       "150 Hz"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2575,6 +3070,8 @@
   },
   {
     "id": "Q-ea764639db7146a1998d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "25",
@@ -2586,7 +3083,10 @@
       "62"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2601,6 +3101,8 @@
   },
   {
     "id": "Q-220815844ba44bc3b930",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -2612,7 +3114,10 @@
       "Union"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2627,6 +3132,8 @@
   },
   {
     "id": "Q-736332f3526f4e99a204",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -2638,7 +3145,10 @@
       "16"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2653,6 +3163,8 @@
   },
   {
     "id": "Q-74bd3bbd8f944366948e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -2664,7 +3176,10 @@
       "6"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2679,6 +3194,8 @@
   },
   {
     "id": "Q-a2a7b95c1bcc4f789697",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "26",
@@ -2690,7 +3207,10 @@
       "365"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2705,6 +3225,8 @@
   },
   {
     "id": "Q-3a31d0a225104dd49407",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -2716,7 +3238,10 @@
       "62.5 kHz"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2731,6 +3256,8 @@
   },
   {
     "id": "Q-535f9ff8792147a3b783",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -2742,7 +3269,10 @@
       "60"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2757,6 +3287,8 @@
   },
   {
     "id": "Q-5f589e900b6f46da9c55",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -2768,7 +3300,10 @@
       "Unrelated"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2783,6 +3318,8 @@
   },
   {
     "id": "Q-dc295c0b37004621bcff",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "27",
@@ -2794,7 +3331,10 @@
       "24"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2809,6 +3349,8 @@
   },
   {
     "id": "Q-47db0bf35d8348039426",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -2820,7 +3362,10 @@
       "->"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2835,6 +3380,8 @@
   },
   {
     "id": "Q-719e7b1526b44cdb9c0e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -2846,7 +3393,10 @@
       "6"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2861,6 +3411,8 @@
   },
   {
     "id": "Q-ae575ff9553342cd8966",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -2872,7 +3424,10 @@
       "36"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2887,6 +3442,8 @@
   },
   {
     "id": "Q-c0d69ff1f9e04dfb803e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "28",
@@ -2898,7 +3455,10 @@
       "J=1, K=1"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -2913,6 +3473,8 @@
   },
   {
     "id": "Q-47886c37358e4c87ac71",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -2924,7 +3486,10 @@
       "Zero gain"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -2939,6 +3504,8 @@
   },
   {
     "id": "Q-6e9034f13c4642febccd",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -2950,7 +3517,10 @@
       "Increment both"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -2965,6 +3535,8 @@
   },
   {
     "id": "Q-a384ae3ad1c34054a557",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -2976,7 +3548,10 @@
       "1000"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -2991,6 +3566,8 @@
   },
   {
     "id": "Q-aaaaefb2a4974dd3a879",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "29",
@@ -3002,7 +3579,10 @@
       "500 mA"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3017,6 +3597,8 @@
   },
   {
     "id": "Q-195a899583234295a2fc",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -3028,7 +3610,10 @@
       "−0.1"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3043,6 +3628,8 @@
   },
   {
     "id": "Q-2220ee9295254884875f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -3054,7 +3641,10 @@
       "768"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3069,6 +3659,8 @@
   },
   {
     "id": "Q-3e7474aff7784f7cb9da",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -3080,7 +3672,10 @@
       "1110000"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3095,6 +3690,8 @@
   },
   {
     "id": "Q-ee06eed601d141fe8fb4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "30",
@@ -3106,7 +3703,10 @@
       "int &f(void)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3121,6 +3721,8 @@
   },
   {
     "id": "Q-0819b1f21acd45afba76",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -3132,7 +3734,10 @@
       "84 cm"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3147,6 +3752,8 @@
   },
   {
     "id": "Q-1823f8df16d44ac09b42",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -3158,7 +3765,10 @@
       "8% decrease"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3173,6 +3783,8 @@
   },
   {
     "id": "Q-2b0715462b2b419f9be2",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -3184,7 +3796,10 @@
       "−10"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3199,6 +3814,8 @@
   },
   {
     "id": "Q-5ecd2c8d22ab4ba68daa",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "31",
@@ -3210,7 +3827,10 @@
       "volatile"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3225,6 +3845,8 @@
   },
   {
     "id": "Q-141b0b1b6d5348429d13",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -3236,7 +3858,10 @@
       "Sat Dec 30 1899 15:14:00 GMT+0521 (India Standard Time)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3251,6 +3876,8 @@
   },
   {
     "id": "Q-b6eaf7ad6996446c8b48",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -3262,7 +3889,10 @@
       "176 cm²"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3277,6 +3907,8 @@
   },
   {
     "id": "Q-f6bcadd52c254d5bac59",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -3288,7 +3920,10 @@
       "Schottky"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3303,6 +3938,8 @@
   },
   {
     "id": "Q-fb1a97815347495bb6b3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "32",
@@ -3314,7 +3951,10 @@
       "Pointer to pointer"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3329,6 +3969,8 @@
   },
   {
     "id": "Q-73a2198df2ce40518bb6",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -3340,7 +3982,10 @@
       "int **p"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3355,6 +4000,8 @@
   },
   {
     "id": "Q-ca965473093b4d4881b9",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -3366,7 +4013,10 @@
       "19"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3381,6 +4031,8 @@
   },
   {
     "id": "Q-cf73ff2eb0b54c5ea43f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -3392,7 +4044,10 @@
       "Inputs differ"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3407,6 +4062,8 @@
   },
   {
     "id": "Q-e78a6b54efee46adb91b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "33",
@@ -3418,7 +4075,10 @@
       "65 cm²"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3433,6 +4093,8 @@
   },
   {
     "id": "Q-4ef201bedacf43478dd0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -3444,7 +4106,10 @@
       "₹12,100"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3459,6 +4124,8 @@
   },
   {
     "id": "Q-71964672fe05421794ca",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -3470,7 +4137,10 @@
       "XNOR"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3485,6 +4155,8 @@
   },
   {
     "id": "Q-a9083b14b0d14ba0b573",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -3496,7 +4168,10 @@
       "#pragma"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3511,6 +4186,8 @@
   },
   {
     "id": "Q-cdf8865a60a0425094ec",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "34",
@@ -3522,7 +4199,10 @@
       "0.361"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3537,6 +4217,8 @@
   },
   {
     "id": "Q-151b252af8e848569728",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -3548,7 +4230,10 @@
       "A'+B'"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3563,6 +4248,8 @@
   },
   {
     "id": "Q-32d28439553b42469598",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -3574,7 +4261,10 @@
       "3"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3589,6 +4279,8 @@
   },
   {
     "id": "Q-6eebd1786ef8492e8798",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -3600,7 +4292,10 @@
       "Declare functions"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3615,6 +4310,8 @@
   },
   {
     "id": "Q-8ee2c84fd8f24b18aa94",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "35",
@@ -3626,7 +4323,10 @@
       "12 cm"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3641,6 +4341,8 @@
   },
   {
     "id": "Q-bf1fd317c1b9444896d8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -3652,7 +4354,10 @@
       "0.21"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3667,6 +4372,8 @@
   },
   {
     "id": "Q-c4cb8327809b402abf05",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -3678,7 +4385,10 @@
       "Compilation"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3693,6 +4403,8 @@
   },
   {
     "id": "Q-d499e2db095c47daacd0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -3704,7 +4416,10 @@
       "A+B'"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3719,6 +4434,8 @@
   },
   {
     "id": "Q-f7d4a83962674bf59428",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "36",
@@ -3730,7 +4447,10 @@
       "12"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3745,6 +4465,8 @@
   },
   {
     "id": "Q-46b84d0fd10e40a2b998",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -3756,7 +4478,10 @@
       "Overloading by return type"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3771,6 +4496,8 @@
   },
   {
     "id": "Q-afa89a810ae34a01b340",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -3782,7 +4509,10 @@
       "5 cm"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3797,6 +4527,8 @@
   },
   {
     "id": "Q-b331cc835d3b41de8b18",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -3808,7 +4540,10 @@
       "80"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3823,6 +4558,8 @@
   },
   {
     "id": "Q-c85b54957d1e4a63aff7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "37",
@@ -3834,7 +4571,10 @@
       "32"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3849,6 +4589,8 @@
   },
   {
     "id": "Q-2948f89dd4354b51a141",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -3860,7 +4602,10 @@
       "No inheritance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -3875,6 +4620,8 @@
   },
   {
     "id": "Q-b179e1a4e62046d69c13",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -3886,7 +4633,10 @@
       "39"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3901,6 +4651,8 @@
   },
   {
     "id": "Q-ea7d8443584e477facc4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -3912,7 +4664,10 @@
       "55"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -3927,6 +4682,8 @@
   },
   {
     "id": "Q-fa5c4042a5cb4d65a52a",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "38",
@@ -3938,7 +4695,10 @@
       "3.5 h"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -3953,6 +4713,8 @@
   },
   {
     "id": "Q-161094e706344da3a85f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -3964,7 +4726,10 @@
       "84"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -3979,6 +4744,8 @@
   },
   {
     "id": "Q-16e352b1a8fa4d91bae1",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -3990,7 +4757,10 @@
       "Access modifier"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4005,6 +4775,8 @@
   },
   {
     "id": "Q-78f00c5663b44fd5bb5e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -4016,7 +4788,10 @@
       "9 days"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4031,6 +4806,8 @@
   },
   {
     "id": "Q-d09e7bce6cfe42659c27",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "39",
@@ -4042,7 +4819,10 @@
       "10010010"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4057,6 +4837,8 @@
   },
   {
     "id": "Q-18bea1e647d34943beda",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -4068,7 +4850,10 @@
       "30 h"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4083,6 +4868,8 @@
   },
   {
     "id": "Q-1f5f4dcf2ba54e14a8f8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -4094,7 +4881,10 @@
       "Compilation"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4109,6 +4899,8 @@
   },
   {
     "id": "Q-97249fa3ea604d70bcba",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -4120,7 +4912,10 @@
       "74"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4135,6 +4930,8 @@
   },
   {
     "id": "Q-c112f7072e6647d79ea4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "40",
@@ -4146,7 +4943,10 @@
       "F1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4161,6 +4961,8 @@
   },
   {
     "id": "Q-3b6c706b6c21401c8100",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -4172,7 +4974,10 @@
       "8"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4187,6 +4992,8 @@
   },
   {
     "id": "Q-7b211a3e53ba463d83db",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -4198,7 +5005,10 @@
       "16"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4213,6 +5023,8 @@
   },
   {
     "id": "Q-dc5b832218f541dab994",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -4224,7 +5036,10 @@
       "virtual"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4239,6 +5054,8 @@
   },
   {
     "id": "Q-dca08bbb44cb4d619ea3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "41",
@@ -4250,7 +5067,10 @@
       "10 L"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4265,6 +5085,8 @@
   },
   {
     "id": "Q-501d4626cc2c43d6a96f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -4276,7 +5098,10 @@
       "Selection sort"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4291,6 +5116,8 @@
   },
   {
     "id": "Q-e9c6162d57ef4bf2aeed",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -4302,7 +5129,10 @@
       "Wed Mar 04 2026 00:00:00 GMT+0530 (India Standard Time)"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4317,6 +5147,8 @@
   },
   {
     "id": "Q-eb64c3b94b724d3dacab",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -4328,7 +5160,10 @@
       "10% decrease"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4343,6 +5178,8 @@
   },
   {
     "id": "Q-ef35cef823944110989a",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "42",
@@ -4354,7 +5191,10 @@
       "16"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4369,6 +5209,8 @@
   },
   {
     "id": "Q-1329c4ad3a7e48c2a937",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -4380,7 +5222,10 @@
       "Sun Jan 18 2026 00:00:00 GMT+0530 (India Standard Time)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4395,6 +5240,8 @@
   },
   {
     "id": "Q-51fed9b009574b86aef5",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -4406,7 +5253,10 @@
       "88 cm"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4421,6 +5271,8 @@
   },
   {
     "id": "Q-745b4bc1280e40e28c1c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -4432,7 +5284,10 @@
       "O(n²)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4447,6 +5302,8 @@
   },
   {
     "id": "Q-ed158726b4f74143842c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "43",
@@ -4458,7 +5315,10 @@
       "Hold"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4473,6 +5333,8 @@
   },
   {
     "id": "Q-4585e486a0a74770b28a",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -4484,7 +5346,10 @@
       "64"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4499,6 +5364,8 @@
   },
   {
     "id": "Q-536d483b252e430483c6",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -4510,7 +5377,10 @@
       "90°"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4525,6 +5395,8 @@
   },
   {
     "id": "Q-553036d37bec400191a8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -4536,7 +5408,10 @@
       "Graph"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4551,6 +5426,8 @@
   },
   {
     "id": "Q-e5de407347fe42769343",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "44",
@@ -4562,7 +5439,10 @@
       "At power-up"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4577,6 +5457,8 @@
   },
   {
     "id": "Q-18c3cb35c9814aaaad36",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -4588,7 +5470,10 @@
       "Array only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4603,6 +5488,8 @@
   },
   {
     "id": "Q-1fdd870747914fbe95f4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -4614,7 +5501,10 @@
       "120"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4629,6 +5519,8 @@
   },
   {
     "id": "Q-b0af26fd6d1c4a7d92eb",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -4640,7 +5532,10 @@
       "800 Hz"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4655,6 +5550,8 @@
   },
   {
     "id": "Q-f2472b47461749bcaa61",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "45",
@@ -4666,7 +5563,10 @@
       "50 cm"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4681,6 +5581,8 @@
   },
   {
     "id": "Q-0f2b32cd8602452799e1",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -4692,7 +5594,10 @@
       "60"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4707,6 +5612,8 @@
   },
   {
     "id": "Q-1c97ef46530c4034a0e7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -4718,7 +5625,10 @@
       "14"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4733,6 +5643,8 @@
   },
   {
     "id": "Q-63acccc3fe2844c693a9",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -4744,7 +5656,10 @@
       "Four times"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4759,6 +5674,8 @@
   },
   {
     "id": "Q-a9533be6b14d4205bbd5",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "46",
@@ -4770,7 +5687,10 @@
       "RTL"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4785,6 +5705,8 @@
   },
   {
     "id": "Q-7771f44ff586410f94ad",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -4796,7 +5718,10 @@
       "125 V"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4811,6 +5736,8 @@
   },
   {
     "id": "Q-7b8db724af9140e890db",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -4822,7 +5749,10 @@
       "39"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4837,6 +5767,8 @@
   },
   {
     "id": "Q-876625957eec4944a82d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -4848,7 +5780,10 @@
       "169"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4863,6 +5798,8 @@
   },
   {
     "id": "Q-b557f7b8b51f4943a10d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "47",
@@ -4874,7 +5811,10 @@
       "Any node"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4889,6 +5829,8 @@
   },
   {
     "id": "Q-368c3b6f138949349dbc",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -4900,7 +5842,10 @@
       "160"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -4915,6 +5860,8 @@
   },
   {
     "id": "Q-b5860042763c40f4af63",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -4926,7 +5873,10 @@
       "Rehashing only"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -4941,6 +5891,8 @@
   },
   {
     "id": "Q-b650215ba08c4789a2fc",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -4952,7 +5904,10 @@
       "74"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -4967,6 +5922,8 @@
   },
   {
     "id": "Q-f51e3afd09ff44b28d4c",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "48",
@@ -4978,7 +5935,10 @@
       "40 A"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -4993,6 +5953,8 @@
   },
   {
     "id": "Q-32d01d4bb2604fceaa28",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -5004,7 +5966,10 @@
       "Depends on turns"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5019,6 +5984,8 @@
   },
   {
     "id": "Q-336aa3b2c6e7421789c0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -5030,7 +5997,10 @@
       "78"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5045,6 +6015,8 @@
   },
   {
     "id": "Q-8e5ccbfdb0e1435498c9",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -5056,7 +6028,10 @@
       "QKBOF"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5071,6 +6046,8 @@
   },
   {
     "id": "Q-bc55878a291c40b18eeb",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "49",
@@ -5082,7 +6059,10 @@
       "JOIN"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5097,6 +6077,8 @@
   },
   {
     "id": "Q-0ee222a8a9334eb2b532",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -5108,7 +6090,10 @@
       "Supply frequency"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5123,6 +6108,8 @@
   },
   {
     "id": "Q-5cf448af1c4d43f188fd",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -5134,7 +6121,10 @@
       "BCNF"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5149,6 +6139,8 @@
   },
   {
     "id": "Q-9354a286d4d14d6c863b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -5160,7 +6152,10 @@
       "Cannot determine"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5175,6 +6170,8 @@
   },
   {
     "id": "Q-aac7986b536942d09567",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "50",
@@ -5186,7 +6183,10 @@
       "8:5"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5201,6 +6201,8 @@
   },
   {
     "id": "Q-01b72683c1344ae2a46f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -5212,7 +6214,10 @@
       "South-east"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5227,6 +6232,8 @@
   },
   {
     "id": "Q-93b9b7cb5c524d508ffd",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -5238,7 +6245,10 @@
       "3000 rpm"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5253,6 +6263,8 @@
   },
   {
     "id": "Q-dce05421922f4f41bc8e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -5264,7 +6276,10 @@
       "Transaction"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5279,6 +6294,8 @@
   },
   {
     "id": "Q-e8a02eab7e0b41ffbab8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "51",
@@ -5290,7 +6307,10 @@
       "96"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5305,6 +6325,8 @@
   },
   {
     "id": "Q-4fcbc9829fc8451f94d0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -5316,7 +6338,10 @@
       "Durability"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5331,6 +6356,8 @@
   },
   {
     "id": "Q-baa10f80412749e2b8f7",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -5342,7 +6369,10 @@
       "23"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5357,6 +6387,8 @@
   },
   {
     "id": "Q-dd2d8b5a091146eba9f0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -5368,7 +6400,10 @@
       "0.08"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5383,6 +6418,8 @@
   },
   {
     "id": "Q-f856be27d1bf4b02b3db",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "52",
@@ -5394,7 +6431,10 @@
       "PRJLF"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5409,6 +6449,8 @@
   },
   {
     "id": "Q-3e3d2338989645e9a509",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -5420,7 +6462,10 @@
       "FIFO queue"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5435,6 +6480,8 @@
   },
   {
     "id": "Q-adc69a0bfc394da584c8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -5446,7 +6493,10 @@
       "No pen costly"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5461,6 +6511,8 @@
   },
   {
     "id": "Q-c63a1b69f01d4794b490",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -5472,7 +6524,10 @@
       "2 km east"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5487,6 +6542,8 @@
   },
   {
     "id": "Q-e7d0827a34ab4e928698",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "53",
@@ -5498,7 +6555,10 @@
       "Ohmmeter"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5513,6 +6573,8 @@
   },
   {
     "id": "Q-1710876154fa4ece889d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -5524,7 +6586,10 @@
       "Terminated"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5539,6 +6604,8 @@
   },
   {
     "id": "Q-2df40fb346d84f0fa4ff",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -5550,7 +6617,10 @@
       "Sat Dec 30 1899 15:40:00 GMT+0521 (India Standard Time)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5565,6 +6635,8 @@
   },
   {
     "id": "Q-68926d601e4c44dc9d9b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -5576,7 +6648,10 @@
       "20"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5591,6 +6666,8 @@
   },
   {
     "id": "Q-8428b1dc2bdc4ec68783",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "54",
@@ -5602,7 +6679,10 @@
       "Load-matched resistance"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5617,6 +6697,8 @@
   },
   {
     "id": "Q-4827db567a9b48f0b28d",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -5628,7 +6710,10 @@
       "All stack algorithms"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5643,6 +6728,8 @@
   },
   {
     "id": "Q-8a43ef403a8c4268915f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -5654,7 +6741,10 @@
       "No logical person is an engineer"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5669,6 +6759,8 @@
   },
   {
     "id": "Q-b2baa5629fc64c478cc5",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -5680,7 +6772,10 @@
       "Across capacitor"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5695,6 +6790,8 @@
   },
   {
     "id": "Q-e6052295ffc649318c4e",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "55",
@@ -5706,7 +6803,10 @@
       "22 days"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5721,6 +6821,8 @@
   },
   {
     "id": "Q-61649cd3b2994781baa4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -5732,7 +6834,10 @@
       "Parallel with load"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5747,6 +6852,8 @@
   },
   {
     "id": "Q-6ab5bccad3034424874b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -5758,7 +6865,10 @@
       "128"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5773,6 +6883,8 @@
   },
   {
     "id": "Q-ce3a95644c694c0a91be",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -5784,7 +6896,10 @@
       "₹12,000"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5799,6 +6914,8 @@
   },
   {
     "id": "Q-fdb7d4ed4a6e4f5980f3",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "56",
@@ -5810,7 +6927,10 @@
       "Sat Dec 30 1899 19:40:00 GMT+0521 (India Standard Time)"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5825,6 +6945,8 @@
   },
   {
     "id": "Q-2b1b5a09ea6142248c68",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -5836,7 +6958,10 @@
       "21"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5851,6 +6976,8 @@
   },
   {
     "id": "Q-6a1c9eda00094b96aa9f",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -5862,7 +6989,10 @@
       "ARP"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5877,6 +7007,8 @@
   },
   {
     "id": "Q-8e2a1785f2c641a48d61",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -5888,7 +7020,10 @@
       "Power factor correction"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -5903,6 +7038,8 @@
   },
   {
     "id": "Q-a155115bcb4b47ae8285",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "57",
@@ -5914,7 +7051,10 @@
       "0.5"
     ],
     "answer": 3,
+    "correctAnswer": "D",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -5929,6 +7069,8 @@
   },
   {
     "id": "Q-912e13cd950e4173bbba",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -5940,7 +7082,10 @@
       "2:3"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -5955,6 +7100,8 @@
   },
   {
     "id": "Q-b21a279a712c4db0b3b0",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -5966,7 +7113,10 @@
       "Detects viruses"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -5981,6 +7131,8 @@
   },
   {
     "id": "Q-b7ca7de2869345b0b676",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -5992,7 +7144,10 @@
       "Inductance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -6007,6 +7162,8 @@
   },
   {
     "id": "Q-e7bd78b9d19e4dff8d05",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "58",
@@ -6018,7 +7175,10 @@
       "0.3"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -6033,6 +7193,8 @@
   },
   {
     "id": "Q-257a0d448d3742d0bd0a",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -6044,7 +7206,10 @@
       "10 s"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -6059,6 +7224,8 @@
   },
   {
     "id": "Q-739ab5399d55447493d6",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -6070,7 +7237,10 @@
       "₹1,20,000"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
@@ -6085,6 +7255,8 @@
   },
   {
     "id": "Q-a9cbfa0979984333b091",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -6096,7 +7268,10 @@
       "Alpha only"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -6111,6 +7286,8 @@
   },
   {
     "id": "Q-ef46b9fb14bc4514807b",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "59",
@@ -6122,7 +7299,10 @@
       "900 m²"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -6137,6 +7317,8 @@
   },
   {
     "id": "Q-441631b9cc6b4edf8e92",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -6148,7 +7330,10 @@
       "10 V"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Electrical or Electronics",
     "exam": "",
     "marks": 1,
@@ -6163,6 +7348,8 @@
   },
   {
     "id": "Q-8556131cddff4d4ab010",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -6174,7 +7361,10 @@
       "Maintenance"
     ],
     "answer": 1,
+    "correctAnswer": "B",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Computer science / IT",
     "exam": "",
     "marks": 1,
@@ -6189,6 +7379,8 @@
   },
   {
     "id": "Q-c93d98cba7d0430dabc8",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -6200,7 +7392,10 @@
       "Sat Dec 30 1899 09:16:00 GMT+0521 (India Standard Time)"
     ],
     "answer": 0,
+    "correctAnswer": "A",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "Common Topics",
     "exam": "",
     "marks": 1,
@@ -6215,6 +7410,8 @@
   },
   {
     "id": "Q-ff1f66183d3a4a78adb4",
+    "subject": "Training and placement",
+    "subjectId": "training-and-placement",
     "year": "2026",
     "state": "TS",
     "questionNumber": "60",
@@ -6226,7 +7423,10 @@
       "2:1"
     ],
     "answer": 2,
+    "correctAnswer": "C",
     "answerText": "",
+    "explanation": "",
+    "difficulty": "",
     "topic": "",
     "exam": "",
     "marks": 1,
